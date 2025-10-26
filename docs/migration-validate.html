@@ -1,0 +1,453 @@
+[file name]: migration-validate.html
+[file content begin]
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pre-Migration Validation - RevNova</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icons/6.6.4/css/flag-icons.min.css">
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="nav-left">
+                <a href="index.html" class="logo">
+                    <div class="logo-box">RevNova</div>
+                </a>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="system-monitor.html"><i class="fas fa-chart-pie"></i> System Monitor</a></li>
+                        <li><a href="data-backup.html"><i class="fas fa-database"></i> Data Backup</a></li>
+                        <li><a href="audit-logs.html"><i class="fas fa-clipboard-list"></i> Audit Logs</a></li>
+                        <li><a href="settings.html"><i class="fas fa-cogs"></i> Settings</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header-right">
+                <div class="country-selector">
+                    <span class="fi fi-us"></span>
+                </div>
+                <a href="dashboard.html" class="btn btn-login">Back to Dashboard</a>
+            </div>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <section class="platform-overview">
+        <div class="container">
+            <div class="migration-progress">
+                <div class="progress-steps">
+                    <div class="progress-step completed">
+                        <div class="step-number">1</div>
+                        <div class="step-label">Connect</div>
+                    </div>
+                    <div class="progress-step completed">
+                        <div class="step-number">2</div>
+                        <div class="step-label">Analyze</div>
+                    </div>
+                    <div class="progress-step completed">
+                        <div class="step-number">3</div>
+                        <div class="step-label">Map</div>
+                    </div>
+                    <div class="progress-step completed">
+                        <div class="step-number">4</div>
+                        <div class="step-label">Transform</div>
+                    </div>
+                    <div class="progress-step active">
+                        <div class="step-number">5</div>
+                        <div class="step-label">Validate</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-number">6</div>
+                        <div class="step-label">Execute</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-number">7</div>
+                        <div class="step-label">Test</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="wizard-header">
+                <h2>Pre-Migration Validation</h2>
+                <p>Comprehensive validation before data execution</p>
+            </div>
+
+            <div class="migration-wizard-container">
+                <div class="validation-container">
+                    <!-- Validation Overview -->
+                    <div class="validation-overview">
+                        <div class="validation-stats">
+                            <div class="stat-card">
+                                <div class="stat-number">156</div>
+                                <div class="stat-label">Validation Checks</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">148</div>
+                                <div class="stat-label">Passed</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">8</div>
+                                <div class="stat-label">Warnings</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">0</div>
+                                <div class="stat-label">Errors</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Validation Dashboard -->
+                    <div class="validation-dashboard">
+                        <h4><i class="fas fa-clipboard-check"></i> Validation Dashboard</h4>
+                        
+                        <!-- Data Quality Validation -->
+                        <div class="validation-section">
+                            <h5>Data Quality Validation</h5>
+                            <div class="validation-grid">
+                                <div class="validation-card success">
+                                    <div class="validation-header">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>Data Completeness</span>
+                                    </div>
+                                    <div class="validation-status">
+                                        <span class="status success">PASSED</span>
+                                        <span>98% complete</span>
+                                    </div>
+                                </div>
+                                <div class="validation-card success">
+                                    <div class="validation-header">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>Data Consistency</span>
+                                    </div>
+                                    <div class="validation-status">
+                                        <span class="status success">PASSED</span>
+                                        <span>No inconsistencies</span>
+                                    </div>
+                                </div>
+                                <div class="validation-card warning">
+                                    <div class="validation-header">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        <span>Data Accuracy</span>
+                                    </div>
+                                    <div class="validation-status">
+                                        <span class="status warning">WARNING</span>
+                                        <span>3 potential issues</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Schema Compatibility -->
+                        <div class="validation-section">
+                            <h5>Schema Compatibility</h5>
+                            <div class="validation-grid">
+                                <div class="validation-card success">
+                                    <div class="validation-header">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>Field Type Matching</span>
+                                    </div>
+                                    <div class="validation-status">
+                                        <span class="status success">PASSED</span>
+                                        <span>245/245 fields compatible</span>
+                                    </div>
+                                </div>
+                                <div class="validation-card success">
+                                    <div class="validation-header">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>Relationship Integrity</span>
+                                    </div>
+                                    <div class="validation-status">
+                                        <span class="status success">PASSED</span>
+                                        <span>All relationships preserved</span>
+                                    </div>
+                                </div>
+                                <div class="validation-card success">
+                                    <div class="validation-header">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>Business Logic</span>
+                                    </div>
+                                    <div class="validation-status">
+                                        <span class="status success">PASSED</span>
+                                        <span>Rules transformed successfully</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Performance Validation -->
+                        <div class="validation-section">
+                            <h5>Performance & Limits</h5>
+                            <div class="validation-grid">
+                                <div class="validation-card success">
+                                    <div class="validation-header">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>API Limits</span>
+                                    </div>
+                                    <div class="validation-status">
+                                        <span class="status success">PASSED</span>
+                                        <span>Within safe limits</span>
+                                    </div>
+                                </div>
+                                <div class="validation-card success">
+                                    <div class="validation-header">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>Storage Requirements</span>
+                                    </div>
+                                    <div class="validation-status">
+                                        <span class="status success">PASSED</span>
+                                        <span>Adequate space available</span>
+                                    </div>
+                                </div>
+                                <div class="validation-card warning">
+                                    <div class="validation-header">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        <span>Processing Time</span>
+                                    </div>
+                                    <div class="validation-status">
+                                        <span class="status warning">WARNING</span>
+                                        <span>45 min estimated</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Risk Assessment -->
+                    <div class="risk-assessment">
+                        <h4><i class="fas fa-exclamation-triangle"></i> Risk Assessment</h4>
+                        <div class="risk-matrix">
+                            <div class="risk-item low">
+                                <div class="risk-level">LOW RISK</div>
+                                <div class="risk-details">
+                                    <strong>Data Quality Issues</strong>
+                                    <span>3 minor data inconsistencies detected</span>
+                                </div>
+                                <div class="risk-action">
+                                    <button class="btn btn-secondary btn-xs">Review</button>
+                                </div>
+                            </div>
+                            <div class="risk-item medium">
+                                <div class="risk-level">MEDIUM RISK</div>
+                                <div class="risk-details">
+                                    <strong>Custom Logic Dependencies</strong>
+                                    <span>8 workflow rules require verification</span>
+                                </div>
+                                <div class="risk-action">
+                                    <button class="btn btn-secondary btn-xs">Verify</button>
+                                </div>
+                            </div>
+                            <div class="risk-item high">
+                                <div class="risk-level">HIGH RISK</div>
+                                <div class="risk-details">
+                                    <strong>Complex Transformations</strong>
+                                    <span>Subscription to Asset conversion needs testing</span>
+                                </div>
+                                <div class="risk-action">
+                                    <button class="btn btn-secondary btn-xs">Test</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Test Scenarios -->
+                    <div class="test-scenarios">
+                        <h4><i class="fas fa-vial"></i> Test Scenarios</h4>
+                        <div class="scenario-grid">
+                            <div class="scenario-card">
+                                <div class="scenario-header">
+                                    <i class="fas fa-receipt"></i>
+                                    <span>Quote Generation</span>
+                                </div>
+                                <div class="scenario-details">
+                                    <div class="scenario-step">
+                                        <span>Create test product</span>
+                                        <span class="status success">PASSED</span>
+                                    </div>
+                                    <div class="scenario-step">
+                                        <span>Generate quote with pricing</span>
+                                        <span class="status success">PASSED</span>
+                                    </div>
+                                    <div class="scenario-step">
+                                        <span>Validate totals and discounts</span>
+                                        <span class="status pending">PENDING</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="scenario-card">
+                                <div class="scenario-header">
+                                    <i class="fas fa-file-contract"></i>
+                                    <span>Contract Creation</span>
+                                </div>
+                                <div class="scenario-details">
+                                    <div class="scenario-step">
+                                        <span>Convert quote to contract</span>
+                                        <span class="status success">PASSED</span>
+                                    </div>
+                                    <div class="scenario-step">
+                                        <span>Validate contract terms</span>
+                                        <span class="status pending">PENDING</span>
+                                    </div>
+                                    <div class="scenario-step">
+                                        <span>Test renewal logic</span>
+                                        <span class="status pending">PENDING</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Validation Actions -->
+                    <div class="validation-actions">
+                        <div class="action-buttons">
+                            <button class="btn btn-primary btn-sm" onclick="runFullValidation()">
+                                <i class="fas fa-play"></i>
+                                Run Full Validation
+                            </button>
+                            <button class="btn btn-secondary btn-sm" onclick="generateValidationReport()">
+                                <i class="fas fa-download"></i>
+                                Download Report
+                            </button>
+                            <button class="btn btn-secondary btn-sm" onclick="fixIssues()">
+                                <i class="fas fa-wrench"></i>
+                                Auto-Fix Issues
+                            </button>
+                        </div>
+                        <div class="validation-summary">
+                            <div class="summary-item">
+                                <strong>Overall Status:</strong>
+                                <span class="status success">READY FOR MIGRATION</span>
+                            </div>
+                            <div class="summary-item">
+                                <strong>Confidence Score:</strong>
+                                <span>92%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Wizard Actions -->
+                    <div class="wizard-actions">
+                        <button type="button" class="btn btn-primary" onclick="proceedToExecution()">
+                            <i class="fas fa-arrow-right"></i>
+                            Continue to Execution
+                        </button>
+                        <a href="migration-transform.html" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i>
+                            Back to Transformation
+                        </a>
+                        <button type="button" class="btn btn-secondary" onclick="requestApproval()">
+                            <i class="fas fa-clipboard-check"></i>
+                            Request Approval
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo-box">RevNova</div>
+                    <p class="footer-description">System Transformation as a Service</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="about-revnova.html">About RevNova</a></li>
+                            <li><a href="careers.html">Careers</a></li>
+                            <li><a href="contact.html">Contact</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="documentation.html">Documentation</a></li>
+                            <li><a href="blog.html">Blog</a></li>
+                            <li><a href="case-studies.html">Case Studies</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Legal</h4>
+                        <ul>
+                            <li><a href="privacy.html">Privacy Policy</a></li>
+                            <li><a href="terms.html">Terms of Service</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="footer-legal">
+                    <span>&copy; 2024 RevNova. All rights reserved.</span>
+                    <div class="legal-links">
+                        <a href="privacy.html">Privacy Policy</a>
+                        <a href="terms.html">Terms of Service</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function proceedToExecution() {
+            const projectId = new URLSearchParams(window.location.search).get('projectId') || 'pricing-rules-migration';
+            
+            // Save validation data to localStorage
+            const validationData = {
+                projectId: projectId,
+                validationChecks: 156,
+                passedChecks: 148,
+                confidenceScore: 92,
+                timestamp: new Date().toISOString()
+            };
+            
+            localStorage.setItem(`migration_${projectId}_validation`, JSON.stringify(validationData));
+            localStorage.setItem(`migration_${projectId}_currentStep`, 'execute');
+            
+            window.location.href = `migration-execute.html?projectId=${projectId}`;
+        }
+
+        function runFullValidation() {
+            alert('Running comprehensive validation checks...');
+        }
+
+        function generateValidationReport() {
+            alert('Generating validation report...');
+        }
+
+        function fixIssues() {
+            alert('Attempting to auto-fix validation issues...');
+        }
+
+        function requestApproval() {
+            alert('Approval request sent to stakeholders...');
+        }
+
+        // Load project data
+        document.addEventListener('DOMContentLoaded', function() {
+            const projectId = new URLSearchParams(window.location.search).get('projectId');
+            if (projectId) {
+                // Load saved transformation data
+                const savedData = localStorage.getItem(`migration_${projectId}_transform`);
+                if (savedData) {
+                    const transformData = JSON.parse(savedData);
+                    // Could display transformation insights
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+[file content end]

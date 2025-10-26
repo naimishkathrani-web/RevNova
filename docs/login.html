@@ -1,3 +1,5 @@
+[file name]: login.html
+[file content begin]
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -55,6 +57,7 @@
                                     </div>
                                     <div class="radio-content">
                                         <div class="radio-title">Employee</div>
+                                        <div class="radio-description">Admin & Operations</div>
                                     </div>
                                 </label>
                             </div>
@@ -66,6 +69,7 @@
                                     </div>
                                     <div class="radio-content">
                                         <div class="radio-title">Client</div>
+                                        <div class="radio-description">Migration Projects</div>
                                     </div>
                                 </label>
                             </div>
@@ -80,7 +84,7 @@
                             </div>
                             <div class="input-with-icon">
                                 <i class="fas fa-user"></i>
-                                <input type="text" id="username" name="username" value="naimish@rootshellinc.com" readonly>
+                                <input type="text" id="username" name="username" placeholder="Enter your username" required>
                             </div>
                         </div>
 
@@ -91,8 +95,22 @@
                             </div>
                             <div class="input-with-icon">
                                 <i class="fas fa-lock"></i>
-                                <input type="password" id="password" name="password" value="••••••••" readonly>
+                                <input type="password" id="password" name="password" placeholder="Enter your password" required>
                             </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="label-row">
+                                <label for="client-select">Client Account</label>
+                            </div>
+                            <select id="client-select" name="client" class="client-select">
+                                <option value="">Select Client Account</option>
+                                <option value="techcorp">TechCorp Inc.</option>
+                                <option value="globalsolutions">Global Solutions Ltd.</option>
+                                <option value="innovatetech">InnovateTech</option>
+                                <option value="datasystems">DataSystems Co.</option>
+                            </select>
+                            <div class="form-note" id="client-note">Required for client login</div>
                         </div>
 
                         <div class="form-options">
@@ -183,29 +201,48 @@
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const loginType = document.querySelector('input[name="login-type"]:checked').value;
+            const clientSelect = document.getElementById('client-select');
+            
+            // Validate client selection for client login
+            if (loginType === 'client' && !clientSelect.value) {
+                alert('Please select a client account to continue.');
+                return;
+            }
             
             if (loginType === 'employee') {
-                // Remove header and footer for web application pages
-                document.querySelector('header').style.display = 'none';
-                document.querySelector('footer').style.display = 'none';
-                
-                // Redirect to client accounts (web application)
+                // Redirect to client accounts (admin view)
                 window.location.href = 'client-accounts.html';
             } else {
-                alert('Client login functionality will be implemented separately.');
+                // Redirect to specific client dashboard
+                const clientId = clientSelect.value;
+                window.location.href = `dashboard.html?client=${clientId}`;
             }
         });
 
-        // Function to restore header/footer (for when user logs out)
-        function restoreHeaderFooter() {
-            document.querySelector('header').style.display = 'block';
-            document.querySelector('footer').style.display = 'block';
-        }
+        // Show/hide client selection based on login type
+        document.querySelectorAll('input[name="login-type"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const clientSection = document.getElementById('client-select').closest('.form-group');
+                const clientNote = document.getElementById('client-note');
+                
+                if (this.value === 'client') {
+                    clientSection.style.display = 'block';
+                    clientNote.style.display = 'block';
+                } else {
+                    clientSection.style.display = 'none';
+                    clientNote.style.display = 'none';
+                }
+            });
+        });
 
-        // Check if we're coming from a logout
-        if (window.location.search.includes('logout=true')) {
-            restoreHeaderFooter();
-        }
+        // Initialize - hide client selection for employee login
+        document.addEventListener('DOMContentLoaded', function() {
+            const clientSection = document.getElementById('client-select').closest('.form-group');
+            const clientNote = document.getElementById('client-note');
+            clientSection.style.display = 'none';
+            clientNote.style.display = 'none';
+        });
     </script>
 </body>
 </html>
+[file content end]

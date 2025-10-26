@@ -28,7 +28,7 @@
                 <div class="country-selector">
                     <span class="fi fi-us"></span>
                 </div>
-                <a href="client-accounts.html" class="btn btn-login">Back to Clients</a>
+                <a href="login.html" class="btn btn-login">Logout</a>
             </div>
             <button class="mobile-menu-btn">
                 <i class="fas fa-bars"></i>
@@ -97,7 +97,7 @@
             <div id="migration-tab" class="tab-content active">
                 <div class="table-header">
                     <h3>Active Migration Projects</h3>
-                    <a href="new-migration.html" class="btn btn-primary btn-sm">
+                    <a href="new-migration.html" class="btn btn-primary btn-xs">
                         <i class="fas fa-plus"></i>
                         New Project
                     </a>
@@ -165,7 +165,7 @@
             <div id="product-config-tab" class="tab-content">
                 <div class="table-header">
                     <h3>Product Configuration Projects</h3>
-                    <a href="product-design.html" class="btn btn-primary btn-sm">
+                    <a href="product-design.html" class="btn btn-primary btn-xs">
                         <i class="fas fa-plus"></i>
                         New Product
                     </a>
@@ -272,7 +272,25 @@
             document.getElementById(tabName + '-tab').classList.add('active');
             event.currentTarget.classList.add('active');
         }
+
+        // Get client from URL parameters
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const client = urlParams.get('client');
+            if (client) {
+                // Update dashboard header based on client
+                const header = document.querySelector('.dashboard-header h1');
+                const clientNames = {
+                    'techcorp': 'TechCorp Inc.',
+                    'globalsolutions': 'Global Solutions Ltd.',
+                    'innovatetech': 'InnovateTech',
+                    'datasystems': 'DataSystems Co.'
+                };
+                if (clientNames[client]) {
+                    header.textContent = `${clientNames[client]} - Dashboard`;
+                }
+            }
+        });
     </script>
 </body>
 </html>
-[file content end]
