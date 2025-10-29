@@ -1,5 +1,3 @@
-[file name]: migration-mapping.html
-[file content begin]
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,7 +6,6 @@
     <title>Field Mapping - RevNova</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icons/6.6.4/css/flag-icons.min.css">
 </head>
 <body>
     <header>
@@ -27,9 +24,6 @@
                 </nav>
             </div>
             <div class="header-right">
-                <div class="country-selector">
-                    <span class="fi fi-us"></span>
-                </div>
                 <a href="dashboard.html" class="btn btn-login">Back to Dashboard</a>
             </div>
             <button class="mobile-menu-btn">
@@ -116,127 +110,69 @@
 
                     <!-- Mapping Interface -->
                     <div class="mapping-interface">
-                        <div class="mapping-header">
-                            <div class="source-column">
-                                <h5><i class="fas fa-database"></i> Source: SFDC CPQ</h5>
-                            </div>
-                            <div class="mapping-column">
-                                <h5><i class="fas fa-arrows-alt-h"></i> Mapping</h5>
-                            </div>
-                            <div class="target-column">
-                                <h5><i class="fas fa-cloud"></i> Target: SFDC RCA</h5>
-                            </div>
-                        </div>
-
-                        <div class="mapping-content">
+                        <div class="mapping-grid">
                             <!-- Field Mapping Rows -->
-                            <div class="mapping-row mapped">
-                                <div class="source-field">
-                                    <div class="field-info">
-                                        <strong>Name</strong>
-                                        <span>Product2.Name</span>
+                            <div class="mapping-row">
+                                <div class="source-object">
+                                    <div class="object-header">
+                                        <span class="object-name">Product2</span>
+                                        <span class="object-count">18 fields</span>
                                     </div>
-                                    <div class="field-type">Text(255)</div>
+                                    <div class="object-fields">
+                                        <div class="field-item">
+                                            <span class="field-name">Name</span>
+                                            <span class="field-type">Text(255)</span>
+                                        </div>
+                                        <div class="field-item">
+                                            <span class="field-name">ProductCode</span>
+                                            <span class="field-type">Text(255)</span>
+                                        </div>
+                                        <div class="field-item">
+                                            <span class="field-name">CustomRegion__c</span>
+                                            <span class="field-type">Picklist</span>
+                                        </div>
+                                        <div class="field-item">
+                                            <span class="field-name">LegacySKU__c</span>
+                                            <span class="field-type">Text(100)</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="mapping-action">
-                                    <div class="mapping-status success">
-                                        <i class="fas fa-check-circle"></i>
-                                        <span>Auto-Mapped</span>
+                                
+                                <div class="mapping-arrow">
+                                    <i class="fas fa-arrow-right"></i>
+                                    <div class="mapping-actions">
+                                        <button class="btn btn-xs btn-light" title="Auto-map">
+                                            <i class="fas fa-robot"></i>
+                                        </button>
+                                        <button class="btn btn-xs btn-light" title="Manual map">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
                                     </div>
-                                    <div class="confidence-score">98%</div>
                                 </div>
-                                <div class="target-field">
-                                    <div class="field-info">
-                                        <strong>Name</strong>
-                                        <span>Product2.Name</span>
+                                
+                                <div class="target-object">
+                                    <div class="object-header">
+                                        <span class="object-name">Product2</span>
+                                        <span class="object-count">18 fields</span>
                                     </div>
-                                    <div class="field-type">Text(255)</div>
-                                </div>
-                            </div>
-
-                            <div class="mapping-row mapped">
-                                <div class="source-field">
-                                    <div class="field-info">
-                                        <strong>ProductCode</strong>
-                                        <span>Product2.ProductCode</span>
+                                    <div class="object-fields">
+                                        <div class="field-item">
+                                            <span class="field-name">Name</span>
+                                            <span class="field-type">Text(255)</span>
+                                        </div>
+                                        <div class="field-item">
+                                            <span class="field-name">ProductCode</span>
+                                            <span class="field-type">Text(255)</span>
+                                        </div>
+                                        <div class="field-item">
+                                            <span class="field-name">Region__c</span>
+                                            <span class="field-type">Picklist</span>
+                                        </div>
+                                        <div class="field-item">
+                                            <span class="field-name">ExternalId__c</span>
+                                            <span class="field-type">Text(100)</span>
+                                        </div>
                                     </div>
-                                    <div class="field-type">Text(255)</div>
-                                </div>
-                                <div class="mapping-action">
-                                    <div class="mapping-status success">
-                                        <i class="fas fa-check-circle"></i>
-                                        <span>Auto-Mapped</span>
-                                    </div>
-                                    <div class="confidence-score">96%</div>
-                                </div>
-                                <div class="target-field">
-                                    <div class="field-info">
-                                        <strong>ProductCode</strong>
-                                        <span>Product2.ProductCode</span>
-                                    </div>
-                                    <div class="field-type">Text(255)</div>
-                                </div>
-                            </div>
-
-                            <div class="mapping-row review">
-                                <div class="source-field">
-                                    <div class="field-info">
-                                        <strong>CustomRegion__c</strong>
-                                        <span>Product2.CustomRegion__c</span>
-                                        <span class="custom-badge">Custom</span>
-                                    </div>
-                                    <div class="field-type">Picklist</div>
-                                </div>
-                                <div class="mapping-action">
-                                    <div class="mapping-status warning">
-                                        <i class="fas fa-exclamation-triangle"></i>
-                                        <span>Needs Review</span>
-                                    </div>
-                                    <div class="confidence-score">45%</div>
-                                    <select class="mapping-select">
-                                        <option value="">Select mapping...</option>
-                                        <option value="map_existing">Map to Region__c</option>
-                                        <option value="create_new">Create New Field</option>
-                                        <option value="ignore">Ignore Field</option>
-                                    </select>
-                                </div>
-                                <div class="target-field">
-                                    <div class="field-info">
-                                        <strong>Region__c</strong>
-                                        <span>Product2.Region__c</span>
-                                    </div>
-                                    <div class="field-type">Picklist</div>
-                                </div>
-                            </div>
-
-                            <div class="mapping-row custom">
-                                <div class="source-field">
-                                    <div class="field-info">
-                                        <strong>LegacySKU__c</strong>
-                                        <span>Product2.LegacySKU__c</span>
-                                        <span class="custom-badge">Custom</span>
-                                    </div>
-                                    <div class="field-type">Text(100)</div>
-                                </div>
-                                <div class="mapping-action">
-                                    <div class="mapping-status info">
-                                        <i class="fas fa-lightbulb"></i>
-                                        <span>AI Suggested</span>
-                                    </div>
-                                    <div class="confidence-score">78%</div>
-                                    <select class="mapping-select">
-                                        <option value="create_new" selected>Create New Field</option>
-                                        <option value="map_existing">Map to ExternalId</option>
-                                        <option value="ignore">Ignore Field</option>
-                                    </select>
-                                </div>
-                                <div class="target-field">
-                                    <div class="field-info">
-                                        <strong>ExternalId__c</strong>
-                                        <span>Product2.ExternalId__c</span>
-                                        <span class="new-badge">New Field</span>
-                                    </div>
-                                    <div class="field-type">Text(100)</div>
                                 </div>
                             </div>
                         </div>
@@ -281,6 +217,14 @@
             </div>
         </div>
     </section>
+
+    <!-- Processing Overlay -->
+    <div id="processing-overlay" class="processing-overlay">
+        <div class="processing-content">
+            <div class="processing-spinner"></div>
+            <p class="processing-message">Processing mappings...</p>
+        </div>
+    </div>
 
     <footer>
         <div class="container">
@@ -336,6 +280,9 @@
         function proceedToTransform() {
             const projectId = new URLSearchParams(window.location.search).get('projectId') || 'pricing-rules-migration';
             
+            // TODO: Show processing overlay here
+            RevNova.showProcessing('Validating mappings...');
+            
             // Save mapping data to localStorage
             const mappingData = {
                 projectId: projectId,
@@ -348,19 +295,38 @@
             localStorage.setItem(`migration_${projectId}_mapping`, JSON.stringify(mappingData));
             localStorage.setItem(`migration_${projectId}_currentStep`, 'transform');
             
-            window.location.href = `migration-transform.html?projectId=${projectId}`;
+            setTimeout(() => {
+                // TODO: Hide processing overlay here
+                RevNova.hideProcessing();
+                window.location.href = `migration-transform.html?projectId=${projectId}`;
+            }, 1500);
         }
 
         function applyAiSuggestions() {
-            alert('Applying AI suggestions to remaining fields...');
+            RevNova.showProcessing('Applying AI suggestions...');
+            
+            setTimeout(() => {
+                RevNova.hideProcessing();
+                RevNova.showToast('AI suggestions applied successfully!', 'success');
+            }, 2000);
         }
 
         function validateMappings() {
-            alert('Validating all field mappings...');
+            RevNova.showProcessing('Validating all field mappings...');
+            
+            setTimeout(() => {
+                RevNova.hideProcessing();
+                RevNova.showToast('All mappings validated successfully!', 'success');
+            }, 1500);
         }
 
         function saveMappings() {
-            alert('Mapping progress saved successfully!');
+            RevNova.showProcessing('Saving mapping progress...');
+            
+            setTimeout(() => {
+                RevNova.hideProcessing();
+                RevNova.showToast('Mapping progress saved successfully!', 'success');
+            }, 1000);
         }
 
         // Object tab switching
@@ -369,6 +335,7 @@
                 document.querySelectorAll('.object-tab').forEach(t => t.classList.remove('active'));
                 this.classList.add('active');
                 // In real implementation, this would load the selected object's fields
+                RevNova.showToast(`Loading ${this.dataset.object} fields...`, 'info');
             });
         });
 
@@ -385,6 +352,6 @@
             }
         });
     </script>
+    <script src="script.js"></script>
 </body>
 </html>
-[file content end]

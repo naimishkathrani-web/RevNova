@@ -97,7 +97,7 @@
             <div id="migration-tab" class="tab-content active">
                 <div class="table-header">
                     <h3>Active Migration Projects</h3>
-                    <a href="new-migration.html" class="btn btn-primary btn-xs">
+                    <a href="migration-connect.html" class="btn btn-primary btn-sm">
                         <i class="fas fa-plus"></i>
                         New Project
                     </a>
@@ -128,7 +128,12 @@
                                 </td>
                                 <td><span class="status-badge status-completed">Completed</span></td>
                                 <td>1,245 Products</td>
-                                <td><a href="migration-report.html?projectId=cpq-phase1" class="btn btn-primary btn-xs">View Report</a></td>
+                                <td>
+                                    <a href="migration-report.html?projectId=cpq-phase1" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-chart-bar"></i>
+                                        View Report
+                                    </a>
+                                </td>
                             </tr>
                             <tr>
                                 <td><strong>Product Catalog Migration</strong></td>
@@ -141,7 +146,12 @@
                                 </td>
                                 <td><span class="status-badge status-in-progress">In Progress</span></td>
                                 <td>892 Products</td>
-                                <td><a href="migration-mapping.html?projectId=product-catalog" class="btn btn-primary btn-xs">Resume Migration</a></td>
+                                <td>
+                                    <a href="migration-mapping.html?projectId=product-catalog" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-play"></i>
+                                        Resume Migration
+                                    </a>
+                                </td>
                             </tr>
                             <tr>
                                 <td><strong>Pricing Rules Migration</strong></td>
@@ -154,7 +164,12 @@
                                 </td>
                                 <td><span class="status-badge status-draft">Draft</span></td>
                                 <td>156 Rules</td>
-                                <td><a href="migration-connect.html?projectId=pricing-rules-migration" class="btn btn-primary btn-xs">Start Migration</a></td>
+                                <td>
+                                    <a href="migration-connect.html?projectId=pricing-rules-migration" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-rocket"></i>
+                                        Start Migration
+                                    </a>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -165,7 +180,7 @@
             <div id="product-config-tab" class="tab-content">
                 <div class="table-header">
                     <h3>Product Configuration Projects</h3>
-                    <a href="product-design.html" class="btn btn-primary btn-xs">
+                    <a href="product-design.html" class="btn btn-primary btn-sm">
                         <i class="fas fa-plus"></i>
                         New Product
                     </a>
@@ -190,7 +205,12 @@
                                 <td>2024-01-16</td>
                                 <td>15 Components</td>
                                 <td><span class="status-badge status-completed">Completed</span></td>
-                                <td><a href="#" class="btn btn-primary btn-xs">View Report</a></td>
+                                <td>
+                                    <a href="#" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-chart-bar"></i>
+                                        View Report
+                                    </a>
+                                </td>
                             </tr>
                             <tr>
                                 <td><strong>AI Analytics Module</strong></td>
@@ -198,7 +218,12 @@
                                 <td>2024-01-19</td>
                                 <td>8 Features</td>
                                 <td><span class="status-badge status-in-progress">In Progress</span></td>
-                                <td><a href="#" class="btn btn-primary btn-xs">Resume Design</a></td>
+                                <td>
+                                    <a href="#" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-play"></i>
+                                        Resume Design
+                                    </a>
+                                </td>
                             </tr>
                             <tr>
                                 <td><strong>Mobile Security Package</strong></td>
@@ -206,7 +231,12 @@
                                 <td>2024-01-21</td>
                                 <td>12 Services</td>
                                 <td><span class="status-badge status-draft">Draft</span></td>
-                                <td><a href="#" class="btn btn-primary btn-xs">Start Design</a></td>
+                                <td>
+                                    <a href="#" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-rocket"></i>
+                                        Start Design
+                                    </a>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -267,8 +297,17 @@
 
     <script>
         function switchTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content and activate tab
             document.getElementById(tabName + '-tab').classList.add('active');
             event.currentTarget.classList.add('active');
         }

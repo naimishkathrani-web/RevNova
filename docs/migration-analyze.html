@@ -1,5 +1,3 @@
-[file name]: migration-analyze.html
-[file content begin]
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,7 +6,6 @@
     <title>Analyze Source Schema - RevNova</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icons/6.6.4/css/flag-icons.min.css">
 </head>
 <body>
     <header>
@@ -27,9 +24,6 @@
                 </nav>
             </div>
             <div class="header-right">
-                <div class="country-selector">
-                    <span class="fi fi-us"></span>
-                </div>
                 <a href="dashboard.html" class="btn btn-login">Back to Dashboard</a>
             </div>
             <button class="mobile-menu-btn">
@@ -200,30 +194,30 @@
                                         <i class="fas fa-check-circle"></i>
                                         <span>Data Quality</span>
                                     </div>
-                                    <div class="risk-score">95%</div>
-                                    <div class="risk-details">Minimal data issues detected</div>
+                                    <div class="risk-level">95%</div>
+                                    <div class="risk-description">Minimal data issues detected</div>
                                 </div>
                                 <div class="risk-card medium">
                                     <div class="risk-header">
                                         <i class="fas fa-exclamation-triangle"></i>
                                         <span>Custom Logic</span>
                                     </div>
-                                    <div class="risk-score">78%</div>
-                                    <div class="risk-details">23 validation rules need review</div>
+                                    <div class="risk-level">78%</div>
+                                    <div class="risk-description">23 validation rules need review</div>
                                 </div>
                                 <div class="risk-card high">
                                     <div class="risk-header">
                                         <i class="fas fa-times-circle"></i>
                                         <span>Complex Dependencies</span>
                                     </div>
-                                    <div class="risk-score">45%</div>
-                                    <div class="risk-details">8 workflow rules require transformation</div>
+                                    <div class="risk-level">45%</div>
+                                    <div class="risk-description">8 workflow rules require transformation</div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Migration Readiness -->
-                        <div class="readiness-section">
+                        <div class="schema-section">
                             <h5><i class="fas fa-clipboard-check"></i> Migration Readiness Score</h5>
                             <div class="readiness-card">
                                 <div class="readiness-score">
@@ -264,6 +258,14 @@
             </div>
         </div>
     </section>
+
+    <!-- Processing Overlay -->
+    <div id="processing-overlay" class="processing-overlay">
+        <div class="processing-content">
+            <div class="processing-spinner"></div>
+            <p class="processing-message">Analyzing schema...</p>
+        </div>
+    </div>
 
     <footer>
         <div class="container">
@@ -319,6 +321,9 @@
         function proceedToMapping() {
             const projectId = new URLSearchParams(window.location.search).get('projectId') || 'pricing-rules-migration';
             
+            // TODO: Show processing overlay here
+            RevNova.showProcessing('Preparing for mapping...');
+            
             // Save analysis data to localStorage (in real app, this would be API call)
             const analysisData = {
                 projectId: projectId,
@@ -332,12 +337,21 @@
             localStorage.setItem(`migration_${projectId}_analysis`, JSON.stringify(analysisData));
             localStorage.setItem(`migration_${projectId}_currentStep`, 'mapping');
             
-            window.location.href = `migration-mapping.html?projectId=${projectId}`;
+            setTimeout(() => {
+                // TODO: Hide processing overlay here
+                RevNova.hideProcessing();
+                window.location.href = `migration-mapping.html?projectId=${projectId}`;
+            }, 1500);
         }
 
         function downloadAnalysisReport() {
-            alert('Analysis report download started...');
-            // In real implementation, this would generate and download a PDF report
+            RevNova.showProcessing('Generating analysis report...');
+            
+            setTimeout(() => {
+                RevNova.hideProcessing();
+                RevNova.showToast('Analysis report download started...', 'success');
+                // In real implementation, this would generate and download a PDF report
+            }, 2000);
         }
 
         // Load project data
@@ -355,6 +369,6 @@
             }
         });
     </script>
+    <script src="script.js"></script>
 </body>
 </html>
-[file content end]

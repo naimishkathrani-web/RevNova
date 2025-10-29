@@ -1,5 +1,3 @@
-[file name]: migration-validate.html
-[file content begin]
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,7 +6,6 @@
     <title>Pre-Migration Validation - RevNova</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icons/6.6.4/css/flag-icons.min.css">
 </head>
 <body>
     <header>
@@ -27,9 +24,6 @@
                 </nav>
             </div>
             <div class="header-right">
-                <div class="country-selector">
-                    <span class="fi fi-us"></span>
-                </div>
                 <a href="dashboard.html" class="btn btn-login">Back to Dashboard</a>
             </div>
             <button class="mobile-menu-btn">
@@ -110,34 +104,31 @@
                         <div class="validation-section">
                             <h5>Data Quality Validation</h5>
                             <div class="validation-grid">
-                                <div class="validation-card success">
+                                <div class="validation-card">
                                     <div class="validation-header">
-                                        <i class="fas fa-check-circle"></i>
-                                        <span>Data Completeness</span>
+                                        <span class="validation-title">Data Completeness</span>
+                                        <span class="validation-status status-pass">PASSED</span>
                                     </div>
-                                    <div class="validation-status">
-                                        <span class="status success">PASSED</span>
-                                        <span>98% complete</span>
+                                    <div class="validation-details">
+                                        98% complete - All required fields populated
                                     </div>
                                 </div>
-                                <div class="validation-card success">
+                                <div class="validation-card">
                                     <div class="validation-header">
-                                        <i class="fas fa-check-circle"></i>
-                                        <span>Data Consistency</span>
+                                        <span class="validation-title">Data Consistency</span>
+                                        <span class="validation-status status-pass">PASSED</span>
                                     </div>
-                                    <div class="validation-status">
-                                        <span class="status success">PASSED</span>
-                                        <span>No inconsistencies</span>
+                                    <div class="validation-details">
+                                        No inconsistencies detected across objects
                                     </div>
                                 </div>
-                                <div class="validation-card warning">
+                                <div class="validation-card">
                                     <div class="validation-header">
-                                        <i class="fas fa-exclamation-triangle"></i>
-                                        <span>Data Accuracy</span>
+                                        <span class="validation-title">Data Accuracy</span>
+                                        <span class="validation-status status-warning">WARNING</span>
                                     </div>
-                                    <div class="validation-status">
-                                        <span class="status warning">WARNING</span>
-                                        <span>3 potential issues</span>
+                                    <div class="validation-details">
+                                        3 potential data accuracy issues detected
                                     </div>
                                 </div>
                             </div>
@@ -147,34 +138,31 @@
                         <div class="validation-section">
                             <h5>Schema Compatibility</h5>
                             <div class="validation-grid">
-                                <div class="validation-card success">
+                                <div class="validation-card">
                                     <div class="validation-header">
-                                        <i class="fas fa-check-circle"></i>
-                                        <span>Field Type Matching</span>
+                                        <span class="validation-title">Field Type Matching</span>
+                                        <span class="validation-status status-pass">PASSED</span>
                                     </div>
-                                    <div class="validation-status">
-                                        <span class="status success">PASSED</span>
-                                        <span>245/245 fields compatible</span>
+                                    <div class="validation-details">
+                                        245/245 fields compatible with target schema
                                     </div>
                                 </div>
-                                <div class="validation-card success">
+                                <div class="validation-card">
                                     <div class="validation-header">
-                                        <i class="fas fa-check-circle"></i>
-                                        <span>Relationship Integrity</span>
+                                        <span class="validation-title">Relationship Integrity</span>
+                                        <span class="validation-status status-pass">PASSED</span>
                                     </div>
-                                    <div class="validation-status">
-                                        <span class="status success">PASSED</span>
-                                        <span>All relationships preserved</span>
+                                    <div class="validation-details">
+                                        All relationships preserved and validated
                                     </div>
                                 </div>
-                                <div class="validation-card success">
+                                <div class="validation-card">
                                     <div class="validation-header">
-                                        <i class="fas fa-check-circle"></i>
-                                        <span>Business Logic</span>
+                                        <span class="validation-title">Business Logic</span>
+                                        <span class="validation-status status-pass">PASSED</span>
                                     </div>
-                                    <div class="validation-status">
-                                        <span class="status success">PASSED</span>
-                                        <span>Rules transformed successfully</span>
+                                    <div class="validation-details">
+                                        Rules transformed successfully
                                     </div>
                                 </div>
                             </div>
@@ -184,34 +172,31 @@
                         <div class="validation-section">
                             <h5>Performance & Limits</h5>
                             <div class="validation-grid">
-                                <div class="validation-card success">
+                                <div class="validation-card">
                                     <div class="validation-header">
-                                        <i class="fas fa-check-circle"></i>
-                                        <span>API Limits</span>
+                                        <span class="validation-title">API Limits</span>
+                                        <span class="validation-status status-pass">PASSED</span>
                                     </div>
-                                    <div class="validation-status">
-                                        <span class="status success">PASSED</span>
-                                        <span>Within safe limits</span>
+                                    <div class="validation-details">
+                                        Within safe limits for all operations
                                     </div>
                                 </div>
-                                <div class="validation-card success">
+                                <div class="validation-card">
                                     <div class="validation-header">
-                                        <i class="fas fa-check-circle"></i>
-                                        <span>Storage Requirements</span>
+                                        <span class="validation-title">Storage Requirements</span>
+                                        <span class="validation-status status-pass">PASSED</span>
                                     </div>
-                                    <div class="validation-status">
-                                        <span class="status success">PASSED</span>
-                                        <span>Adequate space available</span>
+                                    <div class="validation-details">
+                                        Adequate space available in target org
                                     </div>
                                 </div>
-                                <div class="validation-card warning">
+                                <div class="validation-card">
                                     <div class="validation-header">
-                                        <i class="fas fa-exclamation-triangle"></i>
-                                        <span>Processing Time</span>
+                                        <span class="validation-title">Processing Time</span>
+                                        <span class="validation-status status-warning">WARNING</span>
                                     </div>
-                                    <div class="validation-status">
-                                        <span class="status warning">WARNING</span>
-                                        <span>45 min estimated</span>
+                                    <div class="validation-details">
+                                        45 minutes estimated - Consider off-peak execution
                                     </div>
                                 </div>
                             </div>
@@ -224,33 +209,18 @@
                         <div class="risk-matrix">
                             <div class="risk-item low">
                                 <div class="risk-level">LOW RISK</div>
-                                <div class="risk-details">
-                                    <strong>Data Quality Issues</strong>
-                                    <span>3 minor data inconsistencies detected</span>
-                                </div>
-                                <div class="risk-action">
-                                    <button class="btn btn-secondary btn-xs">Review</button>
-                                </div>
+                                <div class="risk-count">3</div>
+                                <div class="risk-description">Minor data inconsistencies</div>
                             </div>
                             <div class="risk-item medium">
                                 <div class="risk-level">MEDIUM RISK</div>
-                                <div class="risk-details">
-                                    <strong>Custom Logic Dependencies</strong>
-                                    <span>8 workflow rules require verification</span>
-                                </div>
-                                <div class="risk-action">
-                                    <button class="btn btn-secondary btn-xs">Verify</button>
-                                </div>
+                                <div class="risk-count">8</div>
+                                <div class="risk-description">Custom logic dependencies</div>
                             </div>
                             <div class="risk-item high">
                                 <div class="risk-level">HIGH RISK</div>
-                                <div class="risk-details">
-                                    <strong>Complex Transformations</strong>
-                                    <span>Subscription to Asset conversion needs testing</span>
-                                </div>
-                                <div class="risk-action">
-                                    <button class="btn btn-secondary btn-xs">Test</button>
-                                </div>
+                                <div class="risk-count">1</div>
+                                <div class="risk-description">Complex transformations</div>
                             </div>
                         </div>
                     </div>
@@ -260,44 +230,20 @@
                         <h4><i class="fas fa-vial"></i> Test Scenarios</h4>
                         <div class="scenario-grid">
                             <div class="scenario-card">
-                                <div class="scenario-header">
-                                    <i class="fas fa-receipt"></i>
-                                    <span>Quote Generation</span>
-                                </div>
-                                <div class="scenario-details">
-                                    <div class="scenario-step">
-                                        <span>Create test product</span>
-                                        <span class="status success">PASSED</span>
-                                    </div>
-                                    <div class="scenario-step">
-                                        <span>Generate quote with pricing</span>
-                                        <span class="status success">PASSED</span>
-                                    </div>
-                                    <div class="scenario-step">
-                                        <span>Validate totals and discounts</span>
-                                        <span class="status pending">PENDING</span>
-                                    </div>
-                                </div>
+                                <div class="scenario-name">Quote Generation</div>
+                                <div class="scenario-result">3/4 steps passed</div>
                             </div>
                             <div class="scenario-card">
-                                <div class="scenario-header">
-                                    <i class="fas fa-file-contract"></i>
-                                    <span>Contract Creation</span>
-                                </div>
-                                <div class="scenario-details">
-                                    <div class="scenario-step">
-                                        <span>Convert quote to contract</span>
-                                        <span class="status success">PASSED</span>
-                                    </div>
-                                    <div class="scenario-step">
-                                        <span>Validate contract terms</span>
-                                        <span class="status pending">PENDING</span>
-                                    </div>
-                                    <div class="scenario-step">
-                                        <span>Test renewal logic</span>
-                                        <span class="status pending">PENDING</span>
-                                    </div>
-                                </div>
+                                <div class="scenario-name">Contract Creation</div>
+                                <div class="scenario-result">1/3 steps passed</div>
+                            </div>
+                            <div class="scenario-card">
+                                <div class="scenario-name">Product Configuration</div>
+                                <div class="scenario-result">4/4 steps passed</div>
+                            </div>
+                            <div class="scenario-card">
+                                <div class="scenario-name">Pricing Calculation</div>
+                                <div class="scenario-result">2/2 steps passed</div>
                             </div>
                         </div>
                     </div>
@@ -321,7 +267,7 @@
                         <div class="validation-summary">
                             <div class="summary-item">
                                 <strong>Overall Status:</strong>
-                                <span class="status success">READY FOR MIGRATION</span>
+                                <span class="status-badge status-completed">READY FOR MIGRATION</span>
                             </div>
                             <div class="summary-item">
                                 <strong>Confidence Score:</strong>
@@ -349,6 +295,14 @@
             </div>
         </div>
     </section>
+
+    <!-- Processing Overlay -->
+    <div id="processing-overlay" class="processing-overlay">
+        <div class="processing-content">
+            <div class="processing-spinner"></div>
+            <p class="processing-message">Running validation checks...</p>
+        </div>
+    </div>
 
     <footer>
         <div class="container">
@@ -404,6 +358,9 @@
         function proceedToExecution() {
             const projectId = new URLSearchParams(window.location.search).get('projectId') || 'pricing-rules-migration';
             
+            // TODO: Show processing overlay here
+            RevNova.showProcessing('Final validation checks...');
+            
             // Save validation data to localStorage
             const validationData = {
                 projectId: projectId,
@@ -416,23 +373,47 @@
             localStorage.setItem(`migration_${projectId}_validation`, JSON.stringify(validationData));
             localStorage.setItem(`migration_${projectId}_currentStep`, 'execute');
             
-            window.location.href = `migration-execute.html?projectId=${projectId}`;
+            setTimeout(() => {
+                // TODO: Hide processing overlay here
+                RevNova.hideProcessing();
+                window.location.href = `migration-execute.html?projectId=${projectId}`;
+            }, 1500);
         }
 
         function runFullValidation() {
-            alert('Running comprehensive validation checks...');
+            RevNova.showProcessing('Running comprehensive validation checks...');
+            
+            setTimeout(() => {
+                RevNova.hideProcessing();
+                RevNova.showToast('Validation completed successfully!', 'success');
+            }, 3000);
         }
 
         function generateValidationReport() {
-            alert('Generating validation report...');
+            RevNova.showProcessing('Generating validation report...');
+            
+            setTimeout(() => {
+                RevNova.hideProcessing();
+                RevNova.showToast('Validation report generated!', 'success');
+            }, 2000);
         }
 
         function fixIssues() {
-            alert('Attempting to auto-fix validation issues...');
+            RevNova.showProcessing('Attempting to auto-fix validation issues...');
+            
+            setTimeout(() => {
+                RevNova.hideProcessing();
+                RevNova.showToast('Auto-fix completed!', 'success');
+            }, 2500);
         }
 
         function requestApproval() {
-            alert('Approval request sent to stakeholders...');
+            RevNova.showProcessing('Sending approval request...');
+            
+            setTimeout(() => {
+                RevNova.hideProcessing();
+                RevNova.showToast('Approval request sent to stakeholders!', 'success');
+            }, 1500);
         }
 
         // Load project data
@@ -448,6 +429,6 @@
             }
         });
     </script>
+    <script src="script.js"></script>
 </body>
 </html>
-[file content end]
