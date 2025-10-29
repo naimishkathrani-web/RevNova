@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>RevNova — Field Mapping</title>
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    .mapping-table{width:100%;border-collapse:collapse;margin-bottom:1.5rem}
+    .mapping-table th,.mapping-table td{border:1px solid #ddd;padding:8px;font-size:13px}
+    .mapping-table th{background:#f0f6fb}
+    .sheet-title{margin-top:1.5rem}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Field Mapping — CPQ → RCA (Generated)</h1>
+    <p>This page contains the mapping rows produced by the mapping generator script. It is intended as an easy-to-read developer reference. Use the business rules referenced in the Functional documents for edge-case logic.</p>
+
+    <h2 class="sheet-title">WS1 — Product Catalog</h2>
+    <table class="mapping-table">
+      <thead>
+        <tr>
+          <th>Source Object</th><th>Source Field</th><th>Source API</th>
+          <th>Target Object</th><th>Target Field</th><th>Mapping Type</th>
+          <th>Complexity</th><th>Transform Notes</th><th>DQ Check</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Product2</td><td>Name</td><td>Name</td><td>vlocity_cmt__Product__c</td><td>Name</td><td>Direct</td><td>Simple</td><td></td><td>Required</td></tr>
+        <tr><td>Product2</td><td>Product Code</td><td>ProductCode</td><td>vlocity_cmt__Product__c</td><td>vlocity_cmt__ProductCode__c</td><td>Direct</td><td>Simple</td><td></td><td>Required</td></tr>
+        <tr><td>Pricebook2</td><td>Name</td><td>Name</td><td>Pricebook</td><td>Name</td><td>Direct</td><td>Simple</td><td></td><td>Optional</td></tr>
+        <tr><td>PricebookEntry</td><td>UnitPrice</td><td>UnitPrice</td><td>vlocity_cmt__Price__c</td><td>vlocity_cmt__PriceValue__c</td><td>Transform</td><td>Medium</td><td>Validate currency and price dimensions</td><td>Optional</td></tr>
+      </tbody>
+    </table>
+
+    <h2 class="sheet-title">WS2 — Quotes</h2>
+    <table class="mapping-table">
+      <thead>
+        <tr><th>Source Object</th><th>Source Field</th><th>Source API</th><th>Target Object</th><th>Target Field</th><th>Mapping Type</th><th>Complexity</th><th>Transform Notes</th><th>DQ Check</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>SBQQ__Quote__c</td><td>Name</td><td>Name</td><td>Quote</td><td>Name</td><td>Direct</td><td>Simple</td><td></td><td>Required</td></tr>
+        <tr><td>SBQQ__QuoteLine__c</td><td>SBQQ__NetPrice__c</td><td>SBQQ__NetPrice__c</td><td>QuoteLineItem</td><td>UnitPrice</td><td>Transform</td><td>Medium</td><td>Preserve manual adjustments as Discount fields</td><td>Optional</td></tr>
+      </tbody>
+    </table>
+
+    <h2 class="sheet-title">WS3 — Contracts & Assets</h2>
+    <table class="mapping-table">
+      <thead>
+        <tr><th>Source Object</th><th>Source Field</th><th>Source API</th><th>Target Object</th><th>Target Field</th><th>Mapping Type</th><th>Complexity</th><th>Transform Notes</th><th>DQ Check</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>SBQQ__Subscription__c</td><td>SBQQ__StartDate__c</td><td>SBQQ__StartDate__c</td><td>Asset</td><td>InstallDate</td><td>Direct</td><td>Simple</td><td></td><td>Optional</td></tr>
+        <tr><td>Contract</td><td>ContractNumber</td><td>ContractNumber</td><td>Contract</td><td>ContractNumber</td><td>Direct</td><td>Simple</td><td></td><td>Optional</td></tr>
+      </tbody>
+    </table>
+
+    <h2 class="sheet-title">WS4 — Billing</h2>
+    <table class="mapping-table">
+      <thead>
+        <tr><th>Source Object</th><th>Source Field</th><th>Source API</th><th>Target Object</th><th>Target Field</th><th>Mapping Type</th><th>Complexity</th><th>Transform Notes</th><th>DQ Check</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Invoice</td><td>InvoiceNumber</td><td>InvoiceNumber</td><td>Invoice</td><td>InvoiceNumber</td><td>Direct</td><td>Simple</td><td></td><td>Optional</td></tr>
+      </tbody>
+    </table>
+
+    <h2 class="sheet-title">WS5 — RCA Data Model</h2>
+    <table class="mapping-table">
+      <thead>
+        <tr><th>Source Object</th><th>Source Field</th><th>Source API</th><th>Target Object</th><th>Target Field</th><th>Mapping Type</th><th>Complexity</th><th>Transform Notes</th><th>DQ Check</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>vlocity_cmt__Product__c</td><td>vlocity_cmt__ProductCode__c</td><td>vlocity_cmt__ProductCode__c</td><td>vlocity_cmt__Product__c</td><td>vlocity_cmt__ProductCode__c</td><td>Direct</td><td>Simple</td><td></td><td>Optional</td></tr>
+      </tbody>
+    </table>
+
+    <h2 class="sheet-title">Value Maps</h2>
+    <table class="mapping-table">
+      <thead><tr><th>Map Name</th><th>Source Value</th><th>Target Value</th></tr></thead>
+      <tbody>
+        <tr><td>BillingFrequency</td><td>Monthly</td><td>MONTHLY</td></tr>
+        <tr><td>BillingFrequency</td><td>Quarterly</td><td>QUARTERLY</td></tr>
+        <tr><td>BillingFrequency</td><td>Annually</td><td>YEARLY</td></tr>
+        <tr><td>SubscriptionType</td><td>One-Time</td><td>ONE_TIME</td></tr>
+        <tr><td>SubscriptionType</td><td>Subscription</td><td>RECURRING</td></tr>
+      </tbody>
+    </table>
+
+    <h2 class="sheet-title">API References (sample)</h2>
+    <table class="mapping-table">
+      <thead><tr><th>API Name</th><th>Endpoint</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>CPQ Read Quote</td><td>GET /services/apexrest/cpq/v1/quote/read/{quoteId}</td><td>Use to export in-flight quotes.</td></tr>
+        <tr><td>EPC Create Product</td><td>POST /services/apexrest/epc/v1/products</td><td>Create product in Revenue Cloud EPC.</td></tr>
+      </tbody>
+    </table>
+
+    <p class="sheet-title">Notes: This mapping page is derived from the provided script. For any complex business rule referenced in the functional pages, see the Business Rules section in the relevant Functional Requirements document (each field row includes a Business Rule reference where applicable).</p>
+  </div>
+</body>
+</html>

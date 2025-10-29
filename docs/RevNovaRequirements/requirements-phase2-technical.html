@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Phase 2 — Technical Requirements (LLD)</title>
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    .tech-table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:13px}
+    .tech-table th,.tech-table td{border:1px solid #ddd;padding:8px;text-align:left}
+    .tech-table th{background:#e3f2fd;font-weight:600}
+    code{background:#f5f5f5;padding:2px 6px;border-radius:3px}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Phase 2 — Technical Requirements (LLD)</h1>
+    <p><strong>Scope:</strong> WS2 — Quotes & Quote Lines (CPQ → Revenue Cloud migration). This document provides low-level design for APIs, database schema, transformation rules, and rollback procedures.</p>
+    <p>See also: <a href="requirements-phase2-functional.html">Phase 2 Functional Requirements</a> | <a href="requirements-mapping.html#WS2">WS2 Mapping Details</a></p>
+
+    <h2>1. API Endpoints</h2>
+    <h3>Quote Management APIs</h3>
+    <table class="tech-table">
+      <thead>
+        <tr><th>Endpoint</th><th>Method</th><th>Purpose</th><th>Request Body (sample)</th><th>Response</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>/api/v1/quotes</code></td>
+          <td>POST</td>
+          <td>Create new quote</td>
+          <td><code>{"accountId": "001...", "name": "Q-2024-001"}</code></td>
+          <td><code>{"quoteId": "0Q0...", "status": "Draft"}</code></td>
+        </tr>
+        <tr>
+          <td><code>/api/v1/quotes/{id}</code></td>
+          <td>GET</td>
+          <td>Retrieve quote details</td>
+          <td>—</td>
+          <td>Quote JSON with line items</td>
+        </tr>
+        <tr>
+          <td><code>/api/v1/quotes/{id}/lines</code></td>
+          <td>POST</td>
+          <td>Add quote line item</td>
+          <td><code>{"productId": "01t...", "quantity": 5, "unitPrice": 100}</code></td>
+          <td><code>{"lineId": "0QL...", "total": 500}</code></td>
+        </tr>
+        <tr>
+          <td><code>/api/v1/quotes/{id}/submit</code></td>
+          <td>PATCH</td>
+          <td>Submit quote for approval</td>
+          <td><code>{"notes": "Ready for review"}</code></td>
+          <td><code>{"status": "Pending Approval"}</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>2. Database Schema (Staging & Target)</h2>
+    <h3>Staging Tables (STG1/STG2 for Quote Data)</h3>
+    <table class="tech-table">
+      <thead>
+        <tr><th>Table</th><th>Columns</th><th>Purpose</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>STG1_VANILLA_QUOTE</code></td>
+          <td><code>quote_id, source_quote_id, account_id, name, status, total_price, created_date</code></td>
+          <td>Raw quote data from CPQ</td>
+        </tr>
+        <tr>
+          <td><code>STG1_VANILLA_QUOTELINE</code></td>
+          <td><code>line_id, source_line_id, quote_id, product_id, quantity, unit_price, discount_pct, net_price</code></td>
+          <td>Raw quote line data from CPQ (SBQQ__QuoteLine__c)</td>
+        </tr>
+        <tr>
+          <td><code>STG2_VANILLA_QUOTE</code></td>
+          <td>Same as STG1 + validation flags (<code>is_valid, error_msg</code>)</td>
+          <td>Transformed and validated quotes</td>
+        </tr>
+        <tr>
+          <td><code>STG2_VANILLA_QUOTELINE</code></td>
+          <td>Same as STG1 + <code>calculated_discount, is_valid</code></td>
+          <td>Transformed quote lines with calculated discounts</td>
+        </tr>
+        <tr>
+          <td><code>STG1_CUSTOM_DATA</code></td>
+          <td><code>record_id, object_type, field_name, field_value</code></td>
+          <td>EAV for custom CPQ fields</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Target Tables (Revenue Cloud / Salesforce)</h3>
+    <table class="tech-table">
+      <thead>
+        <tr><th>Object</th><th>Key Fields</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>Quote</code></td>
+          <td><code>Id, Name, AccountId, OpportunityId, Status, TotalPrice</code></td>
+          <td>Standard Salesforce Quote object</td>
+        </tr>
+        <tr>
+          <td><code>QuoteLineItem</code></td>
+          <td><code>Id, QuoteId, Product2Id, Quantity, UnitPrice, Discount, TotalPrice</code></td>
+          <td>Standard Quote Line Item</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>3. Field Mapping & Transformations</h2>
+    <p>Complete field mapping is documented in <a href="requirements-mapping.html#WS2">WS2 — Quotes</a>. Key transformations:</p>
+    <table class="tech-table">
+      <thead>
+        <tr><th>Source Field</th><th>Target Field</th><th>Transform Rule</th><th>DQ Check</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>SBQQ__Quote__c.Name</code></td>
+          <td><code>Quote.Name</code></td>
+          <td>Direct copy</td>
+          <td>Required, max 255 chars</td>
+        </tr>
+        <tr>
+          <td><code>SBQQ__QuoteLine__c.SBQQ__NetPrice__c</code></td>
+          <td><code>QuoteLineItem.UnitPrice</code></td>
+          <td>Copy NetPrice; calculate <code>Discount% = (ListPrice - NetPrice) / ListPrice * 100</code></td>
+          <td>NetPrice must be &gt;= 0</td>
+        </tr>
+        <tr>
+          <td><code>SBQQ__QuoteLine__c.SBQQ__Quantity__c</code></td>
+          <td><code>QuoteLineItem.Quantity</code></td>
+          <td>Direct copy</td>
+          <td>Must be &gt; 0</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>4. Transformation Logic (Python Pseudo-Code)</h2>
+    <pre><code>def transform_quote_line(source_line):
+    """Transform CPQ quote line to standard QuoteLineItem"""
+    list_price = source_line['SBQQ__ListPrice__c'] or source_line['UnitPrice']
+    net_price = source_line['SBQQ__NetPrice__c']
+    
+    # Calculate discount percentage
+    if list_price > 0:
+        discount_pct = ((list_price - net_price) / list_price) * 100
+    else:
+        discount_pct = 0
+    
+    target_line = {
+        'QuoteId': get_mapped_quote_id(source_line['SBQQ__Quote__c']),
+        'Product2Id': get_mapped_product_id(source_line['SBQQ__Product__c']),
+        'Quantity': source_line['SBQQ__Quantity__c'],
+        'UnitPrice': net_price,
+        'Discount': discount_pct,
+        'TotalPrice': source_line['SBQQ__Quantity__c'] * net_price
+    }
+    
+    return target_line
+</code></pre>
+
+    <h2>5. Execution Flow</h2>
+    <ol>
+      <li><strong>Extract:</strong> Pull quote and quote line data from CPQ via SOQL or Bulk API → write to <code>STG1_VANILLA_QUOTE</code> and <code>STG1_VANILLA_QUOTELINE</code>.</li>
+      <li><strong>Validate:</strong> Run DQ checks (required fields, price ranges, account references). Flag invalid records in <code>is_valid</code> column.</li>
+      <li><strong>Transform:</strong> Apply transformation rules (discount calculation, value mapping) → write to <code>STG2_VANILLA_*</code>.</li>
+      <li><strong>Load:</strong> Batch insert into Salesforce <code>Quote</code> and <code>QuoteLineItem</code> via Bulk API 2.0.</li>
+      <li><strong>ID Mapping:</strong> Store <code>source_quote_id → target_quote_id</code> in <code>ID_MAPPING</code> table for relationship resolution.</li>
+    </ol>
+
+    <h2>6. Rollback & Retry</h2>
+    <ul>
+      <li><strong>Rollback:</strong> Delete all quotes created in the batch using the <code>batch_id</code> stored in the execution log. Use Salesforce Bulk API delete with batch IDs from <code>ID_MAPPING</code>.</li>
+      <li><strong>Retry:</strong> Re-process failed batches by querying <code>STG2_VANILLA_QUOTE WHERE is_valid = false</code>, fixing data issues, and re-running transform + load.</li>
+      <li><strong>Idempotency:</strong> Check <code>ID_MAPPING</code> before insert; skip if source record already has a target ID.</li>
+    </ul>
+
+    <h2>7. Test Scenarios</h2>
+    <table class="tech-table">
+      <thead>
+        <tr><th>Scenario</th><th>Input</th><th>Expected Output</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Quote with discount</td>
+          <td>Quote with NetPrice &lt; ListPrice</td>
+          <td>Discount% calculated correctly, QuoteLineItem created</td>
+        </tr>
+        <tr>
+          <td>Missing account reference</td>
+          <td>Quote with invalid AccountId</td>
+          <td>Validation failure, error logged in STG2, quote not loaded</td>
+        </tr>
+        <tr>
+          <td>Batch rollback</td>
+          <td>Simulate failure mid-batch</td>
+          <td>All quotes in batch deleted via rollback API, batch marked failed in log</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <hr>
+    <p><em>For UI/UX requirements and business rules, see <a href="requirements-phase2-functional.html">Phase 2 Functional Requirements</a>.</em></p>
+  </div>
+</body>
+</html>

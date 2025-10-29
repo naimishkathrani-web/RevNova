@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Migration - Mapping</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <header class="container">
+        <a href="../index.html" class="logo">RevNova</a>
+    </header>
+    <main class="container wizard-step">
+        <h1>Field Mapping</h1>
+        <p>Map source fields to target objects and fields. Use AI suggestions or create custom transforms.</p>
+        <div class="mapping-panel">
+            <div class="mapping-toolbar">
+                <button class="btn">Apply AI Suggestions</button>
+                <button class="btn btn-secondary">Validate</button>
+                <button class="btn btn-primary" onclick="proceedToTransform()">Proceed to Transform</button>
+            </div>
+            <div class="mapping-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Source Field</th>
+                            <th>Target Object</th>
+                            <th>Target Field</th>
+                            <th>Mapping Type</th>
+                            <th>Transform</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>AccountNumber</td>
+                            <td>Account</td>
+                            <td>AccountNumber</td>
+                            <td>Direct</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>BillingCountry</td>
+                            <td>Account</td>
+                            <td>BillingCountry</td>
+                            <td>ValueMap</td>
+                            <td>Map country codes</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+    <script src="../script.js"></script>
+    <script>
+        function proceedToTransform(){
+            localStorage.setItem('migration_demo_mapping_valid', true);
+            window.location.href = 'migration-transform.html';
+        }
+    </script>
+</body>
+</html>

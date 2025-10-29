@@ -1,0 +1,6 @@
+{
+  // Make sure workspace recommendations are shown and installed manually or via script
+  "extensions.ignoreRecommendations": false,
+  // Keep installed extensions up-to-date automatically
+  "extensions.autoUpdate": true
+}

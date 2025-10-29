@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Phase 1 — Functional Requirements</title>
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    table {width:100%; border-collapse:collapse; margin-bottom:1rem}
+    th,td{border:1px solid #ddd;padding:8px}
+    th{background:#f7fbff}
+    .rule-id{font-weight:bold;color:#0b63c4}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Phase 1 — Functional Requirements (SFDC CPQ → Revenue Cloud)</h1>
+    <p>Scope: Product & Catalog, Quotes, Subscriptions → Assets, Pricing & Billing basics. This document lists page-level fields, UI control, validation and references to Business Rules.</p>
+
+    <h2>Pages covered</h2>
+    <ul>
+      <li>Connect (connection wizard)</li>
+      <li>Analyze (schema discovery)</li>
+      <li>Map (field mapping editor)</li>
+      <li>Transform (rule application)</li>
+      <li>Validate (pre-migration checks)</li>
+      <li>Execute (run & rollback)</li>
+      <li>Test (post-migration verification)</li>
+    </ul>
+
+    <h2>Field-level tables (selected / prioritized)</h2>
+
+    <h3>Connect — Connection Form</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Field</th><th>Control</th><th>Data Type</th><th>Required</th><th>Validation</th><th>Placeholder / Tooltip</th><th>Example</th><th>Business Rule</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Environment Type</td><td>select</td><td>enum</td><td>yes</td><td>one of [production,sandbox,developer,scratch]</td><td>Which environment is this?</td><td>Sandbox</td><td>BR-CT-01</td></tr>
+        <tr><td>Salesforce API Version</td><td>select</td><td>string</td><td>yes</td><td>matches allowed versions</td><td>API version used to call instance</td><td>58.0</td><td></td></tr>
+        <tr><td>Instance URL</td><td>url</td><td>url</td><td>yes</td><td>valid URL, host must be salesforce domain</td><td>Full instance URL</td><td>https://example.my.salesforce.com</td><td>BR-CT-02</td></tr>
+        <tr><td>Username</td><td>text</td><td>string</td><td>yes</td><td>email format</td><td>User for integration</td><td>integration.user@corp.com</td><td>BR-CT-03</td></tr>
+        <tr><td>Password</td><td>password</td><td>string</td><td>yes</td><td>min 8 chars</td><td>Stored encrypted</td><td>••••••••</td><td>BR-CT-04</td></tr>
+        <tr><td>Security Token</td><td>text</td><td>string</td><td>no</td><td>alphanumeric</td><td>Required for username/password auth</td><td>ABC123</td><td></td></tr>
+      </tbody>
+    </table>
+
+    <h3>Analyze — Schema Discovery</h3>
+    <p>Read-only results page — fields below are display-only but included to document expected outputs.</p>
+    <table>
+      <thead><tr><th>Field</th><th>Control</th><th>Type</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>ProjectId</td><td>label</td><td>string</td><td>Unique identifier for migration project</td></tr>
+        <tr><td>Detected Objects</td><td>list/grid</td><td>array</td><td>Counts per object (records & fields)</td></tr>
+        <tr><td>Custom Fields Count</td><td>number</td><td>integer</td><td>Used to estimate complexity</td></tr>
+        <tr><td>Readiness Score</td><td>progress</td><td>percentage</td><td>Aggregated DQ + Logic risk</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Map — Field Mapping Editor (selected rows)</h3>
+    <table>
+      <thead>
+        <tr><th>Source Field</th><th>Source API</th><th>Target Field</th><th>Target API</th><th>Control</th><th>Validation</th><th>Business Rule</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Name</td><td>Product2.Name</td><td>Name</td><td>vlocity_cmt__Product__c.Name</td><td>auto-map / manual edit</td><td>non-empty</td><td>BR-MAP-01</td></tr>
+        <tr><td>ProductCode</td><td>Product2.ProductCode</td><td>vlocity_cmt__ProductCode__c</td><td>vlocity_cmt__Product__c.vlocity_cmt__ProductCode__c</td><td>auto-map</td><td>regex [A-Z0-9\-]+</td><td>BR-MAP-02</td></tr>
+        <tr><td>List Price</td><td>Product2.SBQQ__ListPrice__c</td><td>vlocity_cmt__Price__c.vlocity_cmt__PriceValue__c</td><td>numeric, currency</td><td>transform</td><td>currency check</td><td>BR-MAP-03</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Business Rules</h3>
+    <p>Rules referenced from field tables above. Each rule has an ID that the UI and Technical pages reference.</p>
+    <table>
+      <thead><tr><th>ID</th><th>Title</th><th>Detailed Rule</th><th>Applicability</th></tr></thead>
+      <tbody>
+        <tr><td class="rule-id">BR-CT-01</td><td>Environment selection</td><td>Environment must be one of supported environments; production requires MFA admin confirmation.</td><td>Connect</td></tr>
+        <tr><td class="rule-id">BR-CT-02</td><td>Instance URL validation</td><td>Instance URL must resolve and accept API calls; reject if non-Salesforce domain.</td><td>Connect</td></tr>
+        <tr><td class="rule-id">BR-MAP-01</td><td>Product Name non-empty</td><td>Reject mapping for Product if Name blank; user must supply fallback or skip record.</td><td>Mapping / DQ</td></tr>
+        <tr><td class="rule-id">BR-MAP-02</td><td>Product Code format</td><td>Normalize ProductCode to uppercase and strip spaces; if blank, flag for manual review.</td><td>Mapping / Transform</td></tr>
+        <tr><td class="rule-id">BR-MAP-03</td><td>Price currency validation</td><td>Ensure currency ISO matches target; if mismatch, attempt conversion using default rate or flag.</td><td>Transform</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Notes and UX</h3>
+    <ul>
+      <li>Every field table includes a Business Rule ID when logic is non-trivial — link from UI should open the rule detail.</li>
+      <li>All form data saved temporarily in the browser during authoring and persisted to FIELD_MAPPINGS via API when saved.</li>
+    </ul>
+
+  </div>
+</body>
+</html>

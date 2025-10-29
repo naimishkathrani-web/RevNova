@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Phase 5 — Functional Requirements</title>
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    .field-table{width:100%;border-collapse:collapse;margin:1rem 0}
+    .field-table th,.field-table td{border:1px solid #ddd;padding:8px;font-size:13px;text-align:left}
+    .field-table th{background:#f0f6fb;font-weight:600}
+    .business-rule{background:#fffbea;border-left:4px solid #ffc107;padding:12px;margin:1rem 0}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Phase 5 — Functional Requirements (RCA Data Model)</h1>
+    <p><strong>Scope:</strong> WS5 — Revenue Cloud Advanced (RCA) Data Model. This phase handles advanced product catalog structures, product hierarchies, and RCA-specific configurations.</p>
+    <p>See also: <a href="requirements-mapping.html#WS5">WS5 Mapping</a> | <a href="requirements-phase5-technical.html">Phase 5 Technical LLD</a></p>
+
+    <h2>Page: Product Catalog Manager (RCA)</h2>
+    <p>Manage Revenue Cloud product catalog with advanced attributes.</p>
+
+    <h3>Field-Level Requirements</h3>
+    <table class="field-table">
+      <thead>
+        <tr>
+          <th>Field Name</th>
+          <th>UI Control</th>
+          <th>Data Type</th>
+          <th>Required</th>
+          <th>Validation</th>
+          <th>Placeholder/Tooltip</th>
+          <th>Example</th>
+          <th>Business Rule</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Product Code</td>
+          <td>Text Input</td>
+          <td>String (100)</td>
+          <td>Yes</td>
+          <td>Unique, alphanumeric</td>
+          <td>SKU or product code</td>
+          <td>PROD-RCA-001</td>
+          <td>BR-P01</td>
+        </tr>
+        <tr>
+          <td>Product Name</td>
+          <td>Text Input</td>
+          <td>String (255)</td>
+          <td>Yes</td>
+          <td>Max 255 chars</td>
+          <td>Product display name</td>
+          <td>Enterprise Subscription</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td>Product Type</td>
+          <td>Dropdown</td>
+          <td>Picklist</td>
+          <td>Yes</td>
+          <td>Subscription | One-Time | Bundle</td>
+          <td>Product type</td>
+          <td>Subscription</td>
+          <td>BR-P02</td>
+        </tr>
+        <tr>
+          <td>Parent Product</td>
+          <td>Lookup</td>
+          <td>Reference (Product)</td>
+          <td>No</td>
+          <td>For bundle products</td>
+          <td>Parent product (if bundle)</td>
+          <td>Bundle-A</td>
+          <td>—</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Business Rules</h3>
+    <div class="business-rule">
+      <strong>BR-P01: Product Code Mapping</strong><br>
+      When migrating from CPQ: <code>vlocity_cmt__Product__c.vlocity_cmt__ProductCode__c</code> maps directly to <code>vlocity_cmt__Product__c.vlocity_cmt__ProductCode__c</code> (same object, data quality validation).
+    </div>
+    <div class="business-rule">
+      <strong>BR-P02: Product Type Value Mapping</strong><br>
+      CPQ subscription type values map using <a href="requirements-mapping.html#value-maps">Value Maps</a>: One-Time → ONE_TIME, Subscription → RECURRING.
+    </div>
+
+    <hr>
+    <p><em>For complete product catalog mapping, see <a href="requirements-mapping.html#WS5">WS5 — RCA Data Model</a>.</em></p>
+  </div>
+</body>
+</html>

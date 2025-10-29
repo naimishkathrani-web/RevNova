@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Phase 4 — Technical Requirements (LLD)</title>
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    .tech-table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:13px}
+    .tech-table th,.tech-table td{border:1px solid #ddd;padding:8px;text-align:left}
+    .tech-table th{background:#e3f2fd;font-weight:600}
+    code{background:#f5f5f5;padding:2px 6px;border-radius:3px}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Phase 4 — Technical Requirements (LLD)</h1>
+    <p><strong>Scope:</strong> WS4 — Billing (Invoice migration and billing schedule setup). Technical design for invoice APIs, DB schema, and payment tracking.</p>
+    <p>See also: <a href="requirements-phase4-functional.html">Phase 4 Functional Requirements</a> | <a href="requirements-mapping.html#WS4">WS4 Mapping</a></p>
+
+    <h2>1. API Endpoints</h2>
+    <table class="tech-table">
+      <thead><tr><th>Endpoint</th><th>Method</th><th>Purpose</th><th>Request/Response</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>/api/v1/invoices</code></td>
+          <td>POST</td>
+          <td>Create invoice</td>
+          <td>Request: <code>{"accountId", "amount", "dueDate"}</code><br>Response: <code>{"invoiceId", "invoiceNumber"}</code></td>
+        </tr>
+        <tr>
+          <td><code>/api/v1/invoices/{id}/pay</code></td>
+          <td>PATCH</td>
+          <td>Mark invoice as paid</td>
+          <td>Request: <code>{"paymentDate", "amount"}</code><br>Response: <code>{"status": "Paid"}</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>2. Database Schema</h2>
+    <h3>Staging Tables</h3>
+    <table class="tech-table">
+      <thead><tr><th>Table</th><th>Columns</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>STG1_VANILLA_INVOICE</code></td>
+          <td><code>invoice_id, source_id, account_id, invoice_number, amount, invoice_date, due_date, status</code></td>
+          <td>Raw invoice data</td>
+        </tr>
+        <tr>
+          <td><code>STG2_VANILLA_INVOICE</code></td>
+          <td>Same + <code>is_valid, days_until_due</code></td>
+          <td>Validated invoices with calculated fields</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Target Objects</h3>
+    <table class="tech-table">
+      <thead><tr><th>Object</th><th>Key Fields</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>Invoice</code></td>
+          <td><code>Id, InvoiceNumber, AccountId, Amount, InvoiceDate, DueDate, Status</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>3. Field Mapping</h2>
+    <p>See <a href="requirements-mapping.html#WS4">WS4 Mapping</a>. Key transform:</p>
+    <table class="tech-table">
+      <thead><tr><th>Source</th><th>Target</th><th>Transform</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>Invoice.InvoiceNumber</code></td>
+          <td><code>Invoice.InvoiceNumber</code></td>
+          <td>Direct copy</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>4. Execution Flow</h2>
+    <ol>
+      <li>Extract invoice data → STG1</li>
+      <li>Validate dates, amounts → STG2</li>
+      <li>Bulk load Invoice objects</li>
+      <li>Update ID_MAPPING</li>
+    </ol>
+
+    <h2>5. Rollback & Testing</h2>
+    <ul>
+      <li><strong>Rollback:</strong> Delete invoices by batch_id</li>
+      <li><strong>Test:</strong> Validate overdue calculation, payment status updates</li>
+    </ul>
+
+    <hr>
+    <p><em>See <a href="requirements-phase4-functional.html">Phase 4 Functional Requirements</a> for UI and business rules.</em></p>
+  </div>
+</body>
+</html>

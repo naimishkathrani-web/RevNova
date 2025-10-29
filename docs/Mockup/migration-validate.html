@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Migration - Validate</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <header class="container">
+        <a href="../index.html" class="logo">RevNova</a>
+    </header>
+    <main class="container wizard-step">
+        <h1>Validation</h1>
+        <p>Run validation checks against staged data and view errors/warnings.</p>
+        <div class="validation-report">
+            <div class="validation-summary">
+                <p>Rows processed: 1200</p>
+                <p>Errors: 12</p>
+                <p>Warnings: 34</p>
+            </div>
+            <div class="validation-actions">
+                <button class="btn">Download Error CSV</button>
+                <button class="btn btn-primary" onclick="proceedToExecute()">Proceed to Execute</button>
+            </div>
+        </div>
+    </main>
+    <script src="../script.js"></script>
+    <script>
+        function proceedToExecute(){
+            window.location.href = 'migration-execute.html';
+        }
+    </script>
+</body>
+</html>

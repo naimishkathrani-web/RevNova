@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Phase 5 — Technical Requirements (LLD)</title>
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    .tech-table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:13px}
+    .tech-table th,.tech-table td{border:1px solid #ddd;padding:8px;text-align:left}
+    .tech-table th{background:#e3f2fd;font-weight:600}
+    code{background:#f5f5f5;padding:2px 6px;border-radius:3px}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Phase 5 — Technical Requirements (LLD)</h1>
+    <p><strong>Scope:</strong> WS5 — RCA Data Model (product catalog advanced configuration). Technical design for product APIs, hierarchy management, and RCA-specific transforms.</p>
+    <p>See also: <a href="requirements-phase5-functional.html">Phase 5 Functional Requirements</a> | <a href="requirements-mapping.html#WS5">WS5 Mapping</a></p>
+
+    <h2>1. API Endpoints</h2>
+    <table class="tech-table">
+      <thead><tr><th>Endpoint</th><th>Method</th><th>Purpose</th><th>Request/Response</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>/api/v1/products/rca</code></td>
+          <td>POST</td>
+          <td>Create RCA product</td>
+          <td>Request: <code>{"productCode", "name", "type"}</code><br>Response: <code>{"productId"}</code></td>
+        </tr>
+        <tr>
+          <td><code>/api/v1/products/{id}/hierarchy</code></td>
+          <td>GET</td>
+          <td>Get product hierarchy</td>
+          <td>Response: <code>{"parentId", "children": [...]}</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>2. Database Schema</h2>
+    <h3>Staging Tables</h3>
+    <table class="tech-table">
+      <thead><tr><th>Table</th><th>Columns</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>STG1_VANILLA_PRODUCT_RCA</code></td>
+          <td><code>product_id, source_id, product_code, name, type, parent_id</code></td>
+          <td>Raw RCA product data</td>
+        </tr>
+        <tr>
+          <td><code>STG2_VANILLA_PRODUCT_RCA</code></td>
+          <td>Same + <code>is_valid, hierarchy_level</code></td>
+          <td>Validated products with hierarchy info</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Target Objects</h3>
+    <table class="tech-table">
+      <thead><tr><th>Object</th><th>Key Fields</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>vlocity_cmt__Product__c</code></td>
+          <td><code>Id, vlocity_cmt__ProductCode__c, Name, vlocity_cmt__Type__c, vlocity_cmt__ParentProductId__c</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>3. Field Mapping</h2>
+    <p>See <a href="requirements-mapping.html#WS5">WS5 Mapping</a>. Key transform:</p>
+    <table class="tech-table">
+      <thead><tr><th>Source</th><th>Target</th><th>Transform</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>vlocity_cmt__Product__c.vlocity_cmt__ProductCode__c</code></td>
+          <td><code>vlocity_cmt__Product__c.vlocity_cmt__ProductCode__c</code></td>
+          <td>Direct copy (DQ validation)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>4. Execution Flow</h2>
+    <ol>
+      <li>Extract RCA product data → STG1</li>
+      <li>Validate product codes, hierarchy references → STG2</li>
+      <li>Bulk load RCA products (parent products first, then children)</li>
+      <li>Update ID_MAPPING for parent-child relationships</li>
+    </ol>
+
+    <h2>5. Rollback & Testing</h2>
+    <ul>
+      <li><strong>Rollback:</strong> Delete RCA products by batch_id in reverse hierarchy order (children first, then parents)</li>
+      <li><strong>Test:</strong> Validate product hierarchy integrity, product type value mapping</li>
+    </ul>
+
+    <hr>
+    <p><em>See <a href="requirements-phase5-functional.html">Phase 5 Functional Requirements</a> for UI and business rules.</em></p>
+  </div>
+</body>
+</html>

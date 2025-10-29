@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    "ms-python.python",
+    "esbenp.prettier-vscode",
+    "ritwickdey.LiveServer",
+    "dbaeumer.vscode-eslint",
+    "formulahendry.auto-close-tag"
+  ],
+  "unwantedRecommendations": []
+}

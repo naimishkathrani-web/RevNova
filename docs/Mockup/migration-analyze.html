@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Migration - Analyze</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <header class="container">
+        <a href="../index.html" class="logo">RevNova</a>
+    </header>
+    <main class="container wizard-step">
+        <h1>Analyze Source Data</h1>
+        <p>Upload a sample or connect to the source system to run an analysis.</p>
+        <div class="analysis-box">
+            <p>File: sample_accounts.csv</p>
+            <p>Rows: 1200</p>
+            <button class="btn btn-primary" onclick="proceedToMapping()">Proceed to Mapping</button>
+        </div>
+    </main>
+    <script src="../script.js"></script>
+    <script>
+        function proceedToMapping(){
+            // simulate saving analysis
+            localStorage.setItem('migration_demo_analysis', JSON.stringify({rows:1200, file:'sample_accounts.csv'}));
+            window.location.href = 'migration-mapping.html';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Migration - Connect</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <header class="container">
+        <a href="../index.html" class="logo">RevNova</a>
+    </header>
+    <main class="container wizard-step">
+        <h1>Connect to Source / Target</h1>
+        <p>Provide credentials and test connections to source and target systems.</p>
+        <div class="connection-forms">
+            <div class="form-card">
+                <h3>Source System</h3>
+                <label>API URL</label>
+                <input type="text" value="https://api.source-system.example">
+                <label>API Key</label>
+                <input type="password" value="********">
+                <button class="btn btn-primary">Test Connection</button>
+            </div>
+            <div class="form-card">
+                <h3>Target System</h3>
+                <label>Salesforce Instance</label>
+                <input type="text" value="https://login.salesforce.com">
+                <label>Username</label>
+                <input type="text" value="admin@company.com">
+                <button class="btn btn-primary">Test Connection</button>
+            </div>
+        </div>
+    </main>
+    <script src="../script.js"></script>
+</body>
+</html>

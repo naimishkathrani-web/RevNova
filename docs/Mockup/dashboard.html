@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dashboard - RevNova</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="../index.html" class="logo">RevNova</a>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="client-accounts.html">Clients</a></li>
+                    <li><a href="new-migration.html">New Migration</a></li>
+                    <li><a href="migration-report.html">Reports</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main class="container dashboard">
+        <h1>Project Dashboard</h1>
+        <div class="projects-grid">
+            <div class="project-card">
+                <h3>Project: CPQ -> RCA</h3>
+                <p>Status: <span class="status-badge status-inprogress">In Progress</span></p>
+                <p>Owner: John Smith</p>
+                <div class="card-actions">
+                    <a class="btn" href="migration-mapping.html">Open</a>
+                    <a class="btn btn-secondary" href="migration-report.html">Report</a>
+                </div>
+            </div>
+            <div class="project-card">
+                <h3>Project: Legacy -> SFDC</h3>
+                <p>Status: <span class="status-badge status-completed">Completed</span></p>
+                <p>Owner: Sarah Johnson</p>
+                <div class="card-actions">
+                    <a class="btn" href="migration-report.html">Open</a>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="../script.js"></script>
+</body>
+</html>

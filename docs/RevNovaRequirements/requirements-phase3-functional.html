@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Phase 3 — Functional Requirements</title>
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    .field-table{width:100%;border-collapse:collapse;margin:1rem 0}
+    .field-table th,.field-table td{border:1px solid #ddd;padding:8px;font-size:13px;text-align:left}
+    .field-table th{background:#f0f6fb;font-weight:600}
+    .business-rule{background:#fffbea;border-left:4px solid #ffc107;padding:12px;margin:1rem 0}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Phase 3 — Functional Requirements (Contracts & Assets)</h1>
+    <p><strong>Scope:</strong> WS3 — Contracts & Assets (CPQ Subscriptions → Assets, Contract migration). This phase handles subscription lifecycle, asset tracking, and contract management.</p>
+    <p>See also: <a href="requirements-mapping.html#WS3">WS3 Mapping</a> | <a href="requirements-phase3-technical.html">Phase 3 Technical LLD</a></p>
+
+    <h2>Page: Contract Manager</h2>
+    <p>Manage customer contracts, renewal dates, and contract terms.</p>
+
+    <h3>Field-Level Requirements</h3>
+    <table class="field-table">
+      <thead>
+        <tr>
+          <th>Field Name</th>
+          <th>UI Control</th>
+          <th>Data Type</th>
+          <th>Required</th>
+          <th>Validation</th>
+          <th>Placeholder/Tooltip</th>
+          <th>Example</th>
+          <th>Business Rule</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Contract Number</td>
+          <td>Text Input</td>
+          <td>String (50)</td>
+          <td>Yes</td>
+          <td>Auto-generated or manual</td>
+          <td>Contract identifier</td>
+          <td>CNT-2024-001</td>
+          <td>BR-C01</td>
+        </tr>
+        <tr>
+          <td>Account</td>
+          <td>Lookup</td>
+          <td>Reference (Account)</td>
+          <td>Yes</td>
+          <td>Active account</td>
+          <td>Select account</td>
+          <td>Acme Corp</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td>Start Date</td>
+          <td>Date Picker</td>
+          <td>Date</td>
+          <td>Yes</td>
+          <td>Must be &lt;= End Date</td>
+          <td>Contract start date</td>
+          <td>2024-01-01</td>
+          <td>BR-C02</td>
+        </tr>
+        <tr>
+          <td>End Date</td>
+          <td>Date Picker</td>
+          <td>Date</td>
+          <td>Yes</td>
+          <td>Must be &gt;= Start Date</td>
+          <td>Contract end date</td>
+          <td>2025-12-31</td>
+          <td>BR-C02</td>
+        </tr>
+        <tr>
+          <td>Contract Term (months)</td>
+          <td>Number Input</td>
+          <td>Integer</td>
+          <td>No</td>
+          <td>Auto-calculated</td>
+          <td>Calculated from dates</td>
+          <td>24</td>
+          <td>BR-C03</td>
+        </tr>
+        <tr>
+          <td>Status</td>
+          <td>Dropdown</td>
+          <td>Picklist</td>
+          <td>Yes</td>
+          <td>Draft | Active | Expired</td>
+          <td>Contract status</td>
+          <td>Active</td>
+          <td>BR-C04</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Business Rules</h3>
+    <div class="business-rule">
+      <strong>BR-C01: Contract Number Generation</strong><br>
+      Auto-generate using pattern <code>CNT-{YYYY}-{Sequence}</code>. Allow manual override for migrated contracts.
+    </div>
+    <div class="business-rule">
+      <strong>BR-C02: Date Validation</strong><br>
+      Start Date must be before or equal to End Date. System validates on save and displays error if violated.
+    </div>
+    <div class="business-rule">
+      <strong>BR-C03: Term Calculation</strong><br>
+      Contract Term (months) = <code>MONTHS_BETWEEN(End Date, Start Date)</code>. Auto-calculated and read-only unless manually overridden.
+    </div>
+    <div class="business-rule">
+      <strong>BR-C04: Status Workflow</strong><br>
+      Contracts move from Draft → Active (on activation) → Expired (when End Date passes). Automatic status updates via scheduled job.
+    </div>
+
+    <h2>Page: Asset Tracker</h2>
+    <p>Track customer assets (products under subscription), installation dates, and lifecycle.</p>
+
+    <h3>Field-Level Requirements</h3>
+    <table class="field-table">
+      <thead>
+        <tr>
+          <th>Field Name</th>
+          <th>UI Control</th>
+          <th>Data Type</th>
+          <th>Required</th>
+          <th>Validation</th>
+          <th>Placeholder/Tooltip</th>
+          <th>Example</th>
+          <th>Business Rule</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Asset Name</td>
+          <td>Text Input</td>
+          <td>String (255)</td>
+          <td>Yes</td>
+          <td>Max 255 chars</td>
+          <td>Asset name/identifier</td>
+          <td>Subscription - Product A</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td>Product</td>
+          <td>Lookup</td>
+          <td>Reference (Product2)</td>
+          <td>Yes</td>
+          <td>Active product</td>
+          <td>Select product</td>
+          <td>Product A</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td>Install Date</td>
+          <td>Date Picker</td>
+          <td>Date</td>
+          <td>No</td>
+          <td>Optional</td>
+          <td>Date asset was installed/activated</td>
+          <td>2024-01-15</td>
+          <td>BR-A01</td>
+        </tr>
+        <tr>
+          <td>Quantity</td>
+          <td>Number Input</td>
+          <td>Integer</td>
+          <td>Yes</td>
+          <td>&gt; 0</td>
+          <td>Number of units</td>
+          <td>10</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td>Status</td>
+          <td>Dropdown</td>
+          <td>Picklist</td>
+          <td>Yes</td>
+          <td>Installed | Shipped | Registered</td>
+          <td>Asset status</td>
+          <td>Installed</td>
+          <td>—</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Business Rules</h3>
+    <div class="business-rule">
+      <strong>BR-A01: Install Date Mapping (CPQ → RCA)</strong><br>
+      When migrating from CPQ Subscriptions: <code>SBQQ__Subscription__c.SBQQ__StartDate__c</code> maps to <code>Asset.InstallDate</code>.
+    </div>
+
+    <hr>
+    <p><em>For detailed field mapping, see <a href="requirements-mapping.html#WS3">WS3 — Contracts & Assets</a>.</em></p>
+  </div>
+</body>
+</html>

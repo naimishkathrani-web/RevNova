@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Phase 1 — Technical Requirements</title>
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    pre{background:#f6f8fb;padding:12px;border-radius:6px}
+    table{width:100%;border-collapse:collapse;margin-bottom:1rem}
+    th,td{border:1px solid #ddd;padding:8px}
+    th{background:#f7fbff}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Phase 1 — Technical Requirements (MVP)</h1>
+    <p>Low-level design mapping UI -> APIs -> DB. This page references the Field Mapping document for per-field transforms.</p>
+
+    <h2>Contract / API surface</h2>
+    <table>
+      <thead><tr><th>Endpoint</th><th>Method</th><th>Payload</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td>/api/v1/projects</td><td>POST</td><td>{name,source,target,createdBy}</td><td>Create migration project</td></tr>
+        <tr><td>/api/v1/projects/{id}/connect</td><td>POST</td><td>{instanceUrl,username,password,apiVersion}</td><td>Store connection (encrypted), validate credentials</td></tr>
+        <tr><td>/api/v1/projects/{id}/analyze</td><td>POST</td><td>{}</td><td>Trigger schema discovery job (async)</td></tr>
+        <tr><td>/api/v1/projects/{id}/mapping</td><td>GET/POST</td><td>Mapping rows JSON</td><td>Get/save field mappings</td></tr>
+        <tr><td>/api/v1/projects/{id}/transform</td><td>POST</td><td>{rules}</td><td>Apply transformation rules (dry-run/execute)</td></tr>
+        <tr><td>/api/v1/projects/{id}/execute</td><td>POST</td><td>{mode: dryrun|run}</td><td>Execute migration using batches</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Database mapping</h2>
+    <p>Suggested schema (excerpt):</p>
+    <pre>
+TABLE: projects (id, name, source_org, target_org, created_by, status, created_at)
+TABLE: field_mappings (id, project_id, source_object, source_field, target_object, target_field, mapping_type, transform_notes, dq_check)
+TABLE: stg1_vanilla_* (normalized staging tables for vanilla objects)
+TABLE: stg1_custom_data (eav style for custom fields -> key/value per record)
+TABLE: migration_tests (id, project_id, test_name, status, details)
+    </pre>
+
+    <h2>Transformation & Execution notes</h2>
+    <ul>
+      <li>Batch processing using RabbitMQ worker queues. Each batch writes to STG2 staging and then to target via Bulk API or Transaction API depending on object type.</li>
+      <li>Keep id-mapping table for sourceId -> targetId (ID_Mapping_Template) to preserve relationships.</li>
+      <li>Support rollback by tracking transaction batches and reversing creations in the target in reverse order.</li>
+    </ul>
+
+    <h2>Mapping integration</h2>
+    <p>The <a href="requirements-mapping.html">Field Mapping</a> page contains the per-field rows generated from the provided Python script (DEFAULT_TARGET_MAP + OBJECT_FIELD_DEFS). When saving mappings from UI, persist to <code>field_mappings</code> and expose via API.</p>
+
+    <h2>Data Quality & Business Rules</h2>
+    <p>Data quality checks from mapping (DQ Rule / Action) must be enforced pre-execution. Examples:</p>
+    <ul>
+      <li>Reject record if ProductCode is blank (BR-MAP-01)</li>
+      <li>Flag currency mismatch and attempt conversion per configured rates</li>
+    </ul>
+
+    <h2>Test scenarios</h2>
+    <ol>
+      <li>Create project, connect to sandbox, run analyze -> expected readinessScore >= 60</li>
+      <li>Apply mapping, run dry-run transform -> transforms should complete with no errors</li>
+      <li>Execute migration on sample subset -> verify reconciliation report matches source</li>
+    </ol>
+
+    <h2>References</h2>
+    <p>See <a href="requirements-mapping.html">Field Mapping</a> for full per-field transform notes and Value Maps; see Functional page for Business Rule definitions (IDs).</p>
+  </div>
+</body>
+</html>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Phase 2 — Functional Requirements</title>
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    .field-table{width:100%;border-collapse:collapse;margin:1rem 0}
+    .field-table th,.field-table td{border:1px solid #ddd;padding:8px;font-size:13px;text-align:left}
+    .field-table th{background:#f0f6fb;font-weight:600}
+    .business-rule{background:#fffbea;border-left:4px solid #ffc107;padding:12px;margin:1rem 0}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Phase 2 — Functional Requirements (Quotes & Pricing)</h1>
+    <p><strong>Scope:</strong> WS2 — Quotes (CPQ Quote and QuoteLine migration to standard Quote/QuoteLineItem and Revenue Cloud). This phase includes advanced pricing rules, discount schedules, and quote lifecycle workflows.</p>
+    <p>See also: <a href="requirements-mapping.html">Field Mapping Reference</a> | <a href="requirements-phase2-technical.html">Phase 2 Technical LLD</a></p>
+
+    <h2>Page: Quote Builder / Quote Detail</h2>
+    <p>This page allows users to create and edit quotes, add line items, apply discounts, and submit quotes for approval.</p>
+
+    <h3>Field-Level Requirements</h3>
+    <table class="field-table">
+      <thead>
+        <tr>
+          <th>Field Name</th>
+          <th>UI Control</th>
+          <th>Data Type</th>
+          <th>Required</th>
+          <th>Validation</th>
+          <th>Placeholder/Tooltip</th>
+          <th>Example</th>
+          <th>Business Rule</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Quote Name</td>
+          <td>Text Input</td>
+          <td>String (255)</td>
+          <td>Yes</td>
+          <td>Max 255 chars</td>
+          <td>Enter quote name</td>
+          <td>Q-2024-001</td>
+          <td>BR-Q01</td>
+        </tr>
+        <tr>
+          <td>Account</td>
+          <td>Lookup</td>
+          <td>Reference (Account)</td>
+          <td>Yes</td>
+          <td>Must be active account</td>
+          <td>Select customer account</td>
+          <td>Acme Corp</td>
+          <td>BR-Q02</td>
+        </tr>
+        <tr>
+          <td>Opportunity</td>
+          <td>Lookup</td>
+          <td>Reference (Opportunity)</td>
+          <td>No</td>
+          <td>Optional, must match Account if provided</td>
+          <td>Link to opportunity</td>
+          <td>Opp-123</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td>Quote Line: Product</td>
+          <td>Lookup</td>
+          <td>Reference (Product)</td>
+          <td>Yes</td>
+          <td>Must be active product</td>
+          <td>Select product</td>
+          <td>Product A</td>
+          <td>BR-Q03</td>
+        </tr>
+        <tr>
+          <td>Quote Line: Unit Price</td>
+          <td>Currency Input</td>
+          <td>Decimal (18,2)</td>
+          <td>Yes</td>
+          <td>&gt;= 0</td>
+          <td>Unit price per item</td>
+          <td>100.00</td>
+          <td>BR-Q04</td>
+        </tr>
+        <tr>
+          <td>Quote Line: Quantity</td>
+          <td>Number Input</td>
+          <td>Integer</td>
+          <td>Yes</td>
+          <td>&gt; 0</td>
+          <td>Quantity</td>
+          <td>5</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td>Quote Line: Discount %</td>
+          <td>Number Input</td>
+          <td>Decimal (5,2)</td>
+          <td>No</td>
+          <td>0 – 100</td>
+          <td>Discount percentage</td>
+          <td>10.00</td>
+          <td>BR-Q05</td>
+        </tr>
+        <tr>
+          <td>Total Price (calculated)</td>
+          <td>Read-only</td>
+          <td>Decimal (18,2)</td>
+          <td>N/A</td>
+          <td>Auto-calculated</td>
+          <td>—</td>
+          <td>450.00</td>
+          <td>BR-Q06</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Business Rules</h3>
+    <div class="business-rule">
+      <strong>BR-Q01: Quote Name Generation</strong><br>
+      If user does not provide a custom quote name, auto-generate: <code>Q-{YYYY}-{Sequence}</code> where Sequence increments per account.
+    </div>
+    <div class="business-rule">
+      <strong>BR-Q02: Account Validation</strong><br>
+      Account must be active and have a valid billing address. If missing, display error: "Account must have a billing address to create a quote."
+    </div>
+    <div class="business-rule">
+      <strong>BR-Q03: Product Availability</strong><br>
+      Only active products with price book entries for the selected account's price book can be added to quote lines.
+    </div>
+    <div class="business-rule">
+      <strong>BR-Q04: Unit Price Transform (CPQ → RCA)</strong><br>
+      When migrating from CPQ: <code>SBQQ__NetPrice__c</code> maps to <code>UnitPrice</code>. Preserve manual price adjustments by calculating <code>Discount</code> = <code>(ListPrice - NetPrice) / ListPrice * 100</code>.
+    </div>
+    <div class="business-rule">
+      <strong>BR-Q05: Discount Validation</strong><br>
+      If discount exceeds account's allowed discount threshold (configurable per account), require manager approval before quote submission.
+    </div>
+    <div class="business-rule">
+      <strong>BR-Q06: Total Price Calculation</strong><br>
+      <code>Total = Sum(Quantity * UnitPrice * (1 - Discount/100))</code> for all quote lines. Apply additional account-level discounts if configured.
+    </div>
+
+    <h2>Page: Discount Schedule Manager</h2>
+    <p>Manage discount schedules (volume-based, term-based) that apply automatically to quote lines.</p>
+
+    <h3>Field-Level Requirements</h3>
+    <table class="field-table">
+      <thead>
+        <tr>
+          <th>Field Name</th>
+          <th>UI Control</th>
+          <th>Data Type</th>
+          <th>Required</th>
+          <th>Validation</th>
+          <th>Placeholder/Tooltip</th>
+          <th>Example</th>
+          <th>Business Rule</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Schedule Name</td>
+          <td>Text Input</td>
+          <td>String (255)</td>
+          <td>Yes</td>
+          <td>Unique per product</td>
+          <td>Discount schedule name</td>
+          <td>Volume Discount 2024</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td>Discount Type</td>
+          <td>Dropdown</td>
+          <td>Picklist</td>
+          <td>Yes</td>
+          <td>Volume | Term | Promotional</td>
+          <td>Select discount type</td>
+          <td>Volume</td>
+          <td>BR-D01</td>
+        </tr>
+        <tr>
+          <td>Tier: Min Quantity</td>
+          <td>Number Input</td>
+          <td>Integer</td>
+          <td>Yes</td>
+          <td>&gt; 0</td>
+          <td>Min quantity for tier</td>
+          <td>10</td>
+          <td>BR-D02</td>
+        </tr>
+        <tr>
+          <td>Tier: Discount %</td>
+          <td>Number Input</td>
+          <td>Decimal (5,2)</td>
+          <td>Yes</td>
+          <td>0 – 100</td>
+          <td>Discount for tier</td>
+          <td>15.00</td>
+          <td>—</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Business Rules</h3>
+    <div class="business-rule">
+      <strong>BR-D01: Discount Type Mapping</strong><br>
+      CPQ discount schedules map to Revenue Cloud discount structures. Volume-based uses quantity tiers; Term-based uses contract length.
+    </div>
+    <div class="business-rule">
+      <strong>BR-D02: Tier Overlap Validation</strong><br>
+      Discount tiers must not overlap. System validates that each tier's min quantity is greater than previous tier's max quantity.
+    </div>
+
+    <hr>
+    <p><em>For complete field mapping (source → target), see <a href="requirements-mapping.html#WS2">WS2 — Quotes mapping</a>.</em></p>
+  </div>
+</body>
+</html>

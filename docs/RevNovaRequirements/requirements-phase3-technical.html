@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Phase 3 — Technical Requirements (LLD)</title>
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    .tech-table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:13px}
+    .tech-table th,.tech-table td{border:1px solid #ddd;padding:8px;text-align:left}
+    .tech-table th{background:#e3f2fd;font-weight:600}
+    code{background:#f5f5f5;padding:2px 6px;border-radius:3px}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Phase 3 — Technical Requirements (LLD)</h1>
+    <p><strong>Scope:</strong> WS3 — Contracts & Assets migration (CPQ Subscriptions → Assets, Contract objects). Technical design for APIs, DB schema, transforms, and rollback.</p>
+    <p>See also: <a href="requirements-phase3-functional.html">Phase 3 Functional Requirements</a> | <a href="requirements-mapping.html#WS3">WS3 Mapping</a></p>
+
+    <h2>1. API Endpoints</h2>
+    <table class="tech-table">
+      <thead>
+        <tr><th>Endpoint</th><th>Method</th><th>Purpose</th><th>Request/Response</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>/api/v1/contracts</code></td>
+          <td>POST</td>
+          <td>Create contract</td>
+          <td>Request: <code>{"accountId", "startDate", "endDate"}</code><br>Response: <code>{"contractId", "status"}</code></td>
+        </tr>
+        <tr>
+          <td><code>/api/v1/assets</code></td>
+          <td>POST</td>
+          <td>Create asset (subscription)</td>
+          <td>Request: <code>{"productId", "installDate", "quantity"}</code><br>Response: <code>{"assetId"}</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>2. Database Schema</h2>
+    <h3>Staging Tables</h3>
+    <table class="tech-table">
+      <thead><tr><th>Table</th><th>Columns</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>STG1_VANILLA_CONTRACT</code></td>
+          <td><code>contract_id, source_id, account_id, start_date, end_date, status</code></td>
+          <td>Raw contract data</td>
+        </tr>
+        <tr>
+          <td><code>STG1_VANILLA_SUBSCRIPTION</code></td>
+          <td><code>subscription_id, source_id, product_id, start_date, quantity</code></td>
+          <td>Raw CPQ subscription data (maps to Asset)</td>
+        </tr>
+        <tr>
+          <td><code>STG2_VANILLA_CONTRACT</code></td>
+          <td>Same + <code>is_valid, term_months</code></td>
+          <td>Validated contracts with calculated term</td>
+        </tr>
+        <tr>
+          <td><code>STG2_VANILLA_ASSET</code></td>
+          <td><code>asset_id, product_id, install_date, quantity, is_valid</code></td>
+          <td>Transformed assets ready for load</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Target Objects</h3>
+    <table class="tech-table">
+      <thead><tr><th>Object</th><th>Key Fields</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>Contract</code></td>
+          <td><code>Id, ContractNumber, AccountId, StartDate, EndDate, Status</code></td>
+        </tr>
+        <tr>
+          <td><code>Asset</code></td>
+          <td><code>Id, Name, Product2Id, InstallDate, Quantity, Status</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>3. Field Mapping & Transformations</h2>
+    <p>See <a href="requirements-mapping.html#WS3">WS3 Mapping</a> for complete list. Key transforms:</p>
+    <table class="tech-table">
+      <thead><tr><th>Source</th><th>Target</th><th>Transform</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>SBQQ__Subscription__c.SBQQ__StartDate__c</code></td>
+          <td><code>Asset.InstallDate</code></td>
+          <td>Direct copy</td>
+        </tr>
+        <tr>
+          <td><code>Contract.ContractNumber</code></td>
+          <td><code>Contract.ContractNumber</code></td>
+          <td>Direct copy</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>4. Execution Flow</h2>
+    <ol>
+      <li>Extract CPQ subscriptions and contracts → STG1</li>
+      <li>Validate dates, references → STG2</li>
+      <li>Transform subscription → asset mapping</li>
+      <li>Bulk load Contract and Asset objects</li>
+      <li>Update ID_MAPPING for parent-child relationships</li>
+    </ol>
+
+    <h2>5. Rollback & Test Scenarios</h2>
+    <ul>
+      <li><strong>Rollback:</strong> Delete contracts and assets by batch_id via Bulk API</li>
+      <li><strong>Test:</strong> Validate date overlap, asset-contract linkage, subscription status mapping</li>
+    </ul>
+
+    <hr>
+    <p><em>See <a href="requirements-phase3-functional.html">Phase 3 Functional Requirements</a> for UI and business rules.</em></p>
+  </div>
+</body>
+</html>

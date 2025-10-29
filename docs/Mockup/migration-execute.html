@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Migration - Execute</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <header class="container">
+        <a href="../index.html" class="logo">RevNova</a>
+    </header>
+    <main class="container wizard-step">
+        <h1>Execute Migration</h1>
+        <p>Run the migration job to write data to the target system.</p>
+        <div class="execute-panel">
+            <p>Batch size: 200</p>
+            <p>Worker count: 4</p>
+            <button class="btn btn-primary" onclick="startExecution()">Start Execution</button>
+        </div>
+        <div id="execution-log" class="execution-log"></div>
+    </main>
+    <script src="../script.js"></script>
+    <script>
+        function startExecution(){
+            document.getElementById('execution-log').innerText = 'Execution started...';
+            setTimeout(()=>{document.getElementById('execution-log').innerText += '\nBatch 1 completed';}, 1000);
+        }
+    </script>
+</body>
+</html>

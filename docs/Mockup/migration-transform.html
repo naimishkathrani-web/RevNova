@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Migration - Transform</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <header class="container">
+        <a href="../index.html" class="logo">RevNova</a>
+    </header>
+    <main class="container wizard-step">
+        <h1>Transforms & Data Quality</h1>
+        <p>Define transforms and data quality rules to apply before loading to target.</p>
+        <div class="transform-list">
+            <div class="transform-item">
+                <h4>Normalize Phone Numbers</h4>
+                <p>Remove non-numeric characters and apply E.164 formatting.</p>
+            </div>
+            <div class="transform-item">
+                <h4>Map Country Codes</h4>
+                <p>Use mapping table to convert 2-letter codes to full country names.</p>
+            </div>
+        </div>
+        <div class="actions">
+            <button class="btn btn-primary" onclick="proceedToValidate()">Validate Transforms</button>
+        </div>
+    </main>
+    <script src="../script.js"></script>
+    <script>
+        function proceedToValidate(){
+            localStorage.setItem('migration_demo_transforms_valid', true);
+            window.location.href = 'migration-validate.html';
+        }
+    </script>
+</body>
+</html>
