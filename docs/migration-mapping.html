@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Field Mapping - RevNova</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="nav-left">
+                <a href="index.html" class="logo">
+                    <div class="logo-box">RevNova</div>
+                </a>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="system-monitor.html"><i class="fas fa-chart-pie"></i> System Monitor</a></li>
+                        <li><a href="data-backup.html"><i class="fas fa-database"></i> Data Backup</a></li>
+                        <li><a href="audit-logs.html"><i class="fas fa-clipboard-list"></i> Audit Logs</a></li>
+                        <li><a href="settings.html"><i class="fas fa-cogs"></i> Settings</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header-right">
+                <a href="dashboard.html" class="btn btn-login">Back to Dashboard</a>
+            </div>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <section class="platform-overview">
+        <div class="container">
+            <div class="migration-progress">
+                <div class="progress-steps">
+                    <div class="progress-step completed">
+                        <div class="step-number">1</div>
+                        <div class="step-label">Connect</div>
+                    </div>
+                    <div class="progress-step completed">
+                        <div class="step-number">2</div>
+                        <div class="step-label">Analyze</div>
+                    </div>
+                    <div class="progress-step active">
+                        <div class="step-number">3</div>
+                        <div class="step-label">Map</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-number">4</div>
+                        <div class="step-label">Transform</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-number">5</div>
+                        <div class="step-label">Validate</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-number">6</div>
+                        <div class="step-label">Execute</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-number">7</div>
+                        <div class="step-label">Test</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="wizard-header">
+                <h2>Field Mapping Configuration</h2>
+                <p>AI-powered mapping between SFDC CPQ and RCA fields</p>
+            </div>
+
+            <div class="migration-wizard-container">
+                <div class="mapping-container">
+                    <!-- Mapping Overview -->
+                    <div class="mapping-overview">
+                        <div class="mapping-stats">
+                            <div class="stat-card">
+                                <div class="stat-number">245</div>
+                                <div class="stat-label">Fields to Map</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">89%</div>
+                                <div class="stat-label">AI Confidence</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">12</div>
+                                <div class="stat-label">Manual Review</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">95%</div>
+                                <div class="stat-label">Completion</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Object Selection -->
+                    <div class="object-selection">
+                        <h4><i class="fas fa-cube"></i> Select Object to Map</h4>
+                        <div class="object-tabs">
+                            <button class="object-tab active" data-object="Product2">Product2</button>
+                            <button class="object-tab" data-object="SBQQ__Quote__c">Quote</button>
+                            <button class="object-tab" data-object="SBQQ__Subscription__c">Subscription</button>
+                            <button class="object-tab" data-object="Contract">Contract</button>
+                            <button class="object-tab" data-object="Pricebook2">Pricebook</button>
+                        </div>
+                    </div>
+
+                    <!-- Mapping Interface -->
+                    <div class="mapping-interface">
+                        <div class="mapping-grid">
+                            <!-- Field Mapping Rows -->
+                            <div class="mapping-row">
+                                <div class="source-object">
+                                    <div class="object-header">
+                                        <span class="object-name">Product2</span>
+                                        <span class="object-count">18 fields</span>
+                                    </div>
+                                    <div class="object-fields">
+                                        <div class="field-item">
+                                            <span class="field-name">Name</span>
+                                            <span class="field-type">Text(255)</span>
+                                        </div>
+                                        <div class="field-item">
+                                            <span class="field-name">ProductCode</span>
+                                            <span class="field-type">Text(255)</span>
+                                        </div>
+                                        <div class="field-item">
+                                            <span class="field-name">CustomRegion__c</span>
+                                            <span class="field-type">Picklist</span>
+                                        </div>
+                                        <div class="field-item">
+                                            <span class="field-name">LegacySKU__c</span>
+                                            <span class="field-type">Text(100)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mapping-arrow">
+                                    <i class="fas fa-arrow-right"></i>
+                                    <div class="mapping-actions">
+                                        <button class="btn btn-xs btn-light" title="Auto-map">
+                                            <i class="fas fa-robot"></i>
+                                        </button>
+                                        <button class="btn btn-xs btn-light" title="Manual map">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="target-object">
+                                    <div class="object-header">
+                                        <span class="object-name">Product2</span>
+                                        <span class="object-count">18 fields</span>
+                                    </div>
+                                    <div class="object-fields">
+                                        <div class="field-item">
+                                            <span class="field-name">Name</span>
+                                            <span class="field-type">Text(255)</span>
+                                        </div>
+                                        <div class="field-item">
+                                            <span class="field-name">ProductCode</span>
+                                            <span class="field-type">Text(255)</span>
+                                        </div>
+                                        <div class="field-item">
+                                            <span class="field-name">Region__c</span>
+                                            <span class="field-type">Picklist</span>
+                                        </div>
+                                        <div class="field-item">
+                                            <span class="field-name">ExternalId__c</span>
+                                            <span class="field-type">Text(100)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mapping Actions -->
+                    <div class="mapping-actions">
+                        <div class="action-buttons">
+                            <button class="btn btn-secondary btn-sm" onclick="applyAiSuggestions()">
+                                <i class="fas fa-robot"></i>
+                                Apply AI Suggestions
+                            </button>
+                            <button class="btn btn-secondary btn-sm" onclick="validateMappings()">
+                                <i class="fas fa-check-circle"></i>
+                                Validate Mappings
+                            </button>
+                            <button class="btn btn-secondary btn-sm" onclick="saveMappings()">
+                                <i class="fas fa-save"></i>
+                                Save Progress
+                            </button>
+                        </div>
+                        <div class="completion-status">
+                            <span>Progress: 45/245 fields mapped</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 18%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Wizard Actions -->
+                    <div class="wizard-actions">
+                        <button type="button" class="btn btn-primary" onclick="proceedToTransform()">
+                            <i class="fas fa-arrow-right"></i>
+                            Continue to Transformation
+                        </button>
+                        <a href="migration-analyze.html" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i>
+                            Back to Analysis
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Processing Overlay -->
+    <div id="processing-overlay" class="processing-overlay">
+        <div class="processing-content">
+            <div class="processing-spinner"></div>
+            <p class="processing-message">Processing mappings...</p>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo-box">RevNova</div>
+                    <p class="footer-description">System Transformation as a Service</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="about-revnova.html">About RevNova</a></li>
+                            <li><a href="careers.html">Careers</a></li>
+                            <li><a href="contact.html">Contact</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="documentation.html">Documentation</a></li>
+                            <li><a href="blog.html">Blog</a></li>
+                            <li><a href="case-studies.html">Case Studies</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Legal</h4>
+                        <ul>
+                            <li><a href="privacy.html">Privacy Policy</a></li>
+                            <li><a href="terms.html">Terms of Service</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="footer-legal">
+                    <span>&copy; 2024 RevNova. All rights reserved.</span>
+                    <div class="legal-links">
+                        <a href="privacy.html">Privacy Policy</a>
+                        <a href="terms.html">Terms of Service</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function proceedToTransform() {
+            const projectId = new URLSearchParams(window.location.search).get('projectId') || 'pricing-rules-migration';
+            
+            // TODO: Show processing overlay here
+            RevNova.showProcessing('Validating mappings...');
+            
+            // Save mapping data to localStorage
+            const mappingData = {
+                projectId: projectId,
+                fieldsMapped: 45,
+                totalFields: 245,
+                confidenceScore: 89,
+                timestamp: new Date().toISOString()
+            };
+            
+            localStorage.setItem(`migration_${projectId}_mapping`, JSON.stringify(mappingData));
+            localStorage.setItem(`migration_${projectId}_currentStep`, 'transform');
+            
+            setTimeout(() => {
+                // TODO: Hide processing overlay here
+                RevNova.hideProcessing();
+                window.location.href = `migration-transform.html?projectId=${projectId}`;
+            }, 1500);
+        }
+
+        function applyAiSuggestions() {
+            RevNova.showProcessing('Applying AI suggestions...');
+            
+            setTimeout(() => {
+                RevNova.hideProcessing();
+                RevNova.showToast('AI suggestions applied successfully!', 'success');
+            }, 2000);
+        }
+
+        function validateMappings() {
+            RevNova.showProcessing('Validating all field mappings...');
+            
+            setTimeout(() => {
+                RevNova.hideProcessing();
+                RevNova.showToast('All mappings validated successfully!', 'success');
+            }, 1500);
+        }
+
+        function saveMappings() {
+            RevNova.showProcessing('Saving mapping progress...');
+            
+            setTimeout(() => {
+                RevNova.hideProcessing();
+                RevNova.showToast('Mapping progress saved successfully!', 'success');
+            }, 1000);
+        }
+
+        // Object tab switching
+        document.querySelectorAll('.object-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.object-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                // In real implementation, this would load the selected object's fields
+                RevNova.showToast(`Loading ${this.dataset.object} fields...`, 'info');
+            });
+        });
+
+        // Load project data
+        document.addEventListener('DOMContentLoaded', function() {
+            const projectId = new URLSearchParams(window.location.search).get('projectId');
+            if (projectId) {
+                // Load saved analysis data
+                const savedData = localStorage.getItem(`migration_${projectId}_analysis`);
+                if (savedData) {
+                    const analysisData = JSON.parse(savedData);
+                    // Could display analysis insights
+                }
+            }
+        });
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>

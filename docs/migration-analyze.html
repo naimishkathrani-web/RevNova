@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analyze Source Schema - RevNova</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="nav-left">
+                <a href="index.html" class="logo">
+                    <div class="logo-box">RevNova</div>
+                </a>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="system-monitor.html"><i class="fas fa-chart-pie"></i> System Monitor</a></li>
+                        <li><a href="data-backup.html"><i class="fas fa-database"></i> Data Backup</a></li>
+                        <li><a href="audit-logs.html"><i class="fas fa-clipboard-list"></i> Audit Logs</a></li>
+                        <li><a href="settings.html"><i class="fas fa-cogs"></i> Settings</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header-right">
+                <a href="dashboard.html" class="btn btn-login">Back to Dashboard</a>
+            </div>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <section class="platform-overview">
+        <div class="container">
+            <div class="migration-progress">
+                <div class="progress-steps">
+                    <div class="progress-step completed">
+                        <div class="step-number">1</div>
+                        <div class="step-label">Connect</div>
+                    </div>
+                    <div class="progress-step active">
+                        <div class="step-number">2</div>
+                        <div class="step-label">Analyze</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-number">3</div>
+                        <div class="step-label">Map</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-number">4</div>
+                        <div class="step-label">Transform</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-number">5</div>
+                        <div class="step-label">Validate</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-number">6</div>
+                        <div class="step-label">Execute</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-number">7</div>
+                        <div class="step-label">Test</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="wizard-header">
+                <h2>Analyze Source Schema</h2>
+                <p>Schema discovery and ProjectId setup for migration</p>
+            </div>
+
+            <div class="migration-wizard-container">
+                <div class="analysis-container">
+                    <!-- Project Info -->
+                    <div class="project-info-card">
+                        <h4><i class="fas fa-project-diagram"></i> Project Setup</h4>
+                        <div class="project-details">
+                            <div class="project-id">
+                                <strong>ProjectId:</strong> <span id="projectIdDisplay">PRJ_TECHCORP_20240120_001</span>
+                            </div>
+                            <div class="project-meta">
+                                <span><i class="fas fa-calendar"></i> Created: 2024-01-20</span>
+                                <span><i class="fas fa-database"></i> Source: SFDC CPQ</span>
+                                <span><i class="fas fa-cloud"></i> Target: SFDC RCA</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Schema Discovery Results -->
+                    <div class="schema-discovery">
+                        <h4><i class="fas fa-search"></i> Schema Discovery Results</h4>
+                        
+                        <!-- Vanilla Objects -->
+                        <div class="schema-section">
+                            <h5>Standard CPQ Objects Detected</h5>
+                            <div class="object-grid">
+                                <div class="object-card vanilla">
+                                    <i class="fas fa-cube"></i>
+                                    <div class="object-info">
+                                        <strong>Product2</strong>
+                                        <span>245 records, 18 fields</span>
+                                    </div>
+                                </div>
+                                <div class="object-card vanilla">
+                                    <i class="fas fa-receipt"></i>
+                                    <div class="object-info">
+                                        <strong>SBQQ__Quote__c</strong>
+                                        <span>156 records, 42 fields</span>
+                                    </div>
+                                </div>
+                                <div class="object-card vanilla">
+                                    <i class="fas fa-sync-alt"></i>
+                                    <div class="object-info">
+                                        <strong>SBQQ__Subscription__c</strong>
+                                        <span>89 records, 28 fields</span>
+                                    </div>
+                                </div>
+                                <div class="object-card vanilla">
+                                    <i class="fas fa-file-contract"></i>
+                                    <div class="object-info">
+                                        <strong>Contract</strong>
+                                        <span>67 records, 35 fields</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Custom Objects & Fields -->
+                        <div class="schema-section">
+                            <h5>Custom Elements Identified</h5>
+                            <div class="custom-stats">
+                                <div class="stat-item">
+                                    <span class="stat-number">12</span>
+                                    <span class="stat-label">Custom Objects</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number">156</span>
+                                    <span class="stat-label">Custom Fields</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number">23</span>
+                                    <span class="stat-label">Validation Rules</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number">8</span>
+                                    <span class="stat-label">Workflow Rules</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Data Volume Analysis -->
+                        <div class="schema-section">
+                            <h5><i class="fas fa-chart-bar"></i> Data Volume Analysis</h5>
+                            <div class="volume-grid">
+                                <div class="volume-card">
+                                    <div class="volume-header">
+                                        <span>Master Data</span>
+                                        <span class="volume-count">1,245 records</span>
+                                    </div>
+                                    <div class="volume-details">
+                                        <span>Products, Pricebooks, Rules</span>
+                                    </div>
+                                </div>
+                                <div class="volume-card">
+                                    <div class="volume-header">
+                                        <span>Transactional Data</span>
+                                        <span class="volume-count">892 records</span>
+                                    </div>
+                                    <div class="volume-details">
+                                        <span>Quotes, Contracts, Subscriptions</span>
+                                    </div>
+                                </div>
+                                <div class="volume-card">
+                                    <div class="volume-header">
+                                        <span>Custom Data</span>
+                                        <span class="volume-count">2,847 records</span>
+                                    </div>
+                                    <div class="volume-details">
+                                        <span>Custom objects and fields</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Risk Assessment -->
+                        <div class="schema-section">
+                            <h5><i class="fas fa-exclamation-triangle"></i> Risk Assessment</h5>
+                            <div class="risk-grid">
+                                <div class="risk-card low">
+                                    <div class="risk-header">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>Data Quality</span>
+                                    </div>
+                                    <div class="risk-level">95%</div>
+                                    <div class="risk-description">Minimal data issues detected</div>
+                                </div>
+                                <div class="risk-card medium">
+                                    <div class="risk-header">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        <span>Custom Logic</span>
+                                    </div>
+                                    <div class="risk-level">78%</div>
+                                    <div class="risk-description">23 validation rules need review</div>
+                                </div>
+                                <div class="risk-card high">
+                                    <div class="risk-header">
+                                        <i class="fas fa-times-circle"></i>
+                                        <span>Complex Dependencies</span>
+                                    </div>
+                                    <div class="risk-level">45%</div>
+                                    <div class="risk-description">8 workflow rules require transformation</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Migration Readiness -->
+                        <div class="schema-section">
+                            <h5><i class="fas fa-clipboard-check"></i> Migration Readiness Score</h5>
+                            <div class="readiness-card">
+                                <div class="readiness-score">
+                                    <div class="score-circle">
+                                        <span class="score-value">88%</span>
+                                    </div>
+                                    <div class="score-label">Ready for Mapping</div>
+                                </div>
+                                <div class="readiness-recommendations">
+                                    <h6>Recommendations:</h6>
+                                    <ul>
+                                        <li><i class="fas fa-check"></i> Standard objects fully compatible</li>
+                                        <li><i class="fas fa-exclamation"></i> Review 12 custom field mappings</li>
+                                        <li><i class="fas fa-exclamation"></i> Transform 8 workflow rules</li>
+                                        <li><i class="fas fa-check"></i> Data quality meets requirements</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="wizard-actions">
+                        <button type="button" class="btn btn-primary" onclick="proceedToMapping()">
+                            <i class="fas fa-arrow-right"></i>
+                            Continue to Mapping
+                        </button>
+                        <a href="migration-connect.html" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i>
+                            Back to Connect
+                        </a>
+                        <button type="button" class="btn btn-secondary" onclick="downloadAnalysisReport()">
+                            <i class="fas fa-download"></i>
+                            Download Report
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Processing Overlay -->
+    <div id="processing-overlay" class="processing-overlay">
+        <div class="processing-content">
+            <div class="processing-spinner"></div>
+            <p class="processing-message">Analyzing schema...</p>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo-box">RevNova</div>
+                    <p class="footer-description">System Transformation as a Service</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="about-revnova.html">About RevNova</a></li>
+                            <li><a href="careers.html">Careers</a></li>
+                            <li><a href="contact.html">Contact</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="documentation.html">Documentation</a></li>
+                            <li><a href="blog.html">Blog</a></li>
+                            <li><a href="case-studies.html">Case Studies</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Legal</h4>
+                        <ul>
+                            <li><a href="privacy.html">Privacy Policy</a></li>
+                            <li><a href="terms.html">Terms of Service</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="footer-legal">
+                    <span>&copy; 2024 RevNova. All rights reserved.</span>
+                    <div class="legal-links">
+                        <a href="privacy.html">Privacy Policy</a>
+                        <a href="terms.html">Terms of Service</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function proceedToMapping() {
+            const projectId = new URLSearchParams(window.location.search).get('projectId') || 'pricing-rules-migration';
+            
+            // TODO: Show processing overlay here
+            RevNova.showProcessing('Preparing for mapping...');
+            
+            // Save analysis data to localStorage (in real app, this would be API call)
+            const analysisData = {
+                projectId: projectId,
+                vanillaObjects: 24,
+                customFields: 156,
+                totalRecords: 4984,
+                readinessScore: 88,
+                timestamp: new Date().toISOString()
+            };
+            
+            localStorage.setItem(`migration_${projectId}_analysis`, JSON.stringify(analysisData));
+            localStorage.setItem(`migration_${projectId}_currentStep`, 'mapping');
+            
+            setTimeout(() => {
+                // TODO: Hide processing overlay here
+                RevNova.hideProcessing();
+                window.location.href = `migration-mapping.html?projectId=${projectId}`;
+            }, 1500);
+        }
+
+        function downloadAnalysisReport() {
+            RevNova.showProcessing('Generating analysis report...');
+            
+            setTimeout(() => {
+                RevNova.hideProcessing();
+                RevNova.showToast('Analysis report download started...', 'success');
+                // In real implementation, this would generate and download a PDF report
+            }, 2000);
+        }
+
+        // Load project data
+        document.addEventListener('DOMContentLoaded', function() {
+            const projectId = new URLSearchParams(window.location.search).get('projectId');
+            if (projectId) {
+                document.getElementById('projectIdDisplay').textContent = projectId;
+                
+                // Load saved connection data
+                const savedData = localStorage.getItem(`migration_${projectId}_connection`);
+                if (savedData) {
+                    const connectionData = JSON.parse(savedData);
+                    // Could display connection details if needed
+                }
+            }
+        });
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>

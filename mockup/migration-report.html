@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Migration Report - RevNova</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icons/6.6.4/css/flag-icons.min.css">
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="nav-left">
+                <a href="index.html" class="logo">
+                    <div class="logo-box">RevNova</div>
+                </a>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="about-revnova.html">About RevNova</a></li>
+                        <li><a href="features.html">Features</a></li>
+                        <li><a href="pricing.html">Pricing</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header-right">
+                <div class="country-selector">
+                    <span class="fi fi-us"></span>
+                </div>
+                <a href="dashboard.html" class="btn btn-login">Back to Dashboard</a>
+            </div>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <section class="platform-overview">
+        <div class="container">
+            <div class="report-header">
+                <h1>Migration Analytics Report</h1>
+                <p>CPQ to RCA Migration - Phase 1 | Completed: 2024-01-15 16:45</p>
+            </div>
+
+            <div class="analytics-dashboard">
+                <!-- Executive Summary -->
+                <div class="analytics-section">
+                    <h3><i class="fas fa-chart-line"></i> Executive Summary</h3>
+                    <div class="metrics-grid">
+                        <div class="metric-card primary">
+                            <div class="metric-value">1,245</div>
+                            <div class="metric-label">Products Migrated</div>
+                            <div class="metric-change">98.7% Success Rate</div>
+                        </div>
+                        <div class="metric-card success">
+                            <div class="metric-value">892</div>
+                            <div class="metric-label">Pricing Rules</div>
+                            <div class="metric-change">99.1% Success Rate</div>
+                        </div>
+                        <div class="metric-card info">
+                            <div class="metric-value">156</div>
+                            <div class="metric-label">In-Flight Quotes</div>
+                            <div class="metric-change">100% Preserved</div>
+                        </div>
+                        <div class="metric-card warning">
+                            <div class="metric-value">45</div>
+                            <div class="metric-label">Subscriptions</div>
+                            <div class="metric-change">Converted to Assets</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Migration Performance -->
+                <div class="analytics-section">
+                    <h3><i class="fas fa-tachometer-alt"></i> Migration Performance</h3>
+                    <div class="performance-grid">
+                        <div class="performance-card">
+                            <div class="performance-header">
+                                <span class="performance-title">Data Analysis</span>
+                                <span class="performance-value">95.2%</span>
+                            </div>
+                            <div class="performance-details">
+                                <div class="detail-item">
+                                    <span>Schema Objects Analyzed</span>
+                                    <span>124</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span>Custom Fields Identified</span>
+                                    <span>2,847</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span>Business Logic Rules</span>
+                                    <span>567</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="performance-card">
+                            <div class="performance-header">
+                                <span class="performance-title">Field Mapping</span>
+                                <span class="performance-value">99.2%</span>
+                            </div>
+                            <div class="performance-details">
+                                <div class="detail-item">
+                                    <span>Auto-Mapped Fields</span>
+                                    <span>2,451</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span>Manual Review Required</span>
+                                    <span>396</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span>AI Suggestions Applied</span>
+                                    <span>187</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="performance-card">
+                            <div class="performance-header">
+                                <span class="performance-title">Testing Coverage</span>
+                                <span class="performance-value">98.5%</span>
+                            </div>
+                            <div class="performance-details">
+                                <div class="detail-item">
+                                    <span>Test Cases Created</span>
+                                    <span>89</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span>Test Quotes Generated</span>
+                                    <span>245</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span>Contract Validations</span>
+                                    <span>156</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Transformation Details -->
+                <div class="analytics-section">
+                    <h3><i class="fas fa-exchange-alt"></i> Data Transformation Details</h3>
+                    <div class="transformation-grid">
+                        <div class="transformation-card">
+                            <h4>Products & Catalog</h4>
+                            <div class="transformation-stats">
+                                <div class="stat-row">
+                                    <span>Standard Products</span>
+                                    <span>845</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span>Bundle Products</span>
+                                    <span>287</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span>Product Options</span>
+                                    <span>113</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span>Price Books</span>
+                                    <span>12</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="transformation-card">
+                            <h4>Pricing & Rules</h4>
+                            <div class="transformation-stats">
+                                <div class="stat-row">
+                                    <span>Discount Schedules</span>
+                                    <span>45</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span>Price Rules</span>
+                                    <span>234</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span>Calculator Plugins</span>
+                                    <span>18</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span>Validation Rules</span>
+                                    <span>67</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="transformation-card">
+                            <h4>Business Data</h4>
+                            <div class="transformation-stats">
+                                <div class="stat-row">
+                                    <span>Active Quotes</span>
+                                    <span>156</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span>Contracts</span>
+                                    <span>89</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span>Subscriptions → Assets</span>
+                                    <span>45</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span>Orders Processed</span>
+                                    <span>267</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quality Assurance -->
+                <div class="analytics-section">
+                    <h3><i class="fas fa-clipboard-check"></i> Quality Assurance</h3>
+                    <div class="quality-grid">
+                        <div class="quality-card">
+                            <div class="quality-header">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <span>Warnings Identified</span>
+                            </div>
+                            <div class="quality-content">
+                                <div class="warning-item">
+                                    <strong>SKU Conflicts</strong>
+                                    <span>12 products had duplicate SKUs</span>
+                                    <span class="resolution">Auto-suffixed with migration ID</span>
+                                </div>
+                                <div class="warning-item">
+                                    <strong>Field Length Limits</strong>
+                                    <span>8 fields exceeded character limits</span>
+                                    <span class="resolution">Values truncated automatically</span>
+                                </div>
+                                <div class="warning-item">
+                                    <strong>Deprecated Features</strong>
+                                    <span>3 legacy features detected</span>
+                                    <span class="resolution">Modern equivalents suggested</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="quality-card">
+                            <div class="quality-header">
+                                <i class="fas fa-times-circle"></i>
+                                <span>Errors Resolved</span>
+                            </div>
+                            <div class="quality-content">
+                                <div class="error-item">
+                                    <strong>Data Validation</strong>
+                                    <span>3 products failed validation</span>
+                                    <span class="resolution">Field limits adjusted</span>
+                                </div>
+                                <div class="error-item">
+                                    <strong>API Limits</strong>
+                                    <span>2 batch operations throttled</span>
+                                    <span class="resolution">Automatic retry successful</span>
+                                </div>
+                                <div class="error-item">
+                                    <strong>Permission Issues</strong>
+                                    <span>1 custom object inaccessible</span>
+                                    <span class="resolution">Permissions updated</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Test Results -->
+                <div class="analytics-section">
+                    <h3><i class="fas fa-vial"></i> Test Results Summary</h3>
+                    <div class="test-results">
+                        <div class="test-category">
+                            <h4>Quote Configuration Tests</h4>
+                            <div class="test-stats">
+                                <span>45 Test Cases</span>
+                                <span class="test-pass">44 Passed</span>
+                                <span class="test-fail">1 Failed</span>
+                            </div>
+                        </div>
+                        <div class="test-category">
+                            <h4>Pricing Validation Tests</h4>
+                            <div class="test-stats">
+                                <span>28 Test Cases</span>
+                                <span class="test-pass">28 Passed</span>
+                                <span class="test-fail">0 Failed</span>
+                            </div>
+                        </div>
+                        <div class="test-category">
+                            <h4>Contract Generation Tests</h4>
+                            <div class="test-stats">
+                                <span>16 Test Cases</span>
+                                <span class="test-pass">15 Passed</span>
+                                <span class="test-fail">1 Failed</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Report Actions -->
+                <div class="report-actions">
+                    <a href="#" class="btn btn-primary">
+                        <i class="fas fa-download"></i>
+                        Download Full Report (PDF)
+                    </a>
+                    <a href="#" class="btn btn-secondary">
+                        <i class="fas fa-chart-bar"></i>
+                        Export Analytics Data
+                    </a>
+                    <a href="dashboard.html" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo-box">RevNova</div>
+                    <p class="footer-description">System Transformation as a Service</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="about-revnova.html">About RevNova</a></li>
+                            <li><a href="careers.html">Careers</a></li>
+                            <li><a href="contact.html">Contact</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="documentation.html">Documentation</a></li>
+                            <li><a href="blog.html">Blog</a></li>
+                            <li><a href="case-studies.html">Case Studies</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Legal</h4>
+                        <ul>
+                            <li><a href="privacy.html">Privacy Policy</a></li>
+                            <li><a href="terms.html">Terms of Service</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="footer-legal">
+                    <span>&copy; 2024 RevNova. All rights reserved.</span>
+                    <div class="legal-links">
+                        <a href="privacy.html">Privacy Policy</a>
+                        <a href="terms.html">Terms of Service</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
+[file content end]

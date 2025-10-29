@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechCorp Inc. - Dashboard - RevNova</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icons/6.6.4/css/flag-icons.min.css">
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="nav-left">
+                <a href="index.html" class="logo">
+                    <div class="logo-box">RevNova</div>
+                </a>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="system-monitor.html"><i class="fas fa-chart-pie"></i> System Monitor</a></li>
+                        <li><a href="data-backup.html"><i class="fas fa-database"></i> Data Backup</a></li>
+                        <li><a href="audit-logs.html"><i class="fas fa-clipboard-list"></i> Audit Logs</a></li>
+                        <li><a href="settings.html"><i class="fas fa-cogs"></i> Settings</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header-right">
+                <div class="country-selector">
+                    <span class="fi fi-us"></span>
+                </div>
+                <a href="login.html" class="btn btn-login">Logout</a>
+            </div>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <section class="platform-overview">
+        <div class="container">
+            <div class="dashboard-header">
+                <h1>TechCorp Inc. - Dashboard</h1>
+                <p>Migration projects and product configurations</p>
+            </div>
+
+            <div class="quick-stats">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-sync-alt"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number">3</div>
+                        <div class="stat-label">Active Projects</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number">1</div>
+                        <div class="stat-label">Completed</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-cube"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number">3</div>
+                        <div class="stat-label">Products</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number">85%</div>
+                        <div class="stat-label">Automation</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('migration')">
+                    <i class="fas fa-sync-alt"></i>
+                    Migration Projects
+                </div>
+                <div class="tab" onclick="switchTab('product-config')">
+                    <i class="fas fa-cube"></i>
+                    Product Configuration
+                </div>
+            </div>
+
+            <!-- Migration Projects Tab -->
+            <div id="migration-tab" class="tab-content active">
+                <div class="table-header">
+                    <h3>Active Migration Projects</h3>
+                    <a href="migration-connect.html" class="btn btn-primary btn-sm">
+                        <i class="fas fa-plus"></i>
+                        New Project
+                    </a>
+                </div>
+                
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Project Name</th>
+                                <th>Source → Target</th>
+                                <th>Created</th>
+                                <th>Progress</th>
+                                <th>Status</th>
+                                <th>Objects</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>CPQ to RCA Migration - Phase 1</strong></td>
+                                <td>SFDC CPQ → SFDC RCA</td>
+                                <td>2024-01-15</td>
+                                <td>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 100%"></div>
+                                    </div>
+                                </td>
+                                <td><span class="status-badge status-completed">Completed</span></td>
+                                <td>1,245 Products</td>
+                                <td>
+                                    <a href="migration-report.html?projectId=cpq-phase1" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-chart-bar"></i>
+                                        View Report
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Product Catalog Migration</strong></td>
+                                <td>SFDC CPQ → SFDC RCA</td>
+                                <td>2024-01-18</td>
+                                <td>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 40%"></div>
+                                    </div>
+                                </td>
+                                <td><span class="status-badge status-in-progress">In Progress</span></td>
+                                <td>892 Products</td>
+                                <td>
+                                    <a href="migration-mapping.html?projectId=product-catalog" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-play"></i>
+                                        Resume Migration
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Pricing Rules Migration</strong></td>
+                                <td>SFDC CPQ → SFDC RCA</td>
+                                <td>2024-01-20</td>
+                                <td>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 0%"></div>
+                                    </div>
+                                </td>
+                                <td><span class="status-badge status-draft">Draft</span></td>
+                                <td>156 Rules</td>
+                                <td>
+                                    <a href="migration-connect.html?projectId=pricing-rules-migration" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-rocket"></i>
+                                        Start Migration
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Product Configuration Tab -->
+            <div id="product-config-tab" class="tab-content">
+                <div class="table-header">
+                    <h3>Product Configuration Projects</h3>
+                    <a href="product-design.html" class="btn btn-primary btn-sm">
+                        <i class="fas fa-plus"></i>
+                        New Product
+                    </a>
+                </div>
+                
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Project Name</th>
+                                <th>Product Type</th>
+                                <th>Created</th>
+                                <th>Components</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Enterprise Cloud Suite</strong></td>
+                                <td>Bundle Product</td>
+                                <td>2024-01-16</td>
+                                <td>15 Components</td>
+                                <td><span class="status-badge status-completed">Completed</span></td>
+                                <td>
+                                    <a href="#" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-chart-bar"></i>
+                                        View Report
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>AI Analytics Module</strong></td>
+                                <td>Standalone Product</td>
+                                <td>2024-01-19</td>
+                                <td>8 Features</td>
+                                <td><span class="status-badge status-in-progress">In Progress</span></td>
+                                <td>
+                                    <a href="#" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-play"></i>
+                                        Resume Design
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Mobile Security Package</strong></td>
+                                <td>Service Product</td>
+                                <td>2024-01-21</td>
+                                <td>12 Services</td>
+                                <td><span class="status-badge status-draft">Draft</span></td>
+                                <td>
+                                    <a href="#" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-rocket"></i>
+                                        Start Design
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo-box">RevNova</div>
+                    <p class="footer-description">System Transformation as a Service</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="about-revnova.html">About RevNova</a></li>
+                            <li><a href="careers.html">Careers</a></li>
+                            <li><a href="contact.html">Contact</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="documentation.html">Documentation</a></li>
+                            <li><a href="blog.html">Blog</a></li>
+                            <li><a href="case-studies.html">Case Studies</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Legal</h4>
+                        <ul>
+                            <li><a href="privacy.html">Privacy Policy</a></li>
+                            <li><a href="terms.html">Terms of Service</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="footer-legal">
+                    <span>&copy; 2024 RevNova. All rights reserved.</span>
+                    <div class="legal-links">
+                        <a href="privacy.html">Privacy Policy</a>
+                        <a href="terms.html">Terms of Service</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function switchTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content and activate tab
+            document.getElementById(tabName + '-tab').classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // Get client from URL parameters
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const client = urlParams.get('client');
+            if (client) {
+                // Update dashboard header based on client
+                const header = document.querySelector('.dashboard-header h1');
+                const clientNames = {
+                    'techcorp': 'TechCorp Inc.',
+                    'globalsolutions': 'Global Solutions Ltd.',
+                    'innovatetech': 'InnovateTech',
+                    'datasystems': 'DataSystems Co.'
+                };
+                if (clientNames[client]) {
+                    header.textContent = `${clientNames[client]} - Dashboard`;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
