@@ -29,12 +29,16 @@
         .phase-section h3{color:#11998e;margin-top:0;border-bottom:2px solid #38ef7d;padding-bottom:0.5rem;font-size:1.8rem}
         .phase-section h4{color:#333;margin-top:2rem;font-size:1.3rem}
         
+        .architecture-box{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;padding:2rem;border-radius:12px;margin:1.5rem 0;box-shadow:0 4px 15px rgba(102,126,234,0.2)}
+        .architecture-box h4{color:#fff;margin-top:0}
+        .architecture-box p{margin:0.5rem 0;line-height:1.8}
+        
         table{width:100%;border-collapse:collapse;margin:1.5rem 0;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.05)}
         th,td{border:1px solid #ddd;padding:12px;text-align:left}
         th{background:linear-gradient(135deg,#11998e 0%,#38ef7d 100%);color:#fff;font-weight:600;text-transform:uppercase;font-size:0.85rem;letter-spacing:0.5px}
         tr:hover{background:#f8f9fa}
         
-        .capability-badge{display:inline-block;background:#667eea;color:#fff;padding:0.4rem 0.8rem;border-radius:16px;font-size:0.75rem;font-weight:600;margin:0.25rem;text-transform:uppercase}
+        .view-badge{display:inline-block;background:#11998e;color:#fff;padding:0.4rem 0.8rem;border-radius:16px;font-size:0.75rem;font-weight:600;margin:0.25rem;text-transform:uppercase}
         
         @media (max-width:768px){.sidebar{position:relative;width:100%;height:auto;top:0}.main-content{margin-left:0}.requirements-layout{flex-direction:column}.page-header h1{font-size:1.8rem}}
     </style>
@@ -72,234 +76,612 @@
             
             <h3>Phase 1 - SFDC CPQ → RCA Migration (MVP)</h3>
             <ul>
-                <li><a href="#">Phase 1 Overview</a></li>
-                <li><a href="requirements-mapping.html">Complete Field Mapping (WS1-WS5)</a></li>
-                <li><a href="requirements-phase1-functional.html">Functional Requirements</a></li>
-                <li><a href="requirements-phase1-technical.html">Technical Requirements</a></li>
+                <li><a href="requirements-phase1-functional.html">Functional Requirements</a>
+                    <ul>
+                        <li><a href="requirements-phase1-functional.html#connect">1. Connection Wizard</a></li>
+                        <li><a href="requirements-phase1-functional.html#analyze">2. Schema Analysis</a></li>
+                        <li><a href="requirements-phase1-functional.html#mapping">3. Field Mapping</a></li>
+                        <li><a href="requirements-phase1-functional.html#transform">4. Data Transformation</a></li>
+                        <li><a href="requirements-phase1-functional.html#validate">5. Validation</a></li>
+                        <li><a href="requirements-phase1-functional.html#execute">6. Migration Execution</a></li>
+                        <li><a href="requirements-phase1-functional.html#test">7. Post-Migration Testing</a></li>
+                    </ul>
+                </li>
+                <li><a href="requirements-phase1-technical.html">Technical Requirements</a>
+                    <ul>
+                        <li><a href="requirements-phase1-technical.html#architecture">Migration Architecture</a></li>
+                        <li><a href="requirements-phase1-technical.html#api">API Specifications</a></li>
+                        <li><a href="requirements-phase1-technical.html#database">Database Schema</a></li>
+                        <li><a href="requirements-phase1-technical.html#orchestration">Orchestration Engine</a></li>
+                    </ul>
+                </li>
+                <li><a href="requirements-mapping.html">Complete Field Mapping (70+ Fields)</a></li>
             </ul>
             
             <h3>Phase 2 - AI Product Configuration</h3>
             <ul>
-                <li><a href="requirements-phase2-functional.html">Product Design with AI</a></li>
-                <li><a href="requirements-phase2-technical.html">Impact Analysis & Budgeting</a></li>
+                <li><a href="requirements-phase2-functional.html">Functional Requirements</a>
+                    <ul>
+                        <li><a href="requirements-phase2-functional.html#generate">Generate with AI</a></li>
+                        <li><a href="requirements-phase2-functional.html#modify">Modify with AI</a></li>
+                        <li><a href="requirements-phase2-functional.html#adopt">Adopt AI Suggestions</a></li>
+                        <li><a href="requirements-phase2-functional.html#marketing">Marketing Plan Generator</a></li>
+                        <li><a href="requirements-phase2-functional.html#selling">Selling Plan Generator</a></li>
+                        <li><a href="requirements-phase2-functional.html#servicing">Servicing Plan Generator</a></li>
+                    </ul>
+                </li>
+                <li><a href="requirements-phase2-technical.html">Technical Requirements</a>
+                    <ul>
+                        <li><a href="requirements-phase2-technical.html#ai-engine">AI Engine Architecture</a></li>
+                        <li><a href="requirements-phase2-technical.html#impact">Impact Analyzer Engine</a></li>
+                        <li><a href="requirements-phase2-technical.html#budget">Budget Calculator Engine</a></li>
+                        <li><a href="requirements-phase2-technical.html#api">API Specifications</a></li>
+                    </ul>
+                </li>
             </ul>
             
             <h3>Phase 3 - Multi-CPQ Support</h3>
             <ul>
-                <li><a href="requirements-phase3-functional.html">Other CPQs → SFDC Revenue Cloud</a></li>
-                <li><a href="requirements-phase3-technical.html">Technical Requirements</a></li>
+                <li><a href="requirements-phase3-functional.html">Functional Requirements</a>
+                    <ul>
+                        <li><a href="requirements-phase3-functional.html#oracle">Oracle CPQ Connector</a></li>
+                        <li><a href="requirements-phase3-functional.html#apttus">Apttus/Conga Connector</a></li>
+                        <li><a href="requirements-phase3-functional.html#sap">SAP CPQ Connector</a></li>
+                        <li><a href="requirements-phase3-functional.html#custom">Custom CPQ Connector</a></li>
+                    </ul>
+                </li>
+                <li><a href="requirements-phase3-technical.html">Technical Requirements</a>
+                    <ul>
+                        <li><a href="requirements-phase3-technical.html#framework">Universal Connector Framework</a></li>
+                        <li><a href="requirements-phase3-technical.html#mapping">Cross-Platform Mapping Engine</a></li>
+                        <li><a href="requirements-phase3-technical.html#api">API Specifications</a></li>
+                    </ul>
+                </li>
             </ul>
             
             <h3>Phase 4 - CRM + CPQ Integration</h3>
             <ul>
-                <li><a href="requirements-phase4-functional.html">CRMs + CPQs → RLM + Revenue Cloud</a></li>
-                <li><a href="requirements-phase4-technical.html">Technical Requirements</a></li>
+                <li><a href="requirements-phase4-functional.html">Functional Requirements</a>
+                    <ul>
+                        <li><a href="requirements-phase4-functional.html#dynamics">Dynamics CRM+CPQ</a></li>
+                        <li><a href="requirements-phase4-functional.html#sugar">Sugar CRM+CPQ</a></li>
+                        <li><a href="requirements-phase4-functional.html#hubspot">HubSpot CRM+CPQ</a></li>
+                        <li><a href="requirements-phase4-functional.html#zoho">Zoho CRM+CPQ</a></li>
+                    </ul>
+                </li>
+                <li><a href="requirements-phase4-technical.html">Technical Requirements</a>
+                    <ul>
+                        <li><a href="requirements-phase4-technical.html#crm-architecture">CRM Migration Architecture</a></li>
+                        <li><a href="requirements-phase4-technical.html#hierarchy">Account Hierarchy Engine</a></li>
+                        <li><a href="requirements-phase4-technical.html#api">API Specifications</a></li>
+                    </ul>
+                </li>
             </ul>
             
             <h3>Phase 5 - ERP Integration</h3>
             <ul>
-                <li><a href="requirements-phase5-functional.html">ERPs → RLM + Revenue Cloud</a></li>
-                <li><a href="requirements-phase5-technical.html">Technical Requirements</a></li>
+                <li><a href="requirements-phase5-functional.html">Functional Requirements</a>
+                    <ul>
+                        <li><a href="requirements-phase5-functional.html#sap">SAP ERP Connector</a></li>
+                        <li><a href="requirements-phase5-functional.html#oracle">Oracle ERP Connector</a></li>
+                        <li><a href="requirements-phase5-functional.html#dynamics">Dynamics 365 ERP</a></li>
+                        <li><a href="requirements-phase5-functional.html#netsuite">NetSuite Connector</a></li>
+                    </ul>
+                </li>
+                <li><a href="requirements-phase5-technical.html">Technical Requirements</a>
+                    <ul>
+                        <li><a href="requirements-phase5-technical.html#erp-architecture">ERP Integration Architecture</a></li>
+                        <li><a href="requirements-phase5-technical.html#sync">Real-Time Sync Engine</a></li>
+                        <li><a href="requirements-phase5-technical.html#api">API Specifications</a></li>
+                    </ul>
+                </li>
             </ul>
         </aside>
 
         <main class="main-content">
             <div class="page-header">
                 <h1>High Level Functional Design</h1>
-                <p>Functional overview of RevNova Platform across all 5 implementation phases</p>
+                <p>Object-oriented, reusable architecture across all 5 implementation phases organized by views and features</p>
             </div>
 
             <section class="phase-section">
                 <h3>Phase 1: SFDC CPQ → Revenue Cloud Migration (MVP) - Due November 2025</h3>
-                <p><strong>Objective:</strong> Complete end-to-end migration platform covering all 5 workstreams (WS1-WS5) with AI-powered automation, multi-stage validation, and rollback capabilities</p>
+                <p><strong>Objective:</strong> Build an object-oriented, reusable migration platform that handles all data types (WS1-WS5) through a unified 7-page wizard interface</p>
                 
-                <h4>Core Functional Capabilities (All Workstreams)</h4>
-                <ul style="line-height:2">
-                    <li><span class="capability-badge">WS1</span> <strong>Product Catalog:</strong> Product2, Pricebook2, PricebookEntry migration with AI field mapping</li>
-                    <li><span class="capability-badge">WS2</span> <strong>Quotes & Pricing:</strong> SBQQ__Quote__c, QuoteLine, Discount Schedules with pricing logic</li>
-                    <li><span class="capability-badge">WS3</span> <strong>Contracts & Assets:</strong> Subscription → Asset conversion, contract lifecycle management</li>
-                    <li><span class="capability-badge">WS4</span> <strong>Billing & Invoicing:</strong> Invoice generation, payment tracking, billing automation</li>
-                    <li><span class="capability-badge">WS5</span> <strong>Advanced Features:</strong> Product hierarchies, bundles, EPC integration</li>
-                </ul>
+                <div class="architecture-box">
+                    <h4>🎯 Object-Oriented Migration Framework (Reusable for Phase 3-5)</h4>
+                    <p><strong>Core Principle:</strong> WS1-WS5 workstreams are NOT separate implementations — they are data categories flowing through the same unified platform</p>
+                    <p><strong>Design Pattern:</strong> Each page/view processes ANY object type (Product, Quote, Contract, Invoice, etc.) using polymorphic data models and generic transformation engines</p>
+                    <p><strong>Reusability:</strong> This same 7-page architecture will be extended in Phase 3 for Oracle/SAP CPQ, Phase 4 for CRM data, Phase 5 for ERP data</p>
+                </div>
 
-                <h4>7-Page Migration Wizard</h4>
+                <h4>Functional Requirements by Page/View (Not by Workstream)</h4>
+                
                 <table>
-                    <tr><th>Page</th><th>Purpose</th><th>Key Features</th></tr>
-                    <tr><td><strong>1. Connect</strong></td><td>Establish source/target connections</td><td>OAuth 2.0, username/password auth, encrypted credential storage</td></tr>
-                    <tr><td><strong>2. Analyze</strong></td><td>Schema discovery & readiness</td><td>Auto-detect objects/fields, custom field analysis, readiness scoring</td></tr>
-                    <tr><td><strong>3. Map</strong></td><td>Field mapping editor</td><td>AI suggestions (≥85% accuracy), manual overrides, value mapping</td></tr>
-                    <tr><td><strong>4. Transform</strong></td><td>Data transformation rules</td><td>Normalize, calculate, concatenate, split, default value transforms</td></tr>
-                    <tr><td><strong>5. Validate</strong></td><td>Pre-migration checks</td><td>STG1 → STG2 validation, error reporting, drill-down capability</td></tr>
-                    <tr><td><strong>6. Execute</strong></td><td>Migration execution</td><td>Batch processing (200-10K), parallel workers (1-16), real-time monitoring</td></tr>
-                    <tr><td><strong>7. Test</strong></td><td>Post-migration verification</td><td>Record count match, data integrity sampling, discrepancy analysis</td></tr>
+                    <tr>
+                        <th>Page/View</th>
+                        <th>Purpose</th>
+                        <th>Key Functional Features</th>
+                        <th>Applies To</th>
+                    </tr>
+                    <tr>
+                        <td><span class="view-badge">View 1</span><br><strong>Connection Wizard</strong></td>
+                        <td>Establish authenticated connections to source (SFDC CPQ) and target (Revenue Cloud) systems</td>
+                        <td>
+                            • OAuth 2.0 authentication flow<br>
+                            • Username/password authentication<br>
+                            • Encrypted credential storage<br>
+                            • Connection testing & validation<br>
+                            • Support for sandbox/production environments
+                        </td>
+                        <td>ALL objects across WS1-WS5</td>
+                    </tr>
+                    <tr>
+                        <td><span class="view-badge">View 2</span><br><strong>Schema Analysis</strong></td>
+                        <td>Discover and analyze source/target schemas, detect custom fields, assess migration readiness</td>
+                        <td>
+                            • Auto-discover all standard objects<br>
+                            • Detect custom objects & fields<br>
+                            • Schema comparison (source vs target)<br>
+                            • Readiness scoring (% compatible fields)<br>
+                            • Custom field impact analysis
+                        </td>
+                        <td>ALL objects across WS1-WS5</td>
+                    </tr>
+                    <tr>
+                        <td><span class="view-badge">View 3</span><br><strong>Field Mapping Editor</strong></td>
+                        <td>Map source fields to target fields using AI suggestions and manual overrides</td>
+                        <td>
+                            • AI-powered field mapping (≥85% accuracy)<br>
+                            • Drag-and-drop manual mapping<br>
+                            • Value mapping (picklist, ID references)<br>
+                            • Confidence scoring per mapping<br>
+                            • Mapping templates (save/reuse)<br>
+                            • Preview mapped data samples
+                        </td>
+                        <td>ALL objects across WS1-WS5<br>(70+ fields total)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="view-badge">View 4</span><br><strong>Transformation Rules</strong></td>
+                        <td>Define data transformation rules (normalize, calculate, concatenate, split, default values)</td>
+                        <td>
+                            • Formula builder (concatenate, split, substring)<br>
+                            • Default value assignment<br>
+                            • Data normalization (date formats, currencies)<br>
+                            • Conditional transformations<br>
+                            • Lookup/replace tables<br>
+                            • Transformation testing UI
+                        </td>
+                        <td>ALL objects across WS1-WS5</td>
+                    </tr>
+                    <tr>
+                        <td><span class="view-badge">View 5</span><br><strong>Validation Dashboard</strong></td>
+                        <td>Pre-migration validation checks with drill-down error reporting</td>
+                        <td>
+                            • STG1 → STG2 validation engine<br>
+                            • Error categorization (critical, warning, info)<br>
+                            • Drill-down to specific records<br>
+                            • Export error reports (CSV, Excel)<br>
+                            • Bulk error resolution tools<br>
+                            • Validation history & comparison
+                        </td>
+                        <td>ALL objects across WS1-WS5</td>
+                    </tr>
+                    <tr>
+                        <td><span class="view-badge">View 6</span><br><strong>Migration Execution</strong></td>
+                        <td>Execute migration batches with real-time monitoring and progress tracking</td>
+                        <td>
+                            • Batch size configuration (200-10,000)<br>
+                            • Parallel worker configuration (1-16 workers)<br>
+                            • Real-time progress monitoring<br>
+                            • Success/failure tracking per batch<br>
+                            • Auto-retry on transient failures<br>
+                            • Pause/resume migration<br>
+                            • Rollback to previous state
+                        </td>
+                        <td>ALL objects across WS1-WS5</td>
+                    </tr>
+                    <tr>
+                        <td><span class="view-badge">View 7</span><br><strong>Post-Migration Testing</strong></td>
+                        <td>Verify migration success with data integrity checks and discrepancy analysis</td>
+                        <td>
+                            • Record count verification<br>
+                            • Data integrity sampling (random records)<br>
+                            • Side-by-side comparison UI<br>
+                            • Discrepancy report generation<br>
+                            • Export test results<br>
+                            • Migration certification sign-off
+                        </td>
+                        <td>ALL objects across WS1-WS5</td>
+                    </tr>
                 </table>
 
-                <h4>Complete Field Mapping Coverage (70+ Fields)</h4>
+                <h4>Complete Object Coverage (70+ Fields Across WS1-WS5)</h4>
+                <p>The 7-page wizard processes these object types using the same unified architecture:</p>
                 <ul style="line-height:1.8">
-                    <li><strong>WS1:</strong> Product2 (20+ fields), Pricebook2 (5 fields), PricebookEntry (7 fields), Account (15 fields)</li>
-                    <li><strong>WS2:</strong> SBQQ__Quote__c (17+ fields), SBQQ__QuoteLine__c (8 fields), SBQQ__DiscountSchedule__c (4 fields)</li>
-                    <li><strong>WS3:</strong> SBQQ__Subscription__c → Asset (12 fields), Contract (10 fields)</li>
-                    <li><strong>WS4:</strong> Invoice (14 fields), InvoiceLine (8 fields), BillingAccount (6 fields)</li>
-                    <li><strong>WS5:</strong> Product hierarchy (4 fields), ProductChildItem (5 fields), vlocity_cmt__PricingElement__c (6 fields)</li>
+                    <li><strong>WS1 - Product Catalog:</strong> Product2 (20+ fields), Pricebook2 (5 fields), PricebookEntry (7 fields)</li>
+                    <li><strong>WS2 - Quotes & Pricing:</strong> SBQQ__Quote__c (17+ fields), QuoteLine (8 fields), DiscountSchedule (4 fields)</li>
+                    <li><strong>WS3 - Contracts & Assets:</strong> Subscription → Asset (12 fields), Contract (10 fields)</li>
+                    <li><strong>WS4 - Billing & Invoicing:</strong> Invoice (14 fields), InvoiceLine (8 fields), BillingAccount (6 fields)</li>
+                    <li><strong>WS5 - Advanced Features:</strong> Product hierarchy (4 fields), ProductChildItem (5 fields), PricingElement (6 fields)</li>
+                </ul>
+                <p><em>Note: Each object type flows through the same 7-page wizard — not separate wizards per workstream</em></p>
+
+                <h4>Cross-Workstream Platform Capabilities</h4>
+                <ul style="line-height:1.8">
+                    <li><strong>Unified Data Model:</strong> Generic object schema that can represent any source/target object type</li>
+                    <li><strong>Polymorphic Transformation Engine:</strong> Same transformation rules apply to Products, Quotes, Contracts, etc.</li>
+                    <li><strong>Generic Validation Framework:</strong> Validation rules are object-agnostic (required fields, data types, referential integrity)</li>
+                    <li><strong>Hybrid Staging Model:</strong> Vanilla tables for standard fields + EAV tables for custom fields (works for ALL objects)</li>
+                    <li><strong>Orchestration Engine:</strong> Manages migration workflows for any object type with dependency resolution</li>
                 </ul>
 
-                <h4>Technical Architecture Highlights</h4>
-                <ul style="line-height:1.8">
-                    <li><strong>Hybrid Staging Model:</strong> Vanilla tables for standard fields + EAV tables for custom fields</li>
-                    <li><strong>Multi-Stage Validation:</strong> STG1 (raw) → STG2 (transformed) → Target (validated)</li>
-                    <li><strong>AI Field Mapping:</strong> Machine learning engine with ≥85% accuracy, confidence scoring</li>
-                    <li><strong>Batch Processing:</strong> Configurable batch sizes, parallel workers, auto-retry on failure</li>
-                    <li><strong>Rollback Capability:</strong> Track inserted record IDs, one-click rollback with dependency handling</li>
-                    <li><strong>Real-Time Monitoring:</strong> Progress dashboard, ETA calculation, worker status</li>
-                    <li><strong>Audit Logging:</strong> Immutable audit trail (7 years retention), compliance-ready</li>
-                </ul>
-
-                <h4>Acceptance Criteria (MVP)</h4>
-                <ul style="line-height:1.8">
-                    <li>✓ User can connect to both CPQ and RCA orgs (OAuth/username-password)</li>
-                    <li>✓ System auto-detects all objects (Product2, Quote, Subscription, Invoice, etc.)</li>
-                    <li>✓ AI suggests field mappings with ≥85% accuracy across all workstreams</li>
-                    <li>✓ User can manually override AI suggestions and save custom mappings</li>
-                    <li>✓ System validates required fields, data types, foreign keys before migration</li>
-                    <li>✓ Migration executes with configurable batch size (200-10K) and parallel workers (1-16)</li>
-                    <li>✓ Real-time dashboard displays progress, success/error counts, ETA</li>
-                    <li>✓ User can pause migration and resume without data loss</li>
-                    <li>✓ Rollback deletes all migrated records and resets project state</li>
-                    <li>✓ Post-migration test verifies record count match and data integrity ≥95%</li>
-                </ul>
+                <h4>Acceptance Criteria for Phase 1 MVP</h4>
+                <ol style="line-height:1.8">
+                    <li>All 7 pages functional and accessible via wizard navigation</li>
+                    <li>Successfully migrate ≥1 sample object from each workstream (WS1-WS5) using the same platform</li>
+                    <li>AI field mapping achieves ≥85% accuracy on standard fields</li>
+                    <li>Validation engine catches ≥95% of data quality issues pre-migration</li>
+                    <li>Batch processing handles 10,000+ records with &lt;5% failure rate</li>
+                    <li>Post-migration testing confirms 100% record count accuracy</li>
+                    <li>Platform architecture is extensible (can add new object types without code changes)</li>
+                    <li>Rollback functionality tested and working for all object types</li>
+                    <li>Real-time monitoring dashboard shows batch progress across all workers</li>
+                    <li>Complete documentation of object-oriented architecture for Phase 3-5 reuse</li>
+                </ol>
             </section>
 
             <section class="phase-section">
                 <h3>Phase 2: AI Product Configuration Platform</h3>
-                <p><strong>Objective:</strong> Provide intelligent product design, configuration, and planning tools with AI-powered impact analysis and budget calculation</p>
-                
-                <h4>Core Functional Capabilities</h4>
-                <ul style="line-height:2">
-                    <li><strong>Generate with AI:</strong> AI-powered product design from natural language requirements
-                        <ul style="margin-left:2rem;line-height:1.8">
-                            <li>Input business requirements as text (e.g., "Create a subscription product for SaaS with 3 tiers")</li>
-                            <li>AI generates complete product specification: fields, pricing, bundles, options</li>
-                            <li>Review and modify AI-generated product configuration</li>
-                        </ul>
-                    </li>
-                    <li><strong>Modify with AI:</strong> AI-assisted product modifications
-                        <ul style="margin-left:2rem;line-height:1.8">
-                            <li>Upload existing product configuration</li>
-                            <li>Request changes via natural language (e.g., "Add volume discounting")</li>
-                            <li>AI suggests modifications with before/after comparison</li>
-                        </ul>
-                    </li>
-                    <li><strong>Adopt AI Suggested Product Design:</strong> Review and approve AI recommendations
-                        <ul style="margin-left:2rem;line-height:1.8">
-                            <li>Side-by-side comparison of current vs. AI-suggested design</li>
-                            <li>Field-level diff highlighting changes</li>
-                            <li>One-click adopt or selective field adoption</li>
-                        </ul>
-                    </li>
-                </ul>
+                <p><strong>Objective:</strong> Build AI-powered product design tools with natural language processing, impact analysis, and budget calculation</p>
 
-                <h4>Planning & Analysis Tools</h4>
+                <h4>Functional Requirements by Feature/View</h4>
+                
                 <table>
-                    <tr><th>Tool</th><th>Purpose</th><th>Key Outputs</th></tr>
-                    <tr><td><strong>Marketing Plan Generator</strong></td><td>AI-generated go-to-market strategy</td><td>Target audience, positioning, messaging, channels, campaign ideas</td></tr>
-                    <tr><td><strong>Selling Plan Generator</strong></td><td>Sales enablement and pricing strategy</td><td>Pricing models, discount strategies, sales playbooks, objection handling</td></tr>
-                    <tr><td><strong>Servicing Plan Generator</strong></td><td>Post-sale service and support planning</td><td>Support tiers, SLA definitions, escalation paths, service catalogs</td></tr>
-                    <tr><td><strong>System Impact Analyzer</strong></td><td>Change impact assessment</td><td>Affected systems, integration points, data migration needs, risk assessment</td></tr>
-                    <tr><td><strong>Budget Calculator</strong></td><td>Implementation cost estimation</td><td>License costs, implementation hours, training budget, infrastructure costs</td></tr>
+                    <tr>
+                        <th>Feature/View</th>
+                        <th>Purpose</th>
+                        <th>Key Functional Features</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Generate with AI</strong></td>
+                        <td>Create complete product specifications from natural language requirements</td>
+                        <td>
+                            • Natural language input form<br>
+                            • AI requirements parsing<br>
+                            • Product specification generation (fields, pricing, attributes)<br>
+                            • Multi-step wizard for refinement<br>
+                            • Preview generated product design
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Modify with AI</strong></td>
+                        <td>Request changes to existing product designs using natural language</td>
+                        <td>
+                            • Select existing product to modify<br>
+                            • Natural language change requests<br>
+                            • AI-generated modification suggestions<br>
+                            • Impact preview (what will change)<br>
+                            • Accept/reject modifications
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Adopt AI Suggestions</strong></td>
+                        <td>Review and selectively adopt AI-generated product designs</td>
+                        <td>
+                            • Side-by-side comparison (current vs AI suggestion)<br>
+                            • Field-level diff highlighting<br>
+                            • Selective adoption (choose specific fields)<br>
+                            • Merge conflict resolution<br>
+                            • Adoption history tracking
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Marketing Plan Generator</strong></td>
+                        <td>Auto-generate marketing strategy for new/modified products</td>
+                        <td>
+                            • Target audience analysis<br>
+                            • Competitive positioning<br>
+                            • Marketing channel recommendations<br>
+                            • Budget allocation suggestions<br>
+                            • Campaign timeline generation
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Selling Plan Generator</strong></td>
+                        <td>Auto-generate sales enablement materials and strategies</td>
+                        <td>
+                            • Sales script generation<br>
+                            • Pricing objection handlers<br>
+                            • Competitive battle cards<br>
+                            • Sales training materials<br>
+                            • Quota impact analysis
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Servicing Plan Generator</strong></td>
+                        <td>Auto-generate customer support and service documentation</td>
+                        <td>
+                            • Support KB article generation<br>
+                            • Troubleshooting guides<br>
+                            • SLA recommendations<br>
+                            • Support staffing estimates<br>
+                            • Training requirements
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>System Impact Analyzer</strong></td>
+                        <td>Analyze downstream impact of product changes across systems</td>
+                        <td>
+                            • Dependency mapping (which systems affected)<br>
+                            • Integration point analysis<br>
+                            • Data model impact assessment<br>
+                            • API contract changes<br>
+                            • Risk scoring (high/medium/low)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Budget Calculator</strong></td>
+                        <td>Calculate total cost of implementing new/modified products</td>
+                        <td>
+                            • Development cost estimation<br>
+                            • Marketing cost estimation<br>
+                            • Support cost estimation<br>
+                            • Infrastructure cost estimation<br>
+                            • ROI projection (3/5/10 years)
+                        </td>
+                    </tr>
                 </table>
 
                 <h4>User Workflows</h4>
-                <ul style="line-height:1.8">
-                    <li><strong>Workflow 1:</strong> Product Manager describes new product → AI generates design → Review/modify → Approve → Export to Salesforce</li>
-                    <li><strong>Workflow 2:</strong> Upload existing product → Request AI modifications → Review changes → Adopt selected fields → Update Salesforce</li>
-                    <li><strong>Workflow 3:</strong> Generate product → Create marketing plan → Create selling plan → Calculate budget → Present to stakeholders</li>
-                </ul>
+                <ol style="line-height:1.8">
+                    <li><strong>New Product Design:</strong> Generate with AI → Review suggestions → Adopt → Generate Marketing/Selling/Servicing Plans → Analyze Impact → Calculate Budget → Approve</li>
+                    <li><strong>Modify Existing Product:</strong> Select product → Modify with AI → Review changes → Adopt → Update Marketing/Selling/Servicing Plans → Analyze Impact → Calculate Budget → Approve</li>
+                    <li><strong>Competitive Response:</strong> Input competitor product → Generate with AI → Competitive positioning → Selling Plan with battle cards → Budget approval</li>
+                </ol>
             </section>
 
             <section class="phase-section">
                 <h3>Phase 3: Multi-CPQ Platform Support</h3>
-                <p><strong>Objective:</strong> Expand source system support beyond SFDC CPQ to other CPQ platforms migrating to SFDC Revenue Cloud</p>
-                
-                <h4>Supported Source CPQ Systems</h4>
-                <ul style="line-height:2">
-                    <li><strong>Oracle CPQ Cloud</strong> → SFDC Revenue Cloud</li>
-                    <li><strong>Apttus/Conga CPQ</strong> → SFDC Revenue Cloud</li>
-                    <li><strong>SAP CPQ</strong> → SFDC Revenue Cloud</li>
-                    <li><strong>Salesforce Native CPQ (legacy)</strong> → SFDC Revenue Cloud</li>
-                    <li><strong>Custom CPQ Systems</strong> → SFDC Revenue Cloud (via CSV import)</li>
-                </ul>
+                <p><strong>Objective:</strong> Extend Phase 1's object-oriented migration framework to support Oracle, Apttus, SAP, and custom CPQ systems</p>
 
-                <h4>Core Capabilities</h4>
-                <ul style="line-height:1.8">
-                    <li>Universal connector framework for multi-system API integration</li>
-                    <li>Cross-platform field mapping engine with system-specific transforms</li>
-                    <li>Data model normalization (CPQ-agnostic staging layer)</li>
-                    <li>System-specific business rule libraries (Oracle vs. SAP vs. Apttus logic)</li>
-                </ul>
+                <h4>Functional Requirements by Connector View</h4>
+                
+                <table>
+                    <tr>
+                        <th>Connector View</th>
+                        <th>Supported Systems</th>
+                        <th>Key Functional Features</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Oracle CPQ Connector</strong></td>
+                        <td>Oracle CPQ Cloud, Oracle Configure Price Quote</td>
+                        <td>
+                            • Oracle API authentication<br>
+                            • Product catalog extraction<br>
+                            • Pricing rule mapping<br>
+                            • Configuration logic translation<br>
+                            • Quote data migration
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Apttus/Conga Connector</strong></td>
+                        <td>Apttus CPQ, Conga CPQ, Conga Composer</td>
+                        <td>
+                            • Apttus object schema mapping<br>
+                            • Product bundle translation<br>
+                            • Pricing waterfall conversion<br>
+                            • Approval workflow migration<br>
+                            • Document template mapping
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>SAP CPQ Connector</strong></td>
+                        <td>SAP CPQ, SAP Variant Configuration</td>
+                        <td>
+                            • SAP API integration<br>
+                            • Material master extraction<br>
+                            • Variant configuration mapping<br>
+                            • Pricing condition translation<br>
+                            • BOM (Bill of Materials) migration
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Custom CPQ Connector</strong></td>
+                        <td>Custom-built CPQ systems, CSV/Excel-based systems</td>
+                        <td>
+                            • File upload (CSV, Excel, JSON, XML)<br>
+                            • Schema auto-detection<br>
+                            • Manual field mapping UI<br>
+                            • Data validation engine<br>
+                            • Transformation rule builder
+                        </td>
+                    </tr>
+                </table>
+
+                <p><strong>Reuse of Phase 1 Architecture:</strong> All connectors use the same 7-page wizard framework — only the source connector layer changes</p>
             </section>
 
             <section class="phase-section">
                 <h3>Phase 4: CRM + CPQ Integration</h3>
-                <p><strong>Objective:</strong> Support CRM+CPQ combinations migrating to Salesforce RLM (Revenue Lifecycle Management) + Revenue Cloud</p>
-                
-                <h4>Supported CRM + CPQ Combinations</h4>
-                <ul style="line-height:2">
-                    <li><strong>Microsoft Dynamics CRM + CPQ</strong> → SFDC RLM + Revenue Cloud</li>
-                    <li><strong>SugarCRM + Custom CPQ</strong> → SFDC RLM + Revenue Cloud</li>
-                    <li><strong>HubSpot + CPQ Integration</strong> → SFDC RLM + Revenue Cloud</li>
-                    <li><strong>Zoho CRM + CPQ</strong> → SFDC RLM + Revenue Cloud</li>
-                </ul>
+                <p><strong>Objective:</strong> Migrate CRM data (Accounts, Contacts, Opportunities) alongside CPQ data to SFDC RLM + Revenue Cloud</p>
 
-                <h4>Core Capabilities</h4>
-                <ul style="line-height:1.8">
-                    <li>CRM data migration (Accounts, Contacts, Opportunities, Activities)</li>
-                    <li>Account hierarchy preservation and mapping</li>
-                    <li>Relationship mapping (Account-Contact, Opportunity-Quote relationships)</li>
-                    <li>CPQ + CRM data correlation and integrity validation</li>
-                </ul>
+                <h4>Functional Requirements by CRM Platform View</h4>
+                
+                <table>
+                    <tr>
+                        <th>CRM Platform View</th>
+                        <th>Supported Systems</th>
+                        <th>Key Functional Features</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Dynamics CRM+CPQ</strong></td>
+                        <td>Microsoft Dynamics 365 Sales, Dynamics CPQ</td>
+                        <td>
+                            • Dynamics API authentication<br>
+                            • Account hierarchy preservation<br>
+                            • Opportunity pipeline migration<br>
+                            • Contact relationship mapping<br>
+                            • Quote + CRM data correlation
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Sugar CRM+CPQ</strong></td>
+                        <td>SugarCRM, SugarSell</td>
+                        <td>
+                            • Sugar REST API integration<br>
+                            • Custom field migration<br>
+                            • Activity history preservation<br>
+                            • Account team mapping<br>
+                            • Email integration data migration
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>HubSpot CRM+CPQ</strong></td>
+                        <td>HubSpot CRM, HubSpot Sales Hub</td>
+                        <td>
+                            • HubSpot API authentication<br>
+                            • Deal pipeline migration<br>
+                            • Contact segmentation preservation<br>
+                            • Marketing attribution data<br>
+                            • Quote + deal correlation
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Zoho CRM+CPQ</strong></td>
+                        <td>Zoho CRM, Zoho CPQ</td>
+                        <td>
+                            • Zoho API integration<br>
+                            • Multi-currency support<br>
+                            • Territory management migration<br>
+                            • Blueprint workflow translation<br>
+                            • Custom module migration
+                        </td>
+                    </tr>
+                </table>
+
+                <p><strong>Reuse of Phase 1 Architecture:</strong> Same 7-page wizard, enhanced with CRM-specific object models and relationship preservation logic</p>
             </section>
 
             <section class="phase-section">
                 <h3>Phase 5: ERP System Integration</h3>
-                <p><strong>Objective:</strong> Enterprise Resource Planning systems to Salesforce RLM + Revenue Cloud for complete business transformation</p>
-                
-                <h4>Supported ERP Systems</h4>
-                <ul style="line-height:2">
-                    <li><strong>SAP ERP</strong> → SFDC RLM + Revenue Cloud</li>
-                    <li><strong>Oracle ERP Cloud</strong> → SFDC RLM + Revenue Cloud</li>
-                    <li><strong>Microsoft Dynamics 365 Finance</strong> → SFDC RLM + Revenue Cloud</li>
-                    <li><strong>NetSuite</strong> → SFDC RLM + Revenue Cloud</li>
-                    <li><strong>Sage Intacct</strong> → SFDC RLM + Revenue Cloud</li>
-                </ul>
+                <p><strong>Objective:</strong> Integrate ERP financial and operational data with SFDC RLM + Revenue Cloud for end-to-end revenue management</p>
 
-                <h4>Core Capabilities</h4>
-                <ul style="line-height:1.8">
-                    <li>Financial data migration (GL accounts, chart of accounts, journal entries)</li>
-                    <li>Inventory management sync (stock levels, warehouses, SKUs)</li>
-                    <li>Order management integration (purchase orders, sales orders, fulfillment)</li>
-                    <li>Procurement and vendor management</li>
-                    <li>Real-time ERP ↔ Salesforce sync for ongoing operations</li>
-                </ul>
+                <h4>Functional Requirements by ERP Platform View</h4>
+                
+                <table>
+                    <tr>
+                        <th>ERP Platform View</th>
+                        <th>Supported Systems</th>
+                        <th>Key Functional Features</th>
+                    </tr>
+                    <tr>
+                        <td><strong>SAP ERP Connector</strong></td>
+                        <td>SAP S/4HANA, SAP ECC</td>
+                        <td>
+                            • SAP RFC/OData API integration<br>
+                            • Financial data extraction (GL, AR, AP)<br>
+                            • Material master synchronization<br>
+                            • Order management integration<br>
+                            • Real-time inventory sync
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Oracle ERP Connector</strong></td>
+                        <td>Oracle Cloud ERP, Oracle E-Business Suite</td>
+                        <td>
+                            • Oracle REST API integration<br>
+                            • Chart of accounts mapping<br>
+                            • Purchase order integration<br>
+                            • Invoice reconciliation<br>
+                            • Revenue recognition sync
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dynamics 365 ERP</strong></td>
+                        <td>Microsoft Dynamics 365 Finance & Operations</td>
+                        <td>
+                            • Dynamics API authentication<br>
+                            • Financial dimension mapping<br>
+                            • Procurement workflow integration<br>
+                            • Project accounting sync<br>
+                            • Multi-company consolidation
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>NetSuite Connector</strong></td>
+                        <td>Oracle NetSuite ERP</td>
+                        <td>
+                            • NetSuite SuiteTalk API integration<br>
+                            • Subsidiary management mapping<br>
+                            • Item master synchronization<br>
+                            • Order-to-cash integration<br>
+                            • Real-time revenue tracking
+                        </td>
+                    </tr>
+                </table>
+
+                <p><strong>Reuse of Phase 1 Architecture:</strong> Same underlying platform, extended with real-time sync capabilities and bidirectional data flow for ERP integration</p>
             </section>
 
-            <section style="background:#f0f6fb;padding:2rem;border-radius:12px;margin-top:3rem">
-                <h3 style="margin-top:0;color:#11998e">Cross-Phase Functional Capabilities</h3>
+            <section class="phase-section">
+                <h3>Cross-Phase Platform Capabilities</h3>
+                <p>These capabilities are built once in Phase 1 and reused across all phases:</p>
+                
                 <table>
-                    <tr><th>Capability</th><th>Description</th><th>Applies To</th></tr>
-                    <tr><td>AI-Powered Automation</td><td>Machine learning for field mapping, product design, impact analysis</td><td>All Phases</td></tr>
-                    <tr><td>Multi-Stage Validation</td><td>STG1 → STG2 → Target with comprehensive DQ checks</td><td>Phases 1, 3, 4, 5</td></tr>
-                    <tr><td>Batch Processing</td><td>Configurable batch sizes with parallel workers</td><td>Phases 1, 3, 4, 5</td></tr>
-                    <tr><td>Rollback Capability</td><td>One-click rollback with dependency handling</td><td>Phases 1, 3, 4, 5</td></tr>
-                    <tr><td>Real-Time Monitoring</td><td>Live progress dashboard with ETA</td><td>All Phases</td></tr>
-                    <tr><td>Audit Logging</td><td>Immutable audit trail (7 years retention)</td><td>All Phases</td></tr>
-                    <tr><td>API-First Architecture</td><td>RESTful APIs for all platform operations</td><td>All Phases</td></tr>
+                    <tr>
+                        <th>Capability</th>
+                        <th>Description</th>
+                        <th>Applicable Phases</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Object-Oriented Migration Engine</strong></td>
+                        <td>Generic data migration framework that works for any source/target object type</td>
+                        <td>Phase 1, 3, 4, 5</td>
+                    </tr>
+                    <tr>
+                        <td><strong>AI Field Mapping</strong></td>
+                        <td>ML-powered field mapping with confidence scoring (≥85% accuracy)</td>
+                        <td>Phase 1, 3, 4, 5</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Multi-Stage Validation</strong></td>
+                        <td>STG1 → STG2 → Target validation with error categorization</td>
+                        <td>Phase 1, 3, 4, 5</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Batch Processing Framework</strong></td>
+                        <td>Configurable batch sizes, parallel workers, auto-retry, pause/resume</td>
+                        <td>Phase 1, 3, 4, 5</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Rollback Mechanism</strong></td>
+                        <td>Automated rollback to previous state on critical errors</td>
+                        <td>Phase 1, 3, 4, 5</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Real-Time Monitoring</strong></td>
+                        <td>Live dashboard showing batch progress, success/failure rates, worker status</td>
+                        <td>Phase 1, 3, 4, 5</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Audit Logging</strong></td>
+                        <td>Complete audit trail of all migrations, transformations, validations</td>
+                        <td>All Phases (1-5)</td>
+                    </tr>
                 </table>
+            </section>
+
+            <section>
+                <h2>Navigation Guide</h2>
+                <ul style="line-height:2">
+                    <li><strong>Platform Vision:</strong> Start with <a href="requirements-home.html">RevNova Vision & Strategy</a> for overall platform vision</li>
+                    <li><strong>Business Context:</strong> Review <a href="business-requirements.html">High Level Business Requirements</a> for business drivers</li>
+                    <li><strong>Detailed Requirements:</strong> Navigate to specific phase Functional/Technical requirements using the left sidebar</li>
+                    <li><strong>Field Mappings:</strong> See <a href="requirements-mapping.html">Complete Field Mapping</a> for detailed field-level specifications</li>
+                </ul>
             </section>
         </main>
     </div>
-
-    <footer style="background:#2c3e50;color:#ecf0f1;padding:2rem 0;text-align:center;margin-top:3rem">
-        <div class="container"><p>&copy; 2025 RevNova. System Transformation as a Service.</p></div>
-    </footer>
 </body>
 </html>
