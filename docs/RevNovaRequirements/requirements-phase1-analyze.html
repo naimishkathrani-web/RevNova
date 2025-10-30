@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Phase 1 - Schema Analysis | RevNova Requirements</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
+        
+        .requirements-layout{display:flex;min-height:calc(100vh - 80px);margin-top:80px}
+        .sidebar{width:280px;background:#f8f9fa;border-right:1px solid #e0e0e0;padding:2rem 0;position:fixed;left:0;top:80px;height:calc(100vh - 80px);overflow-y:auto;z-index:100}
+        .sidebar h3{padding:0 1.5rem;font-size:0.85rem;color:#666;text-transform:uppercase;letter-spacing:0.5px;margin:1.5rem 0 0.5rem}
+        .sidebar h3:first-child{margin-top:0}
+        .sidebar ul{list-style:none;padding:0;margin:0}
+        .sidebar ul li a{display:block;padding:0.6rem 1.5rem;color:#333;text-decoration:none;font-size:0.95rem;transition:all 0.2s}
+        .sidebar ul li a:hover{background:#e9ecef;color:#11998e}
+        .sidebar ul li a.active{background:#11998e;color:#fff;font-weight:500}
+        .sidebar ul ul{padding-left:0}
+        .sidebar ul ul li a{padding-left:2.5rem;font-size:0.9rem}
+        .main-content{flex:1;margin-left:280px;padding:3rem;background:#fff;min-width:0}
+        
+        .page-header{background:linear-gradient(135deg,#11998e 0%,#38ef7d 100%);color:#fff;padding:3rem;border-radius:12px;margin-bottom:3rem;box-shadow:0 4px 15px rgba(17,153,142,0.2)}
+        .page-header h1{margin:0 0 1rem 0;font-size:2.5rem;font-weight:700}
+        .page-header p{margin:0;font-size:1.2rem;opacity:0.95}
+        
+        .section-box{background:#fff;border:2px solid #e0e0e0;padding:2.5rem;margin:2rem 0;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.05)}
+        .section-box h3{color:#11998e;margin-top:0;border-bottom:2px solid #38ef7d;padding-bottom:0.5rem}
+        
+        table{width:100%;border-collapse:collapse;margin:1.5rem 0;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.05)}
+        th,td{border:1px solid #ddd;padding:12px;text-align:left}
+        th{background:linear-gradient(135deg,#11998e 0%,#38ef7d 100%);color:#fff;font-weight:600;text-transform:uppercase;font-size:0.85rem;letter-spacing:0.5px}
+        tr:hover{background:#f8f9fa}
+        
+        .wireframe{background:#f8f9fa;border:2px dashed #11998e;padding:2rem;margin:1.5rem 0;border-radius:8px;font-family:monospace;font-size:0.9rem}
+        .wireframe h4{margin-top:0;color:#11998e}
+        
+        .badge{display:inline-block;background:#667eea;color:#fff;padding:0.3rem 0.6rem;border-radius:12px;font-size:0.75rem;font-weight:600;margin:0.2rem;text-transform:uppercase}
+        .badge-functional{background:#11998e}
+        .badge-technical{background:#e74c3c}
+        
+        @media (max-width:768px){.sidebar{position:relative;width:100%;height:auto;top:0}.main-content{margin-left:0}.requirements-layout{flex-direction:column}}
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="nav-left">
+                <a href="../index.html" class="logo"><div class="logo-box">RevNova</div></a>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="../about-revnova.html">About RevNova</a></li>
+                        <li><a href="../features.html">Features</a></li>
+                        <li><a href="../pricing.html">Pricing</a></li>
+                        <li><a href="requirements-home.html" class="active">RevNova Requirements</a></li>
+                        <li><a href="../contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header-right">
+                <div class="country-selector"><span class="fi fi-us"></span></div>
+                <a href="../login.html" class="btn btn-login">Login</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="requirements-layout">
+        <aside class="sidebar">
+            <h3>Platform Vision</h3>
+            <ul>
+                <li><a href="requirements-home.html">RevNova Vision & Strategy</a></li>
+                <li><a href="business-requirements.html">High Level Business Requirements</a></li>
+                <li><a href="high-level-functional.html">High Level Functional Design</a></li>
+            </ul>
+            
+            <h3>Phase 1 - Migration Wizard</h3>
+            <ul>
+                <li><a href="requirements-phase1-connect.html">1. Connection Wizard</a></li>
+                <li><a href="requirements-phase1-analyze.html" class="active">2. Schema Analysis</a></li>
+                <li><a href="requirements-phase1-mapping.html">3. Field Mapping</a></li>
+                <li><a href="requirements-phase1-transform.html">4. Data Transformation</a></li>
+                <li><a href="requirements-phase1-validate.html">5. Validation</a></li>
+                <li><a href="requirements-phase1-execute.html">6. Migration Execution</a></li>
+                <li><a href="requirements-phase1-test.html">7. Post-Migration Testing</a></li>
+                <li><a href="requirements-phase1-technical.html">Technical Architecture</a></li>
+                <li><a href="requirements-mapping.html">Complete Field Mapping</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="page-header">
+                <h1>🔍 Page 2: Schema Analysis</h1>
+                <p>Auto-discover schemas, detect custom fields, assess migration readiness with compatibility scoring</p>
+            </div>
+
+            <section class="section-box">
+                <h3><span class="badge badge-functional">Functional</span> Overview</h3>
+                <p><strong>Purpose:</strong> Automatically analyze source and target Salesforce schemas to identify all objects and fields, detect customizations, and calculate migration readiness scores.</p>
+                
+                <p><strong>User Journey:</strong></p>
+                <ol style="line-height:1.8">
+                    <li>User lands on Schema Analysis page (auto-triggered after successful connections)</li>
+                    <li>System automatically discovers all standard and custom objects in both environments</li>
+                    <li>User sees object comparison table (source vs target) with match indicators</li>
+                    <li>User expands object to view field-level details</li>
+                    <li>User reviews custom fields and their compatibility status</li>
+                    <li>System calculates and displays readiness score (% of compatible fields)</li>
+                    <li>User reviews recommendations for incompatible objects/fields</li>
+                    <li>User clicks "Next" to proceed to Field Mapping page with discovered schema</li>
+                </ol>
+            </section>
+
+            <section class="section-box">
+                <h3><span class="badge badge-functional">Functional</span> UI Wireframe</h3>
+                <div class="wireframe">
+                    <h4>Schema Analysis - Page Layout</h4>
+                    <pre>
+┌─────────────────────────────────────────────────────────────────────┐
+│  RevNova Migration Wizard                         Step 2 of 7       │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                       │
+│  🔍 Schema Analysis                                                  │
+│  Analyzing schemas from both environments...                         │
+│                                                                       │
+│  Overall Readiness Score: 87% ⚠️ Review 3 warnings                  │
+│  ████████████████████████░░░░   87/100 fields compatible            │
+│                                                                       │
+│  Workstream Filter: [All ▼] [WS1-Product] [WS2-Quotes] [WS3...     │
+│  Search: [🔍 Filter objects or fields..............................]  │
+│                                                                       │
+│  ┌───────────────────────────────────────────────────────────────┐ │
+│  │ OBJECT COMPARISON (showing 8 of 47 objects)                   │ │
+│  ├─────────────┬──────────┬──────────┬─────────────┬──────────────┤ │
+│  │ Object      │ Source   │ Target   │ Match       │ Custom Fields│ │
+│  ├─────────────┼──────────┼──────────┼─────────────┼──────────────┤ │
+│  │ ▶ Product2  │ 24 flds  │ 22 flds  │ ✅ 95%     │ 4 custom     │ │
+│  │ ▼ SBQQ__    │ 54 flds  │ N/A      │ ⚠️ Map     │ 37 custom    │ │
+│  │   Quote__c  │          │          │  required   │              │ │
+│  │   ├─ Name   │ Text(80) │ Quote.   │ ✅ Auto    │ Standard     │ │
+│  │   │         │          │ Name(255)│   mappable  │              │ │
+│  │   ├─ Status │ Picklist │ N/A      │ ⚠️ Custom  │ Standard     │ │
+│  │   │  __c    │ (Draft,  │          │   formula   │              │ │
+│  │   │         │ Approved)│          │   needed    │              │ │
+│  │   ├─ Custom │ Currency │ N/A      │ ❌ Manual  │ Custom       │ │
+│  │   │  _Field │ (18,2)   │          │   mapping   │              │ │
+│  │   └─ ...    │          │          │             │              │ │
+│  │ ▶ Pricebook │ 8 flds   │ 8 flds   │ ✅ 100%    │ 0 custom     │ │
+│  │   Entry     │          │          │             │              │ │
+│  │ ▶ Account   │ 45 flds  │ 43 flds  │ ✅ 93%     │ 12 custom    │ │
+│  └─────────────┴──────────┴──────────┴─────────────┴──────────────┘ │
+│                                                                       │
+│  📋 DETECTED CUSTOMIZATIONS:                                         │
+│  • 4 custom objects (SBQQ__Quote__c, SBQQ__QuoteLine__c...)         │
+│  • 53 custom fields across all objects                               │
+│  • 12 validation rules (3 may need adjustment)                       │
+│  • 8 workflow rules (recommend replacing with Flow)                  │
+│                                                                       │
+│  ⚠️ WARNINGS & RECOMMENDATIONS:                                      │
+│  1. SBQQ__Quote__c → No direct target equivalent. Recommend          │
+│     mapping to standard Quote object with custom fields.             │
+│  2. Custom picklist values differ. Manual value mapping required.    │
+│  3. Formula fields detected. Convert to transformation rules.        │
+│                                                                       │
+│  [ Export Schema Report ]        [ < Back ]              [ Next > ]  │
+└───────────────────────────────────────────────────────────────────────┘
+                    </pre>
+                </div>
+            </section>
+
+            <section class="section-box">
+                <h3><span class="badge badge-functional">Functional</span> Detailed Requirements</h3>
+                
+                <h4>FR-ANALYZE-001: Automatic Schema Discovery</h4>
+                <table>
+                    <tr><th>Requirement ID</th><th>Description</th><th>Acceptance Criteria</th></tr>
+                    <tr>
+                        <td>FR-ANALYZE-001.1</td>
+                        <td>System shall auto-discover all standard objects in source environment</td>
+                        <td>Retrieve all objects via Describe Global API call, filter for standard objects (no namespace prefix), display in object list</td>
+                    </tr>
+                    <tr>
+                        <td>FR-ANALYZE-001.2</td>
+                        <td>System shall auto-discover all custom objects in source environment</td>
+                        <td>Identify custom objects (suffix __c or namespace prefix), flag as custom, highlight in UI with different color</td>
+                    </tr>
+                    <tr>
+                        <td>FR-ANALYZE-001.3</td>
+                        <td>System shall retrieve all fields for each discovered object</td>
+                        <td>Use Describe SObject API for each object, extract: field name, type, length, nullable, picklist values, formula, lookup relationships</td>
+                    </tr>
+                    <tr>
+                        <td>FR-ANALYZE-001.4</td>
+                        <td>System shall repeat discovery for target environment</td>
+                        <td>Same discovery process for target, store separately for comparison</td>
+                    </tr>
+                    <tr>
+                        <td>FR-ANALYZE-001.5</td>
+                        <td>System shall cache discovered schema for session duration</td>
+                        <td>Schema stored in Redis with 24-hour TTL, no re-discovery on page refresh unless user clicks "Refresh Schema"</td>
+                    </tr>
+                </table>
+
+                <h4>FR-ANALYZE-002: Object Comparison</h4>
+                <table>
+                    <tr><th>Requirement ID</th><th>Description</th><th>Acceptance Criteria</th></tr>
+                    <tr>
+                        <td>FR-ANALYZE-002.1</td>
+                        <td>System shall display object comparison table with source vs target columns</td>
+                        <td>Table shows: Object Name, Source Field Count, Target Field Count, Match %, Custom Field Count</td>
+                    </tr>
+                    <tr>
+                        <td>FR-ANALYZE-002.2</td>
+                        <td>System shall calculate field match percentage for each object</td>
+                        <td>Match % = (matching fields / total source fields) × 100. Matching = same name + compatible type</td>
+                    </tr>
+                    <tr>
+                        <td>FR-ANALYZE-002.3</td>
+                        <td>System shall use visual indicators for match quality</td>
+                        <td>✅ Green checkmark for ≥90%, ⚠️ Yellow warning for 70-89%, ❌ Red X for &lt;70%</td>
+                    </tr>
+                    <tr>
+                        <td>FR-ANALYZE-002.4</td>
+                        <td>System shall allow expanding objects to view field-level details</td>
+                        <td>Click on object row to expand, show nested table with field name, source type, target type, match status</td>
+                    </tr>
+                    <tr>
+                        <td>FR-ANALYZE-002.5</td>
+                        <td>System shall support filtering by workstream (WS1-WS5)</td>
+                        <td>Dropdown filter: All, WS1-Product Catalog, WS2-Quotes, WS3-Contracts, WS4-Billing, WS5-Advanced. Filter updates object list in real-time</td>
+                    </tr>
+                </table>
+
+                <h4>FR-ANALYZE-003: Custom Field Detection</h4>
+                <table>
+                    <tr><th>Requirement ID</th><th>Description</th><th>Acceptance Criteria</th></tr>
+                    <tr>
+                        <td>FR-ANALYZE-003.1</td>
+                        <td>System shall identify all custom fields (suffix __c)</td>
+                        <td>Custom fields flagged with badge "Custom" in UI, counted separately from standard fields</td>
+                    </tr>
+                    <tr>
+                        <td>FR-ANALYZE-003.2</td>
+                        <td>System shall detect formula fields and flag for manual review</td>
+                        <td>Formula fields displayed with ⚠️ icon, tooltip: "Formula logic must be converted to transformation rule"</td>
+                    </tr>
+                    <tr>
+                        <td>FR-ANALYZE-003.3</td>
+                        <td>System shall detect rollup summary fields and flag incompatibility</td>
+                        <td>Rollup fields displayed with ❌ icon, tooltip: "Rollup fields cannot be migrated directly. Recommend converting to Flow or custom code"</td>
+                    </tr>
+                    <tr>
+                        <td>FR-ANALYZE-003.4</td>
+                        <td>System shall detect picklist fields with custom values</td>
+                        <td>Display picklist values from source, compare with target, highlight missing values, suggest manual value mapping</td>
+                    </tr>
+                    <tr>
+                        <td>FR-ANALYZE-003.5</td>
+                        <td>System shall detect lookup relationships and external IDs</td>
+                        <td>Relationship fields displayed with link icon, show referenced object, external IDs flagged for ID mapping strategy</td>
+                    </tr>
+                </table>
+
+                <h4>FR-ANALYZE-004: Readiness Scoring</h4>
+                <table>
+                    <tr><th>Requirement ID</th><th>Description</th><th>Acceptance Criteria</th></tr>
+                    <tr>
+                        <td>FR-ANALYZE-004.1</td>
+                        <td>System shall calculate overall readiness score (0-100%)</td>
+                        <td>Score = (auto-mappable fields + mappable with transformation) / total fields. Exclude rollup/formula fields from denominator if non-migratable</td>
+                    </tr>
+                    <tr>
+                        <td>FR-ANALYZE-004.2</td>
+                        <td>System shall display readiness score with progress bar</td>
+                        <td>Progress bar: Green for ≥85%, Yellow for 70-84%, Red for &lt;70%. Show numeric score and visual bar</td>
+                    </tr>
+                    <tr>
+                        <td>FR-ANALYZE-004.3</td>
+                        <td>System shall categorize fields by migration complexity</td>
+                        <td>Categories: Auto-mappable (✅), Transformation needed (⚠️), Manual mapping (⚠️), Not migratable (❌). Count displayed per category</td>
+                    </tr>
+                    <tr>
+                        <td>FR-ANALYZE-004.4</td>
+                        <td>System shall provide detailed readiness report</td>
+                        <td>"Export Schema Report" button generates PDF/Excel with: object list, field list, match %, recommendations, estimated effort</td>
+                    </tr>
+                </table>
+
+                <h4>FR-ANALYZE-005: Warnings & Recommendations</h4>
+                <table>
+                    <tr><th>Requirement ID</th><th>Description</th><th>Acceptance Criteria</th></tr>
+                    <tr>
+                        <td>FR-ANALYZE-005.1</td>
+                        <td>System shall display warnings for custom objects with no target equivalent</td>
+                        <td>Warning message: "Custom object detected. Recommend mapping to closest standard object or creating custom object in target"</td>
+                    </tr>
+                    <tr>
+                        <td>FR-ANALYZE-005.2</td>
+                        <td>System shall warn about validation rules that may need adjustment</td>
+                        <td>Detect validation rules via Tooling API, flag rules that reference non-existent fields in target, recommend review</td>
+                    </tr>
+                    <tr>
+                        <td>FR-ANALYZE-005.3</td>
+                        <td>System shall recommend replacing workflow rules with Flows</td>
+                        <td>Detect active workflow rules, display count, link to Salesforce documentation on workflow→Flow conversion</td>
+                    </tr>
+                    <tr>
+                        <td>FR-ANALYZE-005.4</td>
+                        <td>System shall provide actionable recommendations for each warning</td>
+                        <td>Each warning includes: Description, Impact (high/medium/low), Recommended Action, Link to documentation/help article</td>
+                    </tr>
+                </table>
+
+                <h4>FR-ANALYZE-006: Search & Filtering</h4>
+                <table>
+                    <tr><th>Requirement ID</th><th>Description</th><th>Acceptance Criteria</th></tr>
+                    <tr>
+                        <td>FR-ANALYZE-006.1</td>
+                        <td>System shall provide real-time search across objects and fields</td>
+                        <td>Search box filters table as user types, matches on object name OR field name, case-insensitive</td>
+                    </tr>
+                    <tr>
+                        <td>FR-ANALYZE-006.2</td>
+                        <td>System shall support filtering by match status (All, Matched, Warnings, Errors)</td>
+                        <td>Filter dropdown updates object list, Matched shows ≥90%, Warnings shows 70-89%, Errors shows &lt;70%</td>
+                    </tr>
+                    <tr>
+                        <td>FR-ANALYZE-006.3</td>
+                        <td>System shall support filtering by custom vs standard objects</td>
+                        <td>Toggle switches: Show Standard Objects (default on), Show Custom Objects (default on). Unchecking hides that category</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section class="section-box">
+                <h3><span class="badge badge-technical">Technical</span> Architecture & Implementation</h3>
+                
+                <h4>TA-ANALYZE-001: Schema Discovery API Flow</h4>
+                <pre style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:8px;overflow-x:auto">
+// Step 1: Describe Global (get all objects)
+GET https://acme.my.salesforce.com/services/data/v59.0/sobjects/
+
+Response (excerpt):
+{
+  "sobjects": [
+    { "name": "Account", "custom": false, "queryable": true },
+    { "name": "Product2", "custom": false, "queryable": true },
+    { "name": "SBQQ__Quote__c", "custom": true, "queryable": true },
+    ...
+  ]
+}
+
+// Step 2: Describe SObject (get fields for each object)
+GET https://acme.my.salesforce.com/services/data/v59.0/sobjects/Product2/describe/
+
+Response (excerpt):
+{
+  "name": "Product2",
+  "fields": [
+    {
+      "name": "Name",
+      "type": "string",
+      "length": 255,
+      "nillable": false,
+      "custom": false
+    },
+    {
+      "name": "ProductCode",
+      "type": "string",
+      "length": 255,
+      "nillable": true,
+      "custom": false
+    },
+    {
+      "name": "Custom_Field__c",
+      "type": "currency",
+      "precision": 18,
+      "scale": 2,
+      "custom": true,
+      "calculatedFormula": null
+    }
+  ]
+}
+                </pre>
+
+                <h4>TA-ANALYZE-002: Schema Comparison Algorithm</h4>
+                <pre style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:8px;overflow-x:auto">
+function compareSchemas(sourceSchema, targetSchema) {
+  const comparison = [];
+  
+  for (const sourceObject of sourceSchema.objects) {
+    const targetObject = targetSchema.objects.find(o => o.name === sourceObject.name);
+    
+    const objectComparison = {
+      name: sourceObject.name,
+      sourceFieldCount: sourceObject.fields.length,
+      targetFieldCount: targetObject ? targetObject.fields.length : 0,
+      matchedFields: 0,
+      compatibleFields: 0,
+      incompatibleFields: 0,
+      customFieldCount: sourceObject.fields.filter(f => f.custom).length,
+      fields: []
+    };
+    
+    for (const sourceField of sourceObject.fields) {
+      const targetField = targetObject?.fields.find(f => f.name === sourceField.name);
+      
+      const fieldMatch = {
+        name: sourceField.name,
+        sourceType: sourceField.type,
+        targetType: targetField?.type || 'N/A',
+        status: calculateMatchStatus(sourceField, targetField),
+        isCustom: sourceField.custom,
+        isFormula: sourceField.calculatedFormula !== null,
+        isRollup: sourceField.aggregatable
+      };
+      
+      if (fieldMatch.status === 'auto-mappable') objectComparison.matchedFields++;
+      else if (fieldMatch.status === 'transformation-needed') objectComparison.compatibleFields++;
+      else objectComparison.incompatibleFields++;
+      
+      objectComparison.fields.push(fieldMatch);
+    }
+    
+    objectComparison.matchPercentage = 
+      (objectComparison.matchedFields / objectComparison.sourceFieldCount) * 100;
+    
+    comparison.push(objectComparison);
+  }
+  
+  return comparison;
+}
+
+function calculateMatchStatus(sourceField, targetField) {
+  if (!targetField) return 'manual-mapping';
+  if (sourceField.type === targetField.type) return 'auto-mappable';
+  if (isCompatibleType(sourceField.type, targetField.type)) return 'transformation-needed';
+  return 'incompatible';
+}
+
+function isCompatibleType(sourceType, targetType) {
+  const compatibilityMatrix = {
+    'string': ['textarea', 'email', 'phone', 'url'],
+    'picklist': ['string', 'textarea'],
+    'double': ['currency', 'percent', 'int'],
+    'currency': ['double'],
+    'date': ['datetime'],
+    'datetime': ['date']
+  };
+  
+  return compatibilityMatrix[sourceType]?.includes(targetType) || false;
+}
+                </pre>
+
+                <h4>TA-ANALYZE-003: Database Schema for Discovered Metadata</h4>
+                <pre style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:8px;overflow-x:auto">
+CREATE TABLE discovered_schemas (
+    schema_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    connection_id UUID NOT NULL REFERENCES user_connections(connection_id),
+    environment_type VARCHAR(20) NOT NULL CHECK (environment_type IN ('source', 'target')),
+    discovery_timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    api_version VARCHAR(10) NOT NULL,
+    object_count INT NOT NULL,
+    field_count INT NOT NULL,
+    custom_object_count INT NOT NULL,
+    custom_field_count INT NOT NULL,
+    schema_data JSONB NOT NULL, -- Full schema metadata
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE schema_objects (
+    object_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    schema_id UUID NOT NULL REFERENCES discovered_schemas(schema_id),
+    object_name VARCHAR(255) NOT NULL,
+    is_custom BOOLEAN NOT NULL,
+    is_queryable BOOLEAN NOT NULL,
+    field_count INT NOT NULL,
+    custom_field_count INT NOT NULL,
+    object_metadata JSONB NOT NULL, -- Describe result
+    UNIQUE(schema_id, object_name)
+);
+
+CREATE TABLE schema_fields (
+    field_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    object_id UUID NOT NULL REFERENCES schema_objects(object_id),
+    field_name VARCHAR(255) NOT NULL,
+    field_type VARCHAR(50) NOT NULL,
+    is_custom BOOLEAN NOT NULL,
+    is_nillable BOOLEAN NOT NULL,
+    is_formula BOOLEAN NOT NULL,
+    is_rollup BOOLEAN NOT NULL,
+    length INT,
+    precision INT,
+    scale INT,
+    picklist_values JSONB, -- Array of picklist values
+    referenced_object VARCHAR(255), -- For lookup/master-detail
+    field_metadata JSONB NOT NULL, -- Full field describe
+    UNIQUE(object_id, field_name)
+);
+
+CREATE INDEX idx_schema_objects_schema_id ON schema_objects(schema_id);
+CREATE INDEX idx_schema_fields_object_id ON schema_fields(object_id);
+CREATE INDEX idx_schema_fields_is_custom ON schema_fields(is_custom);
+                </pre>
+
+                <h4>TA-ANALYZE-004: Readiness Score Calculation API</h4>
+                <pre style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:8px;overflow-x:auto">
+POST /api/v1/schema/readiness-score
+Content-Type: application/json
+
+Request Body:
+{
+  "source_schema_id": "schema_abc123",
+  "target_schema_id": "schema_def456",
+  "workstream_filter": "all" // or "WS1", "WS2", etc.
+}
+
+Response:
+{
+  "overall_score": 87,
+  "total_fields": 324,
+  "auto_mappable": 242,
+  "transformation_needed": 40,
+  "manual_mapping": 32,
+  "not_migratable": 10,
+  "breakdown_by_category": {
+    "auto_mappable_pct": 74.7,
+    "transformation_needed_pct": 12.3,
+    "manual_mapping_pct": 9.9,
+    "not_migratable_pct": 3.1
+  },
+  "warnings": [
+    {
+      "severity": "high",
+      "message": "SBQQ__Quote__c has no direct target equivalent",
+      "recommendation": "Map to standard Quote object with custom fields",
+      "affected_fields": 54
+    },
+    {
+      "severity": "medium",
+      "message": "12 formula fields detected",
+      "recommendation": "Convert formulas to transformation rules in Step 4",
+      "affected_fields": 12
+    }
+  ],
+  "estimated_effort_hours": 45
+}
+                </pre>
+
+                <h4>TA-ANALYZE-005: Performance Optimization</h4>
+                <ul style="line-height:1.8">
+                    <li><strong>Parallel API Calls:</strong> Discover objects in parallel using Promise.all() with concurrency limit of 10 simultaneous requests</li>
+                    <li><strong>Caching Strategy:</strong> Schema cached in Redis for 24 hours with key pattern: schema:{connection_id}:{environment_type}</li>
+                    <li><strong>Incremental Loading:</strong> Display objects as discovered (streaming UI updates) rather than waiting for all objects</li>
+                    <li><strong>Pagination:</strong> Object table uses virtual scrolling for 1000+ objects, renders only visible rows</li>
+                    <li><strong>Background Jobs:</strong> Schema discovery runs in background worker (Bull queue), UI polls for progress</li>
+                </ul>
+
+                <h4>TA-ANALYZE-006: Error Handling</h4>
+                <table>
+                    <tr><th>Error Type</th><th>Handling Strategy</th></tr>
+                    <tr>
+                        <td>API Rate Limit (429)</td>
+                        <td>Exponential backoff with jitter, wait time from Retry-After header, display "Discovering schema... may take a few minutes" message</td>
+                    </tr>
+                    <tr>
+                        <td>Timeout (504)</td>
+                        <td>Retry up to 3 times per object, skip object if all retries fail, display warning: "Could not discover [ObjectName] - will exclude from migration"</td>
+                    </tr>
+                    <tr>
+                        <td>Insufficient Permissions (403)</td>
+                        <td>Display error: "User lacks View All Data permission. Grant permission or use admin credentials"</td>
+                    </tr>
+                    <tr>
+                        <td>Invalid Object (404)</td>
+                        <td>Skip object silently (may be deprecated or hidden), log for debugging</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section class="section-box">
+                <h3>Acceptance Criteria Summary</h3>
+                <ol style="line-height:1.8">
+                    <li>✅ System discovers all standard and custom objects in both source and target environments</li>
+                    <li>✅ Object comparison table shows source field count, target field count, and match percentage</li>
+                    <li>✅ Overall readiness score calculated and displayed with progress bar (0-100%)</li>
+                    <li>✅ Custom fields, formula fields, and rollup fields are clearly flagged</li>
+                    <li>✅ Warnings displayed for incompatible objects with actionable recommendations</li>
+                    <li>✅ Workstream filter allows focusing on WS1-WS5 specific objects</li>
+                    <li>✅ Real-time search filters objects and fields as user types</li>
+                    <li>✅ Expandable object rows show field-level comparison details</li>
+                    <li>✅ Schema cached for 24 hours to avoid repeated API calls</li>
+                    <li>✅ "Export Schema Report" generates comprehensive PDF/Excel report</li>
+                </ol>
+            </section>
+
+            <section>
+                <h2>Navigation</h2>
+                <ul style="line-height:2">
+                    <li><strong>Previous:</strong> <a href="requirements-phase1-connect.html">Page 1: Connection Wizard</a></li>
+                    <li><strong>Next:</strong> <a href="requirements-phase1-mapping.html">Page 3: Field Mapping</a></li>
+                    <li><strong>Back to:</strong> <a href="high-level-functional.html">High Level Functional Design</a></li>
+                </ul>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
