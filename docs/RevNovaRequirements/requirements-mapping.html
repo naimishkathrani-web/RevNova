@@ -17,7 +17,7 @@
     <h1>Field Mapping — CPQ → RCA (Generated)</h1>
     <p>This page contains the mapping rows produced by the mapping generator script. It is intended as an easy-to-read developer reference. Use the business rules referenced in the Functional documents for edge-case logic.</p>
 
-    <h2 class="sheet-title">WS1 — Product Catalog</h2>
+    <h2 class="sheet-title">WS1 — Product Catalog (Phase 1 MVP)</h2>
     <table class="mapping-table">
       <thead>
         <tr>
@@ -27,52 +27,143 @@
         </tr>
       </thead>
       <tbody>
-        <tr><td>Product2</td><td>Name</td><td>Name</td><td>vlocity_cmt__Product__c</td><td>Name</td><td>Direct</td><td>Simple</td><td></td><td>Required</td></tr>
-        <tr><td>Product2</td><td>Product Code</td><td>ProductCode</td><td>vlocity_cmt__Product__c</td><td>vlocity_cmt__ProductCode__c</td><td>Direct</td><td>Simple</td><td></td><td>Required</td></tr>
-        <tr><td>Pricebook2</td><td>Name</td><td>Name</td><td>Pricebook</td><td>Name</td><td>Direct</td><td>Simple</td><td></td><td>Optional</td></tr>
-        <tr><td>PricebookEntry</td><td>UnitPrice</td><td>UnitPrice</td><td>vlocity_cmt__Price__c</td><td>vlocity_cmt__PriceValue__c</td><td>Transform</td><td>Medium</td><td>Validate currency and price dimensions</td><td>Optional</td></tr>
+        <!-- Product2 to vlocity_cmt__Product__c -->
+        <tr><td>Product2</td><td>Name</td><td>Name</td><td>vlocity_cmt__Product__c</td><td>Name</td><td>Direct</td><td>Simple</td><td>Truncate to 80 chars if needed</td><td>Required, Max 80 chars</td></tr>
+        <tr><td>Product2</td><td>ProductCode</td><td>ProductCode</td><td>vlocity_cmt__Product__c</td><td>vlocity_cmt__ProductCode__c</td><td>Direct</td><td>Simple</td><td>Ensure uniqueness</td><td>Required, Unique</td></tr>
+        <tr><td>Product2</td><td>Description</td><td>Description</td><td>vlocity_cmt__Product__c</td><td>vlocity_cmt__Description__c</td><td>Direct</td><td>Simple</td><td>Preserve HTML formatting</td><td>Optional, Max 32000 chars</td></tr>
+        <tr><td>Product2</td><td>Family</td><td>Family</td><td>vlocity_cmt__Product__c</td><td>vlocity_cmt__ProductFamily__c</td><td>Direct</td><td>Simple</td><td></td><td>Optional</td></tr>
+        <tr><td>Product2</td><td>IsActive</td><td>IsActive</td><td>vlocity_cmt__Product__c</td><td>vlocity_cmt__IsActive__c</td><td>Direct</td><td>Simple</td><td>Boolean true/false</td><td>Required</td></tr>
+        <tr><td>Product2</td><td>QuantityUnitOfMeasure</td><td>QuantityUnitOfMeasure</td><td>vlocity_cmt__Product__c</td><td>vlocity_cmt__UnitOfMeasure__c</td><td>ValueMap</td><td>Medium</td><td>Map CPQ UOM to RCA UOM picklist</td><td>Optional</td></tr>
+        
+        <!-- Pricebook2 to Pricebook2 -->
+        <tr><td>Pricebook2</td><td>Name</td><td>Name</td><td>Pricebook2</td><td>Name</td><td>Direct</td><td>Simple</td><td></td><td>Required</td></tr>
+        <tr><td>Pricebook2</td><td>Description</td><td>Description</td><td>Pricebook2</td><td>Description</td><td>Direct</td><td>Simple</td><td></td><td>Optional</td></tr>
+        <tr><td>Pricebook2</td><td>IsActive</td><td>IsActive</td><td>Pricebook2</td><td>IsActive</td><td>Direct</td><td>Simple</td><td></td><td>Required</td></tr>
+        
+        <!-- PricebookEntry to vlocity_cmt__Price__c -->
+        <tr><td>PricebookEntry</td><td>UnitPrice</td><td>UnitPrice</td><td>vlocity_cmt__Price__c</td><td>vlocity_cmt__PriceValue__c</td><td>Transform</td><td>Medium</td><td>Validate currency, convert to price dimensions if needed</td><td>Required, Min 0</td></tr>
+        <tr><td>PricebookEntry</td><td>IsActive</td><td>IsActive</td><td>vlocity_cmt__Price__c</td><td>vlocity_cmt__IsActive__c</td><td>Direct</td><td>Simple</td><td></td><td>Required</td></tr>
+        <tr><td>PricebookEntry</td><td>UseStandardPrice</td><td>UseStandardPrice</td><td>vlocity_cmt__Price__c</td><td>vlocity_cmt__UseStandardPrice__c</td><td>Direct</td><td>Simple</td><td></td><td>Optional</td></tr>
+        
+        <!-- Account mappings (for reference data) -->
+        <tr><td>Account</td><td>Name</td><td>Name</td><td>Account</td><td>Name</td><td>Direct</td><td>Simple</td><td></td><td>Required</td></tr>
+        <tr><td>Account</td><td>AccountNumber</td><td>AccountNumber</td><td>Account</td><td>AccountNumber</td><td>Direct</td><td>Simple</td><td>Preserve leading zeros</td><td>Optional, Unique</td></tr>
+        <tr><td>Account</td><td>BillingCountry</td><td>BillingCountry</td><td>Account</td><td>BillingCountry</td><td>ValueMap</td><td>Medium</td><td>Map 2-letter ISO codes to full names if needed</td><td>Optional</td></tr>
+        <tr><td>Account</td><td>BillingState</td><td>BillingState</td><td>Account</td><td>BillingState</td><td>ValueMap</td><td>Medium</td><td>Validate state/province codes</td><td>Optional</td></tr>
+        <tr><td>Account</td><td>BillingPostalCode</td><td>BillingPostalCode</td><td>Account</td><td>BillingPostalCode</td><td>Direct</td><td>Simple</td><td>Normalize format (remove spaces/dashes)</td><td>Optional</td></tr>
+        <tr><td>Account</td><td>Phone</td><td>Phone</td><td>Account</td><td>Phone</td><td>Transform</td><td>Medium</td><td>Apply E.164 formatting, remove non-numeric chars</td><td>Optional</td></tr>
       </tbody>
     </table>
 
-    <h2 class="sheet-title">WS2 — Quotes</h2>
+    <h2 class="sheet-title">WS2 — Quotes & Pricing (Phase 2)</h2>
     <table class="mapping-table">
       <thead>
         <tr><th>Source Object</th><th>Source Field</th><th>Source API</th><th>Target Object</th><th>Target Field</th><th>Mapping Type</th><th>Complexity</th><th>Transform Notes</th><th>DQ Check</th></tr>
       </thead>
       <tbody>
+        <!-- SBQQ__Quote__c to Quote -->
         <tr><td>SBQQ__Quote__c</td><td>Name</td><td>Name</td><td>Quote</td><td>Name</td><td>Direct</td><td>Simple</td><td></td><td>Required</td></tr>
-        <tr><td>SBQQ__QuoteLine__c</td><td>SBQQ__NetPrice__c</td><td>SBQQ__NetPrice__c</td><td>QuoteLineItem</td><td>UnitPrice</td><td>Transform</td><td>Medium</td><td>Preserve manual adjustments as Discount fields</td><td>Optional</td></tr>
+        <tr><td>SBQQ__Quote__c</td><td>SBQQ__Account__c</td><td>SBQQ__Account__c</td><td>Quote</td><td>AccountId</td><td>ForeignKey</td><td>Medium</td><td>Lookup Account ID from staging</td><td>Required</td></tr>
+        <tr><td>SBQQ__Quote__c</td><td>SBQQ__Opportunity__c</td><td>SBQQ__Opportunity__c</td><td>Quote</td><td>OpportunityId</td><td>ForeignKey</td><td>Medium</td><td>Lookup Opportunity ID from staging</td><td>Optional</td></tr>
+        <tr><td>SBQQ__Quote__c</td><td>SBQQ__Status__c</td><td>SBQQ__Status__c</td><td>Quote</td><td>Status</td><td>ValueMap</td><td>Medium</td><td>Map CPQ status (Draft, Approved, etc.) to standard Quote Status</td><td>Required</td></tr>
+        <tr><td>SBQQ__Quote__c</td><td>SBQQ__ExpirationDate__c</td><td>SBQQ__ExpirationDate__c</td><td>Quote</td><td>ExpirationDate</td><td>Direct</td><td>Simple</td><td>Validate date format</td><td>Optional</td></tr>
+        <tr><td>SBQQ__Quote__c</td><td>SBQQ__NetAmount__c</td><td>SBQQ__NetAmount__c</td><td>Quote</td><td>TotalPrice</td><td>Transform</td><td>Medium</td><td>Sum of all quote line net prices, validate currency</td><td>Required</td></tr>
+        <tr><td>SBQQ__Quote__c</td><td>SBQQ__PrimaryContact__c</td><td>SBQQ__PrimaryContact__c</td><td>Quote</td><td>ContactId</td><td>ForeignKey</td><td>Medium</td><td>Lookup Contact ID from staging</td><td>Optional</td></tr>
+        <tr><td>SBQQ__Quote__c</td><td>SBQQ__SubscriptionTerm__c</td><td>SBQQ__SubscriptionTerm__c</td><td>Quote</td><td>vlocity_cmt__SubscriptionTerm__c</td><td>Direct</td><td>Simple</td><td>Integer number of months</td><td>Optional</td></tr>
+        
+        <!-- SBQQ__QuoteLine__c to QuoteLineItem -->
+        <tr><td>SBQQ__QuoteLine__c</td><td>SBQQ__Product__c</td><td>SBQQ__Product__c</td><td>QuoteLineItem</td><td>Product2Id</td><td>ForeignKey</td><td>Medium</td><td>Lookup migrated Product2 ID</td><td>Required</td></tr>
+        <tr><td>SBQQ__QuoteLine__c</td><td>SBQQ__Quantity__c</td><td>SBQQ__Quantity__c</td><td>QuoteLineItem</td><td>Quantity</td><td>Direct</td><td>Simple</td><td>Validate positive number</td><td>Required</td></tr>
+        <tr><td>SBQQ__QuoteLine__c</td><td>SBQQ__NetPrice__c</td><td>SBQQ__NetPrice__c</td><td>QuoteLineItem</td><td>UnitPrice</td><td>Transform</td><td>Medium</td><td>Preserve manual adjustments as Discount field</td><td>Required</td></tr>
+        <tr><td>SBQQ__QuoteLine__c</td><td>SBQQ__Discount__c</td><td>SBQQ__Discount__c</td><td>QuoteLineItem</td><td>Discount</td><td>Direct</td><td>Simple</td><td>Percentage or absolute value</td><td>Optional</td></tr>
+        <tr><td>SBQQ__QuoteLine__c</td><td>SBQQ__Description__c</td><td>SBQQ__Description__c</td><td>QuoteLineItem</td><td>Description</td><td>Direct</td><td>Simple</td><td></td><td>Optional</td></tr>
+        <tr><td>SBQQ__QuoteLine__c</td><td>SBQQ__StartDate__c</td><td>SBQQ__StartDate__c</td><td>QuoteLineItem</td><td>ServiceDate</td><td>Direct</td><td>Simple</td><td></td><td>Optional</td></tr>
+        
+        <!-- SBQQ__DiscountSchedule__c to vlocity_cmt__DiscountSchedule__c -->
+        <tr><td>SBQQ__DiscountSchedule__c</td><td>Name</td><td>Name</td><td>vlocity_cmt__DiscountSchedule__c</td><td>Name</td><td>Direct</td><td>Simple</td><td></td><td>Required</td></tr>
+        <tr><td>SBQQ__DiscountSchedule__c</td><td>SBQQ__Type__c</td><td>SBQQ__Type__c</td><td>vlocity_cmt__DiscountSchedule__c</td><td>vlocity_cmt__Type__c</td><td>ValueMap</td><td>Medium</td><td>Map Volume, Slab, Tiered types</td><td>Required</td></tr>
+        <tr><td>SBQQ__DiscountSchedule__c</td><td>SBQQ__DiscountUnit__c</td><td>SBQQ__DiscountUnit__c</td><td>vlocity_cmt__DiscountSchedule__c</td><td>vlocity_cmt__DiscountUnit__c</td><td>ValueMap</td><td>Medium</td><td>Map Percentage vs. Amount</td><td>Required</td></tr>
       </tbody>
     </table>
 
-    <h2 class="sheet-title">WS3 — Contracts & Assets</h2>
+    <h2 class="sheet-title">WS3 — Contracts & Assets (Phase 3)</h2>
     <table class="mapping-table">
       <thead>
         <tr><th>Source Object</th><th>Source Field</th><th>Source API</th><th>Target Object</th><th>Target Field</th><th>Mapping Type</th><th>Complexity</th><th>Transform Notes</th><th>DQ Check</th></tr>
       </thead>
       <tbody>
+        <!-- SBQQ__Subscription__c to Asset -->
+        <tr><td>SBQQ__Subscription__c</td><td>SBQQ__ProductName__c</td><td>SBQQ__ProductName__c</td><td>Asset</td><td>Name</td><td>Direct</td><td>Simple</td><td>Use product name for asset name</td><td>Required</td></tr>
+        <tr><td>SBQQ__Subscription__c</td><td>SBQQ__Product__c</td><td>SBQQ__Product__c</td><td>Asset</td><td>Product2Id</td><td>ForeignKey</td><td>Medium</td><td>Lookup migrated Product2 ID</td><td>Required</td></tr>
+        <tr><td>SBQQ__Subscription__c</td><td>SBQQ__Account__c</td><td>SBQQ__Account__c</td><td>Asset</td><td>AccountId</td><td>ForeignKey</td><td>Medium</td><td>Lookup Account ID</td><td>Required</td></tr>
         <tr><td>SBQQ__Subscription__c</td><td>SBQQ__StartDate__c</td><td>SBQQ__StartDate__c</td><td>Asset</td><td>InstallDate</td><td>Direct</td><td>Simple</td><td></td><td>Optional</td></tr>
-        <tr><td>Contract</td><td>ContractNumber</td><td>ContractNumber</td><td>Contract</td><td>ContractNumber</td><td>Direct</td><td>Simple</td><td></td><td>Optional</td></tr>
+        <tr><td>SBQQ__Subscription__c</td><td>SBQQ__EndDate__c</td><td>SBQQ__EndDate__c</td><td>Asset</td><td>UsageEndDate</td><td>Direct</td><td>Simple</td><td></td><td>Optional</td></tr>
+        <tr><td>SBQQ__Subscription__c</td><td>SBQQ__Quantity__c</td><td>SBQQ__Quantity__c</td><td>Asset</td><td>Quantity</td><td>Direct</td><td>Simple</td><td></td><td>Required</td></tr>
+        <tr><td>SBQQ__Subscription__c</td><td>SBQQ__NetPrice__c</td><td>SBQQ__NetPrice__c</td><td>Asset</td><td>Price</td><td>Direct</td><td>Simple</td><td></td><td>Optional</td></tr>
+        <tr><td>SBQQ__Subscription__c</td><td>SBQQ__SubscriptionType__c</td><td>SBQQ__SubscriptionType__c</td><td>Asset</td><td>vlocity_cmt__SubscriptionType__c</td><td>ValueMap</td><td>Medium</td><td>Map One-Time → ONE_TIME, Subscription → RECURRING</td><td>Optional</td></tr>
+        
+        <!-- Contract to Contract -->
+        <tr><td>Contract</td><td>ContractNumber</td><td>ContractNumber</td><td>Contract</td><td>ContractNumber</td><td>Direct</td><td>Simple</td><td>Preserve existing contract numbers</td><td>Required, Unique</td></tr>
+        <tr><td>Contract</td><td>AccountId</td><td>AccountId</td><td>Contract</td><td>AccountId</td><td>ForeignKey</td><td>Medium</td><td>Lookup Account ID</td><td>Required</td></tr>
+        <tr><td>Contract</td><td>Status</td><td>Status</td><td>Contract</td><td>Status</td><td>ValueMap</td><td>Medium</td><td>Map Draft, In Approval, Activated status values</td><td>Required</td></tr>
+        <tr><td>Contract</td><td>StartDate</td><td>StartDate</td><td>Contract</td><td>StartDate</td><td>Direct</td><td>Simple</td><td></td><td>Required</td></tr>
+        <tr><td>Contract</td><td>EndDate</td><td>EndDate</td><td>Contract</td><td>EndDate</td><td>Direct</td><td>Simple</td><td>Must be after StartDate</td><td>Optional</td></tr>
+        <tr><td>Contract</td><td>ContractTerm</td><td>ContractTerm</td><td>Contract</td><td>ContractTerm</td><td>Direct</td><td>Simple</td><td>Integer number of months</td><td>Optional</td></tr>
+        <tr><td>Contract</td><td>BillingFrequency</td><td>BillingFrequency__c</td><td>Contract</td><td>vlocity_cmt__BillingFrequency__c</td><td>ValueMap</td><td>Medium</td><td>Map Monthly → MONTHLY, Quarterly → QUARTERLY, Annually → YEARLY</td><td>Optional</td></tr>
       </tbody>
     </table>
 
-    <h2 class="sheet-title">WS4 — Billing</h2>
+    <h2 class="sheet-title">WS4 — Billing & Invoicing (Phase 4)</h2>
     <table class="mapping-table">
       <thead>
         <tr><th>Source Object</th><th>Source Field</th><th>Source API</th><th>Target Object</th><th>Target Field</th><th>Mapping Type</th><th>Complexity</th><th>Transform Notes</th><th>DQ Check</th></tr>
       </thead>
       <tbody>
-        <tr><td>Invoice</td><td>InvoiceNumber</td><td>InvoiceNumber</td><td>Invoice</td><td>InvoiceNumber</td><td>Direct</td><td>Simple</td><td></td><td>Optional</td></tr>
+        <!-- Invoice to Invoice (if using Billing package) -->
+        <tr><td>Invoice</td><td>InvoiceNumber</td><td>InvoiceNumber</td><td>Invoice</td><td>InvoiceNumber</td><td>Direct</td><td>Simple</td><td>Preserve invoice numbering sequence</td><td>Required, Unique</td></tr>
+        <tr><td>Invoice</td><td>BillingAccountId</td><td>BillingAccountId</td><td>Invoice</td><td>BillingAccountId</td><td>ForeignKey</td><td>Medium</td><td>Lookup migrated BillingAccount ID</td><td>Required</td></tr>
+        <tr><td>Invoice</td><td>InvoiceDate</td><td>InvoiceDate</td><td>Invoice</td><td>InvoiceDate</td><td>Direct</td><td>Simple</td><td></td><td>Required</td></tr>
+        <tr><td>Invoice</td><td>DueDate</td><td>DueDate</td><td>Invoice</td><td>DueDate</td><td>Direct</td><td>Simple</td><td>Must be >= InvoiceDate</td><td>Required</td></tr>
+        <tr><td>Invoice</td><td>TotalAmount</td><td>TotalAmount</td><td>Invoice</td><td>TotalAmount</td><td>Transform</td><td>Medium</td><td>Sum of all invoice line items, validate currency</td><td>Required</td></tr>
+        <tr><td>Invoice</td><td>Status</td><td>Status</td><td>Invoice</td><td>Status</td><td>ValueMap</td><td>Medium</td><td>Map Draft, Posted, Paid, Cancelled statuses</td><td>Required</td></tr>
+        
+        <!-- InvoiceLine to InvoiceLine -->
+        <tr><td>InvoiceLine</td><td>Name</td><td>Name</td><td>InvoiceLine</td><td>Name</td><td>Direct</td><td>Simple</td><td></td><td>Required</td></tr>
+        <tr><td>InvoiceLine</td><td>LineAmount</td><td>LineAmount</td><td>InvoiceLine</td><td>LineAmount</td><td>Direct</td><td>Simple</td><td></td><td>Required</td></tr>
+        <tr><td>InvoiceLine</td><td>Quantity</td><td>Quantity</td><td>InvoiceLine</td><td>Quantity</td><td>Direct</td><td>Simple</td><td></td><td>Optional</td></tr>
+        <tr><td>InvoiceLine</td><td>UnitPrice</td><td>UnitPrice</td><td>InvoiceLine</td><td>UnitPrice</td><td>Direct</td><td>Simple</td><td></td><td>Optional</td></tr>
+        <tr><td>InvoiceLine</td><td>ProductId</td><td>Product2Id</td><td>InvoiceLine</td><td>Product2Id</td><td>ForeignKey</td><td>Medium</td><td>Lookup migrated Product2 ID</td><td>Optional</td></tr>
+        
+        <!-- BillingAccount (if using Billing) -->
+        <tr><td>BillingAccount__c</td><td>Name</td><td>Name</td><td>BillingAccount</td><td>Name</td><td>Direct</td><td>Simple</td><td></td><td>Required</td></tr>
+        <tr><td>BillingAccount__c</td><td>AccountId__c</td><td>Account__c</td><td>BillingAccount</td><td>AccountId</td><td>ForeignKey</td><td>Medium</td><td>Lookup Account ID</td><td>Required</td></tr>
+        <tr><td>BillingAccount__c</td><td>BillingFrequency__c</td><td>BillingFrequency__c</td><td>BillingAccount</td><td>vlocity_cmt__BillingFrequency__c</td><td>ValueMap</td><td>Medium</td><td>Map to MONTHLY, QUARTERLY, YEARLY</td><td>Optional</td></tr>
       </tbody>
     </table>
 
-    <h2 class="sheet-title">WS5 — RCA Data Model</h2>
+    <h2 class="sheet-title">WS5 — RCA Product Hierarchy & Advanced Features (Phase 5)</h2>
     <table class="mapping-table">
       <thead>
         <tr><th>Source Object</th><th>Source Field</th><th>Source API</th><th>Target Object</th><th>Target Field</th><th>Mapping Type</th><th>Complexity</th><th>Transform Notes</th><th>DQ Check</th></tr>
       </thead>
       <tbody>
-        <tr><td>vlocity_cmt__Product__c</td><td>vlocity_cmt__ProductCode__c</td><td>vlocity_cmt__ProductCode__c</td><td>vlocity_cmt__Product__c</td><td>vlocity_cmt__ProductCode__c</td><td>Direct</td><td>Simple</td><td></td><td>Optional</td></tr>
+        <!-- vlocity_cmt__Product__c hierarchy fields -->
+        <tr><td>vlocity_cmt__Product__c</td><td>vlocity_cmt__ProductCode__c</td><td>vlocity_cmt__ProductCode__c</td><td>vlocity_cmt__Product__c</td><td>vlocity_cmt__ProductCode__c</td><td>Direct</td><td>Simple</td><td>Must be globally unique</td><td>Required, Unique</td></tr>
+        <tr><td>vlocity_cmt__Product__c</td><td>vlocity_cmt__ParentProductId__c</td><td>vlocity_cmt__ParentProductId__c</td><td>vlocity_cmt__Product__c</td><td>vlocity_cmt__ParentProductId__c</td><td>ForeignKey</td><td>High</td><td>Build product hierarchy, validate no circular refs</td><td>Optional</td></tr>
+        <tr><td>vlocity_cmt__Product__c</td><td>vlocity_cmt__ProductHierarchyPath__c</td><td>vlocity_cmt__ProductHierarchyPath__c</td><td>vlocity_cmt__Product__c</td><td>vlocity_cmt__ProductHierarchyPath__c</td><td>Transform</td><td>High</td><td>Compute full hierarchy path (e.g., "Root/Parent/Child")</td><td>Optional</td></tr>
+        <tr><td>vlocity_cmt__Product__c</td><td>vlocity_cmt__Type__c</td><td>vlocity_cmt__Type__c</td><td>vlocity_cmt__Product__c</td><td>vlocity_cmt__Type__c</td><td>ValueMap</td><td>Medium</td><td>Map to Base, Bundle, Option types</td><td>Required</td></tr>
+        <tr><td>vlocity_cmt__Product__c</td><td>vlocity_cmt__IsConfigurable__c</td><td>vlocity_cmt__IsConfigurable__c</td><td>vlocity_cmt__Product__c</td><td>vlocity_cmt__IsConfigurable__c</td><td>Direct</td><td>Simple</td><td></td><td>Optional</td></tr>
+        
+        <!-- vlocity_cmt__ProductChildItem__c (bundle components) -->
+        <tr><td>vlocity_cmt__ProductChildItem__c</td><td>vlocity_cmt__ParentProductId__c</td><td>vlocity_cmt__ParentProductId__c</td><td>vlocity_cmt__ProductChildItem__c</td><td>vlocity_cmt__ParentProductId__c</td><td>ForeignKey</td><td>High</td><td>Lookup parent product ID</td><td>Required</td></tr>
+        <tr><td>vlocity_cmt__ProductChildItem__c</td><td>vlocity_cmt__ChildProductId__c</td><td>vlocity_cmt__ChildProductId__c</td><td>vlocity_cmt__ProductChildItem__c</td><td>vlocity_cmt__ChildProductId__c</td><td>ForeignKey</td><td>High</td><td>Lookup child product ID</td><td>Required</td></tr>
+        <tr><td>vlocity_cmt__ProductChildItem__c</td><td>vlocity_cmt__Quantity__c</td><td>vlocity_cmt__Quantity__c</td><td>vlocity_cmt__ProductChildItem__c</td><td>vlocity_cmt__Quantity__c</td><td>Direct</td><td>Simple</td><td>Default qty for child in bundle</td><td>Optional</td></tr>
+        <tr><td>vlocity_cmt__ProductChildItem__c</td><td>vlocity_cmt__IsRequired__c</td><td>vlocity_cmt__IsRequired__c</td><td>vlocity_cmt__ProductChildItem__c</td><td>vlocity_cmt__IsRequired__c</td><td>Direct</td><td>Simple</td><td>Whether child is mandatory in bundle</td><td>Optional</td></tr>
+        
+        <!-- EPC Price Dimension mappings -->
+        <tr><td>vlocity_cmt__PricingElement__c</td><td>vlocity_cmt__ChargeType__c</td><td>vlocity_cmt__ChargeType__c</td><td>vlocity_cmt__PricingElement__c</td><td>vlocity_cmt__ChargeType__c</td><td>ValueMap</td><td>High</td><td>Map One-Time, Recurring, Usage charge types</td><td>Required</td></tr>
+        <tr><td>vlocity_cmt__PricingElement__c</td><td>vlocity_cmt__Amount__c</td><td>vlocity_cmt__Amount__c</td><td>vlocity_cmt__PricingElement__c</td><td>vlocity_cmt__Amount__c</td><td>Direct</td><td>Simple</td><td></td><td>Optional</td></tr>
+        <tr><td>vlocity_cmt__PricingElement__c</td><td>vlocity_cmt__RecurringFrequency__c</td><td>vlocity_cmt__RecurringFrequency__c</td><td>vlocity_cmt__PricingElement__c</td><td>vlocity_cmt__RecurringFrequency__c</td><td>ValueMap</td><td>Medium</td><td>Map to Monthly, Quarterly, Yearly</td><td>Optional</td></tr>
       </tbody>
     </table>
 

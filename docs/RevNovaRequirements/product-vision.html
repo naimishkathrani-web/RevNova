@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>RevNova - Product Vision & Strategy</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        .vision-hero{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;padding:3rem 0;text-align:center;margin-bottom:2rem}
+        .phase-card{background:#f8f9fa;border-left:4px solid #667eea;padding:1.5rem;margin:1rem 0;border-radius:8px}
+        .phase-card h3{color:#667eea;margin-top:0}
+        .strategy-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;margin:2rem 0}
+        .strategy-item{background:#fff;border:1px solid #e0e0e0;padding:1.5rem;border-radius:8px;box-shadow:0 2px 4px rgba(0,0,0,0.1)}
+        .strategy-item h4{color:#667eea;margin-top:0}
+        .timeline{position:relative;padding-left:2rem;margin:2rem 0}
+        .timeline::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:#667eea}
+        .timeline-item{position:relative;padding-bottom:2rem}
+        .timeline-item::before{content:'';position:absolute;left:-2.5rem;top:0.5rem;width:1rem;height:1rem;border-radius:50%;background:#667eea;border:3px solid #fff;box-shadow:0 0 0 2px #667eea}
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="../index.html" class="logo"><div class="logo-box">RevNova</div></a>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="requirements-index.html">← Requirements Home</a></li>
+                    <li><a href="../index.html">Main Site</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="vision-hero">
+        <div class="container">
+            <h1>RevNova Product Vision & Platform Strategy</h1>
+            <p style="font-size:1.2rem;max-width:800px;margin:1rem auto">Transforming enterprise system migrations through AI-powered automation, ensuring seamless data integrity and accelerated time-to-value</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <section>
+            <h2>Vision Statement</h2>
+            <p style="font-size:1.1rem;line-height:1.8;background:#f0f6fb;padding:2rem;border-radius:8px;border-left:4px solid #667eea">
+                <strong>RevNova</strong> envisions becoming the industry-leading <strong>System Transformation as a Service (STaaS)</strong> platform, eliminating the complexity, risk, and cost traditionally associated with enterprise system migrations. By leveraging AI-driven automation, intelligent field mapping, and robust data validation, RevNova enables organizations to migrate from legacy systems (such as Salesforce CPQ) to modern platforms (like Salesforce Revenue Cloud) with <strong>90% automation, 100% data accuracy, and 80% faster execution</strong> compared to manual migration approaches.
+            </p>
+        </section>
+
+        <section style="margin-top:3rem">
+            <h2>Strategic Objectives</h2>
+            <div class="strategy-grid">
+                <div class="strategy-item">
+                    <h4><i class="fas fa-robot" style="color:#667eea"></i> AI-Powered Automation</h4>
+                    <p>Reduce manual effort by 90% through intelligent field mapping, auto-detection of data patterns, and AI-suggested transformations.</p>
+                </div>
+                <div class="strategy-item">
+                    <h4><i class="fas fa-shield-alt" style="color:#667eea"></i> Data Integrity & Validation</h4>
+                    <p>Ensure 100% accuracy with multi-stage validation (STG1 → STG2), comprehensive data quality checks, and automated rollback capabilities.</p>
+                </div>
+                <div class="strategy-item">
+                    <h4><i class="fas fa-users" style="color:#667eea"></i> Multi-Tenant Architecture</h4>
+                    <p>Support enterprise-scale deployments with secure, scalable multi-tenant infrastructure and isolated staging environments per client.</p>
+                </div>
+                <div class="strategy-item">
+                    <h4><i class="fas fa-chart-line" style="color:#667eea"></i> Comprehensive Reporting</h4>
+                    <p>Provide real-time migration dashboards, detailed audit trails, and actionable insights for stakeholders at every phase.</p>
+                </div>
+                <div class="strategy-item">
+                    <h4><i class="fas fa-code-branch" style="color:#667eea"></i> Hybrid Data Model</h4>
+                    <p>Combine vanilla (standard) and EAV (custom) staging tables to handle both out-of-the-box and highly customized field requirements.</p>
+                </div>
+                <div class="strategy-item">
+                    <h4><i class="fas fa-sync-alt" style="color:#667eea"></i> Seamless Integration</h4>
+                    <p>Connect to source and target systems via REST APIs, Bulk APIs, and event-driven architectures (RabbitMQ) for real-time synchronization.</p>
+                </div>
+            </div>
+        </section>
+
+        <section style="margin-top:3rem">
+            <h2>Platform Phases (5-Phase Rollout)</h2>
+            <p>RevNova's development follows a structured 5-phase approach aligned with the CPQ → Revenue Cloud migration workstreams (WS1-WS5):</p>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="phase-card">
+                        <h3>Phase 1: Foundation & Product Catalog (WS1)</h3>
+                        <p><strong>Duration:</strong> 3 months | <strong>Status:</strong> MVP Complete</p>
+                        <p><strong>Scope:</strong></p>
+                        <ul>
+                            <li>Core platform architecture (FastAPI backend, PostgreSQL multi-tenant staging, Redis caching)</li>
+                            <li>Product catalog migration (Product2 → vlocity_cmt__Product__c)</li>
+                            <li>Price book and price book entry migration</li>
+                            <li>AI-assisted field mapping UI (wizard: Connect → Analyze → Map → Transform → Validate → Execute → Test)</li>
+                            <li>STG1/STG2 vanilla + EAV staging tables</li>
+                            <li>Basic data quality checks (required fields, data type validation)</li>
+                        </ul>
+                        <p><strong>Key Deliverables:</strong> Working migration wizard, product catalog migration, staging infrastructure, initial reporting</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="phase-card">
+                        <h3>Phase 2: Quotes & Pricing (WS2)</h3>
+                        <p><strong>Duration:</strong> 2 months | <strong>Status:</strong> In Progress</p>
+                        <p><strong>Scope:</strong></p>
+                        <ul>
+                            <li>Quote and quote line migration (SBQQ__Quote__c → Quote, SBQQ__QuoteLine__c → QuoteLineItem)</li>
+                            <li>Advanced pricing rules and discount schedules</li>
+                            <li>Quote approval workflows</li>
+                            <li>Value mapping for billing frequency, subscription types</li>
+                            <li>Transform engine for discount calculations (NetPrice → UnitPrice + Discount%)</li>
+                        </ul>
+                        <p><strong>Key Deliverables:</strong> Quote builder UI, pricing rule engine, approval workflow automation</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="phase-card">
+                        <h3>Phase 3: Contracts & Assets (WS3)</h3>
+                        <p><strong>Duration:</strong> 2 months | <strong>Status:</strong> Planned Q1 2026</p>
+                        <p><strong>Scope:</strong></p>
+                        <ul>
+                            <li>Contract lifecycle management (Contract object migration)</li>
+                            <li>Asset tracking (SBQQ__Subscription__c → Asset)</li>
+                            <li>Renewal workflows and automated status updates</li>
+                            <li>Subscription-to-asset mapping logic</li>
+                            <li>Contract term calculations and validation</li>
+                        </ul>
+                        <p><strong>Key Deliverables:</strong> Contract manager UI, asset tracker, renewal automation</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="phase-card">
+                        <h3>Phase 4: Billing & Invoicing (WS4)</h3>
+                        <p><strong>Duration:</strong> 2 months | <strong>Status:</strong> Planned Q2 2026</p>
+                        <p><strong>Scope:</strong></p>
+                        <ul>
+                            <li>Invoice generation and management (Invoice object)</li>
+                            <li>Billing schedule automation (recurring vs. one-time)</li>
+                            <li>Payment tracking and overdue notifications</li>
+                            <li>Integration with payment gateways (future)</li>
+                        </ul>
+                        <p><strong>Key Deliverables:</strong> Invoice manager UI, billing scheduler, payment tracking dashboard</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="phase-card">
+                        <h3>Phase 5: Revenue Cloud Advanced (WS5)</h3>
+                        <p><strong>Duration:</strong> 3 months | <strong>Status:</strong> Planned Q3 2026</p>
+                        <p><strong>Scope:</strong></p>
+                        <ul>
+                            <li>Revenue Cloud-specific product catalog enhancements</li>
+                            <li>Product hierarchies and bundles</li>
+                            <li>Advanced attributes and custom metadata</li>
+                            <li>EPC (Enterprise Product Catalog) API integration</li>
+                            <li>Multi-level product relationships and dependencies</li>
+                        </ul>
+                        <p><strong>Key Deliverables:</strong> RCA product manager, hierarchy visualizations, EPC integration</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section style="margin-top:3rem">
+            <h2>Technology Stack</h2>
+            <table style="width:100%;border-collapse:collapse;margin:1rem 0">
+                <thead>
+                    <tr style="background:#f0f6fb">
+                        <th style="border:1px solid #ddd;padding:12px;text-align:left">Layer</th>
+                        <th style="border:1px solid #ddd;padding:12px;text-align:left">Technology</th>
+                        <th style="border:1px solid #ddd;padding:12px;text-align:left">Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="border:1px solid #ddd;padding:10px"><strong>Frontend</strong></td>
+                        <td style="border:1px solid #ddd;padding:10px">HTML5, CSS3, JavaScript (Vanilla)</td>
+                        <td style="border:1px solid #ddd;padding:10px">Migration wizard UI, dashboards, reporting</td>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid #ddd;padding:10px"><strong>Backend API</strong></td>
+                        <td style="border:1px solid #ddd;padding:10px">FastAPI (Python 3.11+)</td>
+                        <td style="border:1px solid #ddd;padding:10px">REST APIs for migration operations, validation, execution</td>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid #ddd;padding:10px"><strong>Database</strong></td>
+                        <td style="border:1px solid #ddd;padding:10px">PostgreSQL (Multi-tenant)</td>
+                        <td style="border:1px solid #ddd;padding:10px">STG1/STG2 staging tables, metadata, audit logs</td>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid #ddd;padding:10px"><strong>Cache</strong></td>
+                        <td style="border:1px solid #ddd;padding:10px">Redis</td>
+                        <td style="border:1px solid #ddd;padding:10px">Session management, field mapping cache, worker state</td>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid #ddd;padding:10px"><strong>Message Queue</strong></td>
+                        <td style="border:1px solid #ddd;padding:10px">RabbitMQ</td>
+                        <td style="border:1px solid #ddd;padding:10px">Async batch processing, worker orchestration</td>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid #ddd;padding:10px"><strong>Object Storage</strong></td>
+                        <td style="border:1px solid #ddd;padding:10px">S3-compatible (MinIO / AWS S3)</td>
+                        <td style="border:1px solid #ddd;padding:10px">CSV exports, error logs, migration artifacts</td>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid #ddd;padding:10px"><strong>Integration</strong></td>
+                        <td style="border:1px solid #ddd;padding:10px">Salesforce REST/Bulk API 2.0, simple-salesforce</td>
+                        <td style="border:1px solid #ddd;padding:10px">Source extraction, target write operations</td>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid #ddd;padding:10px"><strong>Orchestration</strong></td>
+                        <td style="border:1px solid #ddd;padding:10px">Celery (Python task queue)</td>
+                        <td style="border:1px solid #ddd;padding:10px">Long-running migration jobs, batch retry logic</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section style="margin-top:3rem;margin-bottom:3rem">
+            <h2>Success Metrics</h2>
+            <ul style="font-size:1.05rem;line-height:2">
+                <li><strong>90% Automation Rate:</strong> Achieve 90% automated field mapping and transformation with minimal manual intervention</li>
+                <li><strong>100% Data Accuracy:</strong> Zero data loss, complete referential integrity through multi-stage validation</li>
+                <li><strong>80% Time Reduction:</strong> Complete migrations in 20% of the time required by manual processes</li>
+                <li><strong>99.9% Platform Uptime:</strong> Enterprise-grade reliability and availability</li>
+                <li><strong>Sub-second Response Time:</strong> API responses &lt; 500ms for standard operations</li>
+                <li><strong>Scalability:</strong> Support 1M+ records per migration batch without performance degradation</li>
+            </ul>
+        </section>
+
+        <div style="background:#f0f6fb;padding:2rem;border-radius:8px;text-align:center;margin:2rem 0">
+            <p style="margin:0;font-size:1.1rem"><strong>Next:</strong> <a href="business-requirements.html" style="color:#667eea;text-decoration:underline">View High-Level Business Requirements →</a></p>
+        </div>
+    </div>
+
+    <footer style="background:#2c3e50;color:#ecf0f1;padding:2rem 0;margin-top:3rem;text-align:center">
+        <div class="container">
+            <p>&copy; 2024 RevNova. System Transformation as a Service.</p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>RevNova - High-Level Business Requirements</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        .req-header{background:linear-gradient(135deg,#11998e 0%,#38ef7d 100%);color:#fff;padding:3rem 0;text-align:center;margin-bottom:2rem}
+        .req-section{background:#fff;border:1px solid #e0e0e0;padding:2rem;margin:1.5rem 0;border-radius:8px;box-shadow:0 2px 4px rgba(0,0,0,0.05)}
+        .req-section h3{color:#11998e;margin-top:0;border-bottom:2px solid #38ef7d;padding-bottom:0.5rem}
+        .req-item{background:#f8f9fa;border-left:4px solid #11998e;padding:1rem;margin:1rem 0;border-radius:4px}
+        .req-item strong{color:#11998e}
+        table.req-table{width:100%;border-collapse:collapse;margin:1rem 0}
+        table.req-table th,table.req-table td{border:1px solid #ddd;padding:10px;text-align:left}
+        table.req-table th{background:#f0f6fb;font-weight:600}
+        .stakeholder{display:inline-block;background:#38ef7d;color:#fff;padding:4px 12px;border-radius:12px;margin:4px;font-size:0.9rem}
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="../index.html" class="logo"><div class="logo-box">RevNova</div></a>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="requirements-index.html">← Requirements Home</a></li>
+                    <li><a href="product-vision.html">Product Vision</a></li>
+                    <li><a href="../index.html">Main Site</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="req-header">
+        <div class="container">
+            <h1>High-Level Business Requirements</h1>
+            <p style="font-size:1.2rem;max-width:800px;margin:1rem auto">Defining the business objectives, stakeholder needs, and success criteria for the RevNova migration platform</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <section class="req-section">
+            <h3>1. Executive Summary</h3>
+            <p>RevNova addresses the critical business need for <strong>automated, reliable, and cost-effective enterprise system migrations</strong>. Traditional migration approaches are manual, error-prone, and require 6-12 months of effort. RevNova reduces migration time by 80%, ensures 100% data accuracy, and provides complete auditability and rollback capabilities.</p>
+            <p><strong>Primary Business Problem:</strong> Organizations migrating from Salesforce CPQ to Revenue Cloud face significant challenges:</p>
+            <ul>
+                <li>Manual data mapping and transformation (200+ fields per object)</li>
+                <li>High risk of data loss or corruption</li>
+                <li>Limited visibility into migration progress and issues</li>
+                <li>No automated rollback capabilities in case of failure</li>
+                <li>Requires specialized consultants (high cost, limited availability)</li>
+            </ul>
+            <p><strong>RevNova Solution:</strong> AI-powered migration platform with wizard-driven UI, automated field mapping, multi-stage validation, and comprehensive reporting.</p>
+        </section>
+
+        <section class="req-section">
+            <h3>2. Stakeholders & Personas</h3>
+            <table class="req-table">
+                <thead>
+                    <tr>
+                        <th>Stakeholder</th>
+                        <th>Role</th>
+                        <th>Key Needs</th>
+                        <th>Success Criteria</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>IT Director / VP Engineering</strong></td>
+                        <td>Decision Maker</td>
+                        <td>Cost reduction, risk mitigation, faster time-to-market</td>
+                        <td>80% cost savings vs. manual migration, zero data loss</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Salesforce Admin</strong></td>
+                        <td>Migration Operator</td>
+                        <td>Easy-to-use UI, clear error messages, mapping visibility</td>
+                        <td>Complete migration in &lt; 2 weeks with minimal manual intervention</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Data Architect</strong></td>
+                        <td>Data Steward</td>
+                        <td>Data quality validation, referential integrity, audit trails</td>
+                        <td>100% data accuracy, full audit log, rollback capability</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Business Analyst</strong></td>
+                        <td>Requirements Owner</td>
+                        <td>Mapping transparency, custom field support, reporting</td>
+                        <td>All custom fields migrated correctly, detailed reports available</td>
+                    </tr>
+                    <tr>
+                        <td><strong>End Users (Sales, Finance)</strong></td>
+                        <td>System Users</td>
+                        <td>Zero downtime, no data loss, familiar workflows</td>
+                        <td>Post-migration system works identically to pre-migration</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="req-section">
+            <h3>3. Core Business Requirements</h3>
+            
+            <div class="req-item">
+                <strong>BR-001: Automated Field Mapping</strong>
+                <p><strong>Requirement:</strong> System SHALL automatically suggest field mappings between source (CPQ) and target (Revenue Cloud) objects using AI pattern recognition.</p>
+                <p><strong>Acceptance Criteria:</strong></p>
+                <ul>
+                    <li>Achieve ≥ 85% automated mapping accuracy for standard fields</li>
+                    <li>Provide confidence scores for each mapping suggestion</li>
+                    <li>Allow manual override for AI suggestions</li>
+                    <li>Support custom field mapping with EAV storage model</li>
+                </ul>
+                <p><strong>Business Value:</strong> Reduces mapping effort from 40 hours to 4 hours (90% time savings)</p>
+            </div>
+
+            <div class="req-item">
+                <strong>BR-002: Multi-Stage Data Validation</strong>
+                <p><strong>Requirement:</strong> System SHALL validate data at multiple stages (STG1 raw → STG2 transformed → Target) to ensure 100% data integrity.</p>
+                <p><strong>Acceptance Criteria:</strong></p>
+                <ul>
+                    <li>STG1: Validate data types, required fields, format constraints</li>
+                    <li>STG2: Validate transformed values, referential integrity, business rules</li>
+                    <li>Pre-load: Validate target system constraints and limits</li>
+                    <li>Provide detailed error reports with line numbers and suggested fixes</li>
+                </ul>
+                <p><strong>Business Value:</strong> Eliminates post-migration data issues and rollback needs</p>
+            </div>
+
+            <div class="req-item">
+                <strong>BR-003: Rollback & Recovery</strong>
+                <p><strong>Requirement:</strong> System SHALL support automated rollback of partially completed migrations without data loss.</p>
+                <p><strong>Acceptance Criteria:</strong></p>
+                <ul>
+                    <li>Track all inserted/updated records with batch IDs</li>
+                    <li>Provide one-click rollback for any batch</li>
+                    <li>Restore source system state if needed</li>
+                    <li>Maintain audit trail of rollback operations</li>
+                </ul>
+                <p><strong>Business Value:</strong> Reduces migration risk and enables iterative testing</p>
+            </div>
+
+            <div class="req-item">
+                <strong>BR-004: Comprehensive Reporting</strong>
+                <p><strong>Requirement:</strong> System SHALL provide real-time dashboards and detailed reports for all migration phases.</p>
+                <p><strong>Acceptance Criteria:</strong></p>
+                <ul>
+                    <li>Live progress dashboard (records processed, success rate, errors)</li>
+                    <li>Downloadable CSV error reports with recommendations</li>
+                    <li>Audit logs for all user actions and system operations</li>
+                    <li>Executive summary reports (high-level metrics, timelines)</li>
+                </ul>
+                <p><strong>Business Value:</strong> Provides transparency and enables data-driven decision making</p>
+            </div>
+
+            <div class="req-item">
+                <strong>BR-005: Batch Processing & Scalability</strong>
+                <p><strong>Requirement:</strong> System SHALL support batch processing of 1M+ records with configurable batch sizes and parallel workers.</p>
+                <p><strong>Acceptance Criteria:</strong></p>
+                <ul>
+                    <li>Process batches of 200-10,000 records concurrently</li>
+                    <li>Auto-retry failed batches with exponential backoff</li>
+                    <li>Support 4-16 parallel workers depending on system load</li>
+                    <li>Maintain &lt; 2 second avg processing time per record</li>
+                </ul>
+                <p><strong>Business Value:</strong> Enables enterprise-scale migrations without performance degradation</p>
+            </div>
+
+            <div class="req-item">
+                <strong>BR-006: Security & Compliance</strong>
+                <p><strong>Requirement:</strong> System SHALL comply with SOC 2, GDPR, and enterprise security standards.</p>
+                <p><strong>Acceptance Criteria:</strong></p>
+                <ul>
+                    <li>Encrypt all data at rest (AES-256) and in transit (TLS 1.3)</li>
+                    <li>Support SSO/SAML authentication</li>
+                    <li>Implement role-based access control (RBAC)</li>
+                    <li>Maintain immutable audit logs for 7 years</li>
+                    <li>Support data residency requirements (EU, US, APAC)</li>
+                </ul>
+                <p><strong>Business Value:</strong> Meets enterprise compliance and reduces legal/regulatory risk</p>
+            </div>
+        </section>
+
+        <section class="req-section">
+            <h3>4. Functional Requirements Summary</h3>
+            <table class="req-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Description</th>
+                        <th>Priority</th>
+                        <th>Phase</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Migration Wizard</td>
+                        <td>Step-by-step UI (Connect → Analyze → Map → Transform → Validate → Execute → Test)</td>
+                        <td>P0 (Critical)</td>
+                        <td>Phase 1</td>
+                    </tr>
+                    <tr>
+                        <td>AI Field Mapping</td>
+                        <td>Auto-suggest mappings based on field names, data types, and historical patterns</td>
+                        <td>P0 (Critical)</td>
+                        <td>Phase 1</td>
+                    </tr>
+                    <tr>
+                        <td>Hybrid Staging (Vanilla + EAV)</td>
+                        <td>Support both standard and custom fields with flexible schema</td>
+                        <td>P0 (Critical)</td>
+                        <td>Phase 1</td>
+                    </tr>
+                    <tr>
+                        <td>Quote & Pricing Migration</td>
+                        <td>Migrate CPQ quotes, quote lines, discount schedules to Revenue Cloud</td>
+                        <td>P1 (High)</td>
+                        <td>Phase 2</td>
+                    </tr>
+                    <tr>
+                        <td>Contract & Asset Tracking</td>
+                        <td>Migrate subscriptions to assets, manage contract lifecycles</td>
+                        <td>P1 (High)</td>
+                        <td>Phase 3</td>
+                    </tr>
+                    <tr>
+                        <td>Billing & Invoicing</td>
+                        <td>Automate invoice generation, payment tracking, billing schedules</td>
+                        <td>P2 (Medium)</td>
+                        <td>Phase 4</td>
+                    </tr>
+                    <tr>
+                        <td>Revenue Cloud Advanced Features</td>
+                        <td>Product hierarchies, bundles, EPC integration</td>
+                        <td>P2 (Medium)</td>
+                        <td>Phase 5</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="req-section">
+            <h3>5. Non-Functional Requirements</h3>
+            <table class="req-table">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Requirement</th>
+                        <th>Target Metric</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Performance</strong></td>
+                        <td>API response time for standard operations</td>
+                        <td>&lt; 500ms (p95)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Scalability</strong></td>
+                        <td>Concurrent migration jobs supported</td>
+                        <td>10+ projects simultaneously</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Availability</strong></td>
+                        <td>Platform uptime</td>
+                        <td>99.9% (43 min downtime/month)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Data Accuracy</strong></td>
+                        <td>Post-migration data integrity</td>
+                        <td>100% (zero data loss)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Usability</strong></td>
+                        <td>Time to complete first migration (trained user)</td>
+                        <td>&lt; 2 hours for 10K records</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Security</strong></td>
+                        <td>Data encryption standard</td>
+                        <td>AES-256 (rest), TLS 1.3 (transit)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="req-section">
+            <h3>6. Success Criteria & KPIs</h3>
+            <ul style="font-size:1.05rem;line-height:1.8">
+                <li><strong>Adoption:</strong> 50+ enterprise clients within 12 months of GA</li>
+                <li><strong>Migration Success Rate:</strong> ≥ 95% of migrations completed without rollback</li>
+                <li><strong>Customer Satisfaction (CSAT):</strong> ≥ 4.5/5.0</li>
+                <li><strong>Time-to-Value:</strong> Customers complete first migration within 2 weeks of onboarding</li>
+                <li><strong>Cost Savings:</strong> Customers save ≥ 70% vs. manual migration costs</li>
+                <li><strong>Platform Reliability:</strong> ≤ 1 critical incident per quarter</li>
+            </ul>
+        </section>
+
+        <section class="req-section">
+            <h3>7. Constraints & Assumptions</h3>
+            <p><strong>Constraints:</strong></p>
+            <ul>
+                <li>Must integrate with Salesforce APIs (subject to API rate limits: 100K calls/24hrs per org)</li>
+                <li>Initial release supports CPQ → Revenue Cloud only (other source/target pairs in future)</li>
+                <li>Requires customers to have Salesforce admin credentials with API access</li>
+                <li>Limited to Salesforce objects and fields (no custom code migration)</li>
+            </ul>
+            <p><strong>Assumptions:</strong></p>
+            <ul>
+                <li>Customers have completed data cleanup in source system before migration</li>
+                <li>Target Revenue Cloud org is pre-configured (licenses, users, permissions)</li>
+                <li>Network connectivity between RevNova and customer Salesforce orgs is reliable</li>
+                <li>Customers provide test sandboxes for validation before production migration</li>
+            </ul>
+        </section>
+
+        <div style="background:#f0f6fb;padding:2rem;border-radius:8px;text-align:center;margin:2rem 0">
+            <p style="margin:0;font-size:1.1rem"><strong>Next:</strong> <a href="requirements-mapping.html" style="color:#11998e;text-decoration:underline">View Detailed Field Mapping →</a></p>
+        </div>
+    </div>
+
+    <footer style="background:#2c3e50;color:#ecf0f1;padding:2rem 0;margin-top:3rem;text-align:center">
+        <div class="container">
+            <p>&copy; 2024 RevNova. System Transformation as a Service.</p>
+        </div>
+    </footer>
+</body>
+</html>
