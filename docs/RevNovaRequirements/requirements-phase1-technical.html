@@ -1,156 +1,309 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Phase 1 Technical Requirements - API & Database Design</title>
-  <link rel="stylesheet" href="../styles.css">
-  <style>
-    .requirements-layout{display:flex;min-height:calc(100vh - 80px);margin-top:80px}
-    .sidebar{width:280px;background:#f8f9fa;border-right:1px solid #e0e0e0;padding:2rem 0;position:fixed;height:calc(100vh - 80px);overflow-y:auto}
-    .sidebar h3{padding:0 1.5rem;font-size:0.85rem;color:#666;text-transform:uppercase;letter-spacing:0.5px;margin:1.5rem 0 0.5rem}
-    .sidebar h3:first-child{margin-top:0}
-    .sidebar ul{list-style:none;padding:0;margin:0}
-    .sidebar ul li a{display:block;padding:0.6rem 1.5rem;color:#333;text-decoration:none;font-size:0.95rem;transition:all 0.2s}
-    .sidebar ul li a:hover{background:#e9ecef;color:#11998e}
-    .sidebar ul li a.active{background:#11998e;color:#fff;font-weight:500}
-    .sidebar ul ul{padding-left:0}
-    .sidebar ul ul li a{padding-left:2.5rem;font-size:0.9rem}
-    .main-content{flex:1;margin-left:280px;padding:3rem;background:#fff}
-    pre{background:#f6f8fb;padding:12px;border-radius:6px;overflow-x:auto}
-    table{width:100%;border-collapse:collapse;margin-bottom:1rem}
-    th,td{border:1px solid #ddd;padding:8px}
-    th{background:#f7fbff}
-    @media (max-width:768px){.sidebar{position:relative;width:100%;height:auto}.main-content{margin-left:0}.requirements-layout{flex-direction:column}}
-  </style>
-</head>
-<body>
-  <header>
-    <div class="container header-container">
-      <div class="nav-left">
-        <a href="../index.html" class="logo"><div class="logo-box">RevNova</div></a>
-        <nav class="main-nav">
-          <ul>
-            <li><a href="../about-revnova.html">About RevNova</a></li>
-            <li><a href="../features.html">Features</a></li>
-            <li><a href="../pricing.html">Pricing</a></li>
-            <li><a href="requirements-home.html" class="active">RevNova Requirements</a></li>
-            <li><a href="../contact.html">Contact</a></li>
-          </ul>
-        </nav>
-      </div>
-      <div class="header-right">
-        <div class="country-selector"><span class="fi fi-us"></span></div>
-        <a href="../login.html" class="btn btn-login">Login</a>
-      </div>
-    </div>
-  </header>
+<!DOCTYPE html><!DOCTYPE html>
+
+<html lang="en"><html lang="en">
+
+<head><head>
+
+    <meta charset="utf-8">  <meta charset="utf-8">
+
+    <meta name="viewport" content="width=device-width,initial-scale=1">  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <title>Phase 1 - Technical Architecture | RevNova Requirements</title>  <title>Phase 1 Technical Requirements - API & Database Design</title>
+
+    <link rel="stylesheet" href="../styles.css">  <link rel="stylesheet" href="../styles.css">
+
+    <style>  <style>
+
+        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }    .requirements-layout{display:flex;min-height:calc(100vh - 80px);margin-top:80px}
+
+        .requirements-layout{display:flex;min-height:calc(100vh - 80px);margin-top:80px}    .sidebar{width:280px;background:#f8f9fa;border-right:1px solid #e0e0e0;padding:2rem 0;position:fixed;height:calc(100vh - 80px);overflow-y:auto}
+
+        .sidebar{width:280px;background:#f8f9fa;border-right:1px solid #e0e0e0;padding:2rem 0;position:fixed;left:0;top:80px;height:calc(100vh - 80px);overflow-y:auto;z-index:100}    .sidebar h3{padding:0 1.5rem;font-size:0.85rem;color:#666;text-transform:uppercase;letter-spacing:0.5px;margin:1.5rem 0 0.5rem}
+
+        .sidebar h3{padding:0 1.5rem;font-size:0.85rem;color:#666;text-transform:uppercase;letter-spacing:0.5px;margin:1.5rem 0 0.5rem}    .sidebar h3:first-child{margin-top:0}
+
+        .sidebar ul{list-style:none;padding:0;margin:0}    .sidebar ul{list-style:none;padding:0;margin:0}
+
+        .sidebar ul li a{display:block;padding:0.6rem 1.5rem;color:#333;text-decoration:none;font-size:0.95rem;transition:all 0.2s}    .sidebar ul li a{display:block;padding:0.6rem 1.5rem;color:#333;text-decoration:none;font-size:0.95rem;transition:all 0.2s}
+
+        .sidebar ul li a:hover{background:#e9ecef;color:#11998e}    .sidebar ul li a:hover{background:#e9ecef;color:#11998e}
+
+        .sidebar ul li a.active{background:#11998e;color:#fff;font-weight:500}    .sidebar ul li a.active{background:#11998e;color:#fff;font-weight:500}
+
+        .sidebar ul ul li a{padding-left:2.5rem;font-size:0.9rem}    .sidebar ul ul{padding-left:0}
+
+        .main-content{flex:1;margin-left:280px;padding:3rem;background:#fff;min-width:0}    .sidebar ul ul li a{padding-left:2.5rem;font-size:0.9rem}
+
+        .page-header{background:linear-gradient(135deg,#11998e 0%,#38ef7d 100%);color:#fff;padding:3rem;border-radius:12px;margin-bottom:3rem}    .main-content{flex:1;margin-left:280px;padding:3rem;background:#fff}
+
+        .section-box{background:#fff;border:2px solid #e0e0e0;padding:2.5rem;margin:2rem 0;border-radius:12px}    pre{background:#f6f8fb;padding:12px;border-radius:6px;overflow-x:auto}
+
+        .section-box h3{color:#11998e;margin-top:0;border-bottom:2px solid #38ef7d;padding-bottom:0.5rem}    table{width:100%;border-collapse:collapse;margin-bottom:1rem}
+
+        table{width:100%;border-collapse:collapse;margin:1.5rem 0}    th,td{border:1px solid #ddd;padding:8px}
+
+        th,td{border:1px solid #ddd;padding:12px;text-align:left}    th{background:#f7fbff}
+
+        th{background:linear-gradient(135deg,#11998e 0%,#38ef7d 100%);color:#fff;font-weight:600;font-size:0.85rem}    @media (max-width:768px){.sidebar{position:relative;width:100%;height:auto}.main-content{margin-left:0}.requirements-layout{flex-direction:column}}
+
+        .badge-technical{background:#e74c3c;color:#fff;padding:0.3rem 0.6rem;border-radius:12px;font-size:0.75rem;font-weight:600}  </style>
+
+    </style></head>
+
+</head><body>
+
+<body>  <header>
+
+    <header>    <div class="container header-container">
+
+        <div class="container header-container">      <div class="nav-left">
+
+            <div class="nav-left">        <a href="../index.html" class="logo"><div class="logo-box">RevNova</div></a>
+
+                <a href="../index.html" class="logo"><div class="logo-box">RevNova</div></a>        <nav class="main-nav">
+
+                <nav class="main-nav">          <ul>
+
+                    <ul>            <li><a href="../about-revnova.html">About RevNova</a></li>
+
+                        <li><a href="../about-revnova.html">About RevNova</a></li>            <li><a href="../features.html">Features</a></li>
+
+                        <li><a href="../features.html">Features</a></li>            <li><a href="../pricing.html">Pricing</a></li>
+
+                        <li><a href="../pricing.html">Pricing</a></li>            <li><a href="requirements-home.html" class="active">RevNova Requirements</a></li>
+
+                        <li><a href="requirements-home.html" class="active">RevNova Requirements</a></li>            <li><a href="../contact.html">Contact</a></li>
+
+                        <li><a href="../contact.html">Contact</a></li>          </ul>
+
+                    </ul>        </nav>
+
+                </nav>      </div>
+
+            </div>      <div class="header-right">
+
+            <div class="header-right">        <div class="country-selector"><span class="fi fi-us"></span></div>
+
+                <div class="country-selector"><span class="fi fi-us"></span></div>        <a href="../login.html" class="btn btn-login">Login</a>
+
+                <a href="../login.html" class="btn btn-login">Login</a>      </div>
+
+            </div>    </div>
+
+        </div>  </header>
+
+    </header>
 
   <div class="requirements-layout">
-    <aside class="sidebar">
-      <h3>Platform Vision</h3>
-      <ul>
-        <li><a href="requirements-home.html">RevNova Vision & Strategy</a></li>
-        <li><a href="business-requirements.html">High Level Business Requirements</a></li>
-        <li><a href="high-level-functional.html">High Level Functional Design</a></li>
-        <li><a href="requirements-mapping.html">Complete Field Mapping</a></li>
-      </ul>
-      <h3>Phase 1 - Product Catalog (WS1)</h3>
-      <ul>
-        <li><a href="#">Phase 1 Requirements</a>
-          <ul>
-            <li><a href="requirements-phase1-functional.html">Functional Requirements</a>
-              <ul>
-                <li><a href="requirements-phase1-functional.html#connect">Connection Wizard</a></li>
-                <li><a href="requirements-phase1-functional.html#analyze">Schema Analysis</a></li>
-                <li><a href="requirements-phase1-functional.html#mapping">Field Mapping</a></li>
-                <li><a href="requirements-phase1-functional.html#transform">Data Transformation</a></li>
-                <li><a href="requirements-phase1-functional.html#validate">Validation</a></li>
-                <li><a href="requirements-phase1-functional.html#execute">Migration Execution</a></li>
-                <li><a href="requirements-phase1-functional.html#test">Post-Migration Testing</a></li>
-              </ul>
-            </li>
-            <li><a href="requirements-phase1-technical.html" class="active">Technical Requirements</a>
-              <ul>
-                <li><a href="#api">API Specifications</a></li>
-                <li><a href="#database">Database Schema</a></li>
-                <li><a href="#staging">Staging Tables</a></li>
-              </ul>
-            </li>
-          </ul>
-        </li>
-      </ul>
-      <h3>Phase 2 - Quotes & Pricing (WS2)</h3>
-      <ul>
-        <li><a href="#">Phase 2 Requirements</a>
-          <ul>
-            <li><a href="requirements-phase2-functional.html">Functional Requirements</a></li>
-            <li><a href="requirements-phase2-technical.html">Technical Requirements</a></li>
-          </ul>
-        </li>
-      </ul>
-      <h3>Phase 3 - Contracts & Assets (WS3)</h3>
-      <ul>
-        <li><a href="#">Phase 3 Requirements</a>
-          <ul>
-            <li><a href="requirements-phase3-functional.html">Functional Requirements</a></li>
-            <li><a href="requirements-phase3-technical.html">Technical Requirements</a></li>
-          </ul>
-        </li>
-      </ul>
-      <h3>Phase 4 - Billing & Invoicing (WS4)</h3>
-      <ul>
-        <li><a href="#">Phase 4 Requirements</a>
-          <ul>
-            <li><a href="requirements-phase4-functional.html">Functional Requirements</a></li>
-            <li><a href="requirements-phase4-technical.html">Technical Requirements</a></li>
-          </ul>
-        </li>
-      </ul>
-      <h3>Phase 5 - Revenue Cloud Advanced (WS5)</h3>
-      <ul>
-        <li><a href="#">Phase 5 Requirements</a>
-          <ul>
-            <li><a href="requirements-phase5-functional.html">Functional Requirements</a></li>
-            <li><a href="requirements-phase5-technical.html">Technical Requirements</a></li>
-          </ul>
-        </li>
-      </ul>
-    </aside>
 
-    <main class="main-content">
-      <h1>Phase 1 — Technical Requirements (MVP)</h1>
-      <p>Low-level design mapping UI -> APIs -> DB. This page references the Field Mapping document for per-field transforms.</p>
+    <div class="requirements-layout">    <aside class="sidebar">
+
+        <aside class="sidebar">      <h3>Platform Vision</h3>
+
+            <h3>Platform Vision</h3>      <ul>
+
+            <ul>        <li><a href="requirements-home.html">RevNova Vision & Strategy</a></li>
+
+                <li><a href="requirements-home.html">RevNova Vision & Strategy</a></li>        <li><a href="business-requirements.html">High Level Business Requirements</a></li>
+
+                <li><a href="business-requirements.html">High Level Business Requirements</a></li>        <li><a href="high-level-functional.html">High Level Functional Design</a></li>
+
+                <li><a href="high-level-functional.html">High Level Functional Design</a></li>        <li><a href="requirements-mapping.html">Complete Field Mapping</a></li>
+
+            </ul>      </ul>
+
+            <h3>Phase 1 - Migration Wizard</h3>      <h3>Phase 1 - Product Catalog (WS1)</h3>
+
+            <ul>      <ul>
+
+                <li><a href="requirements-phase1-connect.html">1. Connection Wizard</a></li>        <li><a href="#">Phase 1 Requirements</a>
+
+                <li><a href="requirements-phase1-analyze.html">2. Schema Analysis</a></li>          <ul>
+
+                <li><a href="requirements-phase1-mapping.html">3. Field Mapping</a></li>            <li><a href="requirements-phase1-functional.html">Functional Requirements</a>
+
+                <li><a href="requirements-phase1-transform.html">4. Data Transformation</a></li>              <ul>
+
+                <li><a href="requirements-phase1-validate.html">5. Validation</a></li>                <li><a href="requirements-phase1-functional.html#connect">Connection Wizard</a></li>
+
+                <li><a href="requirements-phase1-execute.html">6. Migration Execution</a></li>                <li><a href="requirements-phase1-functional.html#analyze">Schema Analysis</a></li>
+
+                <li><a href="requirements-phase1-test.html">7. Post-Migration Testing</a></li>                <li><a href="requirements-phase1-functional.html#mapping">Field Mapping</a></li>
+
+                <li><a href="requirements-phase1-technical.html" class="active">Technical Architecture</a></li>                <li><a href="requirements-phase1-functional.html#transform">Data Transformation</a></li>
+
+                <li><a href="requirements-mapping.html">Complete Field Mapping</a></li>                <li><a href="requirements-phase1-functional.html#validate">Validation</a></li>
+
+            </ul>                <li><a href="requirements-phase1-functional.html#execute">Migration Execution</a></li>
+
+        </aside>                <li><a href="requirements-phase1-functional.html#test">Post-Migration Testing</a></li>
+
+              </ul>
+
+        <main class="main-content">            </li>
+
+            <div class="page-header">            <li><a href="requirements-phase1-technical.html" class="active">Technical Requirements</a>
+
+                <h1>🏗️ Phase 1: Technical Architecture</h1>              <ul>
+
+                <p>Object-oriented, reusable migration platform architecture extending to Phase 3-5</p>                <li><a href="#api">API Specifications</a></li>
+
+            </div>                <li><a href="#database">Database Schema</a></li>
+
+                <li><a href="#staging">Staging Tables</a></li>
+
+            <section class="section-box">              </ul>
+
+                <h3><span class="badge-technical">Technical</span> System Architecture</h3>            </li>
+
+                <table>          </ul>
+
+                    <tr><th>Layer</th><th>Technology</th><th>Purpose</th></tr>        </li>
+
+                    <tr><td><strong>Frontend</strong></td><td>React 18, TypeScript, TailwindCSS</td><td>7-page wizard UI, real-time monitoring dashboard</td></tr>      </ul>
+
+                    <tr><td><strong>Backend API</strong></td><td>Node.js 20, Express, TypeScript</td><td>REST APIs for connection, schema, mapping, execution</td></tr>      <h3>Phase 2 - Quotes & Pricing (WS2)</h3>
+
+                    <tr><td><strong>Database</strong></td><td>PostgreSQL 16</td><td>User data, schemas, mappings, validation results</td></tr>      <ul>
+
+                    <tr><td><strong>Staging (STG1/STG2)</strong></td><td>PostgreSQL (Hybrid: Vanilla + EAV)</td><td>Temporary storage for extracted and transformed data</td></tr>        <li><a href="#">Phase 2 Requirements</a>
+
+                    <tr><td><strong>Cache</strong></td><td>Redis 7</td><td>Schema caching, session management, rate limiting</td></tr>          <ul>
+
+                    <tr><td><strong>Queue</strong></td><td>Bull (Redis-backed)</td><td>Batch processing, parallel workers, job retries</td></tr>            <li><a href="requirements-phase2-functional.html">Functional Requirements</a></li>
+
+                    <tr><td><strong>AI/ML</strong></td><td>OpenAI GPT-4 API, Custom embeddings</td><td>Field mapping suggestions, semantic similarity</td></tr>            <li><a href="requirements-phase2-technical.html">Technical Requirements</a></li>
+
+                    <tr><td><strong>Storage</strong></td><td>AWS S3 / Azure Blob</td><td>Migration reports, error logs, backup files</td></tr>          </ul>
+
+                    <tr><td><strong>Orchestration</strong></td><td>Custom workflow engine</td><td>Manage 7-page workflow, state transitions</td></tr>        </li>
+
+                </table>      </ul>
+
+            </section>      <h3>Phase 3 - Contracts & Assets (WS3)</h3>
+
+      <ul>
+
+            <section class="section-box">        <li><a href="#">Phase 3 Requirements</a>
+
+                <h3><span class="badge-technical">Technical</span> Object-Oriented Data Model - KEY TO REUSABILITY</h3>          <ul>
+
+                <pre style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:8px;overflow-x:auto">            <li><a href="requirements-phase3-functional.html">Functional Requirements</a></li>
+
+// Generic Object Model (works for Product, Quote, Contract, Invoice, ANY object)            <li><a href="requirements-phase3-technical.html">Technical Requirements</a></li>
+
+interface MigrationObject {          </ul>
+
+    objectId: string;        </li>
+
+    objectName: string; // "Product2", "SBQQ__Quote__c", "Order", etc.      </ul>
+
+    sourceConnection: Connection;      <h3>Phase 4 - Billing & Invoicing (WS4)</h3>
+
+    targetConnection: Connection;      <ul>
+
+    fields: MigrationField[];        <li><a href="#">Phase 4 Requirements</a>
+
+    records: GenericRecord[];          <ul>
+
+}            <li><a href="requirements-phase4-functional.html">Functional Requirements</a></li>
+
+            <li><a href="requirements-phase4-technical.html">Technical Requirements</a></li>
+
+interface MigrationField {          </ul>
+
+    fieldId: string;        </li>
+
+    fieldName: string;      </ul>
+
+    dataType: string; // text, number, date, picklist, lookup      <h3>Phase 5 - Revenue Cloud Advanced (WS5)</h3>
+
+    isRequired: boolean;      <ul>
+
+    isCustom: boolean;        <li><a href="#">Phase 5 Requirements</a>
+
+    mapping?: FieldMapping;          <ul>
+
+    transformation?: TransformationRule;            <li><a href="requirements-phase5-functional.html">Functional Requirements</a></li>
+
+}            <li><a href="requirements-phase5-technical.html">Technical Requirements</a></li>
+
+          </ul>
+
+interface GenericRecord {        </li>
+
+    recordId: string;      </ul>
+
+    objectName: string;    </aside>
+
+    fields: Map<string, any>; // Polymorphic field storage
+
+    stage: 'STG1' | 'STG2' | 'TARGET';    <main class="main-content">
+
+    validationStatus: 'pass' | 'warn' | 'fail';      <h1>Phase 1 — Technical Requirements (MVP)</h1>
+
+    errors: ValidationError[];      <p>Low-level design mapping UI -> APIs -> DB. This page references the Field Mapping document for per-field transforms.</p>
+
+}
 
       <section id="api">
-      <h2>API Specifications</h2>
-    <table>
-      <thead><tr><th>Endpoint</th><th>Method</th><th>Payload</th><th>Response</th><th>Purpose</th></tr></thead>
+
+// THIS MODEL WORKS FOR ANY OBJECT TYPE - NO CODE CHANGES NEEDED IN PHASE 3-5      <h2>API Specifications</h2>
+
+                </pre>    <table>
+
+            </section>      <thead><tr><th>Endpoint</th><th>Method</th><th>Payload</th><th>Response</th><th>Purpose</th></tr></thead>
+
       <tbody>
-        <!-- Project Management APIs -->
-        <tr><td>/api/v1/projects</td><td>POST</td><td>{name,description,source_type,target_type,created_by}</td><td>{id,name,status,created_at}</td><td>Create migration project</td></tr>
-        <tr><td>/api/v1/projects</td><td>GET</td><td>Query params: ?user_id=123&status=active</td><td>{projects: [...], total_count}</td><td>List all projects for user</td></tr>
-        <tr><td>/api/v1/projects/{id}</td><td>GET</td><td>-</td><td>{id,name,status,progress,created_at,...}</td><td>Get project details</td></tr>
-        <tr><td>/api/v1/projects/{id}</td><td>PUT</td><td>{name,description,status}</td><td>{id,updated_at}</td><td>Update project metadata</td></tr>
-        <tr><td>/api/v1/projects/{id}</td><td>DELETE</td><td>-</td><td>{success: true}</td><td>Archive/soft-delete project</td></tr>
+
+            <section class="section-box">        <!-- Project Management APIs -->
+
+                <h3><span class="badge-technical">Technical</span> Extensibility for Phase 3-5</h3>        <tr><td>/api/v1/projects</td><td>POST</td><td>{name,description,source_type,target_type,created_by}</td><td>{id,name,status,created_at}</td><td>Create migration project</td></tr>
+
+                <p><strong>How Phase 1 Architecture Extends to Future Phases:</strong></p>        <tr><td>/api/v1/projects</td><td>GET</td><td>Query params: ?user_id=123&status=active</td><td>{projects: [...], total_count}</td><td>List all projects for user</td></tr>
+
+                <ul style="line-height:1.8">        <tr><td>/api/v1/projects/{id}</td><td>GET</td><td>-</td><td>{id,name,status,progress,created_at,...}</td><td>Get project details</td></tr>
+
+                    <li>✅ <strong>Pluggable Source Connectors:</strong> OracleCPQConnector, SAPConnector, DynamicsCRMConnector implement ISourceConnector interface</li>        <tr><td>/api/v1/projects/{id}</td><td>PUT</td><td>{name,description,status}</td><td>{id,updated_at}</td><td>Update project metadata</td></tr>
+
+                    <li>✅ <strong>Same 7-Page Wizard:</strong> UI is source-agnostic, works with any connector</li>        <tr><td>/api/v1/projects/{id}</td><td>DELETE</td><td>-</td><td>{success: true}</td><td>Archive/soft-delete project</td></tr>
+
+                    <li>✅ <strong>Generic Staging Model:</strong> Hybrid Vanilla+EAV handles any object schema</li>        
+
+                    <li>✅ <strong>Reusable Transformation Engine:</strong> Same formula syntax for all object types</li>        <!-- Connection APIs -->
+
+                    <li>✅ <strong>Validation Framework:</strong> Rule engine works for any object/field combination</li>        <tr><td>/api/v1/projects/{id}/connections/source</td><td>POST</td><td>{instance_url,username,password,security_token,api_version}</td><td>{connection_id,status:"connected"}</td><td>Store source connection (encrypted), validate credentials</td></tr>
+
+                    <li>✅ <strong>Batch Processing:</strong> Same queue/worker architecture for all sources</li>        <tr><td>/api/v1/projects/{id}/connections/source/test</td><td>POST</td><td>{instance_url,username,password}</td><td>{success: true, org_id, org_name, api_enabled: true}</td><td>Test source connection without saving</td></tr>
+
+                </ul>        <tr><td>/api/v1/projects/{id}/connections/target</td><td>POST</td><td>{instance_url,username,password,security_token,api_version}</td><td>{connection_id,status:"connected"}</td><td>Store target connection</td></tr>
+
+            </section>        <tr><td>/api/v1/projects/{id}/connections/target/test</td><td>POST</td><td>{instance_url,username,password}</td><td>{success: true, permissions: {Product2:{create,read,update}}}</td><td>Test target connection and verify permissions</td></tr>
+
         
-        <!-- Connection APIs -->
-        <tr><td>/api/v1/projects/{id}/connections/source</td><td>POST</td><td>{instance_url,username,password,security_token,api_version}</td><td>{connection_id,status:"connected"}</td><td>Store source connection (encrypted), validate credentials</td></tr>
-        <tr><td>/api/v1/projects/{id}/connections/source/test</td><td>POST</td><td>{instance_url,username,password}</td><td>{success: true, org_id, org_name, api_enabled: true}</td><td>Test source connection without saving</td></tr>
-        <tr><td>/api/v1/projects/{id}/connections/target</td><td>POST</td><td>{instance_url,username,password,security_token,api_version}</td><td>{connection_id,status:"connected"}</td><td>Store target connection</td></tr>
-        <tr><td>/api/v1/projects/{id}/connections/target/test</td><td>POST</td><td>{instance_url,username,password}</td><td>{success: true, permissions: {Product2:{create,read,update}}}</td><td>Test target connection and verify permissions</td></tr>
-        
-        <!-- Analysis APIs -->
-        <tr><td>/api/v1/projects/{id}/analyze</td><td>POST</td><td>{objects: ["Product2","Pricebook2","PricebookEntry"]}</td><td>{job_id,status:"queued"}</td><td>Trigger async schema discovery job</td></tr>
-        <tr><td>/api/v1/projects/{id}/analyze/{job_id}</td><td>GET</td><td>-</td><td>{status:"completed", results: {objects, fields, custom_fields_count, readiness_score}}</td><td>Get analysis job status and results</td></tr>
-        <tr><td>/api/v1/projects/{id}/analyze/summary</td><td>GET</td><td>-</td><td>{total_records, total_objects, custom_fields, readiness_score, warnings: [...]}</td><td>Get analysis summary for UI dashboard</td></tr>
-        
-        <!-- Mapping APIs -->
-        <tr><td>/api/v1/projects/{id}/mappings</td><td>GET</td><td>-</td><td>{mappings: [{source_field, target_field, mapping_type,...}]}</td><td>Get all field mappings for project</td></tr>
-        <tr><td>/api/v1/projects/{id}/mappings</td><td>POST</td><td>{mappings: [...], mode:"replace|merge"}</td><td>{total_saved, conflicts: []}</td><td>Save/update field mappings (bulk)</td></tr>
-        <tr><td>/api/v1/projects/{id}/mappings/suggest</td><td>POST</td><td>{source_object}</td><td>{suggestions: [{source_field, target_field, confidence: 0.95}]}</td><td>Get AI-suggested mappings</td></tr>
-        <tr><td>/api/v1/projects/{id}/mappings/{mapping_id}</td><td>PUT</td><td>{target_field, mapping_type, transform_logic}</td><td>{id, updated_at}</td><td>Update single mapping</td></tr>
-        <tr><td>/api/v1/projects/{id}/mappings/validate</td><td>POST</td><td>{mappings: [...]}</td><td>{valid: true, errors: [], warnings: []}</td><td>Validate mapping completeness and compatibility</td></tr>
+
+            <section>        <!-- Analysis APIs -->
+
+                <h2>Navigation</h2>        <tr><td>/api/v1/projects/{id}/analyze</td><td>POST</td><td>{objects: ["Product2","Pricebook2","PricebookEntry"]}</td><td>{job_id,status:"queued"}</td><td>Trigger async schema discovery job</td></tr>
+
+                <ul style="line-height:2">        <tr><td>/api/v1/projects/{id}/analyze/{job_id}</td><td>GET</td><td>-</td><td>{status:"completed", results: {objects, fields, custom_fields_count, readiness_score}}</td><td>Get analysis job status and results</td></tr>
+
+                    <li><strong>Back to:</strong> <a href="requirements-phase1-connect.html">Page 1: Connection Wizard</a></li>        <tr><td>/api/v1/projects/{id}/analyze/summary</td><td>GET</td><td>-</td><td>{total_records, total_objects, custom_fields, readiness_score, warnings: [...]}</td><td>Get analysis summary for UI dashboard</td></tr>
+
+                    <li><strong>View:</strong> <a href="high-level-functional.html">High Level Functional Design</a></li>        
+
+                </ul>        <!-- Mapping APIs -->
+
+            </section>        <tr><td>/api/v1/projects/{id}/mappings</td><td>GET</td><td>-</td><td>{mappings: [{source_field, target_field, mapping_type,...}]}</td><td>Get all field mappings for project</td></tr>
+
+        </main>        <tr><td>/api/v1/projects/{id}/mappings</td><td>POST</td><td>{mappings: [...], mode:"replace|merge"}</td><td>{total_saved, conflicts: []}</td><td>Save/update field mappings (bulk)</td></tr>
+
+    </div>        <tr><td>/api/v1/projects/{id}/mappings/suggest</td><td>POST</td><td>{source_object}</td><td>{suggestions: [{source_field, target_field, confidence: 0.95}]}</td><td>Get AI-suggested mappings</td></tr>
+
+</body>        <tr><td>/api/v1/projects/{id}/mappings/{mapping_id}</td><td>PUT</td><td>{target_field, mapping_type, transform_logic}</td><td>{id, updated_at}</td><td>Update single mapping</td></tr>
+
+</html>        <tr><td>/api/v1/projects/{id}/mappings/validate</td><td>POST</td><td>{mappings: [...]}</td><td>{valid: true, errors: [], warnings: []}</td><td>Validate mapping completeness and compatibility</td></tr>
+
         
         <!-- Transform APIs -->
         <tr><td>/api/v1/projects/{id}/transforms</td><td>GET</td><td>-</td><td>{transforms: [{name, type, logic, error_handling}]}</td><td>Get all transform rules</td></tr>
