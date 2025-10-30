@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Phase 2 - Budget Calculator | RevNova Requirements</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
+        .requirements-layout{display:flex;min-height:calc(100vh - 80px);margin-top:80px}
+        .sidebar{width:280px;background:#f8f9fa;border-right:1px solid #e0e0e0;padding:2rem 0;position:fixed;left:0;top:80px;height:calc(100vh - 80px);overflow-y:auto;z-index:100}
+        .sidebar h3{padding:0 1.5rem;font-size:0.85rem;color:#666;text-transform:uppercase;letter-spacing:0.5px;margin:1.5rem 0 0.5rem}
+        .sidebar ul{list-style:none;padding:0;margin:0}
+        .sidebar ul li a{display:block;padding:0.6rem 1.5rem;color:#333;text-decoration:none;font-size:0.95rem;transition:all 0.2s}
+        .sidebar ul li a:hover{background:#e9ecef;color:#11998e}
+        .sidebar ul li a.active{background:#11998e;color:#fff;font-weight:500}
+        .sidebar ul ul li a{padding-left:2.5rem;font-size:0.9rem}
+        .main-content{flex:1;margin-left:280px;padding:3rem;background:#fff;min-width:0}
+        .page-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;padding:3rem;border-radius:12px;margin-bottom:3rem}
+        .section-box{background:#fff;border:2px solid #e0e0e0;padding:2.5rem;margin:2rem 0;border-radius:12px}
+        .section-box h3{color:#667eea;margin-top:0;border-bottom:2px solid #764ba2;padding-bottom:0.5rem}
+        table{width:100%;border-collapse:collapse;margin:1.5rem 0}
+        th,td{border:1px solid #ddd;padding:12px;text-align:left}
+        th{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;font-weight:600;font-size:0.85rem}
+        .badge-functional{background:#3498db;color:#fff;padding:0.3rem 0.6rem;border-radius:12px;font-size:0.75rem;font-weight:600}
+        .badge-technical{background:#e74c3c;color:#fff;padding:0.3rem 0.6rem;border-radius:12px;font-size:0.75rem;font-weight:600}
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="nav-left">
+                <a href="../index.html" class="logo"><div class="logo-box">RevNova</div></a>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="../about-revnova.html">About RevNova</a></li>
+                        <li><a href="../features.html">Features</a></li>
+                        <li><a href="../pricing.html">Pricing</a></li>
+                        <li><a href="requirements-home.html" class="active">RevNova Requirements</a></li>
+                        <li><a href="../contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header-right">
+                <div class="country-selector"><span class="fi fi-us"></span></div>
+                <a href="../login.html" class="btn btn-login">Login</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="requirements-layout">
+        <aside class="sidebar">
+            <h3>Platform Vision</h3>
+            <ul>
+                <li><a href="requirements-home.html">RevNova Vision & Strategy</a></li>
+                <li><a href="business-requirements.html">High Level Business Requirements</a></li>
+                <li><a href="high-level-functional.html">High Level Functional Design</a></li>
+            </ul>
+            <h3>Phase 2 - AI Product Platform</h3>
+            <ul>
+                <li><a href="requirements-phase2-generate.html">1. Generate with AI</a></li>
+                <li><a href="requirements-phase2-modify.html">2. Modify with AI</a></li>
+                <li><a href="requirements-phase2-adopt.html">3. Adopt AI Suggestions</a></li>
+                <li><a href="requirements-phase2-planning.html">4. Planning Tools</a></li>
+                <li><a href="requirements-phase2-impact.html">5. System Impact Analyzer</a></li>
+                <li><a href="requirements-phase2-budget.html" class="active">6. Budget Calculator</a></li>
+                <li><a href="requirements-phase2-technical.html">Technical Architecture</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="page-header">
+                <h1>💰 Budget Calculator - TCO & ROI Projection</h1>
+                <p>Calculate development costs, go-to-market expenses, and long-term ROI for new products</p>
+            </div>
+
+            <section class="section-box">
+                <h3><span class="badge-functional">Functional</span> Cost Components - Parametric Estimation</h3>
+                <table>
+                    <tr><th>Cost Category</th><th>AI-Estimated Inputs</th><th>Calculation Method</th></tr>
+                    <tr>
+                        <td><strong>Development Cost</strong></td>
+                        <td>• Complexity score (1-10 based on # fields, integrations, custom logic)<br>• Estimated hours = Complexity × 40 hours<br>• Hourly rate (user input, default $150/hr)</td>
+                        <td><strong>Formula:</strong><br>Dev Cost = (Complexity × 40) × $150<br><br><strong>Example:</strong><br>Complexity 7 product → 280 hours × $150 = $42,000</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Marketing Cost</strong></td>
+                        <td>• Target customer acquisition count (user input)<br>• CAC (Customer Acquisition Cost) benchmark by industry<br>• Channel mix (from Planning Tool output)</td>
+                        <td><strong>Formula:</strong><br>Marketing Cost = (Target Customers) × CAC<br><br><strong>Example:</strong><br>500 customers × $200 CAC = $100,000</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Support Cost</strong></td>
+                        <td>• Expected customer count (Year 1/2/3)<br>• Tickets per customer per month (industry avg: 0.5)<br>• Support agent cost (salary + overhead, default $60k/yr)</td>
+                        <td><strong>Formula:</strong><br>FTE Needed = (Customers × 0.5 tickets/mo) ÷ 100 tickets/agent<br>Support Cost = FTE × $60k<br><br><strong>Example:</strong><br>1,000 customers → 5 FTE → $300k/yr</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Infrastructure Cost</strong></td>
+                        <td>• User count (concurrent users)<br>• Storage needs (GB per user, default 1GB)<br>• Cloud provider (AWS, Azure, GCP) pricing API</td>
+                        <td><strong>Formula:</strong><br>Compute: $0.10/user/month<br>Storage: $0.023/GB/month<br>CDN: $0.085/GB transfer<br><br><strong>Example:</strong><br>10,000 users, 1GB each → $1,000/mo compute + $230/mo storage = $14,760/yr</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section class="section-box">
+                <h3><span class="badge-functional">Functional</span> Revenue Projection & ROI</h3>
+                <table>
+                    <tr><th>Metric</th><th>Calculation</th></tr>
+                    <tr>
+                        <td><strong>Year 1 Revenue</strong></td>
+                        <td>• Launch month (user input, default Month 3)<br>• Ramp rate (% of target customers per month)<br>• ASP (Average Selling Price from product config)<br><br><strong>Example:</strong><br>Launch Month 3, 10% adoption/mo, $500 ASP, 500 target customers<br>→ Month 3: 50 customers × $500 = $25k<br>→ Month 12: 500 customers × $500 = $250k<br>→ Year 1 Total: $1.375M</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Year 2-3 Revenue</strong></td>
+                        <td>• Growth rate (user input, default 50% YoY for SaaS)<br>• Churn rate (user input, default 10% annual)<br><br><strong>Example:</strong><br>Year 1: 500 customers × $500 × 12mo = $3M ARR<br>Year 2: (500 × 1.5 - 50 churn) × $500 × 12 = $4.2M<br>Year 3: (700 × 1.5 - 70 churn) × $500 × 12 = $5.88M</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ROI Calculation</strong></td>
+                        <td><strong>3-Year ROI:</strong><br>Total Revenue (3yr): $13.08M<br>Total Costs (3yr): $1.5M (dev + marketing + support + infra)<br>Net Profit: $11.58M<br>ROI: (11.58 / 1.5) × 100 = <strong>772%</strong><br><br><strong>Payback Period:</strong><br>Break-even when cumulative revenue > cumulative costs<br>Example: Month 8 (after $1.5M in revenue)</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section class="section-box">
+                <h3><span class="badge-functional">Functional</span> Sensitivity Analysis - Risk Scenarios</h3>
+                <table>
+                    <tr><th>Scenario</th><th>Assumptions Changed</th><th>Impact on ROI</th></tr>
+                    <tr>
+                        <td><strong>Best Case</strong></td>
+                        <td>• 75% adoption rate (vs 50%)<br>• 5% churn (vs 10%)<br>• $600 ASP (vs $500)</td>
+                        <td><strong>ROI: 1,250%</strong> (vs 772% base case)<br>Payback: Month 5 (vs Month 8)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Worst Case</strong></td>
+                        <td>• 25% adoption rate (vs 50%)<br>• 20% churn (vs 10%)<br>• $400 ASP (vs $500)</td>
+                        <td><strong>ROI: 180%</strong> (vs 772% base case)<br>Payback: Month 18 (vs Month 8)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Monte Carlo Simulation</strong></td>
+                        <td>• Run 10,000 simulations with random variations in adoption, churn, ASP<br>• Generate probability distribution of ROI outcomes</td>
+                        <td><strong>Output:</strong><br>• 90% confidence interval: [350%, 1,100%]<br>• Median ROI: 750%<br>• Probability of >500% ROI: 85%</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section class="section-box">
+                <h3><span class="badge-technical">Technical</span> Budget Calculation Engine</h3>
+                <pre style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:8px;overflow-x:auto">
+// Calculate 3-year budget projection
+function calculateBudget(inputs: BudgetInputs): BudgetProjection {
+    // Development Cost (one-time)
+    const devCost = inputs.complexity * 40 * inputs.hourlyRate;
+    
+    // Marketing Cost (Year 1 heavy, then maintenance)
+    const marketingCost = {
+        year1: inputs.targetCustomers * inputs.cac,
+        year2: inputs.targetCustomers * 0.3 * inputs.cac, // 30% of Year 1 for retention
+        year3: inputs.targetCustomers * 0.2 * inputs.cac
+    };
+    
+    // Support Cost (scales with customers)
+    const calculateSupportCost = (customers: number) => {
+        const ticketsPerMonth = customers * 0.5;
+        const fteNeeded = Math.ceil(ticketsPerMonth / 100);
+        return fteNeeded * 60000; // $60k per FTE
+    };
+    
+    // Infrastructure Cost (scales with users)
+    const calculateInfraCost = (users: number) => {
+        const compute = users * 0.10 * 12; // $0.10/user/month
+        const storage = users * 1 * 0.023 * 12; // 1GB per user
+        return compute + storage;
+    };
+    
+    // Revenue Projection
+    const revenueProjection = projectRevenue(inputs);
+    
+    // Total Costs by Year
+    const costs = {
+        year1: devCost + marketingCost.year1 + calculateSupportCost(inputs.year1Customers) + calculateInfraCost(inputs.year1Users),
+        year2: marketingCost.year2 + calculateSupportCost(inputs.year2Customers) + calculateInfraCost(inputs.year2Users),
+        year3: marketingCost.year3 + calculateSupportCost(inputs.year3Customers) + calculateInfraCost(inputs.year3Users)
+    };
+    
+    // ROI Calculation
+    const totalRevenue = revenueProjection.year1 + revenueProjection.year2 + revenueProjection.year3;
+    const totalCosts = costs.year1 + costs.year2 + costs.year3;
+    const roi = ((totalRevenue - totalCosts) / totalCosts) * 100;
+    
+    return { costs, revenue: revenueProjection, roi };
+}
+
+// Monte Carlo Simulation for Risk Analysis
+function runMonteCarloSimulation(baseInputs: BudgetInputs, iterations: number = 10000): ROIDistribution {
+    const roiOutcomes: number[] = [];
+    
+    for (let i = 0; i < iterations; i++) {
+        // Randomly vary key parameters within ±30%
+        const simulatedInputs = {
+            ...baseInputs,
+            targetCustomers: randomVariation(baseInputs.targetCustomers, 0.3),
+            churnRate: randomVariation(baseInputs.churnRate, 0.3),
+            asp: randomVariation(baseInputs.asp, 0.2)
+        };
+        
+        const result = calculateBudget(simulatedInputs);
+        roiOutcomes.push(result.roi);
+    }
+    
+    return {
+        median: percentile(roiOutcomes, 50),
+        p10: percentile(roiOutcomes, 10),
+        p90: percentile(roiOutcomes, 90),
+        probabilityAbove500: roiOutcomes.filter(r => r > 500).length / iterations
+    };
+}
+                </pre>
+            </section>
+
+            <section class="section-box">
+                <h3><span class="badge-technical">Technical</span> Database Schema - Budget Scenarios</h3>
+                <pre style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:8px;overflow-x:auto">
+CREATE TABLE budget_scenarios (
+    scenario_id UUID PRIMARY KEY,
+    product_id UUID NOT NULL,
+    scenario_type VARCHAR(50) NOT NULL, -- 'base', 'best', 'worst', 'monte_carlo'
+    inputs JSONB NOT NULL, -- All calculation inputs
+    projected_costs JSONB NOT NULL, -- Costs by year and category
+    projected_revenue JSONB NOT NULL, -- Revenue by year
+    roi_3yr NUMERIC(10,2),
+    payback_months INTEGER,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE INDEX idx_budget_product ON budget_scenarios(product_id, scenario_type);
+                </pre>
+            </section>
+
+            <section>
+                <h2>Navigation</h2>
+                <ul style="line-height:2">
+                    <li><strong>Previous:</strong> <a href="requirements-phase2-impact.html">Page 5: System Impact Analyzer</a></li>
+                    <li><strong>Next:</strong> <a href="requirements-phase2-technical.html">Technical Architecture</a></li>
+                </ul>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

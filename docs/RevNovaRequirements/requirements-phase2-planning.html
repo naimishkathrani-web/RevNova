@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Phase 2 - Planning Tools | RevNova Requirements</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
+        .requirements-layout{display:flex;min-height:calc(100vh - 80px);margin-top:80px}
+        .sidebar{width:280px;background:#f8f9fa;border-right:1px solid #e0e0e0;padding:2rem 0;position:fixed;left:0;top:80px;height:calc(100vh - 80px);overflow-y:auto;z-index:100}
+        .sidebar h3{padding:0 1.5rem;font-size:0.85rem;color:#666;text-transform:uppercase;letter-spacing:0.5px;margin:1.5rem 0 0.5rem}
+        .sidebar ul{list-style:none;padding:0;margin:0}
+        .sidebar ul li a{display:block;padding:0.6rem 1.5rem;color:#333;text-decoration:none;font-size:0.95rem;transition:all 0.2s}
+        .sidebar ul li a:hover{background:#e9ecef;color:#11998e}
+        .sidebar ul li a.active{background:#11998e;color:#fff;font-weight:500}
+        .sidebar ul ul li a{padding-left:2.5rem;font-size:0.9rem}
+        .main-content{flex:1;margin-left:280px;padding:3rem;background:#fff;min-width:0}
+        .page-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;padding:3rem;border-radius:12px;margin-bottom:3rem}
+        .section-box{background:#fff;border:2px solid #e0e0e0;padding:2.5rem;margin:2rem 0;border-radius:12px}
+        .section-box h3{color:#667eea;margin-top:0;border-bottom:2px solid #764ba2;padding-bottom:0.5rem}
+        table{width:100%;border-collapse:collapse;margin:1.5rem 0}
+        th,td{border:1px solid #ddd;padding:12px;text-align:left}
+        th{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;font-weight:600;font-size:0.85rem}
+        .badge-functional{background:#3498db;color:#fff;padding:0.3rem 0.6rem;border-radius:12px;font-size:0.75rem;font-weight:600}
+        .badge-technical{background:#e74c3c;color:#fff;padding:0.3rem 0.6rem;border-radius:12px;font-size:0.75rem;font-weight:600}
+        .tab-nav{display:flex;border-bottom:2px solid #e0e0e0;margin:1rem 0}
+        .tab-nav button{padding:0.8rem 1.5rem;background:none;border:none;font-size:1rem;cursor:pointer;border-bottom:3px solid transparent}
+        .tab-nav button.active{color:#667eea;border-bottom-color:#667eea;font-weight:600}
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="nav-left">
+                <a href="../index.html" class="logo"><div class="logo-box">RevNova</div></a>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="../about-revnova.html">About RevNova</a></li>
+                        <li><a href="../features.html">Features</a></li>
+                        <li><a href="../pricing.html">Pricing</a></li>
+                        <li><a href="requirements-home.html" class="active">RevNova Requirements</a></li>
+                        <li><a href="../contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header-right">
+                <div class="country-selector"><span class="fi fi-us"></span></div>
+                <a href="../login.html" class="btn btn-login">Login</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="requirements-layout">
+        <aside class="sidebar">
+            <h3>Platform Vision</h3>
+            <ul>
+                <li><a href="requirements-home.html">RevNova Vision & Strategy</a></li>
+                <li><a href="business-requirements.html">High Level Business Requirements</a></li>
+                <li><a href="high-level-functional.html">High Level Functional Design</a></li>
+            </ul>
+            <h3>Phase 2 - AI Product Platform</h3>
+            <ul>
+                <li><a href="requirements-phase2-generate.html">1. Generate with AI</a></li>
+                <li><a href="requirements-phase2-modify.html">2. Modify with AI</a></li>
+                <li><a href="requirements-phase2-adopt.html">3. Adopt AI Suggestions</a></li>
+                <li><a href="requirements-phase2-planning.html" class="active">4. Planning Tools</a></li>
+                <li><a href="requirements-phase2-impact.html">5. System Impact Analyzer</a></li>
+                <li><a href="requirements-phase2-budget.html">6. Budget Calculator</a></li>
+                <li><a href="requirements-phase2-technical.html">Technical Architecture</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="page-header">
+                <h1>📋 Planning Tools - AI-Generated GTM Plans</h1>
+                <p>Generate Marketing, Selling, and Servicing plans for new product launches</p>
+            </div>
+
+            <div class="tab-nav">
+                <button class="active">📢 Marketing Plan</button>
+                <button>💼 Selling Plan</button>
+                <button>🛠️ Servicing Plan</button>
+            </div>
+
+            <section class="section-box">
+                <h3><span class="badge-functional">Functional</span> Marketing Plan Generator</h3>
+                <table>
+                    <tr><th>Component</th><th>AI-Generated Outputs</th><th>Acceptance Criteria</th></tr>
+                    <tr>
+                        <td><strong>Target Audience</strong></td>
+                        <td>• Primary persona (title, industry, pain points)<br>• Secondary personas<br>• ICP criteria (company size, revenue, tech stack)</td>
+                        <td>• Generate 2-3 personas based on product features<br>• Include demographic + psychographic data<br>• Align with product pricing tier</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Positioning Statement</strong></td>
+                        <td>• Value proposition (1-2 sentences)<br>• Key differentiators vs competitors<br>• Emotional benefit + functional benefit</td>
+                        <td>• Follow framework: "For [audience] who [need], [product] is [category] that [benefit]"<br>• Highlight unique features from product config<br>• Generate 3 alternative positioning options</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Channel Strategy</strong></td>
+                        <td>• Recommended marketing channels (email, social, PPC, events)<br>• Budget allocation % per channel<br>• Expected ROI estimates</td>
+                        <td>• Suggest 4-6 channels based on target audience<br>• Allocate budget (total $X input by user)<br>• Provide benchmark CTR, conversion rates</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Content Calendar</strong></td>
+                        <td>• 90-day content plan (blog posts, webinars, case studies)<br>• Suggested topics and keywords<br>• Publishing frequency</td>
+                        <td>• Generate 12+ content ideas mapped to buyer journey stages<br>• Include SEO keywords from product description<br>• Export to CSV for marketing automation tools</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Launch Campaign</strong></td>
+                        <td>• Pre-launch teaser campaign (3 weeks)<br>• Launch day tactics (email, PR, social blitz)<br>• Post-launch nurture sequence (6 weeks)</td>
+                        <td>• Generate email templates, social media copy, press release draft<br>• Suggest influencer/partner outreach list<br>• Create timeline Gantt chart</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section class="section-box">
+                <h3><span class="badge-functional">Functional</span> Selling Plan Generator</h3>
+                <table>
+                    <tr><th>Component</th><th>AI-Generated Outputs</th><th>Acceptance Criteria</th></tr>
+                    <tr>
+                        <td><strong>Sales Scripts</strong></td>
+                        <td>• Discovery call script (10 open-ended questions)<br>• Demo script (feature walkthrough + value proof)<br>• Objection handling scripts (price, timing, competition)</td>
+                        <td>• Generate 3+ scripts for different buyer personas<br>• Include SPIN selling questions (Situation, Problem, Implication, Need-Payoff)<br>• Export as PDF or PowerPoint</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Battle Cards</strong></td>
+                        <td>• Competitor comparison matrix (feature vs feature)<br>• Competitive positioning ("If they say X, you say Y")<br>• Trap-setting questions to expose competitor weaknesses</td>
+                        <td>• Generate battle cards for top 3 competitors (auto-detected from web research)<br>• Highlight where our product is superior<br>• Include pricing comparison if publicly available</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Objection Handlers</strong></td>
+                        <td>• Common objections list (15-20 objections)<br>• Response framework for each objection<br>• Proof points (case studies, ROI stats, testimonials)</td>
+                        <td>• Categorize objections: Price, Product Fit, Timing, Authority<br>• Provide 2-3 response angles per objection<br>• Link to supporting evidence (ROI calculator, case study PDF)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Training Materials</strong></td>
+                        <td>• Product knowledge quiz (20 questions)<br>• Role-play scenarios (5+ scenarios)<br>• Certification checklist</td>
+                        <td>• Auto-generate quiz from product features<br>• Create scenario-based questions (e.g., "Customer asks about integration with X, how do you respond?")<br>• Passing score = 80%, track completion in LMS</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Quota Impact Analysis</strong></td>
+                        <td>• Revenue potential per sales rep (based on ASP, win rate, cycle time)<br>• Territory assignment suggestions<br>• Ramp-up timeline for new product</td>
+                        <td>• Calculate: (# opps per month) × (win rate %) × (ASP) = monthly quota<br>• Suggest territory splits by vertical or geography<br>• Forecast 3-6 month ramp to full productivity</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section class="section-box">
+                <h3><span class="badge-functional">Functional</span> Servicing Plan Generator</h3>
+                <table>
+                    <tr><th>Component</th><th>AI-Generated Outputs</th><th>Acceptance Criteria</th></tr>
+                    <tr>
+                        <td><strong>Knowledge Base Articles</strong></td>
+                        <td>• Setup guides (step-by-step with screenshots)<br>• FAQs (20+ common questions)<br>• Troubleshooting guides (If X, then Y)</td>
+                        <td>• Auto-generate 10+ KB articles from product features<br>• Include code samples for technical integrations<br>• Support search/tagging for self-service portal</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Support SLA Recommendations</strong></td>
+                        <td>• Suggested response times (by tier: P1/P2/P3/P4)<br>• Escalation matrix (L1 → L2 → Engineering)<br>• CSAT targets (e.g., ≥90% satisfaction)</td>
+                        <td>• Base SLA on product complexity (Basic = 24hr, Enterprise = 2hr)<br>• Define escalation triggers (e.g., no response in 4 hours → escalate)<br>• Align with pricing tier (Starter = email only, Enterprise = phone + dedicated CSM)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Staffing Estimates</strong></td>
+                        <td>• Support headcount needed (by tier: L1/L2/L3)<br>• Training duration for new hires<br>• Knowledge ramp curve (time to full productivity)</td>
+                        <td>• Calculate: (# customers) × (ticket rate per customer) ÷ (tickets per agent per day) = FTE needed<br>• Suggest 2 weeks onboarding + 4 weeks shadowing<br>• Forecast ticket volume growth for 12 months</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Proactive Support Automation</strong></td>
+                        <td>• Chatbot scripts (top 10 use cases)<br>• Automated email responses (ticket acknowledgment, status updates)<br>• Self-service workflow suggestions</td>
+                        <td>• Generate chatbot intents from FAQ data<br>• Create email templates for common ticket types<br>• Suggest self-service paths (e.g., "Reset password" → KB article → video tutorial)</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section class="section-box">
+                <h3><span class="badge-technical">Technical</span> Planning Engine - Multi-Step AI Workflow</h3>
+                <pre style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:8px;overflow-x:auto">
+// Orchestrate multi-step AI generation workflow
+async function generateMarketingPlan(product: Product): Promise<MarketingPlan> {
+    // Step 1: Generate target personas
+    const personas = await callGPT4({
+        prompt: `Generate 2-3 buyer personas for: ${product.name}. Features: ${product.features}`,
+        temperature: 0.7 // Higher creativity for personas
+    });
+    
+    // Step 2: Generate positioning (using personas as context)
+    const positioning = await callGPT4({
+        prompt: `Create positioning statement for ${product.name}. Target: ${personas}`,
+        temperature: 0.5
+    });
+    
+    // Step 3: Channel strategy (use product price point to suggest budget)
+    const channels = await callGPT4({
+        prompt: `Suggest marketing channels for B2B SaaS product priced at $${product.price}/mo`,
+        temperature: 0.3 // Lower temp for data-driven recommendations
+    });
+    
+    // Step 4: Content calendar (use personas + positioning)
+    const contentCalendar = await callGPT4({
+        prompt: `90-day content plan for ${positioning}. Persona pain points: ${personas}`,
+        temperature: 0.6
+    });
+    
+    return { personas, positioning, channels, contentCalendar };
+}
+                </pre>
+            </section>
+
+            <section class="section-box">
+                <h3><span class="badge-technical">Technical</span> Database Schema - Planning Artifacts</h3>
+                <pre style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:8px;overflow-x:auto">
+CREATE TABLE product_plans (
+    plan_id UUID PRIMARY KEY,
+    product_id UUID NOT NULL,
+    plan_type VARCHAR(50) NOT NULL, -- 'marketing', 'selling', 'servicing'
+    generated_content JSONB NOT NULL, -- Full plan JSON
+    export_url VARCHAR(500), -- S3 URL for PDF/PPTX export
+    created_by UUID NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE INDEX idx_product_plans ON product_plans(product_id, plan_type);
+                </pre>
+            </section>
+
+            <section>
+                <h2>Navigation</h2>
+                <ul style="line-height:2">
+                    <li><strong>Previous:</strong> <a href="requirements-phase2-adopt.html">Page 3: Adopt AI Suggestions</a></li>
+                    <li><strong>Next:</strong> <a href="requirements-phase2-impact.html">Page 5: System Impact Analyzer</a></li>
+                </ul>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

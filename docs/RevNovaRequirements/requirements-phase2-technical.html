@@ -1,209 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Phase 2 — Technical Requirements (LLD)</title>
-  <link rel="stylesheet" href="../styles.css">
-  <style>
-    .tech-table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:13px}
-    .tech-table th,.tech-table td{border:1px solid #ddd;padding:8px;text-align:left}
-    .tech-table th{background:#e3f2fd;font-weight:600}
-    code{background:#f5f5f5;padding:2px 6px;border-radius:3px}
-  </style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Phase 2 - Technical Architecture | RevNova Requirements</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
+        .requirements-layout{display:flex;min-height:calc(100vh - 80px);margin-top:80px}
+        .sidebar{width:280px;background:#f8f9fa;border-right:1px solid #e0e0e0;padding:2rem 0;position:fixed;left:0;top:80px;height:calc(100vh - 80px);overflow-y:auto;z-index:100}
+        .sidebar h3{padding:0 1.5rem;font-size:0.85rem;color:#666;text-transform:uppercase;letter-spacing:0.5px;margin:1.5rem 0 0.5rem}
+        .sidebar ul{list-style:none;padding:0;margin:0}
+        .sidebar ul li a{display:block;padding:0.6rem 1.5rem;color:#333;text-decoration:none;font-size:0.95rem;transition:all 0.2s}
+        .sidebar ul li a:hover{background:#e9ecef;color:#11998e}
+        .sidebar ul li a.active{background:#11998e;color:#fff;font-weight:500}
+        .sidebar ul ul li a{padding-left:2.5rem;font-size:0.9rem}
+        .main-content{flex:1;margin-left:280px;padding:3rem;background:#fff;min-width:0}
+        .page-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;padding:3rem;border-radius:12px;margin-bottom:3rem}
+        .section-box{background:#fff;border:2px solid #e0e0e0;padding:2.5rem;margin:2rem 0;border-radius:12px}
+        .section-box h3{color:#667eea;margin-top:0;border-bottom:2px solid #764ba2;padding-bottom:0.5rem}
+        table{width:100%;border-collapse:collapse;margin:1.5rem 0}
+        th,td{border:1px solid #ddd;padding:12px;text-align:left}
+        th{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;font-weight:600;font-size:0.85rem}
+        .badge-technical{background:#e74c3c;color:#fff;padding:0.3rem 0.6rem;border-radius:12px;font-size:0.75rem;font-weight:600}
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Phase 2 — Technical Requirements (LLD)</h1>
-    <p><strong>Scope:</strong> WS2 — Quotes & Quote Lines (CPQ → Revenue Cloud migration). This document provides low-level design for APIs, database schema, transformation rules, and rollback procedures.</p>
-    <p>See also: <a href="requirements-phase2-functional.html">Phase 2 Functional Requirements</a> | <a href="requirements-mapping.html#WS2">WS2 Mapping Details</a></p>
+    <header>
+        <div class="container header-container">
+            <div class="nav-left">
+                <a href="../index.html" class="logo"><div class="logo-box">RevNova</div></a>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="../about-revnova.html">About RevNova</a></li>
+                        <li><a href="../features.html">Features</a></li>
+                        <li><a href="../pricing.html">Pricing</a></li>
+                        <li><a href="requirements-home.html" class="active">RevNova Requirements</a></li>
+                        <li><a href="../contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header-right">
+                <div class="country-selector"><span class="fi fi-us"></span></div>
+                <a href="../login.html" class="btn btn-login">Login</a>
+            </div>
+        </div>
+    </header>
 
-    <h2>1. API Endpoints</h2>
-    <h3>Quote Management APIs</h3>
-    <table class="tech-table">
-      <thead>
-        <tr><th>Endpoint</th><th>Method</th><th>Purpose</th><th>Request Body (sample)</th><th>Response</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><code>/api/v1/quotes</code></td>
-          <td>POST</td>
-          <td>Create new quote</td>
-          <td><code>{"accountId": "001...", "name": "Q-2024-001"}</code></td>
-          <td><code>{"quoteId": "0Q0...", "status": "Draft"}</code></td>
-        </tr>
-        <tr>
-          <td><code>/api/v1/quotes/{id}</code></td>
-          <td>GET</td>
-          <td>Retrieve quote details</td>
-          <td>—</td>
-          <td>Quote JSON with line items</td>
-        </tr>
-        <tr>
-          <td><code>/api/v1/quotes/{id}/lines</code></td>
-          <td>POST</td>
-          <td>Add quote line item</td>
-          <td><code>{"productId": "01t...", "quantity": 5, "unitPrice": 100}</code></td>
-          <td><code>{"lineId": "0QL...", "total": 500}</code></td>
-        </tr>
-        <tr>
-          <td><code>/api/v1/quotes/{id}/submit</code></td>
-          <td>PATCH</td>
-          <td>Submit quote for approval</td>
-          <td><code>{"notes": "Ready for review"}</code></td>
-          <td><code>{"status": "Pending Approval"}</code></td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="requirements-layout">
+        <aside class="sidebar">
+            <h3>Platform Vision</h3>
+            <ul>
+                <li><a href="requirements-home.html">RevNova Vision & Strategy</a></li>
+                <li><a href="business-requirements.html">High Level Business Requirements</a></li>
+                <li><a href="high-level-functional.html">High Level Functional Design</a></li>
+            </ul>
+            <h3>Phase 2 - AI Product Platform</h3>
+            <ul>
+                <li><a href="requirements-phase2-generate.html">1. Generate with AI</a></li>
+                <li><a href="requirements-phase2-modify.html">2. Modify with AI</a></li>
+                <li><a href="requirements-phase2-adopt.html">3. Adopt AI Suggestions</a></li>
+                <li><a href="requirements-phase2-planning.html">4. Planning Tools</a></li>
+                <li><a href="requirements-phase2-impact.html">5. System Impact Analyzer</a></li>
+                <li><a href="requirements-phase2-budget.html">6. Budget Calculator</a></li>
+                <li><a href="requirements-phase2-technical.html" class="active">Technical Architecture</a></li>
+            </ul>
+        </aside>
 
-    <h2>2. Database Schema (Staging & Target)</h2>
-    <h3>Staging Tables (STG1/STG2 for Quote Data)</h3>
-    <table class="tech-table">
-      <thead>
-        <tr><th>Table</th><th>Columns</th><th>Purpose</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><code>STG1_VANILLA_QUOTE</code></td>
-          <td><code>quote_id, source_quote_id, account_id, name, status, total_price, created_date</code></td>
-          <td>Raw quote data from CPQ</td>
-        </tr>
-        <tr>
-          <td><code>STG1_VANILLA_QUOTELINE</code></td>
-          <td><code>line_id, source_line_id, quote_id, product_id, quantity, unit_price, discount_pct, net_price</code></td>
-          <td>Raw quote line data from CPQ (SBQQ__QuoteLine__c)</td>
-        </tr>
-        <tr>
-          <td><code>STG2_VANILLA_QUOTE</code></td>
-          <td>Same as STG1 + validation flags (<code>is_valid, error_msg</code>)</td>
-          <td>Transformed and validated quotes</td>
-        </tr>
-        <tr>
-          <td><code>STG2_VANILLA_QUOTELINE</code></td>
-          <td>Same as STG1 + <code>calculated_discount, is_valid</code></td>
-          <td>Transformed quote lines with calculated discounts</td>
-        </tr>
-        <tr>
-          <td><code>STG1_CUSTOM_DATA</code></td>
-          <td><code>record_id, object_type, field_name, field_value</code></td>
-          <td>EAV for custom CPQ fields</td>
-        </tr>
-      </tbody>
-    </table>
+        <main class="main-content">
+            <div class="page-header">
+                <h1>🏗️ Phase 2: Technical Architecture - AI Product Platform</h1>
+                <p>GPT-4 powered product design, modification, and go-to-market planning engine</p>
+            </div>
 
-    <h3>Target Tables (Revenue Cloud / Salesforce)</h3>
-    <table class="tech-table">
-      <thead>
-        <tr><th>Object</th><th>Key Fields</th><th>Notes</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><code>Quote</code></td>
-          <td><code>Id, Name, AccountId, OpportunityId, Status, TotalPrice</code></td>
-          <td>Standard Salesforce Quote object</td>
-        </tr>
-        <tr>
-          <td><code>QuoteLineItem</code></td>
-          <td><code>Id, QuoteId, Product2Id, Quantity, UnitPrice, Discount, TotalPrice</code></td>
-          <td>Standard Quote Line Item</td>
-        </tr>
-      </tbody>
-    </table>
+            <section class="section-box">
+                <h3><span class="badge-technical">Technical</span> System Architecture - AI Layer</h3>
+                <table>
+                    <tr><th>Layer</th><th>Technology</th><th>Purpose</th></tr>
+                    <tr><td><strong>Frontend</strong></td><td>React 18, TypeScript, TailwindCSS</td><td>6 AI-powered pages (Generate, Modify, Adopt, Planning, Impact, Budget)</td></tr>
+                    <tr><td><strong>Backend API</strong></td><td>Node.js 20, Express, TypeScript</td><td>REST APIs for AI orchestration, product CRUD, report generation</td></tr>
+                    <tr><td><strong>AI Engine</strong></td><td>OpenAI GPT-4 Turbo API</td><td>Natural language → structured product data, GTM plan generation</td></tr>
+                    <tr><td><strong>Prompt Management</strong></td><td>Custom template engine</td><td>Versioned system prompts, few-shot examples, output schemas</td></tr>
+                    <tr><td><strong>Database</strong></td><td>PostgreSQL 16</td><td>AI-generated products, modification history, adoption sessions, budget scenarios</td></tr>
+                    <tr><td><strong>Cache</strong></td><td>Redis 7</td><td>GPT-4 response caching (24-hour TTL), rate limiting (60 req/min per user)</td></tr>
+                    <tr><td><strong>Queue</strong></td><td>Bull (Redis-backed)</td><td>Async AI processing (30-second timeout), retry on failure (3 attempts)</td></tr>
+                    <tr><td><strong>Storage</strong></td><td>AWS S3 / Azure Blob</td><td>Generated reports (PDF, XLSX), uploaded reference files, training data</td></tr>
+                    <tr><td><strong>Analytics</strong></td><td>Custom event tracking</td><td>AI accuracy metrics (confidence scores), user adoption patterns, A/B testing</td></tr>
+                </table>
+            </section>
 
-    <h2>3. Field Mapping & Transformations</h2>
-    <p>Complete field mapping is documented in <a href="requirements-mapping.html#WS2">WS2 — Quotes</a>. Key transformations:</p>
-    <table class="tech-table">
-      <thead>
-        <tr><th>Source Field</th><th>Target Field</th><th>Transform Rule</th><th>DQ Check</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><code>SBQQ__Quote__c.Name</code></td>
-          <td><code>Quote.Name</code></td>
-          <td>Direct copy</td>
-          <td>Required, max 255 chars</td>
-        </tr>
-        <tr>
-          <td><code>SBQQ__QuoteLine__c.SBQQ__NetPrice__c</code></td>
-          <td><code>QuoteLineItem.UnitPrice</code></td>
-          <td>Copy NetPrice; calculate <code>Discount% = (ListPrice - NetPrice) / ListPrice * 100</code></td>
-          <td>NetPrice must be &gt;= 0</td>
-        </tr>
-        <tr>
-          <td><code>SBQQ__QuoteLine__c.SBQQ__Quantity__c</code></td>
-          <td><code>QuoteLineItem.Quantity</code></td>
-          <td>Direct copy</td>
-          <td>Must be &gt; 0</td>
-        </tr>
-      </tbody>
-    </table>
+            <section class="section-box">
+                <h3><span class="badge-technical">Technical</span> API Specifications</h3>
+                <table>
+                    <tr><th>Endpoint</th><th>Method</th><th>Purpose</th></tr>
+                    <tr><td>/api/v1/ai/generate</td><td>POST</td><td>Generate product from natural language prompt</td></tr>
+                    <tr><td>/api/v1/ai/modify</td><td>POST</td><td>Modify existing product (return change suggestions)</td></tr>
+                    <tr><td>/api/v1/ai/adopt</td><td>POST</td><td>Apply approved changes to Salesforce CPQ</td></tr>
+                    <tr><td>/api/v1/plans/marketing</td><td>POST</td><td>Generate marketing plan (personas, positioning, channels)</td></tr>
+                    <tr><td>/api/v1/plans/selling</td><td>POST</td><td>Generate selling plan (scripts, battle cards, objections)</td></tr>
+                    <tr><td>/api/v1/plans/servicing</td><td>POST</td><td>Generate servicing plan (KB, SLA, staffing)</td></tr>
+                    <tr><td>/api/v1/impact/analyze</td><td>POST</td><td>Analyze downstream impact of product changes</td></tr>
+                    <tr><td>/api/v1/budget/calculate</td><td>POST</td><td>Calculate 3-year TCO and ROI projection</td></tr>
+                </table>
+            </section>
 
-    <h2>4. Transformation Logic (Python Pseudo-Code)</h2>
-    <pre><code>def transform_quote_line(source_line):
-    """Transform CPQ quote line to standard QuoteLineItem"""
-    list_price = source_line['SBQQ__ListPrice__c'] or source_line['UnitPrice']
-    net_price = source_line['SBQQ__NetPrice__c']
-    
-    # Calculate discount percentage
-    if list_price > 0:
-        discount_pct = ((list_price - net_price) / list_price) * 100
-    else:
-        discount_pct = 0
-    
-    target_line = {
-        'QuoteId': get_mapped_quote_id(source_line['SBQQ__Quote__c']),
-        'Product2Id': get_mapped_product_id(source_line['SBQQ__Product__c']),
-        'Quantity': source_line['SBQQ__Quantity__c'],
-        'UnitPrice': net_price,
-        'Discount': discount_pct,
-        'TotalPrice': source_line['SBQQ__Quantity__c'] * net_price
-    }
-    
-    return target_line
-</code></pre>
-
-    <h2>5. Execution Flow</h2>
-    <ol>
-      <li><strong>Extract:</strong> Pull quote and quote line data from CPQ via SOQL or Bulk API → write to <code>STG1_VANILLA_QUOTE</code> and <code>STG1_VANILLA_QUOTELINE</code>.</li>
-      <li><strong>Validate:</strong> Run DQ checks (required fields, price ranges, account references). Flag invalid records in <code>is_valid</code> column.</li>
-      <li><strong>Transform:</strong> Apply transformation rules (discount calculation, value mapping) → write to <code>STG2_VANILLA_*</code>.</li>
-      <li><strong>Load:</strong> Batch insert into Salesforce <code>Quote</code> and <code>QuoteLineItem</code> via Bulk API 2.0.</li>
-      <li><strong>ID Mapping:</strong> Store <code>source_quote_id → target_quote_id</code> in <code>ID_MAPPING</code> table for relationship resolution.</li>
-    </ol>
-
-    <h2>6. Rollback & Retry</h2>
-    <ul>
-      <li><strong>Rollback:</strong> Delete all quotes created in the batch using the <code>batch_id</code> stored in the execution log. Use Salesforce Bulk API delete with batch IDs from <code>ID_MAPPING</code>.</li>
-      <li><strong>Retry:</strong> Re-process failed batches by querying <code>STG2_VANILLA_QUOTE WHERE is_valid = false</code>, fixing data issues, and re-running transform + load.</li>
-      <li><strong>Idempotency:</strong> Check <code>ID_MAPPING</code> before insert; skip if source record already has a target ID.</li>
-    </ul>
-
-    <h2>7. Test Scenarios</h2>
-    <table class="tech-table">
-      <thead>
-        <tr><th>Scenario</th><th>Input</th><th>Expected Output</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Quote with discount</td>
-          <td>Quote with NetPrice &lt; ListPrice</td>
-          <td>Discount% calculated correctly, QuoteLineItem created</td>
-        </tr>
-        <tr>
-          <td>Missing account reference</td>
-          <td>Quote with invalid AccountId</td>
-          <td>Validation failure, error logged in STG2, quote not loaded</td>
-        </tr>
-        <tr>
-          <td>Batch rollback</td>
-          <td>Simulate failure mid-batch</td>
-          <td>All quotes in batch deleted via rollback API, batch marked failed in log</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <hr>
-    <p><em>For UI/UX requirements and business rules, see <a href="requirements-phase2-functional.html">Phase 2 Functional Requirements</a>.</em></p>
-  </div>
+            <section>
+                <h2>Navigation</h2>
+                <ul style="line-height:2">
+                    <li><strong>Back to:</strong> <a href="requirements-phase2-generate.html">Page 1: Generate with AI</a></li>
+                    <li><strong>View:</strong> <a href="requirements-home.html">Requirements Home</a></li>
+                </ul>
+            </section>
+        </main>
+    </div>
 </body>
 </html>

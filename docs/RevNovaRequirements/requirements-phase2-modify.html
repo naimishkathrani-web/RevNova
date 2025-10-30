@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Phase 2 - Modify with AI | RevNova Requirements</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
+        .requirements-layout{display:flex;min-height:calc(100vh - 80px);margin-top:80px}
+        .sidebar{width:280px;background:#f8f9fa;border-right:1px solid #e0e0e0;padding:2rem 0;position:fixed;left:0;top:80px;height:calc(100vh - 80px);overflow-y:auto;z-index:100}
+        .sidebar h3{padding:0 1.5rem;font-size:0.85rem;color:#666;text-transform:uppercase;letter-spacing:0.5px;margin:1.5rem 0 0.5rem}
+        .sidebar ul{list-style:none;padding:0;margin:0}
+        .sidebar ul li a{display:block;padding:0.6rem 1.5rem;color:#333;text-decoration:none;font-size:0.95rem;transition:all 0.2s}
+        .sidebar ul li a:hover{background:#e9ecef;color:#11998e}
+        .sidebar ul li a.active{background:#11998e;color:#fff;font-weight:500}
+        .sidebar ul ul li a{padding-left:2.5rem;font-size:0.9rem}
+        .main-content{flex:1;margin-left:280px;padding:3rem;background:#fff;min-width:0}
+        .page-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;padding:3rem;border-radius:12px;margin-bottom:3rem}
+        .section-box{background:#fff;border:2px solid #e0e0e0;padding:2.5rem;margin:2rem 0;border-radius:12px}
+        .section-box h3{color:#667eea;margin-top:0;border-bottom:2px solid #764ba2;padding-bottom:0.5rem}
+        table{width:100%;border-collapse:collapse;margin:1.5rem 0}
+        th,td{border:1px solid #ddd;padding:12px;text-align:left}
+        th{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;font-weight:600;font-size:0.85rem}
+        .badge-functional{background:#3498db;color:#fff;padding:0.3rem 0.6rem;border-radius:12px;font-size:0.75rem;font-weight:600}
+        .badge-technical{background:#e74c3c;color:#fff;padding:0.3rem 0.6rem;border-radius:12px;font-size:0.75rem;font-weight:600}
+        .ui-wireframe{background:#f9f9f9;border:2px dashed #ccc;padding:1.5rem;margin:1rem 0;border-radius:8px;font-family:monospace;font-size:0.85rem;line-height:1.6}
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="nav-left">
+                <a href="../index.html" class="logo"><div class="logo-box">RevNova</div></a>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="../about-revnova.html">About RevNova</a></li>
+                        <li><a href="../features.html">Features</a></li>
+                        <li><a href="../pricing.html">Pricing</a></li>
+                        <li><a href="requirements-home.html" class="active">RevNova Requirements</a></li>
+                        <li><a href="../contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header-right">
+                <div class="country-selector"><span class="fi fi-us"></span></div>
+                <a href="../login.html" class="btn btn-login">Login</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="requirements-layout">
+        <aside class="sidebar">
+            <h3>Platform Vision</h3>
+            <ul>
+                <li><a href="requirements-home.html">RevNova Vision & Strategy</a></li>
+                <li><a href="business-requirements.html">High Level Business Requirements</a></li>
+                <li><a href="high-level-functional.html">High Level Functional Design</a></li>
+            </ul>
+            <h3>Phase 2 - AI Product Platform</h3>
+            <ul>
+                <li><a href="requirements-phase2-generate.html">1. Generate with AI</a></li>
+                <li><a href="requirements-phase2-modify.html" class="active">2. Modify with AI</a></li>
+                <li><a href="requirements-phase2-adopt.html">3. Adopt AI Suggestions</a></li>
+                <li><a href="requirements-phase2-planning.html">4. Planning Tools</a></li>
+                <li><a href="requirements-phase2-impact.html">5. System Impact Analyzer</a></li>
+                <li><a href="requirements-phase2-budget.html">6. Budget Calculator</a></li>
+                <li><a href="requirements-phase2-technical.html">Technical Architecture</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="page-header">
+                <h1>✏️ Modify with AI - Intelligent Product Updates</h1>
+                <p>Use natural language to request changes to existing product configurations</p>
+            </div>
+
+            <div class="ui-wireframe">
+┌────────────────────────────────────────────────────────────────┐
+│  Modify Existing Product with AI                      [Help] [?]│
+├────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  🔍 Select Product to Modify:                                  │
+│  ┌───────────────────────────────────────────────────────────┐ │
+│  │ 🔽 [Professional Services Package]                         │ │
+│  └───────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│  Current Configuration:                                         │
+│  ┌───────────────────────────────────────────────────────────┐ │
+│  │ Product Family: Professional Services                      │ │
+│  │ Base Price: $5,000                                         │ │
+│  │ Billing: One-time                                          │ │
+│  │ Features: Onboarding, Training, Custom Integration        │ │
+│  └───────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│  📝 What changes would you like to make?                       │
+│  ┌───────────────────────────────────────────────────────────┐ │
+│  │ "Add a monthly retainer option at $500/month for ongoing  │ │
+│  │  support. Include 10 support hours per month. Also add    │ │
+│  │  an optional premium SLA feature for $200/month."         │ │
+│  └───────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│                    [🤖 Generate Modifications]                 │
+│                                                                 │
+│  ✅ AI Suggested Changes:                                      │
+│  ┌───────────────────────────────────────────────────────────┐ │
+│  │ ✏️ MODIFY: Billing Frequency                               │ │
+│  │    Current: One-time                                       │ │
+│  │    Proposed: One-time OR Monthly (new option)             │ │
+│  │                                                            │ │
+│  │ ➕ ADD: Monthly Retainer SKU                                │ │
+│  │    Name: Professional Services - Monthly Retainer         │ │
+│  │    Price: $500/month                                       │ │
+│  │    Included Hours: 10 hours/month                         │ │
+│  │                                                            │ │
+│  │ ➕ ADD: Premium SLA Feature                                 │ │
+│  │    Name: Premium Support SLA                              │ │
+│  │    Price: $200/month (add-on)                             │ │
+│  │    Response Time: < 2 hours                               │ │
+│  │                                                            │ │
+│  │ 💡 AI Recommendation:                                      │ │
+│  │    Consider adding "rollover hours" feature for unused    │ │
+│  │    support time (up to 20 hours max carryover)            │ │
+│  └───────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│       [👀 Preview Changes]   [💾 Save Draft]   [❌ Cancel]     │
+└────────────────────────────────────────────────────────────────┘
+            </div>
+
+            <section class="section-box">
+                <h3><span class="badge-functional">Functional</span> Product Selection & Context Loading</h3>
+                <table>
+                    <tr><th>Requirement ID</th><th>Description</th><th>Acceptance Criteria</th></tr>
+                    <tr>
+                        <td><strong>FR-MOD-001.1</strong></td>
+                        <td>Product Selector</td>
+                        <td>• Searchable dropdown with 100+ products (fuzzy search by name, code, family)<br>• Display product thumbnail + current status (Active/Inactive)<br>• Load full product config on selection (products, SKUs, features, pricing rules)<br>• Show last modified date and user</td>
+                    </tr>
+                    <tr>
+                        <td><strong>FR-MOD-001.2</strong></td>
+                        <td>Current Configuration Display</td>
+                        <td>• Expandable/collapsible card showing all product fields<br>• Highlight custom fields vs standard fields<br>• Show related records count (e.g., "12 Price Rules", "5 Product Options")<br>• Export current config as JSON or PDF</td>
+                    </tr>
+                    <tr>
+                        <td><strong>FR-MOD-001.3</strong></td>
+                        <td>Version History</td>
+                        <td>• Show last 10 modifications in timeline view<br>• Display who made changes, when, and what changed<br>• Option to revert to previous version<br>• Compare any two versions side-by-side</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section class="section-box">
+                <h3><span class="badge-functional">Functional</span> AI-Powered Modification Suggestions</h3>
+                <table>
+                    <tr><th>Requirement ID</th><th>Description</th><th>Acceptance Criteria</th></tr>
+                    <tr>
+                        <td><strong>FR-MOD-002.1</strong></td>
+                        <td>Change Request Input</td>
+                        <td>• Multi-line text area for natural language requests<br>• Show character count (min 20 chars, max 2000 chars)<br>• Voice input option (speech-to-text using Web Speech API)<br>• Sample prompts button (show 5 example modification requests)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>FR-MOD-002.2</strong></td>
+                        <td>Change Detection & Categorization</td>
+                        <td>• AI categorizes changes as: MODIFY, ADD, DELETE, RENAME<br>• Display each change type with distinct icon (✏️ Modify, ➕ Add, ❌ Delete, 🔄 Rename)<br>• Show before/after values for MODIFY changes<br>• Indicate data model impact (e.g., "This adds 2 new custom fields")</td>
+                    </tr>
+                    <tr>
+                        <td><strong>FR-MOD-002.3</strong></td>
+                        <td>AI Recommendations</td>
+                        <td>• Suggest related changes user may have missed (e.g., "Add corresponding discount rule?")<br>• Warn about potential conflicts (e.g., "This may break existing quote templates")<br>• Recommend best practices (e.g., "Consider tiered pricing instead of flat rate")<br>• Show confidence score for each suggestion (High/Medium/Low)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>FR-MOD-002.4</strong></td>
+                        <td>Impact Preview</td>
+                        <td>• Show how many quotes, orders, contracts will be affected<br>• Highlight breaking changes (e.g., "Removing this feature will affect 15 active quotes")<br>• Estimate implementation effort (Low/Medium/High complexity)<br>• Display downstream system impacts (e.g., "Update CRM integration required")</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section class="section-box">
+                <h3><span class="badge-functional">Functional</span> Change Approval Workflow</h3>
+                <table>
+                    <tr><th>Action</th><th>Behavior</th></tr>
+                    <tr><td><strong>Preview Changes</strong></td><td>Show side-by-side diff: Current vs Proposed (field-level highlighting)</td></tr>
+                    <tr><td><strong>Selective Adoption</strong></td><td>Checkboxes next to each change - user can accept/reject individually</td></tr>
+                    <tr><td><strong>Add Comments</strong></td><td>Attach notes to specific changes (e.g., "Approved by Sales VP on 2024-03-15")</td></tr>
+                    <tr><td><strong>Save Draft</strong></td><td>Save changes without applying to Salesforce, send for stakeholder review</td></tr>
+                    <tr><td><strong>Apply Changes</strong></td><td>Update product in Salesforce CPQ, create audit log entry, notify affected teams</td></tr>
+                </table>
+            </section>
+
+            <section class="section-box">
+                <h3><span class="badge-technical">Technical</span> AI Modification Engine - Contextual Prompting</h3>
+                <pre style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:8px;overflow-x:auto">
+// System Prompt with Current Product Context
+const MODIFICATION_PROMPT = `
+You are modifying an existing Salesforce CPQ product.
+
+Current Product Configuration:
+${JSON.stringify(currentProduct, null, 2)}
+
+User's Change Request:
+"${userInput}"
+
+Your task:
+1. Identify all fields that need to change (MODIFY, ADD, DELETE, RENAME)
+2. Generate new SKUs/features if requested
+3. Suggest related changes user may have missed
+4. Warn about potential breaking changes
+
+Output JSON:
+{
+  "changes": [
+    {
+      "type": "MODIFY" | "ADD" | "DELETE" | "RENAME",
+      "field": "field_name",
+      "currentValue": any,
+      "proposedValue": any,
+      "confidence": 0.0-1.0,
+      "reason": "why this change is needed"
+    }
+  ],
+  "recommendations": [
+    { "text": "...", "priority": "high" | "medium" | "low" }
+  ],
+  "warnings": [
+    { "text": "...", "severity": "critical" | "warning" | "info" }
+  ]
+}
+`;
+
+const response = await openai.chat.completions.create({
+  model: "gpt-4-turbo-preview",
+  messages: [
+    { role: "system", content: MODIFICATION_PROMPT },
+    { role: "user", content: userInput }
+  ],
+  response_format: { type: "json_object" },
+  temperature: 0.2 // Low temp for precise modifications
+});
+                </pre>
+            </section>
+
+            <section class="section-box">
+                <h3><span class="badge-technical">Technical</span> Database Schema - Change Tracking</h3>
+                <pre style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:8px;overflow-x:auto">
+CREATE TABLE product_modification_history (
+    modification_id UUID PRIMARY KEY,
+    product_id UUID NOT NULL,
+    user_id UUID NOT NULL,
+    change_request TEXT NOT NULL, -- Natural language input
+    ai_suggestions JSONB NOT NULL, -- Full AI response
+    applied_changes JSONB, -- Subset of suggestions that were applied
+    status VARCHAR(50) NOT NULL, -- 'draft', 'approved', 'rejected', 'applied'
+    created_at TIMESTAMP DEFAULT NOW(),
+    applied_at TIMESTAMP
+);
+
+CREATE INDEX idx_product_history ON product_modification_history(product_id, created_at DESC);
+                </pre>
+            </section>
+
+            <section>
+                <h2>Navigation</h2>
+                <ul style="line-height:2">
+                    <li><strong>Previous:</strong> <a href="requirements-phase2-generate.html">Page 1: Generate with AI</a></li>
+                    <li><strong>Next:</strong> <a href="requirements-phase2-adopt.html">Page 3: Adopt AI Suggestions</a></li>
+                </ul>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
