@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>RevNova Platform - Vision & Strategy</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        .requirements-layout {
+            display: flex;
+            min-height: calc(100vh - 80px);
+            margin-top: 80px;
+        }
+        .sidebar {
+            width: 280px;
+            background: #f8f9fa;
+            border-right: 1px solid #e0e0e0;
+            padding: 2rem 0;
+            position: fixed;
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+        }
+        .sidebar h3 {
+            padding: 0 1.5rem;
+            font-size: 0.85rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 1.5rem 0 0.5rem;
+        }
+        .sidebar h3:first-child {
+            margin-top: 0;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar ul li a {
+            display: block;
+            padding: 0.6rem 1.5rem;
+            color: #333;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+        .sidebar ul li a:hover {
+            background: #e9ecef;
+            color: #11998e;
+        }
+        .sidebar ul li a.active {
+            background: #11998e;
+            color: #fff;
+            font-weight: 500;
+        }
+        .sidebar ul ul {
+            padding-left: 0;
+        }
+        .sidebar ul ul li a {
+            padding-left: 2.5rem;
+            font-size: 0.9rem;
+        }
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 3rem;
+            background: #fff;
+        }
+        .vision-header {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: #fff;
+            padding: 3rem;
+            border-radius: 12px;
+            margin-bottom: 3rem;
+        }
+        .vision-header h1 {
+            margin: 0 0 1rem;
+            font-size: 2.5rem;
+        }
+        .vision-header p {
+            font-size: 1.2rem;
+            margin: 0;
+            opacity: 0.95;
+        }
+        .strategy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        .strategy-card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 2rem;
+            transition: all 0.3s;
+        }
+        .strategy-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        .strategy-card h3 {
+            color: #11998e;
+            margin-top: 0;
+            font-size: 1.3rem;
+        }
+        .strategy-card .phase-badge {
+            display: inline-block;
+            background: #38ef7d;
+            color: #fff;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        .metrics-row {
+            display: flex;
+            gap: 2rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+        .metric-box {
+            flex: 1;
+            min-width: 200px;
+            background: #f0f6fb;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .metric-box .metric-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #11998e;
+            margin-bottom: 0.5rem;
+        }
+        .metric-box .metric-label {
+            font-size: 0.95rem;
+            color: #666;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .requirements-layout {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="nav-left">
+                <a href="../index.html" class="logo">
+                    <div class="logo-box">RevNova</div>
+                </a>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="../about-revnova.html">About RevNova</a></li>
+                        <li><a href="../features.html">Features</a></li>
+                        <li><a href="../pricing.html">Pricing</a></li>
+                        <li><a href="requirements-home.html" class="active">RevNova Requirements</a></li>
+                        <li><a href="../contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header-right">
+                <div class="country-selector">
+                    <span class="fi fi-us"></span>
+                </div>
+                <a href="../login.html" class="btn btn-login">Login</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="requirements-layout">
+        <!-- Left Sidebar Navigation -->
+        <aside class="sidebar">
+            <h3>Platform Vision</h3>
+            <ul>
+                <li><a href="requirements-home.html" class="active">RevNova Vision & Strategy</a></li>
+                <li><a href="business-requirements.html">High Level Business Requirements</a></li>
+                <li><a href="high-level-functional.html">High Level Functional Design</a></li>
+                <li><a href="requirements-mapping.html">Complete Field Mapping</a></li>
+            </ul>
+
+            <h3>Phase 1 - Product Catalog (WS1)</h3>
+            <ul>
+                <li><a href="#">Phase 1 Requirements</a></li>
+                <li>
+                    <ul>
+                        <li><a href="requirements-phase1-functional.html">Functional Requirements</a></li>
+                        <li>
+                            <ul>
+                                <li><a href="requirements-phase1-functional.html#connect">Connection Wizard</a></li>
+                                <li><a href="requirements-phase1-functional.html#analyze">Schema Analysis</a></li>
+                                <li><a href="requirements-phase1-functional.html#mapping">Field Mapping</a></li>
+                                <li><a href="requirements-phase1-functional.html#transform">Data Transformation</a></li>
+                                <li><a href="requirements-phase1-functional.html#validate">Validation</a></li>
+                                <li><a href="requirements-phase1-functional.html#execute">Migration Execution</a></li>
+                                <li><a href="requirements-phase1-functional.html#test">Post-Migration Testing</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="requirements-phase1-technical.html">Technical Requirements</a></li>
+                        <li>
+                            <ul>
+                                <li><a href="requirements-phase1-technical.html#api">API Specifications</a></li>
+                                <li><a href="requirements-phase1-technical.html#database">Database Schema</a></li>
+                                <li><a href="requirements-phase1-technical.html#staging">Staging Tables</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3>Phase 2 - Quotes & Pricing (WS2)</h3>
+            <ul>
+                <li><a href="#">Phase 2 Requirements</a></li>
+                <li>
+                    <ul>
+                        <li><a href="requirements-phase2-functional.html">Functional Requirements</a></li>
+                        <li>
+                            <ul>
+                                <li><a href="requirements-phase2-functional.html#quotes">Quote Migration</a></li>
+                                <li><a href="requirements-phase2-functional.html#pricing">Pricing & Discounts</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="requirements-phase2-technical.html">Technical Requirements</a></li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3>Phase 3 - Contracts & Assets (WS3)</h3>
+            <ul>
+                <li><a href="#">Phase 3 Requirements</a></li>
+                <li>
+                    <ul>
+                        <li><a href="requirements-phase3-functional.html">Functional Requirements</a></li>
+                        <li>
+                            <ul>
+                                <li><a href="requirements-phase3-functional.html#contracts">Contract Lifecycle</a></li>
+                                <li><a href="requirements-phase3-functional.html#assets">Asset Tracking</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="requirements-phase3-technical.html">Technical Requirements</a></li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3>Phase 4 - Billing & Invoicing (WS4)</h3>
+            <ul>
+                <li><a href="#">Phase 4 Requirements</a></li>
+                <li>
+                    <ul>
+                        <li><a href="requirements-phase4-functional.html">Functional Requirements</a></li>
+                        <li>
+                            <ul>
+                                <li><a href="requirements-phase4-functional.html#billing">Billing Automation</a></li>
+                                <li><a href="requirements-phase4-functional.html#invoicing">Invoice Generation</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="requirements-phase4-technical.html">Technical Requirements</a></li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3>Phase 5 - Revenue Cloud Advanced (WS5)</h3>
+            <ul>
+                <li><a href="#">Phase 5 Requirements</a></li>
+                <li>
+                    <ul>
+                        <li><a href="requirements-phase5-functional.html">Functional Requirements</a></li>
+                        <li>
+                            <ul>
+                                <li><a href="requirements-phase5-functional.html#hierarchy">Product Hierarchy</a></li>
+                                <li><a href="requirements-phase5-functional.html#bundles">Product Bundles</a></li>
+                                <li><a href="requirements-phase5-functional.html#epc">EPC Integration</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="requirements-phase5-technical.html">Technical Requirements</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <div class="vision-header">
+                <h1>RevNova Platform - Vision & Strategy</h1>
+                <p>AI-powered System Transformation as a Service (STaaS) for enterprise SFDC CPQ to Revenue Cloud migrations</p>
+            </div>
+
+            <section>
+                <h2>Platform Vision</h2>
+                <p style="font-size: 1.1rem; line-height: 1.8; color: #555;">
+                    RevNova is revolutionizing enterprise system migrations through intelligent automation, AI-powered field mapping, 
+                    and comprehensive data validation. Our platform reduces migration time by 80%, ensures 100% data accuracy, 
+                    and provides complete auditability with automated rollback capabilities.
+                </p>
+            </section>
+
+            <div class="metrics-row">
+                <div class="metric-box">
+                    <div class="metric-value">90%</div>
+                    <div class="metric-label">Automation Rate</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-value">100%</div>
+                    <div class="metric-label">Data Accuracy</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-value">80%</div>
+                    <div class="metric-label">Time Reduction</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-value">99.9%</div>
+                    <div class="metric-label">Platform Uptime</div>
+                </div>
+            </div>
+
+            <section style="margin-top: 3rem;">
+                <h2>5-Phase Implementation Strategy</h2>
+                <p style="margin-bottom: 2rem;">RevNova follows a phased approach to minimize risk and ensure successful migration:</p>
+                
+                <div class="strategy-grid">
+                    <div class="strategy-card">
+                        <span class="phase-badge">PHASE 1 - MVP</span>
+                        <h3>Product Catalog (WS1)</h3>
+                        <p><strong>Timeline:</strong> 3 months</p>
+                        <p><strong>Scope:</strong> Product2, Pricebook2, PricebookEntry migration with AI field mapping and validation framework</p>
+                        <p><strong>Deliverables:</strong> Migration wizard (7 pages), API framework, hybrid staging model (Vanilla + EAV)</p>
+                    </div>
+
+                    <div class="strategy-card">
+                        <span class="phase-badge">PHASE 2</span>
+                        <h3>Quotes & Pricing (WS2)</h3>
+                        <p><strong>Timeline:</strong> 2 months</p>
+                        <p><strong>Scope:</strong> SBQQ__Quote__c, QuoteLine, Discount Schedules with pricing transform logic</p>
+                        <p><strong>Deliverables:</strong> Quote builder integration, discount schedule mapping, batch pricing updates</p>
+                    </div>
+
+                    <div class="strategy-card">
+                        <span class="phase-badge">PHASE 3</span>
+                        <h3>Contracts & Assets (WS3)</h3>
+                        <p><strong>Timeline:</strong> 2 months</p>
+                        <p><strong>Scope:</strong> Subscription → Asset conversion, Contract lifecycle management</p>
+                        <p><strong>Deliverables:</strong> Asset tracking, contract term handling, renewal automation</p>
+                    </div>
+
+                    <div class="strategy-card">
+                        <span class="phase-badge">PHASE 4</span>
+                        <h3>Billing & Invoicing (WS4)</h3>
+                        <p><strong>Timeline:</strong> 2 months</p>
+                        <p><strong>Scope:</strong> Invoice generation, payment tracking, billing schedule automation</p>
+                        <p><strong>Deliverables:</strong> Billing account setup, invoice templates, payment reconciliation</p>
+                    </div>
+
+                    <div class="strategy-card">
+                        <span class="phase-badge">PHASE 5</span>
+                        <h3>Revenue Cloud Advanced (WS5)</h3>
+                        <p><strong>Timeline:</strong> 3 months</p>
+                        <p><strong>Scope:</strong> Product hierarchies, bundles, EPC integration, advanced pricing</p>
+                        <p><strong>Deliverables:</strong> Product catalog hierarchy, bundle configuration, EPC API integration</p>
+                    </div>
+                </div>
+            </section>
+
+            <section style="margin-top: 3rem;">
+                <h2>Technology Stack</h2>
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0;">
+                    <thead>
+                        <tr style="background: #f0f6fb;">
+                            <th style="border: 1px solid #ddd; padding: 12px; text-align: left;">Layer</th>
+                            <th style="border: 1px solid #ddd; padding: 12px; text-align: left;">Technology</th>
+                            <th style="border: 1px solid #ddd; padding: 12px; text-align: left;">Purpose</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="border: 1px solid #ddd; padding: 10px;">Frontend</td>
+                            <td style="border: 1px solid #ddd; padding: 10px;">HTML5, CSS3, Vanilla JavaScript</td>
+                            <td style="border: 1px solid #ddd; padding: 10px;">Migration wizard UI, responsive design</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #ddd; padding: 10px;">Backend API</td>
+                            <td style="border: 1px solid #ddd; padding: 10px;">FastAPI (Python 3.11+)</td>
+                            <td style="border: 1px solid #ddd; padding: 10px;">REST API, async processing, validation</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #ddd; padding: 10px;">Database</td>
+                            <td style="border: 1px solid #ddd; padding: 10px;">PostgreSQL 14+</td>
+                            <td style="border: 1px solid #ddd; padding: 10px;">Multi-tenant, staging tables, audit logs</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #ddd; padding: 10px;">Cache</td>
+                            <td style="border: 1px solid #ddd; padding: 10px;">Redis 7+</td>
+                            <td style="border: 1px solid #ddd; padding: 10px;">Session management, API rate limiting</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #ddd; padding: 10px;">Message Queue</td>
+                            <td style="border: 1px solid #ddd; padding: 10px;">RabbitMQ</td>
+                            <td style="border: 1px solid #ddd; padding: 10px;">Batch job distribution, async tasks</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #ddd; padding: 10px;">Object Storage</td>
+                            <td style="border: 1px solid #ddd; padding: 10px;">S3-compatible</td>
+                            <td style="border: 1px solid #ddd; padding: 10px;">Archive staging data, error reports</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #ddd; padding: 10px;">Integration</td>
+                            <td style="border: 1px solid #ddd; padding: 10px;">Salesforce REST/Bulk API 2.0</td>
+                            <td style="border: 1px solid #ddd; padding: 10px;">Source/target system connectivity</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #ddd; padding: 10px;">Task Orchestration</td>
+                            <td style="border: 1px solid #ddd; padding: 10px;">Celery</td>
+                            <td style="border: 1px solid #ddd; padding: 10px;">Batch processing, scheduled jobs</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section style="margin-top: 3rem; padding: 2rem; background: #f8f9fa; border-radius: 8px;">
+                <h2 style="margin-top: 0;">Navigation Guide</h2>
+                <p>Use the left sidebar to navigate through:</p>
+                <ul style="line-height: 2;">
+                    <li><strong>Platform Vision</strong> - Strategic overview and technology stack (this page)</li>
+                    <li><strong>High Level Business Requirements</strong> - Stakeholder needs, KPIs, success criteria</li>
+                    <li><strong>High Level Functional Design</strong> - Functional overview of all 5 phases</li>
+                    <li><strong>Complete Field Mapping</strong> - CPQ → RCA field mappings for all workstreams</li>
+                    <li><strong>Phase 1-5 Requirements</strong> - Detailed functional and technical specifications for each phase</li>
+                </ul>
+            </section>
+        </main>
+    </div>
+
+    <footer style="background: #2c3e50; color: #ecf0f1; padding: 2rem 0; text-align: center; margin-top: 3rem;">
+        <div class="container">
+            <p>&copy; 2025 RevNova. System Transformation as a Service.</p>
+        </div>
+    </footer>
+</body>
+</html>

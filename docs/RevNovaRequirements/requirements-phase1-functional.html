@@ -3,34 +3,140 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Phase 1 — Functional Requirements</title>
+  <title>Phase 1 Functional Requirements - Connection Wizard & Field Mapping</title>
   <link rel="stylesheet" href="../styles.css">
   <style>
+    .requirements-layout{display:flex;min-height:calc(100vh - 80px);margin-top:80px}
+    .sidebar{width:280px;background:#f8f9fa;border-right:1px solid #e0e0e0;padding:2rem 0;position:fixed;height:calc(100vh - 80px);overflow-y:auto}
+    .sidebar h3{padding:0 1.5rem;font-size:0.85rem;color:#666;text-transform:uppercase;letter-spacing:0.5px;margin:1.5rem 0 0.5rem}
+    .sidebar h3:first-child{margin-top:0}
+    .sidebar ul{list-style:none;padding:0;margin:0}
+    .sidebar ul li a{display:block;padding:0.6rem 1.5rem;color:#333;text-decoration:none;font-size:0.95rem;transition:all 0.2s}
+    .sidebar ul li a:hover{background:#e9ecef;color:#11998e}
+    .sidebar ul li a.active{background:#11998e;color:#fff;font-weight:500}
+    .sidebar ul ul{padding-left:0}
+    .sidebar ul ul li a{padding-left:2.5rem;font-size:0.9rem}
+    .main-content{flex:1;margin-left:280px;padding:3rem;background:#fff}
     table {width:100%; border-collapse:collapse; margin-bottom:1rem}
     th,td{border:1px solid #ddd;padding:8px}
     th{background:#f7fbff}
     .rule-id{font-weight:bold;color:#0b63c4}
+    @media (max-width:768px){.sidebar{position:relative;width:100%;height:auto}.main-content{margin-left:0}.requirements-layout{flex-direction:column}}
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Phase 1 — Functional Requirements (SFDC CPQ → Revenue Cloud)</h1>
-    <p>Scope: Product & Catalog, Quotes, Subscriptions → Assets, Pricing & Billing basics. This document lists page-level fields, UI control, validation and references to Business Rules.</p>
+  <header>
+    <div class="container header-container">
+      <div class="nav-left">
+        <a href="../index.html" class="logo"><div class="logo-box">RevNova</div></a>
+        <nav class="main-nav">
+          <ul>
+            <li><a href="../about-revnova.html">About RevNova</a></li>
+            <li><a href="../features.html">Features</a></li>
+            <li><a href="../pricing.html">Pricing</a></li>
+            <li><a href="requirements-home.html" class="active">RevNova Requirements</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="header-right">
+        <div class="country-selector"><span class="fi fi-us"></span></div>
+        <a href="../login.html" class="btn btn-login">Login</a>
+      </div>
+    </div>
+  </header>
 
-    <h2>Pages covered</h2>
-    <ul>
-      <li>Connect (connection wizard)</li>
-      <li>Analyze (schema discovery)</li>
-      <li>Map (field mapping editor)</li>
-      <li>Transform (rule application)</li>
-      <li>Validate (pre-migration checks)</li>
-      <li>Execute (run & rollback)</li>
-      <li>Test (post-migration verification)</li>
-    </ul>
+  <div class="requirements-layout">
+    <aside class="sidebar">
+      <h3>Platform Vision</h3>
+      <ul>
+        <li><a href="requirements-home.html">RevNova Vision & Strategy</a></li>
+        <li><a href="business-requirements.html">High Level Business Requirements</a></li>
+        <li><a href="high-level-functional.html">High Level Functional Design</a></li>
+        <li><a href="requirements-mapping.html">Complete Field Mapping</a></li>
+      </ul>
+      <h3>Phase 1 - Product Catalog (WS1)</h3>
+      <ul>
+        <li><a href="#">Phase 1 Requirements</a>
+          <ul>
+            <li><a href="requirements-phase1-functional.html" class="active">Functional Requirements</a>
+              <ul>
+                <li><a href="#connect">Connection Wizard</a></li>
+                <li><a href="#analyze">Schema Analysis</a></li>
+                <li><a href="#mapping">Field Mapping</a></li>
+                <li><a href="#transform">Data Transformation</a></li>
+                <li><a href="#validate">Validation</a></li>
+                <li><a href="#execute">Migration Execution</a></li>
+                <li><a href="#test">Post-Migration Testing</a></li>
+              </ul>
+            </li>
+            <li><a href="requirements-phase1-technical.html">Technical Requirements</a>
+              <ul>
+                <li><a href="requirements-phase1-technical.html#api">API Specifications</a></li>
+                <li><a href="requirements-phase1-technical.html#database">Database Schema</a></li>
+                <li><a href="requirements-phase1-technical.html#staging">Staging Tables</a></li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <h3>Phase 2 - Quotes & Pricing (WS2)</h3>
+      <ul>
+        <li><a href="#">Phase 2 Requirements</a>
+          <ul>
+            <li><a href="requirements-phase2-functional.html">Functional Requirements</a></li>
+            <li><a href="requirements-phase2-technical.html">Technical Requirements</a></li>
+          </ul>
+        </li>
+      </ul>
+      <h3>Phase 3 - Contracts & Assets (WS3)</h3>
+      <ul>
+        <li><a href="#">Phase 3 Requirements</a>
+          <ul>
+            <li><a href="requirements-phase3-functional.html">Functional Requirements</a></li>
+            <li><a href="requirements-phase3-technical.html">Technical Requirements</a></li>
+          </ul>
+        </li>
+      </ul>
+      <h3>Phase 4 - Billing & Invoicing (WS4)</h3>
+      <ul>
+        <li><a href="#">Phase 4 Requirements</a>
+          <ul>
+            <li><a href="requirements-phase4-functional.html">Functional Requirements</a></li>
+            <li><a href="requirements-phase4-technical.html">Technical Requirements</a></li>
+          </ul>
+        </li>
+      </ul>
+      <h3>Phase 5 - Revenue Cloud Advanced (WS5)</h3>
+      <ul>
+        <li><a href="#">Phase 5 Requirements</a>
+          <ul>
+            <li><a href="requirements-phase5-functional.html">Functional Requirements</a></li>
+            <li><a href="requirements-phase5-technical.html">Technical Requirements</a></li>
+          </ul>
+        </li>
+      </ul>
+    </aside>
 
-    <h2>Field-level tables (selected / prioritized)</h2>
+    <main class="main-content">
+      <h1>Phase 1 — Functional Requirements (SFDC CPQ → Revenue Cloud)</h1>
+      <p>Scope: Product & Catalog, Quotes, Subscriptions → Assets, Pricing & Billing basics. This document lists page-level fields, UI control, validation and references to Business Rules.</p>
 
-    <h3>Connect — Connection Form</h3>
+      <h2>Pages covered</h2>
+      <ul>
+        <li><a href="#connect">Connect</a> (connection wizard)</li>
+        <li><a href="#analyze">Analyze</a> (schema discovery)</li>
+        <li><a href="#mapping">Map</a> (field mapping editor)</li>
+        <li><a href="#transform">Transform</a> (rule application)</li>
+        <li><a href="#validate">Validate</a> (pre-migration checks)</li>
+        <li><a href="#execute">Execute</a> (run & rollback)</li>
+        <li><a href="#test">Test</a> (post-migration verification)</li>
+      </ul>
+
+      <h2>Field-level tables (selected / prioritized)</h2>
+
+      <section id="connect">
+      <h3>Connect — Connection Form</h3>
     <table>
       <thead>
         <tr>
@@ -46,7 +152,9 @@
         <tr><td>Security Token</td><td>text</td><td>string</td><td>no</td><td>alphanumeric</td><td>Required for username/password auth</td><td>ABC123</td><td></td></tr>
       </tbody>
     </table>
+    </section>
 
+    <section id="analyze">
     <h3>Analyze — Schema Discovery</h3>
     <p>Read-only results page — fields below are display-only but included to document expected outputs.</p>
     <table>
@@ -58,7 +166,9 @@
         <tr><td>Readiness Score</td><td>progress</td><td>percentage</td><td>Aggregated DQ + Logic risk</td></tr>
       </tbody>
     </table>
+    </section>
 
+    <section id="mapping">
     <h3>Map — Field Mapping Editor (selected rows)</h3>
     <table>
       <thead>
@@ -73,7 +183,9 @@
         <tr><td>IsActive</td><td>Product2.IsActive</td><td>vlocity_cmt__IsActive__c</td><td>vlocity_cmt__Product__c.vlocity_cmt__IsActive__c</td><td>checkbox</td><td>boolean</td><td></td></tr>
       </tbody>
     </table>
+    </section>
 
+    <section id="transform">
     <h3>Transform — Data Transform Rules</h3>
     <p>Users can define custom transforms and apply pre-built transform templates.</p>
     <table>
@@ -89,7 +201,9 @@
         <tr><td>Error Handling</td><td>select</td><td>enum</td><td>yes</td><td>Skip Record, Use Default, Abort Migration</td><td>BR-TRN-03</td></tr>
       </tbody>
     </table>
+    </section>
 
+    <section id="validate">
     <h3>Validate — Pre-Migration Validation</h3>
     <p>Display validation results in a dashboard format with drill-down capability.</p>
     <table>
@@ -106,7 +220,9 @@
         <tr><td>Proceed Anyway (Override)</td><td>checkbox</td><td>boolean</td><td>Allow migration with warnings (not errors)</td><td>BR-VAL-03</td></tr>
       </tbody>
     </table>
+    </section>
 
+    <section id="execute">
     <h3>Execute — Migration Execution & Monitoring</h3>
     <table>
       <thead>
@@ -125,7 +241,9 @@
         <tr><td>Rollback Migration</td><td>button (danger)</td><td>action</td><td>Undo all changes for this migration run</td><td>BR-EXE-05</td></tr>
       </tbody>
     </table>
+    </section>
 
+    <section id="test">
     <h3>Test — Post-Migration Verification</h3>
     <table>
       <thead>
@@ -141,6 +259,7 @@
         <tr><td>Mark Migration Complete</td><td>button (primary)</td><td>action</td><td>Finalize migration and archive project</td><td>BR-TST-03</td></tr>
       </tbody>
     </table>
+    </section>
 
     <h3>Business Rules</h3>
     <p>Rules referenced from field tables above. Each rule has an ID that the UI and Technical pages reference.</p>
@@ -265,6 +384,11 @@
       </tbody>
     </table>
 
+    </main>
   </div>
+
+  <footer style="background:#2c3e50;color:#ecf0f1;padding:2rem 0;text-align:center;margin-top:3rem">
+    <div class="container"><p>&copy; 2025 RevNova. System Transformation as a Service.</p></div>
+  </footer>
 </body>
 </html>

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>RevNova Platform - High Level Functional Design</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        .requirements-layout{display:flex;min-height:calc(100vh - 80px);margin-top:80px}
+        .sidebar{width:280px;background:#f8f9fa;border-right:1px solid #e0e0e0;padding:2rem 0;position:fixed;height:calc(100vh - 80px);overflow-y:auto}
+        .sidebar h3{padding:0 1.5rem;font-size:0.85rem;color:#666;text-transform:uppercase;letter-spacing:0.5px;margin:1.5rem 0 0.5rem}
+        .sidebar h3:first-child{margin-top:0}
+        .sidebar ul{list-style:none;padding:0;margin:0}
+        .sidebar ul li a{display:block;padding:0.6rem 1.5rem;color:#333;text-decoration:none;font-size:0.95rem;transition:all 0.2s}
+        .sidebar ul li a:hover{background:#e9ecef;color:#11998e}
+        .sidebar ul li a.active{background:#11998e;color:#fff;font-weight:500}
+        .sidebar ul ul{padding-left:0}
+        .sidebar ul ul li a{padding-left:2.5rem;font-size:0.9rem}
+        .main-content{flex:1;margin-left:280px;padding:3rem;background:#fff}
+        .page-header{background:linear-gradient(135deg,#11998e 0%,#38ef7d 100%);color:#fff;padding:2rem;border-radius:8px;margin-bottom:2rem}
+        .phase-section{background:#fff;border:1px solid #e0e0e0;padding:2rem;margin:2rem 0;border-radius:8px}
+        .phase-section h3{color:#11998e;margin-top:0;border-bottom:2px solid #38ef7d;padding-bottom:0.5rem}
+        table{width:100%;border-collapse:collapse;margin:1rem 0}
+        th,td{border:1px solid #ddd;padding:10px;text-align:left}
+        th{background:#f0f6fb;font-weight:600}
+        @media (max-width:768px){.sidebar{position:relative;width:100%;height:auto}.main-content{margin-left:0}.requirements-layout{flex-direction:column}}
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="nav-left">
+                <a href="../index.html" class="logo"><div class="logo-box">RevNova</div></a>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="../about-revnova.html">About RevNova</a></li>
+                        <li><a href="../features.html">Features</a></li>
+                        <li><a href="../pricing.html">Pricing</a></li>
+                        <li><a href="requirements-home.html" class="active">RevNova Requirements</a></li>
+                        <li><a href="../contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header-right">
+                <div class="country-selector"><span class="fi fi-us"></span></div>
+                <a href="../login.html" class="btn btn-login">Login</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="requirements-layout">
+        <aside class="sidebar">
+            <h3>Platform Vision</h3>
+            <ul>
+                <li><a href="requirements-home.html">RevNova Vision & Strategy</a></li>
+                <li><a href="business-requirements.html">High Level Business Requirements</a></li>
+                <li><a href="high-level-functional.html" class="active">High Level Functional Design</a></li>
+                <li><a href="requirements-mapping.html">Complete Field Mapping</a></li>
+            </ul>
+            <h3>Phase 1 - Product Catalog (WS1)</h3>
+            <ul>
+                <li><a href="#">Phase 1 Requirements</a>
+                    <ul>
+                        <li><a href="requirements-phase1-functional.html">Functional Requirements</a>
+                            <ul>
+                                <li><a href="requirements-phase1-functional.html#connect">Connection Wizard</a></li>
+                                <li><a href="requirements-phase1-functional.html#analyze">Schema Analysis</a></li>
+                                <li><a href="requirements-phase1-functional.html#mapping">Field Mapping</a></li>
+                                <li><a href="requirements-phase1-functional.html#transform">Data Transformation</a></li>
+                                <li><a href="requirements-phase1-functional.html#validate">Validation</a></li>
+                                <li><a href="requirements-phase1-functional.html#execute">Migration Execution</a></li>
+                                <li><a href="requirements-phase1-functional.html#test">Post-Migration Testing</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="requirements-phase1-technical.html">Technical Requirements</a>
+                            <ul>
+                                <li><a href="requirements-phase1-technical.html#api">API Specifications</a></li>
+                                <li><a href="requirements-phase1-technical.html#database">Database Schema</a></li>
+                                <li><a href="requirements-phase1-technical.html#staging">Staging Tables</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <h3>Phase 2 - Quotes & Pricing (WS2)</h3>
+            <ul>
+                <li><a href="#">Phase 2 Requirements</a>
+                    <ul>
+                        <li><a href="requirements-phase2-functional.html">Functional Requirements</a>
+                            <ul>
+                                <li><a href="requirements-phase2-functional.html#quotes">Quote Migration</a></li>
+                                <li><a href="requirements-phase2-functional.html#pricing">Pricing & Discounts</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="requirements-phase2-technical.html">Technical Requirements</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <h3>Phase 3 - Contracts & Assets (WS3)</h3>
+            <ul>
+                <li><a href="#">Phase 3 Requirements</a>
+                    <ul>
+                        <li><a href="requirements-phase3-functional.html">Functional Requirements</a>
+                            <ul>
+                                <li><a href="requirements-phase3-functional.html#contracts">Contract Lifecycle</a></li>
+                                <li><a href="requirements-phase3-functional.html#assets">Asset Tracking</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="requirements-phase3-technical.html">Technical Requirements</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <h3>Phase 4 - Billing & Invoicing (WS4)</h3>
+            <ul>
+                <li><a href="#">Phase 4 Requirements</a>
+                    <ul>
+                        <li><a href="requirements-phase4-functional.html">Functional Requirements</a>
+                            <ul>
+                                <li><a href="requirements-phase4-functional.html#billing">Billing Automation</a></li>
+                                <li><a href="requirements-phase4-functional.html#invoicing">Invoice Generation</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="requirements-phase4-technical.html">Technical Requirements</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <h3>Phase 5 - Revenue Cloud Advanced (WS5)</h3>
+            <ul>
+                <li><a href="#">Phase 5 Requirements</a>
+                    <ul>
+                        <li><a href="requirements-phase5-functional.html">Functional Requirements</a>
+                            <ul>
+                                <li><a href="requirements-phase5-functional.html#hierarchy">Product Hierarchy</a></li>
+                                <li><a href="requirements-phase5-functional.html#bundles">Product Bundles</a></li>
+                                <li><a href="requirements-phase5-functional.html#epc">EPC Integration</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="requirements-phase5-technical.html">Technical Requirements</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="page-header">
+                <h1>High Level Functional Design</h1>
+                <p>Functional overview of RevNova Platform across all 5 implementation phases</p>
+            </div>
+
+            <section class="phase-section">
+                <h3>Phase 1: Product Catalog Migration (WS1) - Foundation MVP</h3>
+                <p><strong>Objective:</strong> Establish core migration framework with AI-powered field mapping, hybrid staging model, and 7-page wizard UI</p>
+                
+                <h4>Core Functional Capabilities</h4>
+                <ul>
+                    <li><strong>Connection Management:</strong> OAuth 2.0 and username/password authentication to source CPQ and target Revenue Cloud orgs with encrypted credential storage</li>
+                    <li><strong>Schema Discovery:</strong> Automated analysis of Product2, Pricebook2, PricebookEntry objects including custom field detection and readiness scoring</li>
+                    <li><strong>AI Field Mapping:</strong> Machine learning-powered field mapping with ≥85% accuracy, confidence scoring, and manual override capability</li>
+                    <li><strong>Hybrid Data Model:</strong> Vanilla tables for standard fields + EAV (Entity-Attribute-Value) tables for custom field flexibility</li>
+                    <li><strong>Multi-Stage Validation:</strong> STG1 (raw) → STG2 (transformed) → Target validation with line-by-line error reporting</li>
+                    <li><strong>Batch Processing:</strong> Configurable batch sizes (200-10K records) with 1-16 parallel workers and auto-retry on failure</li>
+                    <li><strong>Rollback Capability:</strong> Track all inserted record IDs for one-click rollback with foreign key dependency handling</li>
+                    <li><strong>Real-Time Monitoring:</strong> Live progress dashboard (records processed, success/error counts, ETA, worker status)</li>
+                    <li><strong>Post-Migration Testing:</strong> Record count verification, data integrity sampling (100-1000 records), discrepancy drill-down</li>
+                </ul>
+
+                <h4>User Workflows</h4>
+                <table>
+                    <tr><th>Workflow</th><th>Steps</th><th>User Role</th></tr>
+                    <tr><td>Initial Setup</td><td>Create project → Connect source/target → Test connections → Save</td><td>Salesforce Admin</td></tr>
+                    <tr><td>Field Mapping</td><td>Run analysis → Review AI suggestions → Manual adjustments → Save mappings</td><td>Data Architect</td></tr>
+                    <tr><td>Transformation</td><td>Apply pre-built transforms → Create custom transforms → Test on sample → Validate</td><td>Data Architect</td></tr>
+                    <tr><td>Execution</td><td>Configure batch settings → Start migration → Monitor progress → Handle errors</td><td>Salesforce Admin</td></tr>
+                    <tr><td>Testing</td><td>Count verification → Sample testing → Review discrepancies → Mark complete/rollback</td><td>QA Analyst</td></tr>
+                </table>
+
+                <h4>Business Rules (24 total)</h4>
+                <p>Connection (4), Mapping (4), Transform (3), Validation (3), Execution (5), Testing (3) - See <a href="requirements-phase1-functional.html">detailed Phase 1 functional requirements</a></p>
+            </section>
+
+            <section class="phase-section">
+                <h3>Phase 2: Quotes & Pricing (WS2)</h3>
+                <p><strong>Objective:</strong> Migrate CPQ quotes and pricing structures with discount schedule handling</p>
+                
+                <h4>Core Functional Capabilities</h4>
+                <ul>
+                    <li><strong>Quote Migration:</strong> SBQQ__Quote__c → Quote with opportunity linkage, expiration handling, and status mapping</li>
+                    <li><strong>Quote Line Items:</strong> SBQQ__QuoteLine__c → QuoteLineItem with net price preservation, discount logic, and product lookups</li>
+                    <li><strong>Discount Schedules:</strong> Volume, slab, and tiered discount type mapping with unit (percentage vs. amount) conversion</li>
+                    <li><strong>Pricing Validation:</strong> Multi-currency support, exchange rate handling, price dimension validation</li>
+                    <li><strong>Quote Builder Integration:</strong> Preserve manual price adjustments, quote templates, approval history</li>
+                </ul>
+
+                <h4>Key Transformations</h4>
+                <ul>
+                    <li>Map CPQ quote status (Draft, In Review, Approved) to standard Quote Status picklist</li>
+                    <li>Preserve discount schedules with tier breakpoints and pricing rules</li>
+                    <li>Handle subscription term fields for recurring quotes</li>
+                </ul>
+            </section>
+
+            <section class="phase-section">
+                <h3>Phase 3: Contracts & Assets (WS3)</h3>
+                <p><strong>Objective:</strong> Convert CPQ subscriptions to Revenue Cloud assets with contract lifecycle management</p>
+                
+                <h4>Core Functional Capabilities</h4>
+                <ul>
+                    <li><strong>Subscription → Asset Conversion:</strong> SBQQ__Subscription__c → Asset with product linkage, quantity, and pricing</li>
+                    <li><strong>Contract Management:</strong> Contract number preservation, status mapping (Draft, In Approval, Activated), term handling</li>
+                    <li><strong>Asset Tracking:</strong> Install date, usage end date, asset quantity, price tracking</li>
+                    <li><strong>Billing Frequency Mapping:</strong> Monthly → MONTHLY, Quarterly → QUARTERLY, Annually → YEARLY</li>
+                    <li><strong>Contract Terms:</strong> Integer month conversion, start/end date validation, renewal handling</li>
+                </ul>
+
+                <h4>Business Logic</h4>
+                <ul>
+                    <li>BR-C01: Contract numbers must be globally unique across migrations</li>
+                    <li>BR-C02: End date must be after start date with validation</li>
+                    <li>BR-C03: Asset linkage to parent contract required for tracking</li>
+                    <li>BR-A01: Subscription type mapping (One-Time → ONE_TIME, Subscription → RECURRING)</li>
+                </ul>
+            </section>
+
+            <section class="phase-section">
+                <h3>Phase 4: Billing & Invoicing (WS4)</h3>
+                <p><strong>Objective:</strong> Automate invoice generation and payment tracking with billing schedule management</p>
+                
+                <h4>Core Functional Capabilities</h4>
+                <ul>
+                    <li><strong>Invoice Migration:</strong> Invoice → Invoice with number preservation, date validation (invoice date ≤ due date)</li>
+                    <li><strong>Invoice Line Items:</strong> InvoiceLine → InvoiceLine with product linkage, quantity, unit price</li>
+                    <li><strong>Billing Accounts:</strong> BillingAccount__c → BillingAccount with account linkage and frequency mapping</li>
+                    <li><strong>Status Mapping:</strong> Draft, Posted, Paid, Cancelled status conversion</li>
+                    <li><strong>Payment Reconciliation:</strong> Total amount calculation from line items with currency validation</li>
+                </ul>
+
+                <h4>Business Logic</h4>
+                <ul>
+                    <li>BR-I01: Invoice numbers must be sequential and unique</li>
+                    <li>BR-I02: Total amount must equal sum of line item amounts</li>
+                    <li>BR-I03: Invoice date must be ≤ due date</li>
+                    <li>BR-B01: Billing frequency must match contract terms</li>
+                </ul>
+            </section>
+
+            <section class="phase-section">
+                <h3>Phase 5: Revenue Cloud Advanced Features (WS5)</h3>
+                <p><strong>Objective:</strong> Implement product hierarchies, bundles, and EPC (Enterprise Product Catalog) integration</p>
+                
+                <h4>Core Functional Capabilities</h4>
+                <ul>
+                    <li><strong>Product Hierarchy:</strong> Parent-child relationships with hierarchy path calculation and circular reference detection</li>
+                    <li><strong>Product Types:</strong> Base, Bundle, Option type mapping with configuration rules</li>
+                    <li><strong>Bundle Components:</strong> ProductChildItem relationships with quantity, required flag, default pricing</li>
+                    <li><strong>EPC Integration:</strong> Product catalog synchronization with EPC API (POST /epc/v1/products)</li>
+                    <li><strong>Pricing Elements:</strong> Charge type mapping (One-Time, Recurring, Usage) with frequency and amount handling</li>
+                </ul>
+
+                <h4>Complex Transformations</h4>
+                <ul>
+                    <li>Calculate full product hierarchy paths (e.g., "Root/Parent/Child")</li>
+                    <li>Validate no circular references in parent-child relationships</li>
+                    <li>Map pricing elements with multi-dimensional pricing (charge type + frequency + amount)</li>
+                    <li>Handle configurable product options with selection rules</li>
+                </ul>
+
+                <h4>Business Logic</h4>
+                <ul>
+                    <li>BR-P01: Product codes must be globally unique across all products</li>
+                    <li>BR-P02: Bundle components must reference valid child products</li>
+                </ul>
+            </section>
+
+            <section style="background:#f0f6fb;padding:2rem;border-radius:8px;margin-top:2rem">
+                <h3 style="margin-top:0">Cross-Phase Functional Capabilities</h3>
+                <table>
+                    <tr><th>Capability</th><th>Description</th><th>Applies To</th></tr>
+                    <tr><td>AI Field Mapping</td><td>Machine learning-powered mapping with ≥85% accuracy</td><td>All Phases</td></tr>
+                    <tr><td>Hybrid Staging</td><td>Vanilla tables + EAV model for custom fields</td><td>All Phases</td></tr>
+                    <tr><td>Multi-Stage Validation</td><td>STG1 → STG2 → Target with DQ checks</td><td>All Phases</td></tr>
+                    <tr><td>Batch Processing</td><td>Configurable batch sizes with parallel workers</td><td>All Phases</td></tr>
+                    <tr><td>Rollback Capability</td><td>One-click rollback with dependency handling</td><td>All Phases</td></tr>
+                    <tr><td>Real-Time Monitoring</td><td>Live progress dashboard with ETA</td><td>All Phases</td></tr>
+                    <tr><td>Audit Logging</td><td>Immutable audit trail for 7 years (compliance)</td><td>All Phases</td></tr>
+                    <tr><td>Error Reporting</td><td>CSV export with line numbers and suggested fixes</td><td>All Phases</td></tr>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <footer style="background:#2c3e50;color:#ecf0f1;padding:2rem 0;text-align:center;margin-top:3rem">
+        <div class="container"><p>&copy; 2025 RevNova. System Transformation as a Service.</p></div>
+    </footer>
+</body>
+</html>
