@@ -68,6 +68,77 @@
         <tr><td>Name</td><td>Product2.Name</td><td>Name</td><td>vlocity_cmt__Product__c.Name</td><td>auto-map / manual edit</td><td>non-empty</td><td>BR-MAP-01</td></tr>
         <tr><td>ProductCode</td><td>Product2.ProductCode</td><td>vlocity_cmt__ProductCode__c</td><td>vlocity_cmt__Product__c.vlocity_cmt__ProductCode__c</td><td>auto-map</td><td>regex [A-Z0-9\-]+</td><td>BR-MAP-02</td></tr>
         <tr><td>List Price</td><td>Product2.SBQQ__ListPrice__c</td><td>vlocity_cmt__Price__c.vlocity_cmt__PriceValue__c</td><td>numeric, currency</td><td>transform</td><td>currency check</td><td>BR-MAP-03</td></tr>
+        <tr><td>Description</td><td>Product2.Description</td><td>vlocity_cmt__Description__c</td><td>vlocity_cmt__Product__c.vlocity_cmt__Description__c</td><td>auto-map</td><td>max 32000 chars</td><td></td></tr>
+        <tr><td>Family</td><td>Product2.Family</td><td>vlocity_cmt__ProductFamily__c</td><td>vlocity_cmt__Product__c.vlocity_cmt__ProductFamily__c</td><td>value map dropdown</td><td>picklist validation</td><td>BR-MAP-04</td></tr>
+        <tr><td>IsActive</td><td>Product2.IsActive</td><td>vlocity_cmt__IsActive__c</td><td>vlocity_cmt__Product__c.vlocity_cmt__IsActive__c</td><td>checkbox</td><td>boolean</td><td></td></tr>
+      </tbody>
+    </table>
+
+    <h3>Transform — Data Transform Rules</h3>
+    <p>Users can define custom transforms and apply pre-built transform templates.</p>
+    <table>
+      <thead>
+        <tr><th>Field</th><th>Control</th><th>Data Type</th><th>Required</th><th>Description</th><th>Business Rule</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Transform Name</td><td>text</td><td>string</td><td>yes</td><td>Descriptive name for the transform rule</td><td></td></tr>
+        <tr><td>Transform Type</td><td>select</td><td>enum</td><td>yes</td><td>Normalize, Map Values, Calculate, Concatenate, Split, Default Value</td><td>BR-TRN-01</td></tr>
+        <tr><td>Source Field(s)</td><td>multi-select</td><td>array</td><td>yes</td><td>One or more source fields to apply transform</td><td></td></tr>
+        <tr><td>Target Field</td><td>select</td><td>string</td><td>yes</td><td>Target field to receive transformed value</td><td></td></tr>
+        <tr><td>Transform Logic</td><td>textarea / formula editor</td><td>string</td><td>yes</td><td>JavaScript expression or pre-built template</td><td>BR-TRN-02</td></tr>
+        <tr><td>Error Handling</td><td>select</td><td>enum</td><td>yes</td><td>Skip Record, Use Default, Abort Migration</td><td>BR-TRN-03</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Validate — Pre-Migration Validation</h3>
+    <p>Display validation results in a dashboard format with drill-down capability.</p>
+    <table>
+      <thead>
+        <tr><th>Field</th><th>Control</th><th>Data Type</th><th>Description</th><th>Business Rule</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Total Records</td><td>read-only label</td><td>integer</td><td>Total number of records to migrate</td><td></td></tr>
+        <tr><td>Valid Records</td><td>read-only label</td><td>integer</td><td>Records passing all validation checks</td><td></td></tr>
+        <tr><td>Invalid Records</td><td>read-only label</td><td>integer</td><td>Records with validation errors</td><td>BR-VAL-01</td></tr>
+        <tr><td>Warnings Count</td><td>read-only label</td><td>integer</td><td>Non-blocking warnings that user can override</td><td>BR-VAL-02</td></tr>
+        <tr><td>Validation Details</td><td>expandable grid</td><td>array</td><td>Line-by-line error details with field name, error type, suggested fix</td><td></td></tr>
+        <tr><td>Download Error Report</td><td>button</td><td>action</td><td>Export validation results to CSV/Excel</td><td></td></tr>
+        <tr><td>Proceed Anyway (Override)</td><td>checkbox</td><td>boolean</td><td>Allow migration with warnings (not errors)</td><td>BR-VAL-03</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Execute — Migration Execution & Monitoring</h3>
+    <table>
+      <thead>
+        <tr><th>Field</th><th>Control</th><th>Data Type</th><th>Description</th><th>Business Rule</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Batch Size</td><td>number input</td><td>integer</td><td>Number of records per batch (200-10000)</td><td>BR-EXE-01</td></tr>
+        <tr><td>Parallel Workers</td><td>slider</td><td>integer</td><td>Number of concurrent workers (1-16)</td><td>BR-EXE-02</td></tr>
+        <tr><td>Enable Rollback</td><td>checkbox</td><td>boolean</td><td>Track inserted IDs for potential rollback</td><td>BR-EXE-03</td></tr>
+        <tr><td>Progress Bar</td><td>progress bar</td><td>percentage</td><td>Real-time progress indicator</td><td></td></tr>
+        <tr><td>Records Processed</td><td>read-only label</td><td>integer</td><td>Count of records processed so far</td><td></td></tr>
+        <tr><td>Success Count</td><td>read-only label</td><td>integer</td><td>Successfully migrated records</td><td></td></tr>
+        <tr><td>Error Count</td><td>read-only label</td><td>integer</td><td>Failed records</td><td></td></tr>
+        <tr><td>Estimated Time Remaining</td><td>read-only label</td><td>duration</td><td>Based on current processing rate</td><td></td></tr>
+        <tr><td>Pause Migration</td><td>button</td><td>action</td><td>Pause after current batch completes</td><td>BR-EXE-04</td></tr>
+        <tr><td>Rollback Migration</td><td>button (danger)</td><td>action</td><td>Undo all changes for this migration run</td><td>BR-EXE-05</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Test — Post-Migration Verification</h3>
+    <table>
+      <thead>
+        <tr><th>Field</th><th>Control</th><th>Data Type</th><th>Description</th><th>Business Rule</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Record Count Match</td><td>status indicator</td><td>boolean</td><td>Source count == Target count</td><td>BR-TST-01</td></tr>
+        <tr><td>Data Integrity Score</td><td>progress bar</td><td>percentage</td><td>Sampling-based data comparison (% match)</td><td>BR-TST-02</td></tr>
+        <tr><td>Sample Size</td><td>number input</td><td>integer</td><td>Number of records to sample for verification (default 100)</td><td></td></tr>
+        <tr><td>Run Sample Test</td><td>button</td><td>action</td><td>Execute data comparison on sample records</td><td></td></tr>
+        <tr><td>Discrepancies Found</td><td>expandable list</td><td>array</td><td>List of field-level mismatches with source/target values</td><td></td></tr>
+        <tr><td>Generate Test Report</td><td>button</td><td>action</td><td>Create PDF/HTML summary report</td><td></td></tr>
+        <tr><td>Mark Migration Complete</td><td>button (primary)</td><td>action</td><td>Finalize migration and archive project</td><td>BR-TST-03</td></tr>
       </tbody>
     </table>
 
@@ -76,11 +147,39 @@
     <table>
       <thead><tr><th>ID</th><th>Title</th><th>Detailed Rule</th><th>Applicability</th></tr></thead>
       <tbody>
+        <!-- Connection Business Rules -->
         <tr><td class="rule-id">BR-CT-01</td><td>Environment selection</td><td>Environment must be one of supported environments; production requires MFA admin confirmation.</td><td>Connect</td></tr>
-        <tr><td class="rule-id">BR-CT-02</td><td>Instance URL validation</td><td>Instance URL must resolve and accept API calls; reject if non-Salesforce domain.</td><td>Connect</td></tr>
-        <tr><td class="rule-id">BR-MAP-01</td><td>Product Name non-empty</td><td>Reject mapping for Product if Name blank; user must supply fallback or skip record.</td><td>Mapping / DQ</td></tr>
-        <tr><td class="rule-id">BR-MAP-02</td><td>Product Code format</td><td>Normalize ProductCode to uppercase and strip spaces; if blank, flag for manual review.</td><td>Mapping / Transform</td></tr>
-        <tr><td class="rule-id">BR-MAP-03</td><td>Price currency validation</td><td>Ensure currency ISO matches target; if mismatch, attempt conversion using default rate or flag.</td><td>Transform</td></tr>
+        <tr><td class="rule-id">BR-CT-02</td><td>Instance URL validation</td><td>Instance URL must resolve and accept API calls; reject if non-Salesforce domain (*.salesforce.com, *.force.com, *.my.salesforce.com)</td><td>Connect</td></tr>
+        <tr><td class="rule-id">BR-CT-03</td><td>Username format</td><td>Username must be valid email format; additionally verify user has API Enabled permission via test connection.</td><td>Connect</td></tr>
+        <tr><td class="rule-id">BR-CT-04</td><td>Password security</td><td>Password must be minimum 8 characters; store encrypted using AES-256; never log or display in plaintext.</td><td>Connect</td></tr>
+        
+        <!-- Mapping Business Rules -->
+        <tr><td class="rule-id">BR-MAP-01</td><td>Product Name non-empty</td><td>Reject mapping for Product if Name is blank; user must supply fallback value or skip record. Name is required field in both CPQ and RCA.</td><td>Mapping / DQ</td></tr>
+        <tr><td class="rule-id">BR-MAP-02</td><td>Product Code format</td><td>Normalize ProductCode to uppercase and strip leading/trailing spaces; if blank, auto-generate from Name (first 20 chars + timestamp). ProductCode must be unique globally.</td><td>Mapping / Transform</td></tr>
+        <tr><td class="rule-id">BR-MAP-03</td><td>Price currency validation</td><td>Ensure currency ISO code (e.g., USD, EUR, GBP) matches target org multi-currency settings. If mismatch, attempt conversion using dated exchange rate from external API (e.g., exchangerate-api.com) or flag for manual review.</td><td>Transform</td></tr>
+        <tr><td class="rule-id">BR-MAP-04</td><td>Family picklist mapping</td><td>Map source Product2.Family values to target vlocity_cmt__ProductFamily__c picklist. If source value not in target picklist, either: (a) add to target picklist via Metadata API, (b) map to "Other" category, or (c) flag for admin review.</td><td>Mapping / Transform</td></tr>
+        
+        <!-- Transform Business Rules -->
+        <tr><td class="rule-id">BR-TRN-01</td><td>Transform type selection</td><td>Transform types: <strong>Normalize</strong> (phone numbers, dates), <strong>Map Values</strong> (picklist/enum mapping), <strong>Calculate</strong> (formula-based, e.g., Discount % to Amount), <strong>Concatenate</strong> (merge fields), <strong>Split</strong> (extract from compound field), <strong>Default Value</strong> (if source null). Each type has specific parameters and validation logic.</td><td>Transform</td></tr>
+        <tr><td class="rule-id">BR-TRN-02</td><td>Transform logic validation</td><td>JavaScript expressions must be syntax-validated before saving. Sandbox execution with sample data required to prevent injection attacks. Limit CPU time to 100ms per record to avoid performance issues.</td><td>Transform</td></tr>
+        <tr><td class="rule-id">BR-TRN-03</td><td>Error handling strategy</td><td><strong>Skip Record:</strong> Log error, continue migration without this record. <strong>Use Default:</strong> Apply fallback value specified by user. <strong>Abort Migration:</strong> Stop entire migration if any transform fails (safest for critical data).</td><td>Transform</td></tr>
+        
+        <!-- Validation Business Rules -->
+        <tr><td class="rule-id">BR-VAL-01</td><td>Invalid record handling</td><td>Records with errors MUST NOT proceed to execution. Display error count prominently with drill-down to specific issues. Common errors: required field missing, data type mismatch, length exceeded, referential integrity violation (lookup to non-existent parent).</td><td>Validate</td></tr>
+        <tr><td class="rule-id">BR-VAL-02</td><td>Warning vs Error classification</td><td><strong>Errors (blocking):</strong> Required field null, invalid foreign key, data type mismatch. <strong>Warnings (non-blocking):</strong> Optional field missing, value truncated (with user consent), unusual data pattern (e.g., price = $0).</td><td>Validate</td></tr>
+        <tr><td class="rule-id">BR-VAL-03</td><td>Override warnings</td><td>User with Admin role can override warnings and proceed to execution. Requires explicit checkbox confirmation + reason comment. All overrides logged in audit trail with user ID and timestamp.</td><td>Validate</td></tr>
+        
+        <!-- Execution Business Rules -->
+        <tr><td class="rule-id">BR-EXE-01</td><td>Batch size limits</td><td>Batch size range: 200-10,000 records. Salesforce Bulk API 2.0 recommends 5,000-10,000 for optimal throughput. Smaller batches (200-500) recommended for complex transforms or high error rates to minimize rollback scope.</td><td>Execute</td></tr>
+        <tr><td class="rule-id">BR-EXE-02</td><td>Parallel worker configuration</td><td>Number of parallel workers: 1-16. Auto-detect optimal count based on: org API limit (100K calls/24hrs), current API usage, available RevNova compute capacity. Each worker processes one batch at a time. Monitor for API rate limit errors (HTTP 429) and throttle accordingly.</td><td>Execute</td></tr>
+        <tr><td class="rule-id">BR-EXE-03</td><td>Rollback tracking</td><td>When enabled, store inserted record IDs in MIGRATION_BATCHES table with batch_id, object_type, record_id, created_at. Rollback deletes all records for specified batch_id in reverse insertion order to respect foreign key dependencies. Rollback NOT available if user manually modifies migrated records post-migration.</td><td>Execute</td></tr>
+        <tr><td class="rule-id">BR-EXE-04</td><td>Pause migration</td><td>Pause completes current in-flight batches, then stops accepting new batches. Migration can be resumed from last successful batch. Pause state persisted in PROJECTS table with last_batch_id and status = 'PAUSED'.</td><td>Execute</td></tr>
+        <tr><td class="rule-id">BR-EXE-05</td><td>Rollback migration</td><td>Rollback is destructive and irreversible. Requires admin confirmation with password re-entry. Deletes ALL records inserted during this migration run (identified by project_id + batch_ids). Post-rollback, user can re-run migration from beginning with corrected mappings/transforms.</td><td>Execute</td></tr>
+        
+        <!-- Test Business Rules -->
+        <tr><td class="rule-id">BR-TST-01</td><td>Record count verification</td><td>Compare source record count (from STG1 staging table) vs. target record count (from Salesforce query). If counts match exactly, display green checkmark. If mismatch, display warning with delta (e.g., "10 records missing"). Drill-down shows which source IDs failed to migrate.</td><td>Test</td></tr>
+        <tr><td class="rule-id">BR-TST-02</td><td>Data integrity sampling</td><td>Select random sample of N records (default 100, max 1000). For each record, compare all mapped fields: source value (from STG2 transformed table) vs. target value (from Salesforce API). Calculate match percentage. Display field-level discrepancies for manual review. Ignore expected differences (e.g., ID fields, system timestamps).</td><td>Test</td></tr>
+        <tr><td class="rule-id">BR-TST-03</td><td>Mark migration complete</td><td>Finalize migration only if: (1) Record count match is 100%, OR user acknowledges discrepancies. (2) Data integrity score ≥ 95%, OR user provides override reason. Upon completion, update PROJECTS.status = 'COMPLETED', archive staging tables (STG1/STG2) to S3, send completion email to project owner.</td><td>Test</td></tr>
       </tbody>
     </table>
 
@@ -89,6 +188,82 @@
       <li>Every field table includes a Business Rule ID when logic is non-trivial — link from UI should open the rule detail.</li>
       <li>All form data saved temporarily in the browser during authoring and persisted to FIELD_MAPPINGS via API when saved.</li>
     </ul>
+
+    <h2>User Workflows & Use Cases</h2>
+    
+    <h3>Workflow 1: First-Time Migration Setup</h3>
+    <ol>
+      <li><strong>Create Project:</strong> User logs in, clicks "New Migration Project", enters project name and description</li>
+      <li><strong>Connect to Source:</strong> Navigate to Connect page, enter CPQ org credentials, click "Test Connection", verify green success indicator</li>
+      <li><strong>Connect to Target:</strong> Enter Revenue Cloud org credentials, test connection, verify permissions (Create, Read, Update on all target objects)</li>
+      <li><strong>Save Connections:</strong> Click "Save & Proceed to Analyze" - credentials encrypted and stored in DB</li>
+      <li><strong>Analyze Source:</strong> System auto-queries source org metadata, displays object/field counts, custom field detection, readiness score</li>
+      <li><strong>Review Analysis:</strong> User reviews detected objects, notes any custom fields that require manual mapping</li>
+      <li><strong>Proceed to Mapping:</strong> Click "Continue" to advance to field mapping wizard</li>
+    </ol>
+
+    <h3>Workflow 2: Field Mapping with AI Assistance</h3>
+    <ol>
+      <li><strong>Auto-Mapping:</strong> System suggests field mappings using AI (85%+ accuracy for standard fields)</li>
+      <li><strong>Review Suggestions:</strong> User reviews mapping table, sees confidence scores (High/Medium/Low) for each suggestion</li>
+      <li><strong>Manual Adjustments:</strong> User overrides AI suggestions where needed, uses dropdown to select correct target field</li>
+      <li><strong>Custom Field Mapping:</strong> For custom fields with no AI suggestion, user manually maps or marks "Do Not Migrate"</li>
+      <li><strong>Value Mapping:</strong> User clicks "Map Values" for picklist fields, creates source→target value pairs (e.g., "Monthly"→"MONTHLY")</li>
+      <li><strong>Save Mappings:</strong> Click "Save Mappings" - stored in FIELD_MAPPINGS table</li>
+      <li><strong>Validate Mappings:</strong> Click "Validate" - system checks for required field coverage, data type compatibility</li>
+    </ol>
+
+    <h3>Workflow 3: Data Transformation & Validation</h3>
+    <ol>
+      <li><strong>Apply Transforms:</strong> User navigates to Transform page, sees list of pre-built transforms (Normalize Phone, Format Currency, etc.)</li>
+      <li><strong>Custom Transform:</strong> User creates custom transform for special business logic (e.g., derive Product Code from Name + Category)</li>
+      <li><strong>Test Transform:</strong> User clicks "Test on Sample" - system runs transform on 10 sample records, displays before/after values</li>
+      <li><strong>Save Transforms:</strong> User approves transform logic, clicks "Save"</li>
+      <li><strong>Run Validation:</strong> Navigate to Validate page, click "Run Full Validation"</li>
+      <li><strong>Review Errors:</strong> System displays validation summary: 1,850 valid, 150 errors, 50 warnings</li>
+      <li><strong>Drill-Down:</strong> User clicks "View Errors" - downloads CSV with line-by-line error details</li>
+      <li><strong>Fix Data:</strong> User corrects source data issues in CPQ org, re-runs analysis/validation loop until error count = 0</li>
+    </ol>
+
+    <h3>Workflow 4: Migration Execution & Monitoring</h3>
+    <ol>
+      <li><strong>Configure Execution:</strong> User sets batch size (5000), parallel workers (8), enables rollback tracking</li>
+      <li><strong>Start Migration:</strong> Click "Start Migration" - system begins batch processing</li>
+      <li><strong>Monitor Progress:</strong> User watches real-time dashboard: progress bar (23% complete), 4,600/20,000 records processed, 8 active workers</li>
+      <li><strong>Handle Errors:</strong> System encounters batch error (API rate limit exceeded), automatically retries with exponential backoff</li>
+      <li><strong>Pause if Needed:</strong> User clicks "Pause" to temporarily stop migration (completes current batch)</li>
+      <li><strong>Resume:</strong> Later, user clicks "Resume" - migration continues from last successful batch</li>
+      <li><strong>Completion:</strong> Migration finishes: 19,950 success, 50 errors. User downloads error report for analysis.</li>
+    </ol>
+
+    <h3>Workflow 5: Post-Migration Testing & Rollback</h3>
+    <ol>
+      <li><strong>Record Count Check:</strong> Navigate to Test page, system auto-runs count comparison: Source 20,000, Target 19,950 (50 missing)</li>
+      <li><strong>Data Sampling:</strong> User sets sample size to 200, clicks "Run Sample Test"</li>
+      <li><strong>Review Results:</strong> System displays 98.5% data integrity score, 3 field discrepancies found</li>
+      <li><strong>Investigate Discrepancies:</strong> User reviews mismatched fields: mostly expected (ID differences, timestamps)</li>
+      <li><strong>Decision Point:</strong> User decides errors are acceptable for initial migration (will fix 50 failed records manually)</li>
+      <li><strong>Alternate: Rollback:</strong> If errors unacceptable, user clicks "Rollback Migration" - enters password confirmation</li>
+      <li><strong>Rollback Execution:</strong> System deletes all 19,950 migrated records from target org, resets project status to "Ready to Re-Run"</li>
+      <li><strong>Mark Complete:</strong> If acceptable, user clicks "Mark Migration Complete" - project archived, stakeholders notified</li>
+    </ol>
+
+    <h2>Acceptance Criteria (Phase 1 MVP)</h2>
+    <table>
+      <thead><tr><th>ID</th><th>Criteria</th><th>Verification Method</th></tr></thead>
+      <tbody>
+        <tr><td>AC-01</td><td>User can connect to both CPQ and RCA orgs with OAuth or username/password</td><td>Manual test: successful connection to sandbox orgs</td></tr>
+        <tr><td>AC-02</td><td>System auto-detects Product2, Pricebook2, PricebookEntry objects with field metadata</td><td>Verify analysis page shows correct object/field counts</td></tr>
+        <tr><td>AC-03</td><td>AI suggests field mappings with ≥85% accuracy for standard fields</td><td>Automated test: 100 sample mappings, measure true positive rate</td></tr>
+        <tr><td>AC-04</td><td>User can manually override AI suggestions and save custom mappings</td><td>Manual test: override 5 mappings, verify saved correctly</td></tr>
+        <tr><td>AC-05</td><td>System validates required fields, data types, and foreign keys before migration</td><td>Automated test: inject 10 validation errors, verify all detected</td></tr>
+        <tr><td>AC-06</td><td>Migration executes with configurable batch size (200-10K) and parallel workers (1-16)</td><td>Manual test: migrate 10K records with different batch sizes, measure throughput</td></tr>
+        <tr><td>AC-07</td><td>Real-time dashboard displays progress, success/error counts, ETA</td><td>Manual test: verify dashboard updates every 2 seconds during migration</td></tr>
+        <tr><td>AC-08</td><td>User can pause migration mid-flight and resume later without data loss</td><td>Manual test: pause at 50%, verify resume completes remaining 50%</td></tr>
+        <tr><td>AC-09</td><td>Rollback feature deletes all migrated records and resets project state</td><td>Manual test: migrate 1K records, rollback, verify target org has 0 records</td></tr>
+        <tr><td>AC-10</td><td>Post-migration test verifies record count match and data integrity ≥95%</td><td>Automated test: migrate sample dataset, verify 100% count match, ≥98% field match</td></tr>
+      </tbody>
+    </table>
 
   </div>
 </body>

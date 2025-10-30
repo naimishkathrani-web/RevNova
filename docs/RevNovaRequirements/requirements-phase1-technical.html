@@ -19,25 +19,345 @@
 
     <h2>Contract / API surface</h2>
     <table>
-      <thead><tr><th>Endpoint</th><th>Method</th><th>Payload</th><th>Purpose</th></tr></thead>
+      <thead><tr><th>Endpoint</th><th>Method</th><th>Payload</th><th>Response</th><th>Purpose</th></tr></thead>
       <tbody>
-        <tr><td>/api/v1/projects</td><td>POST</td><td>{name,source,target,createdBy}</td><td>Create migration project</td></tr>
-        <tr><td>/api/v1/projects/{id}/connect</td><td>POST</td><td>{instanceUrl,username,password,apiVersion}</td><td>Store connection (encrypted), validate credentials</td></tr>
-        <tr><td>/api/v1/projects/{id}/analyze</td><td>POST</td><td>{}</td><td>Trigger schema discovery job (async)</td></tr>
-        <tr><td>/api/v1/projects/{id}/mapping</td><td>GET/POST</td><td>Mapping rows JSON</td><td>Get/save field mappings</td></tr>
-        <tr><td>/api/v1/projects/{id}/transform</td><td>POST</td><td>{rules}</td><td>Apply transformation rules (dry-run/execute)</td></tr>
-        <tr><td>/api/v1/projects/{id}/execute</td><td>POST</td><td>{mode: dryrun|run}</td><td>Execute migration using batches</td></tr>
+        <!-- Project Management APIs -->
+        <tr><td>/api/v1/projects</td><td>POST</td><td>{name,description,source_type,target_type,created_by}</td><td>{id,name,status,created_at}</td><td>Create migration project</td></tr>
+        <tr><td>/api/v1/projects</td><td>GET</td><td>Query params: ?user_id=123&status=active</td><td>{projects: [...], total_count}</td><td>List all projects for user</td></tr>
+        <tr><td>/api/v1/projects/{id}</td><td>GET</td><td>-</td><td>{id,name,status,progress,created_at,...}</td><td>Get project details</td></tr>
+        <tr><td>/api/v1/projects/{id}</td><td>PUT</td><td>{name,description,status}</td><td>{id,updated_at}</td><td>Update project metadata</td></tr>
+        <tr><td>/api/v1/projects/{id}</td><td>DELETE</td><td>-</td><td>{success: true}</td><td>Archive/soft-delete project</td></tr>
+        
+        <!-- Connection APIs -->
+        <tr><td>/api/v1/projects/{id}/connections/source</td><td>POST</td><td>{instance_url,username,password,security_token,api_version}</td><td>{connection_id,status:"connected"}</td><td>Store source connection (encrypted), validate credentials</td></tr>
+        <tr><td>/api/v1/projects/{id}/connections/source/test</td><td>POST</td><td>{instance_url,username,password}</td><td>{success: true, org_id, org_name, api_enabled: true}</td><td>Test source connection without saving</td></tr>
+        <tr><td>/api/v1/projects/{id}/connections/target</td><td>POST</td><td>{instance_url,username,password,security_token,api_version}</td><td>{connection_id,status:"connected"}</td><td>Store target connection</td></tr>
+        <tr><td>/api/v1/projects/{id}/connections/target/test</td><td>POST</td><td>{instance_url,username,password}</td><td>{success: true, permissions: {Product2:{create,read,update}}}</td><td>Test target connection and verify permissions</td></tr>
+        
+        <!-- Analysis APIs -->
+        <tr><td>/api/v1/projects/{id}/analyze</td><td>POST</td><td>{objects: ["Product2","Pricebook2","PricebookEntry"]}</td><td>{job_id,status:"queued"}</td><td>Trigger async schema discovery job</td></tr>
+        <tr><td>/api/v1/projects/{id}/analyze/{job_id}</td><td>GET</td><td>-</td><td>{status:"completed", results: {objects, fields, custom_fields_count, readiness_score}}</td><td>Get analysis job status and results</td></tr>
+        <tr><td>/api/v1/projects/{id}/analyze/summary</td><td>GET</td><td>-</td><td>{total_records, total_objects, custom_fields, readiness_score, warnings: [...]}</td><td>Get analysis summary for UI dashboard</td></tr>
+        
+        <!-- Mapping APIs -->
+        <tr><td>/api/v1/projects/{id}/mappings</td><td>GET</td><td>-</td><td>{mappings: [{source_field, target_field, mapping_type,...}]}</td><td>Get all field mappings for project</td></tr>
+        <tr><td>/api/v1/projects/{id}/mappings</td><td>POST</td><td>{mappings: [...], mode:"replace|merge"}</td><td>{total_saved, conflicts: []}</td><td>Save/update field mappings (bulk)</td></tr>
+        <tr><td>/api/v1/projects/{id}/mappings/suggest</td><td>POST</td><td>{source_object}</td><td>{suggestions: [{source_field, target_field, confidence: 0.95}]}</td><td>Get AI-suggested mappings</td></tr>
+        <tr><td>/api/v1/projects/{id}/mappings/{mapping_id}</td><td>PUT</td><td>{target_field, mapping_type, transform_logic}</td><td>{id, updated_at}</td><td>Update single mapping</td></tr>
+        <tr><td>/api/v1/projects/{id}/mappings/validate</td><td>POST</td><td>{mappings: [...]}</td><td>{valid: true, errors: [], warnings: []}</td><td>Validate mapping completeness and compatibility</td></tr>
+        
+        <!-- Transform APIs -->
+        <tr><td>/api/v1/projects/{id}/transforms</td><td>GET</td><td>-</td><td>{transforms: [{name, type, logic, error_handling}]}</td><td>Get all transform rules</td></tr>
+        <tr><td>/api/v1/projects/{id}/transforms</td><td>POST</td><td>{name, type, source_fields, target_field, logic, error_handling}</td><td>{id, created_at}</td><td>Create new transform rule</td></tr>
+        <tr><td>/api/v1/projects/{id}/transforms/{transform_id}</td><td>PUT</td><td>{logic, error_handling}</td><td>{id, updated_at}</td><td>Update transform rule</td></tr>
+        <tr><td>/api/v1/projects/{id}/transforms/test</td><td>POST</td><td>{transform_id, sample_data: [...]}</td><td>{results: [{input, output, success, error}]}</td><td>Test transform on sample data</td></tr>
+        <tr><td>/api/v1/projects/{id}/transforms/apply</td><td>POST</td><td>{mode:"dryrun|execute"}</td><td>{job_id, records_processed, records_transformed, errors: []}</td><td>Apply all transforms to staging data</td></tr>
+        
+        <!-- Validation APIs -->
+        <tr><td>/api/v1/projects/{id}/validate</td><td>POST</td><td>{}</td><td>{job_id}</td><td>Trigger async validation job</td></tr>
+        <tr><td>/api/v1/projects/{id}/validate/{job_id}</td><td>GET</td><td>-</td><td>{status, total_records, valid_records, invalid_records, warnings_count, errors: [...]}</td><td>Get validation results</td></tr>
+        <tr><td>/api/v1/projects/{id}/validate/export</td><td>GET</td><td>?format=csv|xlsx</td><td>File download</td><td>Download validation error report</td></tr>
+        
+        <!-- Execution APIs -->
+        <tr><td>/api/v1/projects/{id}/execute</td><td>POST</td><td>{batch_size, parallel_workers, enable_rollback}</td><td>{execution_id, status:"running"}</td><td>Start migration execution</td></tr>
+        <tr><td>/api/v1/projects/{id}/execute/{execution_id}</td><td>GET</td><td>-</td><td>{status, progress_pct, records_processed, success_count, error_count, eta_seconds}</td><td>Get execution progress</td></tr>
+        <tr><td>/api/v1/projects/{id}/execute/{execution_id}/pause</td><td>POST</td><td>{}</td><td>{status:"paused", last_batch_id}</td><td>Pause migration after current batch</td></tr>
+        <tr><td>/api/v1/projects/{id}/execute/{execution_id}/resume</td><td>POST</td><td>{}</td><td>{status:"running"}</td><td>Resume paused migration</td></tr>
+        <tr><td>/api/v1/projects/{id}/execute/{execution_id}/rollback</td><td>POST</td><td>{reason, confirm_password}</td><td>{rollback_job_id, records_deleted}</td><td>Rollback migration (delete all inserted records)</td></tr>
+        <tr><td>/api/v1/projects/{id}/execute/batches</td><td>GET</td><td>?execution_id=123</td><td>{batches: [{batch_id, status, records_count, success_count, error_count}]}</td><td>List all batches for execution</td></tr>
+        
+        <!-- Test/Verification APIs -->
+        <tr><td>/api/v1/projects/{id}/test/count</td><td>POST</td><td>{}</td><td>{source_count, target_count, match: true, delta: 0}</td><td>Compare record counts</td></tr>
+        <tr><td>/api/v1/projects/{id}/test/sample</td><td>POST</td><td>{sample_size: 100}</td><td>{job_id}</td><td>Run data integrity sampling test</td></tr>
+        <tr><td>/api/v1/projects/{id}/test/sample/{job_id}</td><td>GET</td><td>-</td><td>{integrity_score: 98.5, discrepancies: [{field, source_val, target_val}]}</td><td>Get sampling test results</td></tr>
+        <tr><td>/api/v1/projects/{id}/test/report</td><td>GET</td><td>?format=pdf|html</td><td>File download</td><td>Generate and download test report</td></tr>
+        <tr><td>/api/v1/projects/{id}/complete</td><td>POST</td><td>{override_reason}</td><td>{status:"completed", archived_at}</td><td>Mark migration complete and archive</td></tr>
       </tbody>
     </table>
 
-    <h2>Database mapping</h2>
-    <p>Suggested schema (excerpt):</p>
+    <h2>Database Schema (PostgreSQL Multi-Tenant)</h2>
+    
+    <h3>Core Tables</h3>
     <pre>
-TABLE: projects (id, name, source_org, target_org, created_by, status, created_at)
-TABLE: field_mappings (id, project_id, source_object, source_field, target_object, target_field, mapping_type, transform_notes, dq_check)
-TABLE: stg1_vanilla_* (normalized staging tables for vanilla objects)
-TABLE: stg1_custom_data (eav style for custom fields -> key/value per record)
-TABLE: migration_tests (id, project_id, test_name, status, details)
+-- Projects table: One row per migration project
+CREATE TABLE projects (
+    id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    tenant_id           UUID NOT NULL REFERENCES tenants(id),
+    name                VARCHAR(255) NOT NULL,
+    description         TEXT,
+    source_type         VARCHAR(50) NOT NULL,  -- 'SALESFORCE_CPQ'
+    target_type         VARCHAR(50) NOT NULL,  -- 'SALESFORCE_RCA'
+    status              VARCHAR(50) NOT NULL,  -- 'DRAFT','ANALYZING','READY','EXECUTING','PAUSED','COMPLETED','FAILED'
+    created_by          UUID NOT NULL REFERENCES users(id),
+    created_at          TIMESTAMP DEFAULT NOW(),
+    updated_at          TIMESTAMP DEFAULT NOW(),
+    archived_at         TIMESTAMP NULL,
+    readiness_score     DECIMAL(5,2),          -- 0.00 to 100.00
+    last_execution_id   UUID REFERENCES executions(id),
+    UNIQUE(tenant_id, name)
+);
+
+-- Connections table: Store encrypted credentials
+CREATE TABLE connections (
+    id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    project_id          UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+    connection_type     VARCHAR(20) NOT NULL,  -- 'SOURCE' or 'TARGET'
+    instance_url        VARCHAR(500) NOT NULL,
+    username            VARCHAR(255) NOT NULL,
+    password_encrypted  TEXT NOT NULL,         -- AES-256 encrypted
+    security_token      TEXT,
+    api_version         VARCHAR(10) DEFAULT '58.0',
+    oauth_token         TEXT,
+    oauth_refresh_token TEXT,
+    oauth_expires_at    TIMESTAMP,
+    org_id              VARCHAR(18),           -- Salesforce org ID
+    org_name            VARCHAR(255),
+    connection_status   VARCHAR(50),           -- 'CONNECTED','DISCONNECTED','ERROR'
+    last_tested_at      TIMESTAMP,
+    created_at          TIMESTAMP DEFAULT NOW(),
+    updated_at          TIMESTAMP DEFAULT NOW(),
+    UNIQUE(project_id, connection_type)
+);
+
+-- Field Mappings table: Source to target field mappings
+CREATE TABLE field_mappings (
+    id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    project_id          UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+    source_object       VARCHAR(255) NOT NULL,
+    source_field        VARCHAR(255) NOT NULL,
+    source_api_name     VARCHAR(255) NOT NULL,
+    target_object       VARCHAR(255) NOT NULL,
+    target_field        VARCHAR(255) NOT NULL,
+    target_api_name     VARCHAR(255) NOT NULL,
+    mapping_type        VARCHAR(50) NOT NULL,  -- 'DIRECT','VALUEMAP','TRANSFORM','FOREIGNKEY'
+    complexity          VARCHAR(20),           -- 'SIMPLE','MEDIUM','HIGH'
+    transform_notes     TEXT,
+    dq_check            TEXT,                  -- Data quality validation rule
+    ai_suggested        BOOLEAN DEFAULT FALSE,
+    ai_confidence       DECIMAL(3,2),          -- 0.00 to 1.00
+    is_required         BOOLEAN DEFAULT FALSE,
+    created_at          TIMESTAMP DEFAULT NOW(),
+    updated_at          TIMESTAMP DEFAULT NOW(),
+    created_by          UUID REFERENCES users(id),
+    UNIQUE(project_id, source_object, source_field, target_object, target_field)
+);
+
+-- Value Maps table: Picklist/enum value mappings
+CREATE TABLE value_maps (
+    id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    project_id          UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+    map_name            VARCHAR(255) NOT NULL,  -- e.g., 'BillingFrequency', 'Status'
+    source_value        VARCHAR(500) NOT NULL,
+    target_value        VARCHAR(500) NOT NULL,
+    created_at          TIMESTAMP DEFAULT NOW(),
+    UNIQUE(project_id, map_name, source_value)
+);
+
+-- Transforms table: Custom data transformation rules
+CREATE TABLE transforms (
+    id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    project_id          UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+    name                VARCHAR(255) NOT NULL,
+    transform_type      VARCHAR(50) NOT NULL,  -- 'NORMALIZE','MAP_VALUES','CALCULATE','CONCATENATE','SPLIT','DEFAULT'
+    source_fields       TEXT[] NOT NULL,       -- Array of source field API names
+    target_field        VARCHAR(255) NOT NULL,
+    logic               TEXT NOT NULL,         -- JavaScript expression or SQL
+    error_handling      VARCHAR(50) NOT NULL,  -- 'SKIP_RECORD','USE_DEFAULT','ABORT'
+    default_value       TEXT,
+    is_active           BOOLEAN DEFAULT TRUE,
+    created_at          TIMESTAMP DEFAULT NOW(),
+    updated_at          TIMESTAMP DEFAULT NOW(),
+    created_by          UUID REFERENCES users(id)
+);
+    </pre>
+
+    <h3>Staging Tables (Hybrid Model: Vanilla + EAV)</h3>
+    <pre>
+-- STG1: Raw data from source (before transformation)
+CREATE TABLE stg1_vanilla_product (
+    id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    project_id          UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+    batch_id            UUID NOT NULL,
+    source_id           VARCHAR(18) NOT NULL,   -- Salesforce Product2 ID
+    name                VARCHAR(255),
+    product_code        VARCHAR(255),
+    description         TEXT,
+    family              VARCHAR(255),
+    is_active           BOOLEAN,
+    created_at          TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE stg1_custom_data (
+    id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    project_id          UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+    batch_id            UUID NOT NULL,
+    source_id           VARCHAR(18) NOT NULL,   -- Salesforce record ID
+    object_type         VARCHAR(255) NOT NULL,   -- 'Product2', 'Pricebook2', etc.
+    field_name          VARCHAR(255) NOT NULL,   -- Custom field API name
+    field_value         TEXT,                    -- Stored as text, cast later
+    data_type           VARCHAR(50),             -- 'STRING','NUMBER','BOOLEAN','DATE','DATETIME'
+    created_at          TIMESTAMP DEFAULT NOW(),
+    UNIQUE(project_id, batch_id, source_id, object_type, field_name)
+);
+
+-- STG2: Transformed data (ready for target load)
+CREATE TABLE stg2_vanilla_product (
+    id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    project_id          UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+    batch_id            UUID NOT NULL,
+    source_id           VARCHAR(18) NOT NULL,
+    stg1_id             UUID REFERENCES stg1_vanilla_product(id),
+    name                VARCHAR(255) NOT NULL,  -- After validation
+    product_code        VARCHAR(255) NOT NULL,
+    description         TEXT,
+    family              VARCHAR(255),
+    is_active           BOOLEAN DEFAULT TRUE,
+    target_id           VARCHAR(18),            -- Populated after insert to target
+    transform_status    VARCHAR(50),            -- 'SUCCESS','ERROR','SKIPPED'
+    error_message       TEXT,
+    created_at          TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE stg2_custom_data (
+    id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    project_id          UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+    batch_id            UUID NOT NULL,
+    source_id           VARCHAR(18) NOT NULL,
+    stg1_id             UUID REFERENCES stg1_custom_data(id),
+    object_type         VARCHAR(255) NOT NULL,
+    field_name          VARCHAR(255) NOT NULL,
+    field_value_transformed TEXT,
+    target_id           VARCHAR(18),
+    transform_status    VARCHAR(50),
+    error_message       TEXT,
+    created_at          TIMESTAMP DEFAULT NOW()
+);
+
+-- ID Mapping table: Track source ID → target ID for referential integrity
+CREATE TABLE id_mapping_template (
+    id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    project_id          UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+    batch_id            UUID NOT NULL,
+    object_type         VARCHAR(255) NOT NULL,
+    source_id           VARCHAR(18) NOT NULL,
+    target_id           VARCHAR(18) NOT NULL,
+    created_at          TIMESTAMP DEFAULT NOW(),
+    UNIQUE(project_id, object_type, source_id)
+);
+    </pre>
+
+    <h3>Execution & Testing Tables</h3>
+    <pre>
+-- Executions table: Track migration runs
+CREATE TABLE executions (
+    id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    project_id          UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+    status              VARCHAR(50) NOT NULL,  -- 'QUEUED','RUNNING','PAUSED','COMPLETED','FAILED','ROLLED_BACK'
+    batch_size          INTEGER NOT NULL DEFAULT 5000,
+    parallel_workers    INTEGER NOT NULL DEFAULT 4,
+    enable_rollback     BOOLEAN DEFAULT TRUE,
+    total_records       INTEGER,
+    records_processed   INTEGER DEFAULT 0,
+    success_count       INTEGER DEFAULT 0,
+    error_count         INTEGER DEFAULT 0,
+    progress_pct        DECIMAL(5,2) DEFAULT 0.00,
+    started_at          TIMESTAMP,
+    completed_at        TIMESTAMP,
+    paused_at           TIMESTAMP,
+    last_batch_id       UUID,
+    eta_seconds         INTEGER,
+    created_at          TIMESTAMP DEFAULT NOW(),
+    created_by          UUID REFERENCES users(id)
+);
+
+-- Migration Batches table: Track individual batches
+CREATE TABLE migration_batches (
+    id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    execution_id        UUID NOT NULL REFERENCES executions(id) ON DELETE CASCADE,
+    project_id          UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+    batch_number        INTEGER NOT NULL,
+    object_type         VARCHAR(255) NOT NULL,
+    records_count       INTEGER NOT NULL,
+    success_count       INTEGER DEFAULT 0,
+    error_count         INTEGER DEFAULT 0,
+    status              VARCHAR(50) NOT NULL,  -- 'QUEUED','PROCESSING','SUCCESS','PARTIAL','FAILED'
+    started_at          TIMESTAMP,
+    completed_at        TIMESTAMP,
+    retry_count         INTEGER DEFAULT 0,
+    error_details       JSONB,
+    inserted_record_ids TEXT[],                -- For rollback
+    created_at          TIMESTAMP DEFAULT NOW()
+);
+
+-- Migration Tests table: Track validation and post-migration tests
+CREATE TABLE migration_tests (
+    id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    project_id          UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+    test_type           VARCHAR(50) NOT NULL,  -- 'VALIDATION','COUNT_MATCH','DATA_INTEGRITY_SAMPLE'
+    test_name           VARCHAR(255) NOT NULL,
+    status              VARCHAR(50) NOT NULL,  -- 'PASSED','FAILED','WARNING'
+    details             JSONB,                 -- Store test results as JSON
+    total_records       INTEGER,
+    valid_records       INTEGER,
+    invalid_records     INTEGER,
+    warnings_count      INTEGER,
+    integrity_score     DECIMAL(5,2),          -- For data integrity tests
+    executed_at         TIMESTAMP DEFAULT NOW(),
+    executed_by         UUID REFERENCES users(id)
+);
+
+-- Audit Log table: Track all user actions and system events
+CREATE TABLE audit_log (
+    id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    project_id          UUID REFERENCES projects(id) ON DELETE CASCADE,
+    user_id             UUID REFERENCES users(id),
+    action              VARCHAR(100) NOT NULL,  -- 'PROJECT_CREATED','MAPPING_SAVED','EXECUTION_STARTED','ROLLBACK_EXECUTED'
+    entity_type         VARCHAR(100),           -- 'PROJECT','MAPPING','EXECUTION','BATCH'
+    entity_id           UUID,
+    details             JSONB,
+    ip_address          INET,
+    user_agent          TEXT,
+    created_at          TIMESTAMP DEFAULT NOW()
+);
+    </pre>
+
+    <h3>Indexes for Performance</h3>
+    <pre>
+-- Projects
+CREATE INDEX idx_projects_tenant_id ON projects(tenant_id);
+CREATE INDEX idx_projects_status ON projects(status);
+CREATE INDEX idx_projects_created_by ON projects(created_by);
+
+-- Field Mappings
+CREATE INDEX idx_field_mappings_project_id ON field_mappings(project_id);
+CREATE INDEX idx_field_mappings_source_object ON field_mappings(source_object);
+CREATE INDEX idx_field_mappings_target_object ON field_mappings(target_object);
+
+-- Staging Tables
+CREATE INDEX idx_stg1_product_project_batch ON stg1_vanilla_product(project_id, batch_id);
+CREATE INDEX idx_stg1_product_source_id ON stg1_vanilla_product(source_id);
+CREATE INDEX idx_stg1_custom_project_batch ON stg1_custom_data(project_id, batch_id);
+CREATE INDEX idx_stg2_product_project_batch ON stg2_vanilla_product(project_id, batch_id);
+CREATE INDEX idx_stg2_product_target_id ON stg2_vanilla_product(target_id);
+
+-- ID Mapping
+CREATE INDEX idx_id_mapping_project_object ON id_mapping_template(project_id, object_type);
+CREATE INDEX idx_id_mapping_source_id ON id_mapping_template(source_id);
+CREATE INDEX idx_id_mapping_target_id ON id_mapping_template(target_id);
+
+-- Executions
+CREATE INDEX idx_executions_project_id ON executions(project_id);
+CREATE INDEX idx_executions_status ON executions(status);
+
+-- Migration Batches
+CREATE INDEX idx_batches_execution_id ON migration_batches(execution_id);
+CREATE INDEX idx_batches_project_id ON migration_batches(project_id);
+CREATE INDEX idx_batches_status ON migration_batches(status);
+
+-- Audit Log
+CREATE INDEX idx_audit_project_id ON audit_log(project_id);
+CREATE INDEX idx_audit_user_id ON audit_log(user_id);
+CREATE INDEX idx_audit_created_at ON audit_log(created_at);
     </pre>
 
     <h2>Transformation & Execution notes</h2>
