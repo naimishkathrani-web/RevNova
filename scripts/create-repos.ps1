@@ -12,27 +12,33 @@ Write-Host "RevNova Repository Setup" -ForegroundColor Cyan
 Write-Host "========================" -ForegroundColor Cyan
 Write-Host ""
 
-# Check for gh CLI
-$ghVersion = gh --version 2>&1
-if ($LASTEXITCODE -ne 0) {
-    Write-Host "ERROR: GitHub CLI (gh) is not installed or not in PATH" -ForegroundColor Red
-    Write-Host "Please install from: https://cli.github.com/" -ForegroundColor Yellow
-    exit 1
+# Check for gh CLI (skip in DryRun)
+if (-not $DryRun) {
+    $ghCmd = Get-Command gh -ErrorAction SilentlyContinue
+    if (-not $ghCmd) {
+        Write-Host "ERROR: GitHub CLI (gh) is not installed or not in PATH" -ForegroundColor Red
+        Write-Host "Install from: https://cli.github.com/ (Windows MSI)" -ForegroundColor Yellow
+        Write-Host "Or via winget: winget install --id GitHub.cli -e" -ForegroundColor Yellow
+        exit 1
+    }
+
+    $ghVersion = gh --version 2>&1
+    Write-Host "GitHub CLI found: $($ghVersion | Select-Object -First 1)" -ForegroundColor Green
+    Write-Host ""
+
+    # Check gh authentication
+    gh auth status *> $null
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "ERROR: Not authenticated with GitHub CLI" -ForegroundColor Red
+        Write-Host "Please run: gh auth login (use HTTPS + browser login)" -ForegroundColor Yellow
+        exit 1
+    }
+
+    Write-Host "GitHub authentication OK" -ForegroundColor Green
+    Write-Host ""
+} else {
+    Write-Host "[DRY RUN] Skipping GitHub CLI checks" -ForegroundColor Yellow
 }
-
-Write-Host "GitHub CLI found: $($ghVersion[0])" -ForegroundColor Green
-Write-Host ""
-
-# Check gh authentication
-$authStatus = gh auth status 2>&1
-if ($LASTEXITCODE -ne 0) {
-    Write-Host "ERROR: Not authenticated with GitHub CLI" -ForegroundColor Red
-    Write-Host "Please run: gh auth login" -ForegroundColor Yellow
-    exit 1
-}
-
-Write-Host "GitHub authentication OK" -ForegroundColor Green
-Write-Host ""
 
 # Display plan
 Write-Host "This script will:" -ForegroundColor White

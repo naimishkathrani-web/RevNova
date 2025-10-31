@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Manual Repository Setup — Step-by-Step Guide for Non-Technical Setup</title>
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    body { margin:0; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,sans-serif; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+    .hero { background: linear-gradient(135deg,#667eea 0%,#764ba2 100%); color:#fff; padding:2.5rem; border-radius:12px; margin:1.5rem 0; }
+    .card { background:#fff; border:1px solid #e0e0e0; border-radius:12px; padding:1.5rem; margin-bottom:1.5rem; }
+    .step-card { background:#f8f9fa; border-left:4px solid #667eea; padding:1.25rem; margin:1rem 0; border-radius:8px; }
+    h1,h2 { margin:0 0 .75rem 0; }
+    h3 { color:#667eea; margin:1.5rem 0 .75rem 0; }
+    h4 { color:#764ba2; margin:1rem 0 .5rem 0; }
+    code, pre { background:#f6f8fb; border:1px solid #e6ecf1; border-radius:6px; padding:.25rem .4rem; font-family: 'Consolas', 'Monaco', monospace; }
+    pre { padding: .8rem; overflow:auto; white-space: pre; }
+    ul, ol { line-height: 1.8; }
+    .warning { background:#fff3cd; border:1px solid #ffc107; padding: .8rem 1rem; border-radius:8px; margin:1rem 0; }
+    .success { background:#d4edda; border:1px solid #28a745; padding: .8rem 1rem; border-radius:8px; margin:1rem 0; }
+    .info { background:#d1ecf1; border:1px solid #17a2b8; padding: .8rem 1rem; border-radius:8px; margin:1rem 0; }
+    .screenshot { background:#e9ecef; border:2px dashed #adb5bd; padding:2rem; text-align:center; margin:1rem 0; border-radius:8px; color:#6c757d; font-style:italic; }
+    .step-number { display:inline-block; background:#667eea; color:#fff; width:32px; height:32px; border-radius:50%; text-align:center; line-height:32px; font-weight:bold; margin-right:.5rem; }
+    .checklist { list-style:none; padding-left:0; }
+    .checklist li { padding:.5rem 0; }
+    .checklist li:before { content:"☐ "; font-size:1.2em; margin-right:.5rem; color:#667eea; }
+    table { width:100%; border-collapse:collapse; margin:1rem 0; }
+    table th, table td { border:1px solid #dee2e6; padding:.75rem; text-align:left; }
+    table th { background:#f8f9fa; font-weight:600; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="hero">
+      <h1>Manual Repository Setup Guide</h1>
+      <p>Complete step-by-step instructions for creating RevNova-Dev and RevNova-Test repositories using GitHub's web interface. Perfect for one-time setup with temporary account access.</p>
+    </div>
+
+    <section class="card">
+      <h2>Overview</h2>
+      <p>This guide is designed for a developer who will have <strong>one-time temporary access</strong> to the owner's GitHub account to set up the development and testing repositories. No command-line tools or technical installation required — everything is done through GitHub's web interface.</p>
+      
+      <div class="info">
+        <strong>Time Required:</strong> Approximately 30-45 minutes<br>
+        <strong>Prerequisites:</strong> Web browser + temporary access to <code>naimishkathrani-web</code> GitHub account<br>
+        <strong>Outcome:</strong> Two new repositories (RevNova-Dev, RevNova-Test) with proper settings and protection
+      </div>
+
+      <h3>What You'll Create</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Repository</th>
+            <th>Purpose</th>
+            <th>URL</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>RevNova-Dev</strong></td>
+            <td>Development environment (daily work)</td>
+            <td>https://github.com/naimishkathrani-web/RevNova-Dev</td>
+          </tr>
+          <tr>
+            <td><strong>RevNova-Test</strong></td>
+            <td>Testing/Staging environment (pre-release QA)</td>
+            <td>https://github.com/naimishkathrani-web/RevNova-Test</td>
+          </tr>
+          <tr>
+            <td><strong>RevNova</strong></td>
+            <td>Production (already exists - no changes needed)</td>
+            <td>https://github.com/naimishkathrani-web/RevNova</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="card">
+      <h2>Before You Begin: Pre-Setup Checklist</h2>
+      <ul class="checklist">
+        <li>Owner has shared temporary access to <code>naimishkathrani-web</code> GitHub account</li>
+        <li>You are logged into GitHub as <code>naimishkathrani-web</code> in your browser</li>
+        <li>You have the URL to the Production repository: https://github.com/naimishkathrani-web/RevNova</li>
+        <li>You have approximately 30-45 minutes of uninterrupted time</li>
+        <li>You understand this is a one-time setup task</li>
+      </ul>
+    </section>
+
+    <!-- PART 1: CREATE REVNOVA-DEV -->
+    <section class="card">
+      <h2><span class="step-number">1</span> Create RevNova-Dev Repository</h2>
+      
+      <div class="step-card">
+        <h4>Step 1.1: Navigate to Create New Repository</h4>
+        <ol>
+          <li>Open GitHub in your browser: <a href="https://github.com" target="_blank">https://github.com</a></li>
+          <li>Ensure you are logged in as <code>naimishkathrani-web</code> (check top-right corner for username)</li>
+          <li>Click the <strong>+</strong> icon in the top-right corner</li>
+          <li>Select <strong>"New repository"</strong> from the dropdown menu</li>
+        </ol>
+        <div class="screenshot">
+          Screenshot placeholder: GitHub homepage with + icon highlighted, dropdown showing "New repository"
+        </div>
+      </div>
+
+      <div class="step-card">
+        <h4>Step 1.2: Configure Repository Settings</h4>
+        <p>Fill out the new repository form with these <strong>exact</strong> values:</p>
+        <table>
+          <tr>
+            <th>Field</th>
+            <th>Value</th>
+          </tr>
+          <tr>
+            <td>Owner</td>
+            <td><code>naimishkathrani-web</code> (should be pre-selected)</td>
+          </tr>
+          <tr>
+            <td>Repository name</td>
+            <td><code>RevNova-Dev</code> (case-sensitive, exact spelling)</td>
+          </tr>
+          <tr>
+            <td>Description</td>
+            <td><code>RevNova Development Repository - Daily development work</code></td>
+          </tr>
+          <tr>
+            <td>Visibility</td>
+            <td><strong>Public</strong> (select the "Public" radio button)</td>
+          </tr>
+          <tr>
+            <td>Initialize repository</td>
+            <td><strong>Do NOT check any boxes</strong> (no README, no .gitignore, no license)</td>
+          </tr>
+        </table>
+        <div class="warning">
+          <strong>Important:</strong> The repository name MUST be exactly <code>RevNova-Dev</code> with capital R, capital N, capital D, and a hyphen. Do NOT initialize with README or any files.
+        </div>
+        <div class="screenshot">
+          Screenshot placeholder: New repository form filled with RevNova-Dev details
+        </div>
+      </div>
+
+      <div class="step-card">
+        <h4>Step 1.3: Create the Repository</h4>
+        <ol>
+          <li>Double-check all fields match the table above</li>
+          <li>Click the green <strong>"Create repository"</strong> button at the bottom</li>
+          <li>You should see a quick setup page with commands (ignore these for now)</li>
+        </ol>
+        <div class="success">
+          <strong>✓ Checkpoint:</strong> You should now be at https://github.com/naimishkathrani-web/RevNova-Dev with an empty repository message.
+        </div>
+      </div>
+    </section>
+
+    <!-- PART 2: CREATE REVNOVA-TEST -->
+    <section class="card">
+      <h2><span class="step-number">2</span> Create RevNova-Test Repository</h2>
+      
+      <div class="step-card">
+        <h4>Step 2.1: Start New Repository Creation</h4>
+        <ol>
+          <li>Click the GitHub logo (top-left) to return to the homepage, OR</li>
+          <li>Click the <strong>+</strong> icon in the top-right corner again</li>
+          <li>Select <strong>"New repository"</strong></li>
+        </ol>
+      </div>
+
+      <div class="step-card">
+        <h4>Step 2.2: Configure Repository Settings</h4>
+        <p>Fill out the form with these <strong>exact</strong> values:</p>
+        <table>
+          <tr>
+            <th>Field</th>
+            <th>Value</th>
+          </tr>
+          <tr>
+            <td>Owner</td>
+            <td><code>naimishkathrani-web</code></td>
+          </tr>
+          <tr>
+            <td>Repository name</td>
+            <td><code>RevNova-Test</code> (case-sensitive, exact spelling)</td>
+          </tr>
+          <tr>
+            <td>Description</td>
+            <td><code>RevNova Testing Repository - Staging and QA environment</code></td>
+          </tr>
+          <tr>
+            <td>Visibility</td>
+            <td><strong>Public</strong></td>
+          </tr>
+          <tr>
+            <td>Initialize repository</td>
+            <td><strong>Do NOT check any boxes</strong></td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="step-card">
+        <h4>Step 2.3: Create the Repository</h4>
+        <ol>
+          <li>Verify all fields are correct</li>
+          <li>Click <strong>"Create repository"</strong></li>
+        </ol>
+        <div class="success">
+          <strong>✓ Checkpoint:</strong> You should now be at https://github.com/naimishkathrani-web/RevNova-Test with an empty repository.
+        </div>
+      </div>
+    </section>
+
+    <!-- PART 3: CONFIGURE BRANCH PROTECTION FOR REVNOVA-DEV -->
+    <section class="card">
+      <h2><span class="step-number">3</span> Configure Branch Protection for RevNova-Dev</h2>
+      
+      <div class="info">
+        Branch protection prevents accidental direct commits to the main branch and enforces code review via pull requests.
+      </div>
+
+      <div class="step-card">
+        <h4>Step 3.1: Navigate to Branch Settings</h4>
+        <ol>
+          <li>Go to: <a href="https://github.com/naimishkathrani-web/RevNova-Dev" target="_blank">https://github.com/naimishkathrani-web/RevNova-Dev</a></li>
+          <li>Click <strong>"Settings"</strong> tab (near the top of the page, right side)</li>
+          <li>In the left sidebar, click <strong>"Branches"</strong> under "Code and automation"</li>
+          <li>Under "Branch protection rules", click <strong>"Add branch protection rule"</strong></li>
+        </ol>
+        <div class="screenshot">
+          Screenshot placeholder: Settings → Branches → Add branch protection rule button
+        </div>
+      </div>
+
+      <div class="step-card">
+        <h4>Step 3.2: Configure Protection Rule</h4>
+        <p>Configure the following settings:</p>
+        
+        <h4>Branch Name Pattern</h4>
+        <ul>
+          <li>Branch name pattern: <code>main</code></li>
+        </ul>
+
+        <h4>Protect Matching Branches</h4>
+        <p>Check/enable these options:</p>
+        <ul>
+          <li>✓ <strong>Require a pull request before merging</strong>
+            <ul>
+              <li>✓ Require approvals: <strong>1</strong> (change number to 1)</li>
+              <li>✓ Dismiss stale pull request approvals when new commits are pushed</li>
+            </ul>
+          </li>
+          <li>✓ <strong>Require status checks to pass before merging</strong>
+            <ul>
+              <li>✓ Require branches to be up to date before merging</li>
+              <li>(Leave status checks empty for now - will be added when CI/CD is set up)</li>
+            </ul>
+          </li>
+          <li>✓ <strong>Require conversation resolution before merging</strong></li>
+        </ul>
+
+        <div class="warning">
+          <strong>Do NOT enable:</strong> "Do not allow bypassing the above settings" (leave unchecked) - this allows admins to push if needed during setup.
+        </div>
+      </div>
+
+      <div class="step-card">
+        <h4>Step 3.3: Save Protection Rule</h4>
+        <ol>
+          <li>Scroll to the bottom of the page</li>
+          <li>Click the green <strong>"Create"</strong> button</li>
+        </ol>
+        <div class="success">
+          <strong>✓ Checkpoint:</strong> You should see "main" listed under Branch protection rules with a green checkmark.
+        </div>
+      </div>
+    </section>
+
+    <!-- PART 4: CONFIGURE BRANCH PROTECTION FOR REVNOVA-TEST -->
+    <section class="card">
+      <h2><span class="step-number">4</span> Configure Branch Protection for RevNova-Test</h2>
+      
+      <div class="step-card">
+        <h4>Step 4.1: Navigate to Branch Settings</h4>
+        <ol>
+          <li>Go to: <a href="https://github.com/naimishkathrani-web/RevNova-Test" target="_blank">https://github.com/naimishkathrani-web/RevNova-Test</a></li>
+          <li>Click <strong>"Settings"</strong> tab</li>
+          <li>Click <strong>"Branches"</strong> in the left sidebar</li>
+          <li>Click <strong>"Add branch protection rule"</strong></li>
+        </ol>
+      </div>
+
+      <div class="step-card">
+        <h4>Step 4.2: Configure Protection Rule (Same as Dev)</h4>
+        <p>Use the <strong>exact same settings</strong> as RevNova-Dev:</p>
+        <ul>
+          <li>Branch name pattern: <code>main</code></li>
+          <li>✓ Require a pull request before merging (1 approval)</li>
+          <li>✓ Require status checks to pass before merging</li>
+          <li>✓ Require conversation resolution before merging</li>
+        </ul>
+      </div>
+
+      <div class="step-card">
+        <h4>Step 4.3: Save Protection Rule</h4>
+        <ol>
+          <li>Scroll down and click <strong>"Create"</strong></li>
+        </ol>
+        <div class="success">
+          <strong>✓ Checkpoint:</strong> RevNova-Test now has branch protection on main.
+        </div>
+      </div>
+    </section>
+
+    <!-- PART 5: ADD COLLABORATORS -->
+    <section class="card">
+      <h2><span class="step-number">5</span> Add Developer Collaborators to RevNova-Dev</h2>
+      
+      <div class="info">
+        Only the Development repository (RevNova-Dev) needs collaborators. The owner will control access to Test and Production repositories.
+      </div>
+
+      <div class="step-card">
+        <h4>Step 5.1: Navigate to Collaborators</h4>
+        <ol>
+          <li>Go to: <a href="https://github.com/naimishkathrani-web/RevNova-Dev" target="_blank">https://github.com/naimishkathrani-web/RevNova-Dev</a></li>
+          <li>Click <strong>"Settings"</strong> tab</li>
+          <li>In the left sidebar, click <strong>"Collaborators and teams"</strong> (under "Access")</li>
+          <li>You may need to confirm your password/2FA</li>
+        </ol>
+      </div>
+
+      <div class="step-card">
+        <h4>Step 5.2: Add Each Developer</h4>
+        <p><strong>You will add 3 developers.</strong> For each developer:</p>
+        <ol>
+          <li>Click the green <strong>"Add people"</strong> button</li>
+          <li>In the search box, type the developer's GitHub username or email</li>
+          <li>Select the correct user from the dropdown</li>
+          <li>Click <strong>"Add [username] to this repository"</strong></li>
+          <li>In the permission dropdown, select <strong>"Write"</strong> (not Admin, not Read)</li>
+          <li>The developer will receive an invitation email (they must accept it)</li>
+        </ol>
+
+        <div class="warning">
+          <strong>Developer Usernames:</strong> The owner should provide you with the exact GitHub usernames for the 3 developers. If usernames are unknown, ask the owner before proceeding.
+        </div>
+
+        <p><strong>Repeat this process 3 times</strong> - once for each developer:</p>
+        <ul>
+          <li>Developer 1 (Backend/Database): <code>___________</code> (owner to fill in)</li>
+          <li>Developer 2 (Frontend/React): <code>___________</code> (owner to fill in)</li>
+          <li>Developer 3 (DevOps/Queue/QA): <code>___________</code> (owner to fill in)</li>
+        </ul>
+      </div>
+
+      <div class="step-card">
+        <h4>Step 5.3: Verify Collaborators</h4>
+        <ol>
+          <li>You should now see all 3 developers listed under "Manage access"</li>
+          <li>Each should have "Write" permission (not "Admin" or "Read")</li>
+          <li>Status will show "Pending" until they accept the invitation</li>
+        </ol>
+        <div class="success">
+          <strong>✓ Checkpoint:</strong> 3 collaborators added to RevNova-Dev with Write access.
+        </div>
+      </div>
+    </section>
+
+    <!-- PART 6: VERIFY SETUP -->
+    <section class="card">
+      <h2><span class="step-number">6</span> Final Verification Checklist</h2>
+      
+      <p>Before ending your setup session, verify everything is configured correctly:</p>
+
+      <h3>RevNova-Dev Verification</h3>
+      <ul class="checklist">
+        <li>Repository exists at: https://github.com/naimishkathrani-web/RevNova-Dev</li>
+        <li>Repository name is exactly <code>RevNova-Dev</code></li>
+        <li>Repository is Public (not Private)</li>
+        <li>Branch protection rule exists for <code>main</code> branch</li>
+        <li>Branch protection requires 1 pull request approval</li>
+        <li>3 developers are added as collaborators with Write permission</li>
+      </ul>
+
+      <h3>RevNova-Test Verification</h3>
+      <ul class="checklist">
+        <li>Repository exists at: https://github.com/naimishkathrani-web/RevNova-Test</li>
+        <li>Repository name is exactly <code>RevNova-Test</code></li>
+        <li>Repository is Public</li>
+        <li>Branch protection rule exists for <code>main</code> branch</li>
+        <li>Branch protection requires 1 pull request approval</li>
+        <li>NO collaborators added (owner manages this repo)</li>
+      </ul>
+
+      <h3>Quick Link Test</h3>
+      <p>Click these links to verify they work:</p>
+      <ul>
+        <li><a href="https://github.com/naimishkathrani-web/RevNova-Dev" target="_blank">RevNova-Dev Repository</a></li>
+        <li><a href="https://github.com/naimishkathrani-web/RevNova-Test" target="_blank">RevNova-Test Repository</a></li>
+        <li><a href="https://github.com/naimishkathrani-web/RevNova-Dev/settings/branches" target="_blank">RevNova-Dev Branch Protection</a></li>
+        <li><a href="https://github.com/naimishkathrani-web/RevNova-Test/settings/branches" target="_blank">RevNova-Test Branch Protection</a></li>
+      </ul>
+    </section>
+
+    <!-- PART 7: PUSH INITIAL CODE -->
+    <section class="card">
+      <h2><span class="step-number">7</span> Push Initial Code to New Repositories</h2>
+      
+      <div class="warning">
+        <strong>Note:</strong> This step requires command-line access. If you don't have Git installed or don't have access to the local RevNovaRepository folder, skip this section and inform the owner to complete it.
+      </div>
+
+      <div class="step-card">
+        <h4>Step 7.1: Add Git Remotes (Command Line)</h4>
+        <p>If you have access to the local repository folder on the owner's machine:</p>
+        <pre>cd C:\Dev\RevNovaRepository
+
+# Add dev remote
+git remote add dev https://github.com/naimishkathrani-web/RevNova-Dev.git
+
+# Add test remote
+git remote add test https://github.com/naimishkathrani-web/RevNova-Test.git
+
+# Verify remotes
+git remote -v</pre>
+      </div>
+
+      <div class="step-card">
+        <h4>Step 7.2: Push Code to Dev and Test</h4>
+        <pre># Push to dev
+git push -u dev main
+
+# Push to test
+git push -u test main</pre>
+        <div class="success">
+          <strong>✓ Result:</strong> Both RevNova-Dev and RevNova-Test now contain the same code as Production.
+        </div>
+      </div>
+
+      <div class="step-card">
+        <h4>Alternative: Owner Can Push Later</h4>
+        <p>If you cannot access the command line, inform the owner to run these commands after you complete the setup:</p>
+        <pre>cd C:\Dev\RevNovaRepository
+git remote add dev https://github.com/naimishkathrani-web/RevNova-Dev.git
+git remote add test https://github.com/naimishkathrani-web/RevNova-Test.git
+git push -u dev main
+git push -u test main</pre>
+      </div>
+    </section>
+
+    <!-- COMPLETION -->
+    <section class="card">
+      <h2>✓ Setup Complete!</h2>
+      
+      <div class="success">
+        <strong>Congratulations!</strong> You have successfully set up the RevNova development and testing environments.
+      </div>
+
+      <h3>What You've Accomplished</h3>
+      <ul>
+        <li>✓ Created 2 new GitHub repositories (RevNova-Dev, RevNova-Test)</li>
+        <li>✓ Configured branch protection to enforce code review</li>
+        <li>✓ Added 3 developer collaborators to RevNova-Dev</li>
+        <li>✓ Verified all settings are correct</li>
+        <li>✓ (Optional) Pushed initial code to both repositories</li>
+      </ul>
+
+      <h3>Next Steps for the Owner</h3>
+      <p>Inform the owner that the repositories are ready. The owner should:</p>
+      <ol>
+        <li>Change their GitHub password (since you had temporary access)</li>
+        <li>Push code to the new repositories (if you couldn't complete Step 7)</li>
+        <li>Share the onboarding documentation with the 3 developers</li>
+        <li>Instruct developers to accept their collaboration invitations</li>
+        <li>Monitor the first few pull requests to ensure the workflow is smooth</li>
+      </ol>
+
+      <h3>Developer Onboarding Links</h3>
+      <p>Share these with the developers:</p>
+      <ul>
+        <li><a href="onboarding-overview.html">Project Overview & Environment Setup</a></li>
+        <li><a href="onboarding-dev1.html">Developer 1 Guide (Backend/Database)</a></li>
+        <li><a href="onboarding-dev2.html">Developer 2 Guide (Frontend/React)</a></li>
+        <li><a href="onboarding-dev3.html">Developer 3 Guide (DevOps/Queue/QA)</a></li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Troubleshooting</h2>
+      
+      <h3>Problem: Repository name is taken</h3>
+      <p><strong>Solution:</strong> If you see an error "Repository name already exists", contact the owner immediately. They may already have a repository with that name.</p>
+
+      <h3>Problem: Can't find "Add branch protection rule" button</h3>
+      <p><strong>Solution:</strong> Make sure you are in Settings → Branches. The button is below the "Default branch" section.</p>
+
+      <h3>Problem: Can't add collaborators</h3>
+      <p><strong>Solution:</strong> Ensure you are logged in as the owner (<code>naimishkathrani-web</code>). Only the owner can add collaborators.</p>
+
+      <h3>Problem: Developer usernames unknown</h3>
+      <p><strong>Solution:</strong> Ask the owner for the exact GitHub usernames before proceeding with Step 5.</p>
+
+      <h3>Problem: Git push fails with "repository not found"</h3>
+      <p><strong>Solution:</strong> Verify the repository URLs are correct and that you created the repositories in Step 1 and 2. The repositories must exist before you can push to them.</p>
+    </section>
+
+    <footer style="text-align:center; margin:3rem 0 2rem 0; color:#6c757d; font-size:0.9rem;">
+      <p>RevNova Repository Setup Guide — Version 1.0 — October 2025</p>
+    </footer>
+  </div>
+</body>
+</html>
