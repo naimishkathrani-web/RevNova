@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Dev1 Day 1: Workstation Setup - RevNova Onboarding</title>
+    <title>Day 2: Database Tables (STG1) - RevNova Onboarding</title>
     <link rel="stylesheet" href="../styles.css">
     <style>
         body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
@@ -64,6 +64,15 @@
             font-weight: 500;
         }
         
+        .sidebar ul ul {
+            padding-left: 0;
+        }
+        
+        .sidebar ul ul li a {
+            padding-left: 2.5rem;
+            font-size: 0.9rem;
+        }
+        
         .main-content {
             flex: 1;
             margin-left: 280px;
@@ -73,7 +82,7 @@
         }
         
         .day-header {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
             color: #fff;
             padding: 2rem;
             border-radius: 12px;
@@ -231,7 +240,6 @@
     </header>
 
     <div class="onboarding-layout">
-        <!-- Sidebar (same as onboarding-home.html) -->
         <aside class="sidebar">
             <h3>Getting Started</h3>
             <ul>
@@ -245,8 +253,8 @@
             <ul>
                 <li><a href="dev1-week1.html">Week 1: Setup & Database Foundation</a>
                     <ul>
-                        <li><a href="dev1-day01.html" class="active">Day 1: Workstation Setup</a></li>
-                        <li><a href="dev1-day02.html">Day 2: Database Tables (STG1)</a></li>
+                        <li><a href="dev1-day01.html">Day 1: Workstation Setup</a></li>
+                        <li><a href="dev1-day02.html" class="active">Day 2: Database Tables (STG1)</a></li>
                         <li><a href="dev1-day03.html">Day 3: Database Tables (STG2)</a></li>
                         <li><a href="dev1-day04.html">Day 4: Database Tables (EAV)</a></li>
                         <li><a href="dev1-day05.html">Day 5: First API Endpoint</a></li>
@@ -259,179 +267,140 @@
             </ul>
         </aside>
 
-        <!-- Main Content -->
         <main class="main-content">
             <div class="day-header">
-                <h1>Day 1: Workstation Setup</h1>
+                <h1>Day 2: Database Tables (STG1)</h1>
                 <p>Developer 1 - Backend & Database | Duration: ~6-8 hours</p>
             </div>
 
             <div class="step-card">
-                <h2><span class="step-number">1</span> Install Node.js</h2>
-                <p><strong>What you need to do:</strong> Download and install Node.js version 20</p>
+                <h2><span class="step-number">1</span> Understand the Database Strategy</h2>
+                <p><strong>What you need to do:</strong> Learn why we have 3 types of tables</p>
                 
+                <p><strong>RevNova uses 3 table types:</strong></p>
                 <ol>
-                    <li>Go to <a href="https://nodejs.org" target="_blank">https://nodejs.org</a></li>
-                    <li>Click "Download Node.js (LTS)" - get version 20.x</li>
-                    <li>Run the installer</li>
-                    <li>Click "Next" through all steps (keep default settings)</li>
-                    <li>Wait for installation to finish</li>
+                    <li><strong>STG1 Tables</strong> - Stores raw data exactly as it comes from Salesforce (what you'll build today)</li>
+                    <li><strong>STG2 Tables</strong> - Stores normalized/cleaned data (Day 3)</li>
+                    <li><strong>EAV Tables</strong> - Stores custom fields that users add (Day 4)</li>
                 </ol>
                 
-                <p><strong>Check if it worked:</strong></p>
-                <div class="command-box">node --version<br>npm --version</div>
-                
-                <p>You should see version numbers like:</p>
-                <div class="command-box">v20.x.x<br>10.x.x</div>
-                
                 <div class="tip-box">
-                    <strong>💡 Tip:</strong> If you see "command not found", close and reopen your terminal (PowerShell or Command Prompt)
+                    <strong>💡 Why 3 tables?</strong> STG1 keeps original data safe. STG2 has cleaned data for migration. EAV handles custom fields dynamically.
                 </div>
             </div>
 
             <div class="step-card">
-                <h2><span class="step-number">2</span> Install Git</h2>
-                <p><strong>What you need to do:</strong> Install Git to download and manage code</p>
+                <h2><span class="step-number">2</span> Install PostgreSQL</h2>
+                <p><strong>What you need to do:</strong> Install the database on your computer</p>
                 
                 <ol>
-                    <li>Go to <a href="https://git-scm.com/download/win" target="_blank">https://git-scm.com/download/win</a></li>
-                    <li>Download the installer</li>
+                    <li>Go to <a href="https://www.postgresql.org/download/windows/" target="_blank">https://www.postgresql.org/download/windows/</a></li>
+                    <li>Download PostgreSQL 15 or 16</li>
                     <li>Run the installer</li>
-                    <li>Click "Next" through all steps (keep default settings)</li>
+                    <li>Set password as: <code>postgres</code> (write this down!)</li>
+                    <li>Keep default port: <code>5432</code></li>
+                    <li>Click "Next" through remaining steps</li>
                 </ol>
                 
-                <p><strong>Check if it worked:</strong></p>
-                <div class="command-box">git --version</div>
-                
-                <p>You should see something like:</p>
-                <div class="command-box">git version 2.x.x</div>
-            </div>
-
-            <div class="step-card">
-                <h2><span class="step-number">3</span> Install VS Code</h2>
-                <p><strong>What you need to do:</strong> Install Visual Studio Code (your code editor)</p>
-                
-                <ol>
-                    <li>Go to <a href="https://code.visualstudio.com" target="_blank">https://code.visualstudio.com</a></li>
-                    <li>Click "Download for Windows"</li>
-                    <li>Run the installer</li>
-                    <li>✅ Check "Add to PATH" during installation</li>
-                    <li>✅ Check "Create Desktop Icon"</li>
-                    <li>Click "Install"</li>
-                </ol>
-                
-                <p><strong>Open VS Code:</strong> Double-click the VS Code icon on your desktop</p>
-            </div>
-
-            <div class="step-card">
-                <h2><span class="step-number">4</span> Install VS Code Extensions</h2>
-                <p><strong>What you need to do:</strong> Add helpful tools to VS Code</p>
-                
-                <ol>
-                    <li>Open VS Code</li>
-                    <li>Click the Extensions icon on the left sidebar (looks like 4 squares)</li>
-                    <li>Search for and install these extensions (click "Install" button for each):</li>
-                </ol>
-                
-                <ul class="checklist">
-                    <li>GitHub Copilot</li>
-                    <li>GitHub Copilot Chat</li>
-                    <li>ESLint</li>
-                    <li>Prettier - Code formatter</li>
-                    <li>GitLens</li>
-                    <li>PostgreSQL (by Chris Kolkman)</li>
-                    <li>Thunder Client (for testing APIs)</li>
-                </ul>
-                
-                <div class="tip-box">
-                    <strong>💡 Tip:</strong> After installing each extension, you'll see a "Reload" or "Restart" button. Click it after installing all extensions.
-                </div>
-            </div>
-
-            <div class="step-card">
-                <h2><span class="step-number">5</span> Clone the Repository</h2>
-                <p><strong>What you need to do:</strong> Download the RevNova code to your computer</p>
-                
-                <ol>
-                    <li>Open VS Code</li>
-                    <li>Press <code>Ctrl+`</code> (backtick) to open the terminal inside VS Code</li>
-                    <li>Type this command and press Enter:</li>
-                </ol>
-                
-                <div class="command-box">cd C:\Dev</div>
-                
-                <p>If you see "cannot find the path", create the folder first:</p>
-                <div class="command-box">mkdir C:\Dev<br>cd C:\Dev</div>
-                
-                <p>Now clone the repository:</p>
-                <div class="command-box">git clone https://github.com/naimishkathrani-web/RevNova-Dev.git RevNovaRepository</div>
-                
-                <p>This will download all the code. Wait for it to finish (might take 1-2 minutes).</p>
-                
-                <p><strong>Open the project:</strong></p>
-                <ol>
-                    <li>In VS Code, click File → Open Folder</li>
-                    <li>Navigate to <code>C:\Dev\RevNovaRepository</code></li>
-                    <li>Click "Select Folder"</li>
-                </ol>
-            </div>
-
-            <div class="step-card">
-                <h2><span class="step-number">6</span> Install Project Dependencies</h2>
-                <p><strong>What you need to do:</strong> Install all the libraries that RevNova needs</p>
-                
-                <p>In the VS Code terminal, type:</p>
-                <div class="command-box">cd backend<br>npm install</div>
-                
-                <p>This will download all the required packages. It might take 3-5 minutes. You'll see lots of text scrolling - that's normal!</p>
-                
-                <div class="tip-box">
-                    <strong>💡 Tip:</strong> If you see any warnings (yellow text), that's okay. Only worry about errors (red text).
-                </div>
-                
-                <p>Wait until you see something like:</p>
-                <div class="command-box">added 847 packages in 4m</div>
-            </div>
-
-            <div class="step-card">
-                <h2><span class="step-number">7</span> Verify Everything Works</h2>
-                <p><strong>Final check:</strong> Make sure everything is installed correctly</p>
-                
-                <ul class="checklist">
-                    <li>Node.js installed (run: <code>node --version</code>)</li>
-                    <li>Git installed (run: <code>git --version</code>)</li>
-                    <li>VS Code open with RevNova project</li>
-                    <li>Extensions installed (check Extensions panel in VS Code)</li>
-                    <li>Repository cloned (you can see folders like "backend", "frontend", "docs")</li>
-                    <li>Backend dependencies installed (you have a "node_modules" folder in backend)</li>
-                </ul>
-                
-                <p><strong>Test that backend runs:</strong></p>
-                <div class="command-box">npm run dev</div>
+                <p><strong>Check if it installed:</strong></p>
+                <div class="command-box">psql --version</div>
                 
                 <p>You should see:</p>
-                <div class="command-box">Server running on port 3000</div>
-                
-                <p>Press <code>Ctrl+C</code> to stop the server.</p>
+                <div class="command-box">psql (PostgreSQL) 15.x</div>
             </div>
 
             <div class="step-card">
-                <h2>✅ Day 1 Complete!</h2>
-                <p>Great job! You now have:</p>
-                <ul>
-                    <li>✅ Node.js, Git, and VS Code installed</li>
-                    <li>✅ All VS Code extensions ready to use</li>
-                    <li>✅ RevNova code downloaded</li>
-                    <li>✅ Backend dependencies installed</li>
-                </ul>
+                <h2><span class="step-number">3</span> Create RevNova Database</h2>
+                <p><strong>What you need to do:</strong> Create a new database for our project</p>
                 
-                <p><strong>Tomorrow (Day 2):</strong> You'll create your first database tables!</p>
+                <p>Open terminal in VS Code and type:</p>
+                <div class="command-box">psql -U postgres</div>
+                
+                <p>When it asks for password, type: <code>postgres</code></p>
+                
+                <p>Now create the database:</p>
+                <div class="command-box">CREATE DATABASE revnova_dev;<br>\l</div>
+                
+                <p>You should see <code>revnova_dev</code> in the list. Type <code>\q</code> to exit.</p>
             </div>
 
-            <!-- Navigation Buttons -->
+            <div class="step-card">
+                <h2><span class="step-number">4</span> Create Migration File for STG1 Table</h2>
+                <p><strong>What you need to do:</strong> Create a file that will build the STG1 table</p>
+                
+                <p>In VS Code, create this file:</p>
+                <p><strong>Location:</strong> <code>backend/src/database/migrations/001_create_stg1_table.sql</code></p>
+                
+                <p>Copy and paste this code:</p>
+                <div class="command-box">-- STG1: Raw data staging table
+CREATE TABLE IF NOT EXISTS stg1_raw_data (
+    id SERIAL PRIMARY KEY,
+    migration_id VARCHAR(50) NOT NULL,
+    source_system VARCHAR(50) NOT NULL DEFAULT 'SFDC',
+    object_name VARCHAR(100) NOT NULL,
+    record_id VARCHAR(50) NOT NULL,
+    raw_data JSONB NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Indexes for faster queries
+CREATE INDEX idx_stg1_migration ON stg1_raw_data(migration_id);
+CREATE INDEX idx_stg1_object ON stg1_raw_data(object_name);
+CREATE INDEX idx_stg1_record ON stg1_raw_data(record_id);</div>
+                
+                <div class="tip-box">
+                    <strong>💡 What does this do?</strong> Creates a table that stores raw Salesforce data in JSON format. The indexes make searching faster.
+                </div>
+            </div>
+
+            <div class="step-card">
+                <h2><span class="step-number">5</span> Run the Migration</h2>
+                <p><strong>What you need to do:</strong> Execute the SQL file to create the table</p>
+                
+                <p>Run this command in terminal:</p>
+                <div class="command-box">psql -U postgres -d revnova_dev -f backend/src/database/migrations/001_create_stg1_table.sql</div>
+                
+                <p><strong>Check if it worked:</strong></p>
+                <div class="command-box">psql -U postgres -d revnova_dev -c "\dt"</div>
+                
+                <p>You should see <code>stg1_raw_data</code> table in the list!</p>
+            </div>
+
+            <div class="step-card">
+                <h2><span class="step-number">6</span> Test the Table</h2>
+                <p><strong>What you need to do:</strong> Insert sample data to verify table works</p>
+                
+                <p>Connect to database:</p>
+                <div class="command-box">psql -U postgres -d revnova_dev</div>
+                
+                <p>Insert test data:</p>
+                <div class="command-box">INSERT INTO stg1_raw_data (migration_id, source_system, object_name, record_id, raw_data) 
+VALUES ('TEST001', 'SFDC', 'Quote', 'Q001', '{"name": "Test Quote", "amount": 5000}');</div>
+                
+                <p>Query the data:</p>
+                <div class="command-box">SELECT * FROM stg1_raw_data;</div>
+                
+                <p>You should see your test record! Type <code>\q</code> to exit.</p>
+            </div>
+
+            <div class="step-card">
+                <h2>✅ Day 2 Complete!</h2>
+                <p>Great job! You now have:</p>
+                <ul class="checklist">
+                    <li>PostgreSQL installed and running</li>
+                    <li>revnova_dev database created</li>
+                    <li>Migration file created (001_create_stg1_table.sql)</li>
+                    <li>STG1 table created successfully</li>
+                    <li>Test data inserted and queried</li>
+                </ul>
+                
+                <p><strong>Tomorrow:</strong> You'll create STG2 tables for normalized data!</p>
+            </div>
+
             <div class="nav-buttons">
-                <a href="onboarding-home.html" class="nav-btn back">← Back to Home</a>
-                <a href="dev1-day02.html" class="nav-btn next">Next: Day 2 - Database Tables →</a>
+                <a href="dev1-day01.html" class="nav-btn back">← Day 1</a>
+                <a href="dev1-day03.html" class="nav-btn next">Next: Day 3 →</a>
             </div>
         </main>
     </div>
