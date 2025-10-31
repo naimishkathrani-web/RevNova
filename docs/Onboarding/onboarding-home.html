@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>RevNova Developer Onboarding</title>
+    <title>RevNova Developer Onboarding - Step by Step Guide</title>
     <link rel="stylesheet" href="../styles.css">
     <style>
         body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
@@ -64,6 +64,15 @@
             font-weight: 500;
         }
         
+        .sidebar ul ul {
+            padding-left: 0;
+        }
+        
+        .sidebar ul ul li a {
+            padding-left: 2.5rem;
+            font-size: 0.9rem;
+        }
+        
         .main-content {
             flex: 1;
             margin-left: 280px;
@@ -87,7 +96,7 @@
         
         .hero p {
             margin: 0;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             opacity: 0.95;
         }
         
@@ -104,86 +113,65 @@
             margin: 0 0 1rem 0;
         }
         
-        .card h3 {
-            color: #764ba2;
-            margin: 1.5rem 0 0.75rem 0;
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #0066cc;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 4px;
         }
         
-        .timeline-grid {
+        .dev-cards {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 1.5rem;
             margin: 2rem 0;
         }
         
-        .timeline-card {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            border-left: 4px solid #667eea;
-            padding: 1.5rem;
-            border-radius: 8px;
+        .dev-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: #fff;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
         }
         
-        .timeline-card h4 {
-            color: #667eea;
+        .dev-card.dev1 {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .dev-card.dev2 {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+        
+        .dev-card.dev3 {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+        
+        .dev-card h3 {
             margin: 0 0 0.5rem 0;
+            font-size: 1.5rem;
         }
         
-        .timeline-card .week-range {
-            font-size: 0.9rem;
-            color: #666;
-            margin-bottom: 1rem;
+        .dev-card p {
+            margin: 0.5rem 0;
+            opacity: 0.95;
         }
         
-        .timeline-card ul {
-            margin: 0;
-            padding-left: 1.25rem;
-            line-height: 1.8;
+        .dev-card .btn {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.75rem 1.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s;
         }
         
-        .info-box {
-            background: #d1ecf1;
-            border: 1px solid #17a2b8;
-            padding: 1rem 1.25rem;
-            border-radius: 8px;
-            margin: 1rem 0;
-        }
-        
-        .warning-box {
-            background: #fff3cd;
-            border: 1px solid #ffc107;
-            padding: 1rem 1.25rem;
-            border-radius: 8px;
-            margin: 1rem 0;
-        }
-        
-        .success-box {
-            background: #d4edda;
-            border: 1px solid #28a745;
-            padding: 1rem 1.25rem;
-            border-radius: 8px;
-            margin: 1rem 0;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 1.5rem 0;
-        }
-        
-        table th, table td {
-            border: 1px solid #dee2e6;
-            padding: 0.75rem;
-            text-align: left;
-        }
-        
-        table th {
-            background: #f8f9fa;
-            font-weight: 600;
-            color: #667eea;
-        }
-        
-        table tr:hover {
-            background: #f8f9fa;
+        .dev-card .btn:hover {
+            background: rgba(255, 255, 255, 0.3);
         }
         
         @media (max-width: 768px) {
@@ -193,10 +181,6 @@
             
             .main-content {
                 margin-left: 0;
-            }
-            
-            .timeline-grid {
-                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -235,271 +219,223 @@
                 <li><a href="repo-setup-guide.html">Automated Setup Guide</a></li>
             </ul>
             
-            <h3>Developer Guides</h3>
+            <h3>Developer 1: Backend & Database</h3>
             <ul>
-                <li><a href="onboarding-dev1.html">Developer 1: Backend & Database</a></li>
-                <li><a href="onboarding-dev2.html">Developer 2: Frontend & React</a></li>
-                <li><a href="onboarding-dev3.html">Developer 3: DevOps & QA</a></li>
+                <li><a href="dev1-week1.html">Week 1: Setup & Database Foundation</a>
+                    <ul>
+                        <li><a href="dev1-day01.html">Day 1: Workstation Setup</a></li>
+                        <li><a href="dev1-day02.html">Day 2: Database Tables (STG1)</a></li>
+                        <li><a href="dev1-day03.html">Day 3: Database Tables (STG2)</a></li>
+                        <li><a href="dev1-day04.html">Day 4: Database Tables (EAV)</a></li>
+                        <li><a href="dev1-day05.html">Day 5: First API Endpoint</a></li>
+                    </ul>
+                </li>
+                <li><a href="dev1-week2.html">Week 2: Schema Analysis APIs</a>
+                    <ul>
+                        <li><a href="dev1-day06.html">Day 6: Schema Analysis API (Part 1)</a></li>
+                        <li><a href="dev1-day07.html">Day 7: Schema Analysis API (Part 2)</a></li>
+                        <li><a href="dev1-day08.html">Day 8: Metadata Extraction</a></li>
+                        <li><a href="dev1-day09.html">Day 9: Relationship Detection</a></li>
+                        <li><a href="dev1-day10.html">Day 10: Week 2 Testing & PR</a></li>
+                    </ul>
+                </li>
+                <li><a href="dev1-week3.html">Week 3: Field Mapping & AI</a>
+                    <ul>
+                        <li><a href="dev1-day11.html">Day 11: Field Mapping API (Part 1)</a></li>
+                        <li><a href="dev1-day12.html">Day 12: Field Mapping API (Part 2)</a></li>
+                        <li><a href="dev1-day13.html">Day 13: AI Mapping Integration</a></li>
+                        <li><a href="dev1-day14.html">Day 14: Mapping Validation</a></li>
+                        <li><a href="dev1-day15.html">Day 15: Week 3 Testing & PR</a></li>
+                    </ul>
+                </li>
+                <li><a href="dev1-week4.html">Week 4: Data Transformation & Queue</a>
+                    <ul>
+                        <li><a href="dev1-day16.html">Day 16: Transformation API (Part 1)</a></li>
+                        <li><a href="dev1-day17.html">Day 17: Transformation API (Part 2)</a></li>
+                        <li><a href="dev1-day18.html">Day 18: Bull Queue Setup</a></li>
+                        <li><a href="dev1-day19.html">Day 19: ETL Job Processing</a></li>
+                        <li><a href="dev1-day20.html">Day 20: Week 4 Testing & PR</a></li>
+                    </ul>
+                </li>
+                <li><a href="dev1-week5.html">Week 5: Migration Execution & Testing</a>
+                    <ul>
+                        <li><a href="dev1-day21.html">Day 21: Migration Execution API</a></li>
+                        <li><a href="dev1-day22.html">Day 22: Error Handling & Rollback</a></li>
+                        <li><a href="dev1-day23.html">Day 23: Testing Reports API</a></li>
+                        <li><a href="dev1-day24.html">Day 24: Integration Testing</a></li>
+                        <li><a href="dev1-day25.html">Day 25: Final Testing & Documentation</a></li>
+                    </ul>
+                </li>
             </ul>
             
-            <h3>8-Week Timeline</h3>
+            <h3>Developer 2: Frontend & React</h3>
             <ul>
-                <li><a href="#timeline">Project Timeline</a></li>
-                <li><a href="#phase1">Phase 1: SFDC CPQ Migration (Weeks 1-5)</a></li>
-                <li><a href="#phase2">Phase 2: AI Configuration (Weeks 6-8)</a></li>
+                <li><a href="dev2-week1.html">Week 1: React Setup & Components</a>
+                    <ul>
+                        <li><a href="dev2-day01.html">Day 1: React Setup</a></li>
+                        <li><a href="dev2-day02.html">Day 2: Component Library</a></li>
+                        <li><a href="dev2-day03.html">Day 3: Wizard Layout & Routing</a></li>
+                        <li><a href="dev2-day04.html">Day 4: State Management</a></li>
+                        <li><a href="dev2-day05.html">Day 5: API Client & Week 1 PR</a></li>
+                    </ul>
+                </li>
+                <li><a href="dev2-week2.html">Week 2: Connection Wizard Page</a>
+                    <ul>
+                        <li><a href="dev2-day06.html">Day 6: Connection Form UI</a></li>
+                        <li><a href="dev2-day07.html">Day 7: OAuth Integration</a></li>
+                        <li><a href="dev2-day08.html">Day 8: Connection Testing</a></li>
+                        <li><a href="dev2-day09.html">Day 9: Error Handling</a></li>
+                        <li><a href="dev2-day10.html">Day 10: Week 2 Testing & PR</a></li>
+                    </ul>
+                </li>
+                <li><a href="dev2-week3.html">Week 3: Field Mapping UI</a>
+                    <ul>
+                        <li><a href="dev2-day11.html">Day 11: Mapping Table UI</a></li>
+                        <li><a href="dev2-day12.html">Day 12: AI Suggestions Display</a></li>
+                        <li><a href="dev2-day13.html">Day 13: Drag & Drop Mapping</a></li>
+                        <li><a href="dev2-day14.html">Day 14: Bulk Operations</a></li>
+                        <li><a href="dev2-day15.html">Day 15: Week 3 Testing & PR</a></li>
+                    </ul>
+                </li>
+                <li><a href="dev2-week4.html">Week 4: Transformation & Validation UI</a>
+                    <ul>
+                        <li><a href="dev2-day16.html">Day 16: Transformation Preview UI</a></li>
+                        <li><a href="dev2-day17.html">Day 17: Data Tables & Pagination</a></li>
+                        <li><a href="dev2-day18.html">Day 18: Validation Results Display</a></li>
+                        <li><a href="dev2-day19.html">Day 19: Error Display</a></li>
+                        <li><a href="dev2-day20.html">Day 20: Week 4 Testing & PR</a></li>
+                    </ul>
+                </li>
+                <li><a href="dev2-week5.html">Week 5: Execution & Test Reports</a>
+                    <ul>
+                        <li><a href="dev2-day21.html">Day 21: Execution Progress UI</a></li>
+                        <li><a href="dev2-day22.html">Day 22: Real-time Updates</a></li>
+                        <li><a href="dev2-day23.html">Day 23: Test Reports & Comparison</a></li>
+                        <li><a href="dev2-day24.html">Day 24: Export & UI Testing</a></li>
+                        <li><a href="dev2-day25.html">Day 25: Final Polish & Documentation</a></li>
+                    </ul>
+                </li>
             </ul>
             
-            <h3>Development Workflows</h3>
+            <h3>Developer 3: DevOps & QA</h3>
             <ul>
-                <li><a href="#vscode">VS Code Setup & Extensions</a></li>
-                <li><a href="#copilot">GitHub Copilot Usage</a></li>
-                <li><a href="#git">Git Workflow & PRs</a></li>
-                <li><a href="#testing">Unit & Integration Testing</a></li>
-            </ul>
-            
-            <h3>Page Assignments</h3>
-            <ul>
-                <li><a href="#page-assignments">Phase 1 Pages</a></li>
-                <li><a href="#phase2-pages">Phase 2 Pages</a></li>
+                <li><a href="dev3-week1.html">Week 1: CI/CD Pipeline & Docker</a>
+                    <ul>
+                        <li><a href="dev3-day01.html">Day 1: GitHub Actions Setup</a></li>
+                        <li><a href="dev3-day02.html">Day 2: CI Pipeline (Lint & Test)</a></li>
+                        <li><a href="dev3-day03.html">Day 3: Docker for Backend</a></li>
+                        <li><a href="dev3-day04.html">Day 4: Docker for Frontend</a></li>
+                        <li><a href="dev3-day05.html">Day 5: Code Coverage & Week 1 PR</a></li>
+                    </ul>
+                </li>
+                <li><a href="dev3-week2.html">Week 2: Local Dev Environment</a>
+                    <ul>
+                        <li><a href="dev3-day06.html">Day 6: Docker Compose Setup</a></li>
+                        <li><a href="dev3-day07.html">Day 7: PostgreSQL & Redis</a></li>
+                        <li><a href="dev3-day08.html">Day 8: Database Migrations</a></li>
+                        <li><a href="dev3-day09.html">Day 9: Seed Data Scripts</a></li>
+                        <li><a href="dev3-day10.html">Day 10: Bull Queue & Week 2 PR</a></li>
+                    </ul>
+                </li>
+                <li><a href="dev3-week3.html">Week 3: Integration & E2E Testing</a>
+                    <ul>
+                        <li><a href="dev3-day11.html">Day 11: API Integration Tests (Part 1)</a></li>
+                        <li><a href="dev3-day12.html">Day 12: API Integration Tests (Part 2)</a></li>
+                        <li><a href="dev3-day13.html">Day 13: Test Database Setup</a></li>
+                        <li><a href="dev3-day14.html">Day 14: Playwright Setup</a></li>
+                        <li><a href="dev3-day15.html">Day 15: E2E Tests & Week 3 PR</a></li>
+                    </ul>
+                </li>
+                <li><a href="dev3-week4.html">Week 4: Deployment Automation</a>
+                    <ul>
+                        <li><a href="dev3-day16.html">Day 16: Deploy to Dev Workflow</a></li>
+                        <li><a href="dev3-day17.html">Day 17: Secrets Management</a></li>
+                        <li><a href="dev3-day18.html">Day 18: Health Checks</a></li>
+                        <li><a href="dev3-day19.html">Day 19: Deploy to Test Workflow</a></li>
+                        <li><a href="dev3-day20.html">Day 20: Week 4 Testing & PR</a></li>
+                    </ul>
+                </li>
+                <li><a href="dev3-week5.html">Week 5: Production Ready & Testing</a>
+                    <ul>
+                        <li><a href="dev3-day21.html">Day 21: Smoke Tests</a></li>
+                        <li><a href="dev3-day22.html">Day 22: Environment Promotion</a></li>
+                        <li><a href="dev3-day23.html">Day 23: Rollback Procedures</a></li>
+                        <li><a href="dev3-day24.html">Day 24: Full System Testing</a></li>
+                        <li><a href="dev3-day25.html">Day 25: Documentation & Handoff</a></li>
+                    </ul>
+                </li>
             </ul>
         </aside>
 
         <!-- Main Content -->
         <main class="main-content">
             <div class="hero">
-                <h1>RevNova Developer Onboarding</h1>
-                <p>8-week development plan to complete Phase 1 (SFDC CPQ Migration) and Phase 2 (AI Configuration) by end of December</p>
+                <h1>Welcome to RevNova!</h1>
+                <p>Your step-by-step guide to building the RevNova migration platform</p>
             </div>
 
             <section class="card">
-                <h2>Welcome to the RevNova Team!</h2>
-                <p>This comprehensive onboarding guide will help you get started with the RevNova platform development. We have an ambitious goal: <strong>complete Phase 1 and Phase 2 development in 8 weeks (by December 31, 2025)</strong>.</p>
+                <h2>Getting Started</h2>
+                <p>Welcome to the team! This onboarding guide will take you through <strong>everything you need to do, day by day</strong>, to build the RevNova platform.</p>
                 
                 <div class="info-box">
-                    <strong>Target Completion:</strong> December 31, 2025<br>
-                    <strong>Duration:</strong> 8 weeks (November 4 - December 27, 2025)<br>
-                    <strong>Team Size:</strong> 3 developers<br>
-                    <strong>Scope:</strong> Phase 1 (7 migration pages) + Phase 2 (6 AI configuration pages)
+                    <strong>📅 Project Duration:</strong> 25 working days (5 weeks)<br>
+                    <strong>🎯 Goal:</strong> Build Phase 1 - SFDC CPQ Migration wizard<br>
+                    <strong>👥 Team:</strong> 3 developers working together<br>
+                    <strong>📚 Approach:</strong> Follow daily step-by-step instructions
                 </div>
+                
+                <h3>How to Use This Guide</h3>
+                <ol>
+                    <li><strong>Pick your role:</strong> Backend, Frontend, or DevOps</li>
+                    <li><strong>Follow the days:</strong> Start with Day 1 and work through each day in order</li>
+                    <li><strong>Complete each step:</strong> Every day has clear tasks - just follow them</li>
+                    <li><strong>Use the buttons:</strong> Click "Next" at the bottom of each page to continue</li>
+                    <li><strong>Ask for help:</strong> If you're stuck, ask your team or team lead</li>
+                </ol>
             </section>
 
-            <section class="card" id="timeline">
-                <h2>8-Week Development Timeline</h2>
+            <section class="card">
+                <h2>Choose Your Role</h2>
+                <p>Select your developer role to start your onboarding journey:</p>
                 
-                <div class="timeline-grid">
-                    <div class="timeline-card">
-                        <h4>Week 1: Setup & Foundation</h4>
-                        <div class="week-range">Nov 4-8, 2025</div>
-                        <ul>
-                            <li>Environment setup (all devs)</li>
-                            <li>Repository access & cloning</li>
-                            <li>Database schema creation</li>
-                            <li>Project structure setup</li>
-                            <li>First PRs merged</li>
-                        </ul>
+                <div class="dev-cards">
+                    <div class="dev-card dev1">
+                        <h3>Developer 1</h3>
+                        <p><strong>Backend & Database</strong></p>
+                        <p>Build APIs, database schemas, and business logic</p>
+                        <p>Technologies: Node.js, PostgreSQL, TypeScript</p>
+                        <a href="dev1-day01.html" class="btn">Start Day 1 →</a>
                     </div>
-
-                    <div class="timeline-card">
-                        <h4>Week 2-3: Phase 1 Core Pages</h4>
-                        <div class="week-range">Nov 11-22, 2025</div>
-                        <ul>
-                            <li>Connection Wizard (Dev2)</li>
-                            <li>Schema Analysis (Dev1)</li>
-                            <li>Field Mapping (Dev2)</li>
-                            <li>Backend APIs (Dev1)</li>
-                            <li>CI/CD pipeline (Dev3)</li>
-                        </ul>
+                    
+                    <div class="dev-card dev2">
+                        <h3>Developer 2</h3>
+                        <p><strong>Frontend & React</strong></p>
+                        <p>Build user interfaces and wizard pages</p>
+                        <p>Technologies: React, TypeScript, TailwindCSS</p>
+                        <a href="dev2-day01.html" class="btn">Start Day 1 →</a>
                     </div>
-
-                    <div class="timeline-card">
-                        <h4>Week 4-5: Phase 1 Completion</h4>
-                        <div class="week-range">Nov 25-Dec 6, 2025</div>
-                        <ul>
-                            <li>Data Transformation (Dev1 & Dev2)</li>
-                            <li>Validation Engine (Dev1)</li>
-                            <li>Migration Execution (Dev1)</li>
-                            <li>Post-Migration Testing (Dev2)</li>
-                            <li>Integration testing (Dev3)</li>
-                        </ul>
+                    
+                    <div class="dev-card dev3">
+                        <h3>Developer 3</h3>
+                        <p><strong>DevOps & QA</strong></p>
+                        <p>Set up CI/CD, Docker, and testing automation</p>
+                        <p>Technologies: GitHub Actions, Docker, Playwright</p>
+                        <a href="dev3-day01.html" class="btn">Start Day 1 →</a>
                     </div>
-
-                    <div class="timeline-card">
-                        <h4>Week 6-7: Phase 2 AI Features</h4>
-                        <div class="week-range">Dec 9-20, 2025</div>
-                        <ul>
-                            <li>Generate with AI (Dev2)</li>
-                            <li>Modify with AI (Dev2)</li>
-                            <li>Planning Generators (Dev1)</li>
-                            <li>AI Engine Integration (Dev1)</li>
-                            <li>Queue system (Dev3)</li>
-                        </ul>
-                    </div>
-
-                    <div class="timeline-card">
-                        <h4>Week 8: Final Testing & Deployment</h4>
-                        <div class="week-range">Dec 23-27, 2025</div>
-                        <ul>
-                            <li>End-to-end testing (all devs)</li>
-                            <li>Performance optimization</li>
-                            <li>Bug fixes & polish</li>
-                            <li>Documentation updates</li>
-                            <li>Production deployment prep</li>
-                        </ul>
-                    </div>
-                </div>
-            </section>
-
-            <section class="card" id="phase1">
-                <h2>Phase 1: SFDC CPQ → Revenue Cloud Migration (Weeks 1-5)</h2>
-                <p><strong>Goal:</strong> Build complete 7-step wizard for automated migration</p>
-                
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Page/Feature</th>
-                            <th>Assigned To</th>
-                            <th>Week</th>
-                            <th>Est. Effort</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>1. Connection Wizard</strong><br>OAuth, org connection, sandbox/prod</td>
-                            <td>Dev 2 (Frontend)</td>
-                            <td>Week 2</td>
-                            <td>5 days</td>
-                        </tr>
-                        <tr>
-                            <td><strong>2. Schema Analysis</strong><br>Metadata extraction, object analysis</td>
-                            <td>Dev 1 (Backend)</td>
-                            <td>Week 2-3</td>
-                            <td>6 days</td>
-                        </tr>
-                        <tr>
-                            <td><strong>3. Field Mapping</strong><br>AI suggestions, manual mapping UI</td>
-                            <td>Dev 2 (Frontend)</td>
-                            <td>Week 3</td>
-                            <td>7 days</td>
-                        </tr>
-                        <tr>
-                            <td><strong>4. Data Transformation</strong><br>ETL pipeline, staging database</td>
-                            <td>Dev 1 (Backend)</td>
-                            <td>Week 4</td>
-                            <td>6 days</td>
-                        </tr>
-                        <tr>
-                            <td><strong>5. Validation</strong><br>Pre-flight checks, error detection</td>
-                            <td>Dev 1 (Backend)</td>
-                            <td>Week 4</td>
-                            <td>4 days</td>
-                        </tr>
-                        <tr>
-                            <td><strong>6. Migration Execution</strong><br>Batch processing, progress tracking</td>
-                            <td>Dev 1 (Backend)</td>
-                            <td>Week 5</td>
-                            <td>5 days</td>
-                        </tr>
-                        <tr>
-                            <td><strong>7. Post-Migration Testing</strong><br>Verification reports, rollback</td>
-                            <td>Dev 2 (Frontend) + Dev 3 (Testing)</td>
-                            <td>Week 5</td>
-                            <td>4 days</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </section>
-
-            <section class="card" id="phase2">
-                <h2>Phase 2: AI Product Configuration (Weeks 6-8)</h2>
-                <p><strong>Goal:</strong> Build AI-powered configuration and planning tools</p>
-                
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Page/Feature</th>
-                            <th>Assigned To</th>
-                            <th>Week</th>
-                            <th>Est. Effort</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>Generate with AI</strong><br>Product config generator</td>
-                            <td>Dev 2 (Frontend) + Dev 1 (AI API)</td>
-                            <td>Week 6</td>
-                            <td>4 days</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Modify with AI</strong><br>AI-assisted editing</td>
-                            <td>Dev 2 (Frontend)</td>
-                            <td>Week 6</td>
-                            <td>3 days</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Adopt AI Suggestions</strong><br>Review & apply recommendations</td>
-                            <td>Dev 2 (Frontend)</td>
-                            <td>Week 7</td>
-                            <td>3 days</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Planning Generators</strong><br>Migration plan creation</td>
-                            <td>Dev 1 (Backend AI)</td>
-                            <td>Week 7</td>
-                            <td>4 days</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Impact Analyzer</strong><br>Change impact assessment</td>
-                            <td>Dev 1 (Backend)</td>
-                            <td>Week 7</td>
-                            <td>3 days</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Budget Calculator</strong><br>Cost estimation tool</td>
-                            <td>Dev 2 (Frontend) + Dev 1 (Backend)</td>
-                            <td>Week 7</td>
-                            <td>3 days</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </section>
-
-            <section class="card" id="vscode">
-                <h2>Development Workflow Overview</h2>
-                
-                <h3>VS Code Setup & Extensions</h3>
-                <p>Each developer will use these essential extensions:</p>
-                <ul>
-                    <li><strong>GitHub Copilot</strong> - AI pair programmer (inline suggestions)</li>
-                    <li><strong>GitHub Copilot Chat</strong> - Conversational AI help</li>
-                    <li><strong>ESLint</strong> - JavaScript/TypeScript linting</li>
-                    <li><strong>Prettier</strong> - Code formatting</li>
-                    <li><strong>GitLens</strong> - Advanced Git integration</li>
-                    <li><strong>Tailwind CSS IntelliSense</strong> - CSS autocomplete (Dev2)</li>
-                    <li><strong>Thunder Client / REST Client</strong> - API testing (Dev1)</li>
-                    <li><strong>Docker</strong> - Container management (Dev3)</li>
-                </ul>
-                
-                <div class="success-box">
-                    <strong>See individual developer guides for detailed setup instructions and daily task breakdowns.</strong>
                 </div>
             </section>
 
             <section class="card">
-                <h2>Next Steps</h2>
-                <ol>
-                    <li><strong>Owner:</strong> Complete repository setup using <a href="manual-repo-setup.html">Manual Repository Setup Guide</a></li>
-                    <li><strong>Developers:</strong> Review your specific guide:
-                        <ul>
-                            <li><a href="onboarding-dev1.html">Developer 1: Backend & Database</a></li>
-                            <li><a href="onboarding-dev2.html">Developer 2: Frontend & React</a></li>
-                            <li><a href="onboarding-dev3.html">Developer 3: DevOps & QA</a></li>
-                        </ul>
-                    </li>
-                    <li><strong>All:</strong> Join the kickoff meeting (Week 1, Day 1) to align on timeline and assignments</li>
-                    <li><strong>All:</strong> Set up development environment by end of Week 1</li>
-                </ol>
+                <h2>Before You Start</h2>
+                <p>Make sure you have completed these setup steps:</p>
+                <ul>
+                    <li>✅ Read the <a href="onboarding-overview.html">Project Overview</a></li>
+                    <li>✅ Set up your GitHub account and access</li>
+                    <li>✅ Follow either the <a href="manual-repo-setup.html">Manual Repository Setup</a> or <a href="repo-setup-guide.html">Automated Setup Guide</a></li>
+                    <li>✅ Install required software (listed in your Day 1 guide)</li>
+                </ul>
             </section>
-
         </main>
     </div>
 </body>
