@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RevNova Onboarding — Project Overview & Environment Setup</title>
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    body { margin:0; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,sans-serif; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+    .hero { background: linear-gradient(135deg,#11998e 0%,#38ef7d 100%); color:#fff; padding:2.5rem; border-radius:12px; margin:1.5rem 0; }
+    .grid { display:grid; gap:1.25rem; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+    .card { background:#fff; border:1px solid #e0e0e0; border-radius:12px; padding:1.25rem; }
+    h1,h2 { margin:0 0 .75rem 0; }
+    h3 { color:#11998e; margin:1rem 0 .5rem 0; }
+    code, pre { background:#f6f8fb; border:1px solid #e6ecf1; border-radius:6px; padding:.25rem .4rem; }
+    pre { padding: .8rem; overflow:auto; }
+    ul { line-height: 1.8; }
+    .callout { background:#fff8e1; border:1px solid #ffe082; padding: .8rem 1rem; border-radius:8px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="hero">
+      <h1>RevNova Onboarding</h1>
+      <p>Everything you need to set up your machine, access the repository, connect to our shared PostgreSQL database, and start building.</p>
+    </div>
+
+    <section class="card">
+      <h2>Project Overview</h2>
+      <ul>
+        <li><strong>Product:</strong> RevNova — AI-powered migration and product configuration platform.</li>
+        <li><strong>Frontend:</strong> React 18 + TypeScript + TailwindCSS.</li>
+        <li><strong>Backend:</strong> Node.js 20 + Express + TypeScript.</li>
+        <li><strong>Database:</strong> PostgreSQL 15/16 (multi-tenant) with hybrid staging (Vanilla + EAV).</li>
+        <li><strong>Queue:</strong> Bull (Redis 7).</li>
+        <li><strong>AI:</strong> OpenAI GPT-4 for mapping and content generation.</li>
+        <li><strong>Storage:</strong> AWS S3/Azure Blob for artifacts.</li>
+      </ul>
+      <p>Requirements are organized per phase and per view. Start at <a href="../RevNovaRequirements/requirements-home.html">Requirements Home</a>.</p>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <h3>1) Machine Prerequisites (Windows)</h3>
+        <ul>
+          <li>VS Code (latest) + Extensions: ESLint, Prettier, GitLens, Docker, YAML, REST Client, Thunder Client, Python, Pylance.</li>
+          <li>Node.js 20.x and npm 10.x</li>
+          <li>Git (with SSH configured)</li>
+          <li>Docker Desktop (optional for local services)</li>
+          <li>PostgreSQL client (psql) and a GUI (pgAdmin 4 or Azure Data Studio)</li>
+          <li>Redis (local optional) or use Docker image</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>2) Repository Access</h3>
+        <ul>
+          <li>Ensure your GitHub account has access to the RevNova repository.</li>
+          <li>Set up SSH keys in GitHub and your machine (ssh-keygen, add to GitHub).</li>
+          <li>Clone the repository to your dev folder (ex: <code>C:\\Dev\\RevNovaRepository</code>).</li>
+          <li>Use a feature-branch workflow: <code>feature/&lt;area&gt;-&lt;short-desc&gt;</code>.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>3) VS Code Workspace</h3>
+        <ul>
+          <li>Open the folder <code>RevNovaRepository</code> in VS Code.</li>
+          <li>Enable recommended extensions: run <em>scripts/install-extensions.ps1</em> if provided.</li>
+          <li>Set default shell: Windows PowerShell.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Shared PostgreSQL Connection</h2>
+      <p>We maintain a team PostgreSQL instance for development. Use read-only/restricted credentials unless you are assigned DDL tasks.</p>
+      <ol>
+        <li>Open your DB client (pgAdmin/Azure Data Studio/VS Code SQL extension).</li>
+        <li>Create a new connection using the parameters below.</li>
+      </ol>
+      <div class="callout">
+        <strong>Connection Template (replace placeholders):</strong>
+        <ul>
+          <li>Host: <code>&lt;PG_HOST&gt;</code></li>
+          <li>Port: <code>5432</code></li>
+          <li>Database: <code>revnova_dev</code></li>
+          <li>SSL: <code>require</code> if mandated by host</li>
+          <li>User: <code>&lt;PG_USER_RO&gt;</code> (read-only)</li>
+          <li>Password: <code>&lt;PG_PASSWORD_RO&gt;</code></li>
+        </ul>
+      </div>
+      <p>Tip: If your VS Code has an existing saved connection, copy the parameters from the Database pane or your secrets manager. Do not commit secrets.</p>
+    </section>
+
+    <section class="card">
+      <h2>Local Services (Optional)</h2>
+      <ul>
+        <li>Run PostgreSQL/Redis locally using Docker for offline work.</li>
+      </ul>
+      <pre># Example Docker (optional)
+# docker run -p 5432:5432 -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=revnova_dev postgres:16
+# docker run -p 6379:6379 redis:7-alpine
+</pre>
+      <p>Use environment variables for local secrets: <code>PGHOST</code>, <code>PGUSER</code>, <code>PGPASSWORD</code>, <code>PGDATABASE</code>, <code>PGPORT</code>, <code>REDIS_URL</code>.</p>
+    </section>
+
+    <section class="card">
+      <h2>Workflow</h2>
+      <ul>
+        <li>Create a branch, implement, and open a PR with clear checklists.</li>
+        <li>Run linters and unit tests before pushing.</li>
+        <li>Link PRs to requirement pages when relevant.</li>
+      </ul>
+    </section>
+
+    <p style="margin:2rem 0 0 0; color:#666;">For questions, check requirements pages or ask in the team channel. Avoid sharing credentials in chat; use the secrets vault.</p>
+  </div>
+</body>
+</html>

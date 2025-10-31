@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Developer 2 Onboarding — Frontend (React)</title>
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    body { margin:0; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,sans-serif; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+    .hero { background: linear-gradient(135deg,#11998e 0%,#38ef7d 100%); color:#fff; padding:2.5rem; border-radius:12px; margin:1.5rem 0; }
+    .card { background:#fff; border:1px solid #e0e0e0; border-radius:12px; padding:1.25rem; margin-bottom:1rem; }
+    h1,h2 { margin:0 0 .75rem 0; }
+    h3 { color:#11998e; margin:1rem 0 .5rem 0; }
+    code, pre { background:#f6f8fb; border:1px solid #e6ecf1; border-radius:6px; padding:.25rem .4rem; }
+    pre { padding: .8rem; overflow:auto; }
+    ul { line-height: 1.8; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="hero">
+      <h1>Developer 2 — Frontend (React)</h1>
+      <p>Focus: 7-step migration wizard UI, mapping editor, transformation builder, validation and job console.</p>
+    </div>
+
+    <section class="card">
+      <h2>Setup</h2>
+      <ul>
+        <li>Install Node.js 20, Git, and pnpm or npm.</li>
+        <li>Clone the repo and open in VS Code.</li>
+        <li>Create branch: <code>feature/wizard-ui</code>.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>UI Scope</h2>
+      <ul>
+        <li>Scaffold React 18 + TypeScript + TailwindCSS.</li>
+        <li>Implement pages: Connect, Analyze, Mapping, Transform, Validate, Execute, Test.</li>
+        <li>Mapping UI: table with AI suggestions, confidence score, manual override, search/filter.</li>
+        <li>Transform builder: expression editor + test preview.</li>
+        <li>Validate: error table with severity filters and CSV export.</li>
+        <li>Execute: progress bar, batch/job list, pause/resume/retry controls.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>API Contracts</h2>
+      <ul>
+        <li>Use the endpoints defined in Phase 1 Technical.</li>
+        <li>Create a small API client with typed responses and error handling.</li>
+        <li>Use React Query or SWR for data fetching and caching.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Deliverables</h2>
+      <ul>
+        <li>Functional wizard navigation with step state persisted in URL/query.</li>
+        <li>Responsive UI with accessibility checks.</li>
+        <li>Unit tests for key components (mapping table, transform editor).</li>
+      </ul>
+    </section>
+
+    <p>Reference: Phase 1 per-view requirements and <a href="../RevNovaRequirements/requirements-phase1-technical.html">Phase 1 Technical</a>.</p>
+  </div>
+</body>
+</html>

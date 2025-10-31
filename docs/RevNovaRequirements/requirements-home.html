@@ -278,15 +278,15 @@
             
             <h3>Phase 1 - SFDC CPQ → RCA Migration (MVP)</h3>
             <ul>
-                <li><a href="requirements-phase1-functional.html">Functional Requirements</a>
+                <li><a href="#">Functional Requirements</a>
                     <ul>
-                        <li><a href="requirements-phase1-functional.html#connect">1. Connection Wizard</a></li>
-                        <li><a href="requirements-phase1-functional.html#analyze">2. Schema Analysis</a></li>
-                        <li><a href="requirements-phase1-functional.html#mapping">3. Field Mapping</a></li>
-                        <li><a href="requirements-phase1-functional.html#transform">4. Data Transformation</a></li>
-                        <li><a href="requirements-phase1-functional.html#validate">5. Validation</a></li>
-                        <li><a href="requirements-phase1-functional.html#execute">6. Migration Execution</a></li>
-                        <li><a href="requirements-phase1-functional.html#test">7. Post-Migration Testing</a></li>
+                        <li><a href="requirements-phase1-connect.html">1. Connection Wizard</a></li>
+                        <li><a href="requirements-phase1-analyze.html">2. Schema Analysis</a></li>
+                        <li><a href="requirements-phase1-mapping.html">3. Field Mapping</a></li>
+                        <li><a href="requirements-phase1-transform.html">4. Data Transformation</a></li>
+                        <li><a href="requirements-phase1-validate.html">5. Validation</a></li>
+                        <li><a href="requirements-phase1-execute.html">6. Migration Execution</a></li>
+                        <li><a href="requirements-phase1-test.html">7. Post-Migration Testing</a></li>
                     </ul>
                 </li>
                 <li><a href="requirements-phase1-technical.html">Technical Requirements</a>
@@ -302,14 +302,14 @@
             
             <h3>Phase 2 - AI Product Configuration</h3>
             <ul>
-                <li><a href="requirements-phase2-functional.html">Functional Requirements</a>
+                <li><a href="#">Functional Requirements</a>
                     <ul>
-                        <li><a href="requirements-phase2-functional.html#generate">Generate with AI</a></li>
-                        <li><a href="requirements-phase2-functional.html#modify">Modify with AI</a></li>
-                        <li><a href="requirements-phase2-functional.html#adopt">Adopt AI Suggestions</a></li>
-                        <li><a href="requirements-phase2-functional.html#marketing">Marketing Plan Generator</a></li>
-                        <li><a href="requirements-phase2-functional.html#selling">Selling Plan Generator</a></li>
-                        <li><a href="requirements-phase2-functional.html#servicing">Servicing Plan Generator</a></li>
+                        <li><a href="requirements-phase2-generate.html">Generate with AI</a></li>
+                        <li><a href="requirements-phase2-modify.html">Modify with AI</a></li>
+                        <li><a href="requirements-phase2-adopt.html">Adopt AI Suggestions</a></li>
+                        <li><a href="requirements-phase2-planning.html">Planning Generators</a></li>
+                        <li><a href="requirements-phase2-impact.html">Impact Analyzer</a></li>
+                        <li><a href="requirements-phase2-budget.html">Budget Calculator</a></li>
                     </ul>
                 </li>
                 <li><a href="requirements-phase2-technical.html">Technical Requirements</a>
@@ -320,6 +320,14 @@
                         <li><a href="requirements-phase2-technical.html#api">API Specifications</a></li>
                     </ul>
                 </li>
+            </ul>
+
+            <h3>Onboarding</h3>
+            <ul>
+                <li><a href="../Onboarding/onboarding-overview.html">Project Overview</a></li>
+                <li><a href="../Onboarding/onboarding-dev1.html">Developer 1 Guide</a></li>
+                <li><a href="../Onboarding/onboarding-dev2.html">Developer 2 Guide</a></li>
+                <li><a href="../Onboarding/onboarding-dev3.html">Developer 3 Guide</a></li>
             </ul>
             
             <h3>Phase 3 - Multi-CPQ Support</h3>
@@ -530,7 +538,7 @@
                         </tr>
                         <tr>
                             <td><strong>Message Queue</strong></td>
-                            <td>RabbitMQ</td>
+                            <td>Bull (Redis-backed)</td>
                             <td>Batch job processing, async workflows</td>
                         </tr>
                         <tr>
