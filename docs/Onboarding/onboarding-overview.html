@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>RevNova Onboarding — Project Overview & Environment Setup</title>
+  <title>RevNova Onboarding — Extensive Project Overview & Environment Setup</title>
   <link rel="stylesheet" href="../styles.css">
   <style>
     body { margin:0; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,sans-serif; }
@@ -23,50 +23,72 @@
   <div class="container">
     <div class="hero">
       <h1>RevNova Onboarding</h1>
-      <p>Everything you need to set up your machine, access the repository, connect to our shared PostgreSQL database, and start building.</p>
+      <p>Everything you need to set up your machine, access the correct repositories, configure VS Code + GitHub Copilot, connect to PostgreSQL, and start building confidently.</p>
     </div>
 
     <section class="card">
       <h2>Project Overview</h2>
+      <p><strong>RevNova</strong> is an AI-powered platform for enterprise system transformation: accelerating SFDC CPQ → Revenue Cloud migrations and enabling AI-driven product configuration and planning. Insights consolidated from product briefs (Gemini/DeepSeek inputs) are captured across our requirements.</p>
       <ul>
-        <li><strong>Product:</strong> RevNova — AI-powered migration and product configuration platform.</li>
-        <li><strong>Frontend:</strong> React 18 + TypeScript + TailwindCSS.</li>
-        <li><strong>Backend:</strong> Node.js 20 + Express + TypeScript.</li>
-        <li><strong>Database:</strong> PostgreSQL 15/16 (multi-tenant) with hybrid staging (Vanilla + EAV).</li>
-        <li><strong>Queue:</strong> Bull (Redis 7).</li>
-        <li><strong>AI:</strong> OpenAI GPT-4 for mapping and content generation.</li>
-        <li><strong>Storage:</strong> AWS S3/Azure Blob for artifacts.</li>
+        <li><strong>Core Value:</strong> Reduce migration timelines by ~80% with high accuracy and repeatability.</li>
+        <li><strong>Architecture:</strong> Object-oriented, source-agnostic 7-step wizard + reusable hybrid staging (Vanilla + EAV).</li>
+        <li><strong>Frontend:</strong> React 18 + TypeScript + TailwindCSS (Wizard UI, dashboards).</li>
+        <li><strong>Backend:</strong> Node.js 20 + Express + TypeScript (REST APIs).</li>
+        <li><strong>Database:</strong> PostgreSQL 15/16 (multi-tenant), STG1 → STG2 → Target validation pipeline.</li>
+        <li><strong>Queue:</strong> Bull (Redis 7) for ETL and validation jobs with backoff + idempotency.</li>
+        <li><strong>AI:</strong> OpenAI GPT-4 for mapping suggestions and plan generators; embeddings + cosine similarity.</li>
+        <li><strong>Storage:</strong> AWS S3/Azure Blob for artifacts, logs, and exports.</li>
       </ul>
-      <p>Requirements are organized per phase and per view. Start at <a href="../RevNovaRequirements/requirements-home.html">Requirements Home</a>.</p>
+      <p>Requirements are per-phase and per-view. Start at <a href="../RevNovaRequirements/requirements-home.html">Requirements Home</a>.</p>
+    </section>
+
+    <section class="card">
+      <h2>Environment Strategy & Repositories</h2>
+      <p>We use three repositories to separate concerns by environment. You will not clone the production repository. You will work in the Development repository.</p>
+      <ol>
+        <li><strong>Production:</strong> <code>naimishkathrani-web/RevNova</code> (protected) — release-only, tagged versions.</li>
+        <li><strong>Testing:</strong> <code>naimishkathrani-web/RevNova-Test</code> (staging QA) — integration testing, pre-release branches.</li>
+        <li><strong>Development:</strong> <code>naimishkathrani-web/RevNova-Dev</code> (your working repo) — daily development.</li>
+      </ol>
+      <div class="callout"><strong>Action for Owner:</strong> Create <em>RevNova-Dev</em> and <em>RevNova-Test</em> repos under the same owner, enable branch protections, and grant developer access to <em>RevNova-Dev</em>. Configure GitHub Environments (Dev/Test/Prod) and required status checks.</div>
+      <ul>
+        <li><strong>Flow:</strong> feature branches in Dev → PR to Dev main → sync to Test via PR → release to Prod via PR and tags.</li>
+        <li><strong>Remotes setup:</strong> on your local, add <code>origin</code> = RevNova-Dev and <code>test</code> = RevNova-Test for promotion.</li>
+      </ul>
     </section>
 
     <section class="grid">
       <div class="card">
-        <h3>1) Machine Prerequisites (Windows)</h3>
+        <h3>1) Machine Prerequisites (Windows) — Download & Install</h3>
         <ul>
-          <li>VS Code (latest) + Extensions: ESLint, Prettier, GitLens, Docker, YAML, REST Client, Thunder Client, Python, Pylance.</li>
-          <li>Node.js 20.x and npm 10.x</li>
-          <li>Git (with SSH configured)</li>
-          <li>Docker Desktop (optional for local services)</li>
-          <li>PostgreSQL client (psql) and a GUI (pgAdmin 4 or Azure Data Studio)</li>
-          <li>Redis (local optional) or use Docker image</li>
+          <li><strong>VS Code:</strong> https://code.visualstudio.com/ — install for Windows (User Installer). After install, sign in to GitHub inside VS Code.</li>
+          <li><strong>Node.js 20.x:</strong> https://nodejs.org/en/download — choose Windows 64-bit LTS 20.x; verify with <em>node -v</em>.</li>
+          <li><strong>Git:</strong> https://git-scm.com/download/win — enable “Git from the command line”; set default editor to VS Code.</li>
+          <li><strong>Python 3.11+ (for tooling):</strong> https://www.python.org/downloads/windows/ — add to PATH during install.</li>
+          <li><strong>Docker Desktop:</strong> https://www.docker.com/products/docker-desktop/ — optional for local PostgreSQL/Redis.</li>
+          <li><strong>PostgreSQL:</strong> <em>psql</em> included with server or install <strong>pgAdmin 4</strong>: https://www.pgadmin.org/download/; or <strong>Azure Data Studio</strong> + PostgreSQL extension: https://aka.ms/azuredatastudio.</li>
+          <li><strong>Redis (optional):</strong> use Docker image <code>redis:7-alpine</code>.</li>
+          <li><strong>GitHub CLI (gh):</strong> https://github.com/cli/cli — simplifies auth and PRs.</li>
         </ul>
       </div>
       <div class="card">
-        <h3>2) Repository Access</h3>
+        <h3>2) Access & Clone (Development Repo only)</h3>
         <ul>
-          <li>Ensure your GitHub account has access to the RevNova repository.</li>
-          <li>Set up SSH keys in GitHub and your machine (ssh-keygen, add to GitHub).</li>
-          <li>Clone the repository to your dev folder (ex: <code>C:\\Dev\\RevNovaRepository</code>).</li>
-          <li>Use a feature-branch workflow: <code>feature/&lt;area&gt;-&lt;short-desc&gt;</code>.</li>
+          <li>Get access to <strong>RevNova-Dev</strong>. Do <em>not</em> clone the Production repo.</li>
+          <li><strong>Authenticate:</strong> <em>gh auth login</em> in a terminal, or sign in via VS Code.</li>
+          <li><strong>SSH Key (optional):</strong> generate with <em>ssh-keygen</em> and add to GitHub → Settings → SSH and GPG keys.</li>
+          <li><strong>Clone:</strong> choose a workspace path like <code>C:\\Dev</code> and clone <strong>RevNova-Dev</strong> into <code>RevNovaRepository</code>.</li>
+          <li><strong>Remotes:</strong> add <code>test</code> remote pointing to <strong>RevNova-Test</strong> for promotions.</li>
+          <li><strong>Branching:</strong> <code>feature/&lt;area&gt;-&lt;desc&gt;</code> off <code>main</code>. Use small, focused commits.</li>
         </ul>
       </div>
       <div class="card">
-        <h3>3) VS Code Workspace</h3>
+        <h3>3) VS Code Setup + GitHub Copilot</h3>
         <ul>
-          <li>Open the folder <code>RevNovaRepository</code> in VS Code.</li>
-          <li>Enable recommended extensions: run <em>scripts/install-extensions.ps1</em> if provided.</li>
-          <li>Set default shell: Windows PowerShell.</li>
+          <li>Open <code>RevNovaRepository</code> in VS Code. Set terminal to Windows PowerShell.</li>
+          <li>Install extensions: GitHub Copilot, GitHub Copilot Chat, ESLint, Prettier, GitLens, Tailwind CSS IntelliSense, Docker, YAML, REST Client/Thunder Client, Python, Pylance.</li>
+          <li>Enable Copilot: sign in to GitHub in VS Code → Extensions → GitHub Copilot → enable for workspace. Use <em>Ctrl+Enter</em> for inline suggestions.</li>
+          <li>Configure format-on-save and ESLint autofix in VS Code Settings.</li>
         </ul>
       </div>
     </section>
@@ -90,6 +112,7 @@
         </ul>
       </div>
       <p>Tip: If your VS Code has an existing saved connection, copy the parameters from the Database pane or your secrets manager. Do not commit secrets.</p>
+      <p><strong>Local option:</strong> run PostgreSQL via Docker for offline work; keep a separate local database name like <code>revnova_local</code>.</p>
     </section>
 
     <section class="card">
@@ -105,12 +128,14 @@
     </section>
 
     <section class="card">
-      <h2>Workflow</h2>
-      <ul>
-        <li>Create a branch, implement, and open a PR with clear checklists.</li>
-        <li>Run linters and unit tests before pushing.</li>
-        <li>Link PRs to requirement pages when relevant.</li>
-      </ul>
+      <h2>Workflow (Dev → Test → Prod)</h2>
+      <ol>
+        <li><strong>Dev:</strong> Create <code>feature/&lt;area&gt;-&lt;desc&gt;</code>, implement with Copilot assistance, write unit tests, ensure lint/typecheck pass.</li>
+        <li><strong>PR to Dev:</strong> Open PR to Dev <code>main</code>. Use Copilot Chat to draft PR description and checklists. Review → merge.</li>
+        <li><strong>Promote to Test:</strong> Pull latest Dev; push a branch to the <code>test</code> remote; open PR in <em>RevNova-Test</em>. Run integration tests.</li>
+        <li><strong>Release to Prod:</strong> After QA sign-off, open PR to <em>RevNova</em> (Prod). Tag release on merge.</li>
+      </ol>
+      <p><em>Copilot tips:</em> Use inline prompts to generate tests, refactor code, and explain changes. Use Copilot Chat to summarize diffs and propose PR content.</p>
     </section>
 
     <p style="margin:2rem 0 0 0; color:#666;">For questions, check requirements pages or ask in the team channel. Avoid sharing credentials in chat; use the secrets vault.</p>

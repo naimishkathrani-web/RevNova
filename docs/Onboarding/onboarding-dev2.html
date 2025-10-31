@@ -21,14 +21,29 @@
   <div class="container">
     <div class="hero">
       <h1>Developer 2 — Frontend (React)</h1>
-      <p>Focus: 7-step migration wizard UI, mapping editor, transformation builder, validation and job console.</p>
+      <p>Focus: 7-step migration wizard UI, mapping editor, transformation builder, validation and job console, plus Dev→Test promotion.</p>
     </div>
 
     <section class="card">
-      <h2>Setup</h2>
+      <h2>Software & Tools (Windows) — Download & Install</h2>
       <ul>
-        <li>Install Node.js 20, Git, and pnpm or npm.</li>
-        <li>Clone the repo and open in VS Code.</li>
+        <li>VS Code: https://code.visualstudio.com/ (User Installer). Sign in to GitHub in VS Code.</li>
+        <li>Git: https://git-scm.com/download/win (enable Git from command line).</li>
+        <li>Node.js 20.x: https://nodejs.org/en/download (verify: node -v). Package manager: npm or pnpm.</li>
+        <li>Python 3.11+: https://www.python.org/downloads/windows/ (add to PATH).</li>
+        <li>Browsers: Chrome + DevTools; optionally Edge.</li>
+        <li>GitHub CLI (gh): https://github.com/cli/cli</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Repository Access & VS Code Setup</h2>
+      <ul>
+        <li>Access <strong>RevNova-Dev</strong> only. Clone into <code>C:\\Dev\\RevNovaRepository</code>.</li>
+        <li>Open folder in VS Code; set terminal to Windows PowerShell.</li>
+        <li>Install extensions: GitHub Copilot, GitHub Copilot Chat, ESLint, Prettier, GitLens, Tailwind CSS IntelliSense, React, REST Client.</li>
+        <li>Enable Copilot for this workspace; use it to scaffold components, hooks, tests.</li>
+        <li>Add <code>test</code> remote pointing to <strong>RevNova-Test</strong> for later promotion.</li>
         <li>Create branch: <code>feature/wizard-ui</code>.</li>
       </ul>
     </section>
@@ -55,12 +70,37 @@
     </section>
 
     <section class="card">
+      <h2>Testing & Local Runs</h2>
+      <ul>
+        <li>Use Vitest/Jest + React Testing Library for unit tests.</li>
+        <li>Test mapping table interactions, transform editor parsing, and step navigation.</li>
+        <li>Ensure ESLint + Prettier pass before commits. Use Copilot to propose tests and refactors.</li>
+      </ul>
+      <pre># optional
+# npm create vite@latest revnova-ui -- --template react-ts
+# npm install @tanstack/react-query axios
+# npm install -D vitest @testing-library/react @testing-library/user-event jsdom
+# npm run test
+</pre>
+    </section>
+
+    <section class="card">
       <h2>Deliverables</h2>
       <ul>
         <li>Functional wizard navigation with step state persisted in URL/query.</li>
         <li>Responsive UI with accessibility checks.</li>
         <li>Unit tests for key components (mapping table, transform editor).</li>
       </ul>
+    </section>
+
+    <section class="card">
+      <h2>Promote Code to Test (with Copilot help)</h2>
+      <ol>
+        <li>Merge your feature PR into Dev <code>main</code>.</li>
+        <li>Create a release branch and push to the <code>test</code> remote.</li>
+        <li>Open PR in RevNova-Test; use Copilot Chat to draft PR description.</li>
+        <li>After QA, coordinate Production PR with the team.</li>
+      </ol>
     </section>
 
     <p>Reference: Phase 1 per-view requirements and <a href="../RevNovaRequirements/requirements-phase1-technical.html">Phase 1 Technical</a>.</p>

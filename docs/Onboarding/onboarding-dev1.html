@@ -21,14 +21,31 @@
   <div class="container">
     <div class="hero">
       <h1>Developer 1 — Backend & Database</h1>
-      <p>Focus: Phase 1 APIs, DB schema (Vanilla + EAV), validation and batch execution services.</p>
+      <p>Focus: Phase 1 APIs, DB schema (Vanilla + EAV), validation and batch execution services, plus Dev→Test promotion.</p>
     </div>
 
     <section class="card">
-      <h2>Setup</h2>
+      <h2>Software & Tools (Windows) — Download & Install</h2>
       <ul>
-        <li>Install Node.js 20, Git, and a PostgreSQL client (psql/pgAdmin).</li>
-        <li>Clone the repo and open in VS Code.</li>
+        <li>VS Code: https://code.visualstudio.com/ (User Installer). Sign in to GitHub in VS Code.</li>
+        <li>Git: https://git-scm.com/download/win (enable Git from command line).</li>
+        <li>Node.js 20.x: https://nodejs.org/en/download (verify: node -v).</li>
+        <li>Python 3.11+: https://www.python.org/downloads/windows/ (add to PATH).</li>
+        <li>PostgreSQL client: pgAdmin 4 https://www.pgadmin.org/download/ or Azure Data Studio + PostgreSQL extension.</li>
+        <li>Docker Desktop (optional for local DB/Redis): https://www.docker.com/products/docker-desktop/</li>
+        <li>GitHub CLI (gh): https://github.com/cli/cli</li>
+      </ul>
+      <p><em>Optional commands are shown for reference and may be run in PowerShell when needed.</em></p>
+    </section>
+
+    <section class="card">
+      <h2>Repository Access & VS Code Setup</h2>
+      <ul>
+        <li>Access <strong>RevNova-Dev</strong> (not Production). Clone into <code>C:\\Dev\\RevNovaRepository</code>.</li>
+        <li>Open folder in VS Code; set terminal to Windows PowerShell.</li>
+        <li>Install extensions: GitHub Copilot, GitHub Copilot Chat, ESLint, Prettier, GitLens, REST Client, Docker, YAML, Python, Pylance.</li>
+        <li>Enable Copilot for this workspace; use it to scaffold API handlers and tests.</li>
+        <li>Add <code>test</code> remote pointing to <strong>RevNova-Test</strong> for later promotion.</li>
         <li>Create branch: <code>feature/api-mvp</code>.</li>
       </ul>
     </section>
@@ -75,6 +92,20 @@ CREATE TABLE IF NOT EXISTS stg_eav (
     </section>
 
     <section class="card">
+      <h2>Unit Testing & Local Runs</h2>
+      <ul>
+        <li>Testing stack: Jest + ts-jest for unit tests; Supertest for API endpoints.</li>
+        <li>Write tests for connection tests, mapping save/lookup, and validation kickoffs.</li>
+        <li>Ensure lint and typecheck pass before commits. Use Copilot to propose tests and refactors.</li>
+      </ul>
+      <pre># optional
+# npm install --save-dev jest ts-jest @types/jest supertest @types/supertest
+# npx ts-jest config:init
+# npm run test
+</pre>
+    </section>
+
+    <section class="card">
       <h2>Deliverables</h2>
       <ul>
         <li>DB schema DDL with migrations.</li>
@@ -82,6 +113,17 @@ CREATE TABLE IF NOT EXISTS stg_eav (
         <li>Worker processes with configurable concurrency.</li>
         <li>Basic unit tests for API handlers.</li>
       </ul>
+    </section>
+
+    <section class="card">
+      <h2>Promote Code to Test (with Copilot help)</h2>
+      <ol>
+        <li>Merge your feature PR into Dev <code>main</code>.</li>
+        <li>Update local; create a release branch (e.g., <code>release/feature-x</code>).</li>
+        <li>Push branch to <code>test</code> remote (RevNova-Test).</li>
+        <li>Open PR in RevNova-Test. Use Copilot Chat to draft PR description and checklist.</li>
+        <li>After QA, follow team process to open PR to Production.</li>
+      </ol>
     </section>
 
     <p>Reference: <a href="../RevNovaRequirements/requirements-phase1-technical.html">Phase 1 Technical</a> and all Phase 1 per-view functional pages.</p>

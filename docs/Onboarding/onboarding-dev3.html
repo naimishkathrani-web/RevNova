@@ -21,16 +21,19 @@
   <div class="container">
     <div class="hero">
       <h1>Developer 3 — DevOps, Queue & QA</h1>
-      <p>Focus: Redis/Bull infra, worker CI, lint/test gates, and basic deployment workflows.</p>
+      <p>Focus: Redis/Bull infra, worker CI, lint/test gates, deployment workflows, and Dev→Test→Prod pipeline.</p>
     </div>
 
     <section class="card">
-      <h2>Setup</h2>
+      <h2>Software & Tools (Windows) — Download & Install</h2>
       <ul>
-        <li>Install Docker Desktop and Git.</li>
-        <li>Access to CI provider (GitHub Actions) and cloud secrets store.</li>
-        <li>Create branch: <code>chore/ci-infra</code>.</li>
+        <li>Git: https://git-scm.com/download/win</li>
+        <li>Docker Desktop: https://www.docker.com/products/docker-desktop/</li>
+        <li>VS Code: https://code.visualstudio.com/ (Copilot and Actions extensions helpful)</li>
+        <li>GitHub CLI (gh): https://github.com/cli/cli</li>
+        <li>Optional: kubectl or Terraform if infra-as-code is introduced later</li>
       </ul>
+      <p>Clone <strong>RevNova-Dev</strong> and add <code>test</code> and <code>prod</code> remotes pointing to <em>RevNova-Test</em> and <em>RevNova</em>.</p>
     </section>
 
     <section class="card">
@@ -52,6 +55,16 @@
         <li>Optional: build and publish Docker images on main merges.</li>
         <li>Test summaries and artifacts (coverage reports).</li>
       </ul>
+    </section>
+
+    <section class="card">
+      <h2>Environment Promotion (Dev → Test → Prod)</h2>
+      <ol>
+        <li><strong>Dev:</strong> PRs to Dev main require checks (lint/test). Tag preview releases if needed.</li>
+        <li><strong>Test:</strong> Create a release branch and push to <code>test</code> remote. Open PR in RevNova-Test with Copilot-generated description. Run integration tests.</li>
+        <li><strong>Prod:</strong> After QA sign-off, open PR to <em>RevNova</em>. Use protected branches and require approvals. Tag semantic version on merge.</li>
+      </ol>
+      <p>Automate promotions with reusable GitHub Actions workflows and required environment approvals.</p>
     </section>
 
     <section class="card">
