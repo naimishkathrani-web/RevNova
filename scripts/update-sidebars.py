@@ -1,54 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Phase 2 - Technical Architecture | RevNova Requirements</title>
-    <link rel="stylesheet" href="../styles.css">
-    <style>
-        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
-        .requirements-layout{display:flex;min-height:calc(100vh - 80px);margin-top:80px}
-        .sidebar{width:280px;background:#f8f9fa;border-right:1px solid #e0e0e0;padding:2rem 0;position:fixed;left:0;top:80px;height:calc(100vh - 80px);overflow-y:auto;z-index:100}
-        .sidebar h3{padding:0 1.5rem;font-size:0.85rem;color:#666;text-transform:uppercase;letter-spacing:0.5px;margin:1.5rem 0 0.5rem}
-        .sidebar ul{list-style:none;padding:0;margin:0}
-        .sidebar ul li a{display:block;padding:0.6rem 1.5rem;color:#333;text-decoration:none;font-size:0.95rem;transition:all 0.2s}
-        .sidebar ul li a:hover{background:#e9ecef;color:#11998e}
-        .sidebar ul li a.active{background:#11998e;color:#fff;font-weight:500}
-        .sidebar ul ul li a{padding-left:2.5rem;font-size:0.9rem}
-        .main-content{flex:1;margin-left:280px;padding:3rem;background:#fff;min-width:0}
-        .page-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;padding:3rem;border-radius:12px;margin-bottom:3rem}
-        .section-box{background:#fff;border:2px solid #e0e0e0;padding:2.5rem;margin:2rem 0;border-radius:12px}
-        .section-box h3{color:#667eea;margin-top:0;border-bottom:2px solid #764ba2;padding-bottom:0.5rem}
-        table{width:100%;border-collapse:collapse;margin:1.5rem 0}
-        th,td{border:1px solid #ddd;padding:12px;text-align:left}
-        th{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;font-weight:600;font-size:0.85rem}
-        .badge-technical{background:#e74c3c;color:#fff;padding:0.3rem 0.6rem;border-radius:12px;font-size:0.75rem;font-weight:600}
-    </style>
-</head>
-<body>
-    <header>
-        <div class="container header-container">
-            <div class="nav-left">
-                <a href="../index.html" class="logo"><div class="logo-box">RevNova</div></a>
-                <nav class="main-nav">
-                    <ul>
-                        <li><a href="../about-revnova.html">About RevNova</a></li>
-                        <li><a href="../features.html">Features</a></li>
-                        <li><a href="../pricing.html">Pricing</a></li>
-                        <li><a href="requirements-home.html" class="active">RevNova Requirements</a></li>
-                        <li><a href="../contact.html">Contact</a></li>
-                    </ul>
-                </nav>
-            </div>
-            <div class="header-right">
-                <div class="country-selector"><span class="fi fi-us"></span></div>
-                <a href="../login.html" class="btn btn-login">Login</a>
-            </div>
-        </div>
-    </header>
+#!/usr/bin/env python3
+"""
+Script to update sidebar navigation across all Requirements and Onboarding pages
+to ensure consistent static navigation matching the respective home pages.
+"""
 
-    <div class="requirements-layout">
-        <aside class="sidebar">
+import os
+import re
+from pathlib import Path
+
+# Define the standard sidebar HTML for Requirements pages
+REQUIREMENTS_SIDEBAR = '''        <aside class="sidebar">
             <h3>Platform Vision</h3>
             <ul>
                 <li><a href="requirements-home.html">RevNova Vision & Strategy</a></li>
@@ -158,53 +119,109 @@
                     </ul>
                 </li>
             </ul>
-        </aside>
+        </aside>'''
 
-        <main class="main-content">
-            <div class="page-header">
-                <h1>🏗️ Phase 2: Technical Architecture - AI Product Platform</h1>
-                <p>GPT-4 powered product design, modification, and go-to-market planning engine</p>
-            </div>
+# Define the standard sidebar HTML for Onboarding pages
+ONBOARDING_SIDEBAR = '''        <aside class="sidebar">
+            <h3>Getting Started</h3>
+            <ul>
+                <li><a href="onboarding-home.html">Onboarding Home</a></li>
+                <li><a href="onboarding-overview.html">Project Overview</a></li>
+                <li><a href="manual-repo-setup.html">Manual Repository Setup</a></li>
+                <li><a href="repo-setup-guide.html">Automated Setup Guide</a></li>
+            </ul>
+            
+            <h3>Developer Guides</h3>
+            <ul>
+                <li><a href="onboarding-dev1-phase1.html">Developer 1: Backend & Database</a></li>
+                <li><a href="onboarding-dev2-phase1.html">Developer 2: Frontend & React</a></li>
+                <li><a href="onboarding-dev3-phase1.html">Developer 3: DevOps & QA</a></li>
+            </ul>
+            
+            <h3>8-Week Timeline</h3>
+            <ul>
+                <li><a href="onboarding-home.html#timeline">Project Timeline</a></li>
+                <li><a href="onboarding-home.html#phase1">Phase 1: SFDC CPQ Migration (Weeks 1-5)</a></li>
+                <li><a href="onboarding-home.html#phase2">Phase 2: AI Configuration (Weeks 6-8)</a></li>
+            </ul>
+            
+            <h3>Development Workflows</h3>
+            <ul>
+                <li><a href="onboarding-home.html#vscode">VS Code Setup & Extensions</a></li>
+                <li><a href="onboarding-home.html#copilot">GitHub Copilot Usage</a></li>
+                <li><a href="onboarding-home.html#git">Git Workflow & PRs</a></li>
+                <li><a href="onboarding-home.html#testing">Unit & Integration Testing</a></li>
+            </ul>
+            
+            <h3>Page Assignments</h3>
+            <ul>
+                <li><a href="onboarding-home.html#page-assignments">Phase 1 Pages</a></li>
+                <li><a href="phase2-tasks.html">Phase 2 Pages</a></li>
+            </ul>
+        </aside>'''
 
-            <section class="section-box">
-                <h3><span class="badge-technical">Technical</span> System Architecture - AI Layer</h3>
-                <table>
-                    <tr><th>Layer</th><th>Technology</th><th>Purpose</th></tr>
-                    <tr><td><strong>Frontend</strong></td><td>React 18, TypeScript, TailwindCSS</td><td>6 AI-powered pages (Generate, Modify, Adopt, Planning, Impact, Budget)</td></tr>
-                    <tr><td><strong>Backend API</strong></td><td>Node.js 20, Express, TypeScript</td><td>REST APIs for AI orchestration, product CRUD, report generation</td></tr>
-                    <tr><td><strong>AI Engine</strong></td><td>OpenAI GPT-4 Turbo API</td><td>Natural language → structured product data, GTM plan generation</td></tr>
-                    <tr><td><strong>Prompt Management</strong></td><td>Custom template engine</td><td>Versioned system prompts, few-shot examples, output schemas</td></tr>
-                    <tr><td><strong>Database</strong></td><td>PostgreSQL 16</td><td>AI-generated products, modification history, adoption sessions, budget scenarios</td></tr>
-                    <tr><td><strong>Cache</strong></td><td>Redis 7</td><td>GPT-4 response caching (24-hour TTL), rate limiting (60 req/min per user)</td></tr>
-                    <tr><td><strong>Queue</strong></td><td>Bull (Redis-backed)</td><td>Async AI processing (30-second timeout), retry on failure (3 attempts)</td></tr>
-                    <tr><td><strong>Storage</strong></td><td>AWS S3 / Azure Blob</td><td>Generated reports (PDF, XLSX), uploaded reference files, training data</td></tr>
-                    <tr><td><strong>Analytics</strong></td><td>Custom event tracking</td><td>AI accuracy metrics (confidence scores), user adoption patterns, A/B testing</td></tr>
-                </table>
-            </section>
 
-            <section class="section-box">
-                <h3><span class="badge-technical">Technical</span> API Specifications</h3>
-                <table>
-                    <tr><th>Endpoint</th><th>Method</th><th>Purpose</th></tr>
-                    <tr><td>/api/v1/ai/generate</td><td>POST</td><td>Generate product from natural language prompt</td></tr>
-                    <tr><td>/api/v1/ai/modify</td><td>POST</td><td>Modify existing product (return change suggestions)</td></tr>
-                    <tr><td>/api/v1/ai/adopt</td><td>POST</td><td>Apply approved changes to Salesforce CPQ</td></tr>
-                    <tr><td>/api/v1/plans/marketing</td><td>POST</td><td>Generate marketing plan (personas, positioning, channels)</td></tr>
-                    <tr><td>/api/v1/plans/selling</td><td>POST</td><td>Generate selling plan (scripts, battle cards, objections)</td></tr>
-                    <tr><td>/api/v1/plans/servicing</td><td>POST</td><td>Generate servicing plan (KB, SLA, staffing)</td></tr>
-                    <tr><td>/api/v1/impact/analyze</td><td>POST</td><td>Analyze downstream impact of product changes</td></tr>
-                    <tr><td>/api/v1/budget/calculate</td><td>POST</td><td>Calculate 3-year TCO and ROI projection</td></tr>
-                </table>
-            </section>
+def update_sidebar(filepath, new_sidebar):
+    """Replace the sidebar in an HTML file with the new standard sidebar."""
+    try:
+        with open(filepath, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        # Pattern to match the entire <aside class="sidebar">...</aside> block
+        pattern = r'<aside class="sidebar">.*?</aside>'
+        
+        # Replace with new sidebar (preserve indentation)
+        updated_content = re.sub(pattern, new_sidebar.strip(), content, flags=re.DOTALL)
+        
+        # Write back if changed
+        if updated_content != content:
+            with open(filepath, 'w', encoding='utf-8') as f:
+                f.write(updated_content)
+            return True
+        return False
+    except Exception as e:
+        print(f"Error processing {filepath}: {e}")
+        return False
 
-            <section>
-                <h2>Navigation</h2>
-                <ul style="line-height:2">
-                    <li><strong>Back to:</strong> <a href="requirements-phase2-generate.html">Page 1: Generate with AI</a></li>
-                    <li><strong>View:</strong> <a href="requirements-home.html">Requirements Home</a></li>
-                </ul>
-            </section>
-        </main>
-    </div>
-</body>
-</html>
+
+def main():
+    """Main function to update all sidebar navigations."""
+    repo_root = Path(__file__).parent.parent
+    
+    # Update Requirements pages
+    requirements_dir = repo_root / 'docs' / 'RevNovaRequirements'
+    req_count = 0
+    if requirements_dir.exists():
+        print("Updating Requirements pages...")
+        for html_file in requirements_dir.glob('*.html'):
+            # Skip requirements-home.html (it's the source)
+            if html_file.name == 'requirements-home.html':
+                continue
+            
+            if update_sidebar(html_file, REQUIREMENTS_SIDEBAR):
+                print(f"  ✓ Updated {html_file.name}")
+                req_count += 1
+            else:
+                print(f"  - Skipped {html_file.name} (no changes)")
+    
+    # Update Onboarding pages
+    onboarding_dir = repo_root / 'docs' / 'Onboarding'
+    onb_count = 0
+    if onboarding_dir.exists():
+        print("\nUpdating Onboarding pages...")
+        for html_file in onboarding_dir.glob('*.html'):
+            # Skip onboarding-home.html (it's the source)
+            if html_file.name == 'onboarding-home.html':
+                continue
+            
+            if update_sidebar(html_file, ONBOARDING_SIDEBAR):
+                print(f"  ✓ Updated {html_file.name}")
+                onb_count += 1
+            else:
+                print(f"  - Skipped {html_file.name} (no changes)")
+    
+    print(f"\n✓ Complete! Updated {req_count} Requirements pages and {onb_count} Onboarding pages")
+
+
+if __name__ == '__main__':
+    main()

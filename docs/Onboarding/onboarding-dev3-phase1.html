@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Developer 3: DevOps & QA - Phase 1 Tasks</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
+        
+        .onboarding-layout {
+            display: flex;
+            min-height: calc(100vh - 80px);
+            margin-top: 80px;
+        }
+        
+        .sidebar {
+            width: 280px;
+            background: #f8f9fa;
+            border-right: 1px solid #e0e0e0;
+            padding: 2rem 0;
+            position: fixed;
+            left: 0;
+            top: 80px;
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+            z-index: 100;
+        }
+        
+        .sidebar h3 {
+            padding: 0 1.5rem;
+            font-size: 0.85rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 1.5rem 0 0.5rem;
+        }
+        
+        .sidebar h3:first-child { margin-top: 0; }
+        
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .sidebar ul li a {
+            display: block;
+            padding: 0.6rem 1.5rem;
+            color: #333;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+        
+        .sidebar ul li a:hover {
+            background: #e9ecef;
+            color: #667eea;
+        }
+        
+        .sidebar ul li a.active {
+            background: #667eea;
+            color: #fff;
+            font-weight: 500;
+        }
+        
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 3rem;
+            background: #fff;
+            min-width: 0;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: #fff;
+            padding: 3rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+        
+        .hero h1 {
+            margin: 0 0 1rem 0;
+            font-size: 2.5rem;
+        }
+        
+        .card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card h2 {
+            color: #f5576c;
+            margin: 0 0 1rem 0;
+        }
+        
+        .card h3 {
+            color: #f093fb;
+            margin: 1.5rem 0 0.75rem 0;
+        }
+        
+        .day-card {
+            background: #f8f9fa;
+            border-left: 4px solid #f5576c;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+        
+        .day-card h4 {
+            color: #f5576c;
+            margin: 0 0 0.5rem 0;
+        }
+        
+        .day-card .duration {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+        
+        .copilot-tip {
+            background: #e7f3ff;
+            border-left: 4px solid #0066cc;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        
+        .copilot-tip strong {
+            color: #0066cc;
+        }
+        
+        .git-workflow {
+            background: #fff8e1;
+            border-left: 4px solid #ffc107;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        
+        .git-workflow strong {
+            color: #f57c00;
+        }
+        
+        .testing-section {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        
+        .testing-section strong {
+            color: #28a745;
+        }
+        
+        code {
+            background: #f6f8fb;
+            border: 1px solid #e6ecf1;
+            border-radius: 4px;
+            padding: 0.2rem 0.4rem;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+        }
+        
+        pre {
+            background: #f6f8fb;
+            border: 1px solid #e6ecf1;
+            border-radius: 6px;
+            padding: 1rem;
+            overflow-x: auto;
+            white-space: pre;
+        }
+        
+        pre code {
+            background: none;
+            border: none;
+            padding: 0;
+        }
+        
+        ul, ol {
+            line-height: 1.8;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+        
+        table th, table td {
+            border: 1px solid #dee2e6;
+            padding: 0.75rem;
+            text-align: left;
+        }
+        
+        table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #f5576c;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="nav-left">
+                <a href="../index.html" class="logo"><div class="logo-box">RevNova</div></a>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="onboarding-home.html">Onboarding</a></li>
+                        <li><a href="../about-revnova.html">About RevNova</a></li>
+                        <li><a href="../features.html">Features</a></li>
+                        <li><a href="../pricing.html">Pricing</a></li>
+                        <li><a href="../RevNovaRequirements/requirements-home.html">RevNova Requirements</a></li>
+                        <li><a href="../contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header-right">
+                <div class="country-selector"><span class="fi fi-us"></span></div>
+                <a href="../login.html" class="btn btn-login">Login</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="onboarding-layout">
+        <aside class="sidebar">
+            <h3>Getting Started</h3>
+            <ul>
+                <li><a href="onboarding-home.html">Onboarding Home</a></li>
+                <li><a href="onboarding-overview.html">Project Overview</a></li>
+                <li><a href="manual-repo-setup.html">Manual Repository Setup</a></li>
+                <li><a href="repo-setup-guide.html">Automated Setup Guide</a></li>
+            </ul>
+            
+            <h3>Developer Guides</h3>
+            <ul>
+                <li><a href="onboarding-dev1-phase1.html">Developer 1: Backend & Database</a></li>
+                <li><a href="onboarding-dev2-phase1.html">Developer 2: Frontend & React</a></li>
+                <li><a href="onboarding-dev3-phase1.html">Developer 3: DevOps & QA</a></li>
+            </ul>
+            
+            <h3>8-Week Timeline</h3>
+            <ul>
+                <li><a href="onboarding-home.html#timeline">Project Timeline</a></li>
+                <li><a href="onboarding-home.html#phase1">Phase 1: SFDC CPQ Migration (Weeks 1-5)</a></li>
+                <li><a href="onboarding-home.html#phase2">Phase 2: AI Configuration (Weeks 6-8)</a></li>
+            </ul>
+            
+            <h3>Development Workflows</h3>
+            <ul>
+                <li><a href="onboarding-home.html#vscode">VS Code Setup & Extensions</a></li>
+                <li><a href="onboarding-home.html#copilot">GitHub Copilot Usage</a></li>
+                <li><a href="onboarding-home.html#git">Git Workflow & PRs</a></li>
+                <li><a href="onboarding-home.html#testing">Unit & Integration Testing</a></li>
+            </ul>
+            
+            <h3>Page Assignments</h3>
+            <ul>
+                <li><a href="onboarding-home.html#page-assignments">Phase 1 Pages</a></li>
+                <li><a href="phase2-tasks.html">Phase 2 Pages</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="hero">
+                <h1>Developer 3: DevOps & QA</h1>
+                <p>Phase 1 Tasks - CI/CD, Infrastructure & Testing (Weeks 1-5)</p>
+                <p><strong>Your Focus:</strong> GitHub Actions, Docker, Redis/Bull queues, integration testing, deployment automation</p>
+            </div>
+
+            <!-- WEEK 1 -->
+            <section class="card" id="week1">
+                <h2>Week 1: CI/CD Pipeline & GitHub Actions (Nov 4-8, 2025)</h2>
+                <p><strong>Goal:</strong> Set up automated CI/CD pipeline with lint, test, build workflows</p>
+
+                <div class="day-card">
+                    <h4>Day 1 (Monday): Repository Setup & GitHub Actions Basics</h4>
+                    <div class="duration">Duration: Full day (8 hours)</div>
+                    
+                    <h5>Tasks:</h5>
+                    <ol>
+                        <li>Install required software: Git, VS Code, Node.js 20, Docker Desktop</li>
+                        <li>Clone RevNova-Dev repository</li>
+                        <li>Install VS Code extensions:
+                            <ul>
+                                <li>GitHub Copilot & Copilot Chat</li>
+                                <li>GitHub Actions (cschleiden.vscode-github-actions)</li>
+                                <li>Docker, YAML, ESLint, GitLens</li>
+                            </ul>
+                        </li>
+                        <li>Create <code>.github/workflows/</code> directory</li>
+                        <li>Study existing codebase structure (backend + frontend)</li>
+                    </ol>
+
+                    <div class="copilot-tip">
+                        <strong>💡 Copilot Tip:</strong> Ask Copilot Chat: "Explain GitHub Actions workflow syntax and best practices for Node.js monorepo with backend and frontend"
+                    </div>
+
+                    <div class="git-workflow">
+                        <strong>🌿 Git Workflow:</strong>
+                        <pre>git checkout -b feature/dev3-ci-cd-setup
+mkdir -p .github/workflows
+git add .github/
+git commit -m "chore: initialize GitHub Actions directory"
+git push -u origin feature/dev3-ci-cd-setup</pre>
+                    </div>
+
+                    <h5>Deliverable:</h5>
+                    <ul>
+                        <li>✓ Development environment ready</li>
+                        <li>✓ VS Code extensions installed</li>
+                        <li>✓ GitHub Actions directory created</li>
+                    </ul>
+                </div>
+
+                <div class="day-card">
+                    <h4>Day 2 (Tuesday): Lint & Test Workflow</h4>
+                    <div class="duration">Duration: 8 hours</div>
+                    
+                    <h5>Tasks:</h5>
+                    <ol>
+                        <li>Create <code>.github/workflows/ci.yml</code> workflow</li>
+                        <li>Configure lint job (ESLint for backend + frontend)</li>
+                        <li>Configure test job (Jest for backend, Vitest for frontend)</li>
+                        <li>Run on pull requests and main branch pushes</li>
+                        <li>Add status badge to README.md</li>
+                    </ol>
+
+                    <div class="copilot-tip">
+                        <strong>💡 Copilot Prompt:</strong> "Create GitHub Actions workflow for Node.js 20 monorepo that runs ESLint and Jest tests in parallel, with caching for node_modules"
+                    </div>
+
+                    <h5>CI Workflow Example:</h5>
+                    <pre># .github/workflows/ci.yml
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Lint backend
+        run: cd backend && npm run lint
+      
+      - name: Lint frontend
+        run: cd frontend && npm run lint
+
+  test-backend:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: testpass
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: cd backend && npm ci
+      
+      - name: Run tests
+        run: cd backend && npm test
+        env:
+          DATABASE_URL: postgresql://postgres:testpass@localhost:5432/test
+
+  test-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: cd frontend && npm ci
+      
+      - name: Run tests
+        run: cd frontend && npm test</pre>
+
+                    <div class="testing-section">
+                        <strong>✅ Testing:</strong> Push to feature branch and verify workflow runs successfully on GitHub Actions tab
+                    </div>
+
+                    <h5>Deliverable:</h5>
+                    <ul>
+                        <li>✓ CI workflow running on every PR</li>
+                        <li>✓ Lint and test jobs passing</li>
+                        <li>✓ Status badge added to README</li>
+                    </ul>
+                </div>
+
+                <div class="day-card">
+                    <h4>Day 3 (Wednesday): Build & Docker Workflow</h4>
+                    <div class="duration">Duration: 8 hours</div>
+                    
+                    <h5>Tasks:</h5>
+                    <ol>
+                        <li>Add build job to CI workflow</li>
+                        <li>Create Dockerfile for backend (Node.js 20)</li>
+                        <li>Create Dockerfile for frontend (Nginx serving static build)</li>
+                        <li>Test Docker builds locally</li>
+                        <li>Add Docker build step to GitHub Actions</li>
+                    </ol>
+
+                    <div class="copilot-tip">
+                        <strong>💡 Copilot Prompt:</strong> "Create production Dockerfile for Node.js Express TypeScript backend with multi-stage build, optimized for size"
+                    </div>
+
+                    <h5>Deliverable:</h5>
+                    <ul>
+                        <li>✓ Dockerfiles created for backend and frontend</li>
+                        <li>✓ Build job added to CI workflow</li>
+                        <li>✓ Docker images building successfully</li>
+                    </ul>
+                </div>
+
+                <div class="day-card">
+                    <h4>Day 4 (Thursday): Code Coverage & Quality Gates</h4>
+                    <div class="duration">Duration: 8 hours</div>
+                    
+                    <h5>Tasks:</h5>
+                    <ol>
+                        <li>Configure Jest/Vitest to generate coverage reports</li>
+                        <li>Add coverage upload to Codecov or similar</li>
+                        <li>Set minimum coverage threshold (80%)</li>
+                        <li>Fail CI if coverage drops below threshold</li>
+                        <li>Add coverage badge to README</li>
+                    </ol>
+
+                    <div class="copilot-tip">
+                        <strong>💡 Copilot Prompt:</strong> "Add Jest coverage reporting to GitHub Actions with Codecov integration and 80% threshold enforcement"
+                    </div>
+
+                    <h5>Deliverable:</h5>
+                    <ul>
+                        <li>✓ Coverage reports generated in CI</li>
+                        <li>✓ Quality gates enforced (80% minimum)</li>
+                        <li>✓ Coverage badge visible in README</li>
+                    </ul>
+                </div>
+
+                <div class="day-card">
+                    <h4>Day 5 (Friday): Week 1 Integration & PR</h4>
+                    <div class="duration">Duration: 6 hours</div>
+                    
+                    <h5>Tasks:</h5>
+                    <ol>
+                        <li>Test all workflows end-to-end</li>
+                        <li>Document CI/CD setup in README</li>
+                        <li>Create PR review checklist</li>
+                        <li>Open PR with workflow documentation</li>
+                    </ol>
+
+                    <div class="git-workflow">
+                        <strong>🌿 Git Workflow:</strong>
+                        <pre>git add .github/workflows/ci.yml backend/Dockerfile frontend/Dockerfile
+git commit -m "feat: add CI/CD pipeline with GitHub Actions
+
+- Implement lint, test, build workflows
+- Add PostgreSQL service for backend tests
+- Create Dockerfiles for backend and frontend
+- Configure code coverage with 80% threshold
+- Add status and coverage badges
+
+Closes #20"
+
+git push origin feature/dev3-ci-cd-setup
+# Open PR, ensure all checks pass</pre>
+                    </div>
+
+                    <h5>Deliverable:</h5>
+                    <ul>
+                        <li>✓ Complete CI/CD pipeline merged</li>
+                        <li>✓ All workflows passing on main branch</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- WEEK 2 -->
+            <section class="card" id="week2">
+                <h2>Week 2: Docker Compose & Local Development (Nov 11-15, 2025)</h2>
+                <p><strong>Goal:</strong> Set up local development environment with Docker Compose (PostgreSQL, Redis, backend, frontend)</p>
+
+                <div class="day-card">
+                    <h4>Day 6 (Monday): Docker Compose Configuration</h4>
+                    <div class="duration">Duration: 8 hours</div>
+                    
+                    <h5>Tasks:</h5>
+                    <ol>
+                        <li>Create <code>docker-compose.yml</code> in project root</li>
+                        <li>Define services: PostgreSQL 15, Redis 7, backend, frontend</li>
+                        <li>Configure volumes for data persistence</li>
+                        <li>Set up networking between services</li>
+                        <li>Create <code>.env.example</code> file</li>
+                    </ol>
+
+                    <div class="copilot-tip">
+                        <strong>💡 Copilot Prompt:</strong> "Create Docker Compose file for Node.js backend, React frontend, PostgreSQL 15, and Redis 7 with health checks and proper networking"
+                    </div>
+
+                    <h5>Docker Compose Example:</h5>
+                    <pre>version: '3.9'
+
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: revnova
+      POSTGRES_PASSWORD: devpass
+      POSTGRES_DB: revnova_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U revnova"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://revnova:devpass@postgres:5432/revnova_dev
+      REDIS_URL: redis://redis:6379
+      NODE_ENV: development
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+  redis_data:</pre>
+
+                    <h5>Deliverable:</h5>
+                    <ul>
+                        <li>✓ Docker Compose file complete</li>
+                        <li>✓ All services start with <code>docker compose up</code></li>
+                    </ul>
+                </div>
+
+                <div class="day-card">
+                    <h4>Day 7-8 (Tuesday-Wednesday): Database Migrations & Seed Data</h4>
+                    <div class="duration">Duration: 16 hours (2 days)</div>
+                    
+                    <h5>Tasks:</h5>
+                    <ol>
+                        <li>Set up migration tool (TypeORM migrations or node-pg-migrate)</li>
+                        <li>Create initial migration for STG1, STG2, EAV tables</li>
+                        <li>Create seed data script for testing</li>
+                        <li>Run migrations automatically on container start</li>
+                        <li>Document migration workflow</li>
+                    </ol>
+
+                    <div class="copilot-tip">
+                        <strong>💡 Copilot Prompt:</strong> "Create TypeORM migration script that creates STG1 staging table with dynamic columns, STG2 normalized tables, and EAV custom field tables"
+                    </div>
+
+                    <h5>Deliverable:</h5>
+                    <ul>
+                        <li>✓ Migrations running on container startup</li>
+                        <li>✓ Seed data available for dev/test</li>
+                        <li>✓ Migration commands documented</li>
+                    </ul>
+                </div>
+
+                <div class="day-card">
+                    <h4>Day 9-10 (Thursday-Friday): Bull Queue Setup & Week 2 PR</h4>
+                    <div class="duration">Duration: 12 hours</div>
+                    
+                    <h5>Tasks:</h5>
+                    <ol>
+                        <li>Install Bull and Bull Board (queue monitoring UI)</li>
+                        <li>Create queue for ETL jobs</li>
+                        <li>Set up Bull Board on <code>/admin/queues</code> endpoint</li>
+                        <li>Test queue with sample job</li>
+                        <li>Document queue usage</li>
+                        <li>Create PR</li>
+                    </ol>
+
+                    <div class="testing-section">
+                        <strong>✅ Testing:</strong>
+                        <ul>
+                            <li>Verify all containers start: <code>docker compose up</code></li>
+                            <li>Check health: <code>docker compose ps</code></li>
+                            <li>Access Bull Board: http://localhost:3000/admin/queues</li>
+                            <li>Trigger test job and verify execution</li>
+                        </ul>
+                    </div>
+
+                    <h5>Deliverable:</h5>
+                    <ul>
+                        <li>✓ Complete Docker development environment</li>
+                        <li>✓ Bull queue operational with monitoring</li>
+                        <li>✓ PR merged</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- WEEK 3 -->
+            <section class="card" id="week3">
+                <h2>Week 3: Integration Testing Framework (Nov 18-22, 2025)</h2>
+                <p><strong>Goal:</strong> Set up end-to-end integration testing with Supertest (API) and Playwright (UI)</p>
+                <p><em>Daily breakdown summary:</em></p>
+                <ul>
+                    <li>Day 11-12: Supertest setup for backend API integration tests</li>
+                    <li>Day 13: Test database setup/teardown automation</li>
+                    <li>Day 14: Playwright setup for frontend E2E tests</li>
+                    <li>Day 15: Integration test suite for connection wizard flow, Week 3 PR</li>
+                </ul>
+            </section>
+
+            <!-- WEEK 4-5 -->
+            <section class="card" id="week4">
+                <h2>Week 4-5: Deployment Automation & Monitoring (Nov 25-Dec 6)</h2>
+                <p><strong>Goal:</strong> Create deployment workflows, environment promotion, monitoring setup</p>
+                <p><em>Task breakdown summary:</em></p>
+                <ul>
+                    <li><strong>Week 4:</strong> Deploy to Dev environment workflow, secrets management, health check endpoints</li>
+                    <li><strong>Week 5:</strong> Deploy to Test environment workflow, smoke tests, environment promotion scripts</li>
+                </ul>
+                <p><strong>Key Deliverables:</strong></p>
+                <ul>
+                    <li>Automated deployment to RevNova-Dev on merge to develop branch</li>
+                    <li>Automated deployment to RevNova-Test on release tags</li>
+                    <li>Health check monitoring endpoints</li>
+                    <li>Rollback procedures documented</li>
+                </ul>
+            </section>
+
+            <section class="card">
+                <h2>VS Code + Copilot Best Practices for DevOps</h2>
+                
+                <h3>Daily Copilot Workflow</h3>
+                <ol>
+                    <li><strong>YAML generation:</strong> Ask "Create GitHub Actions workflow for [task]"</li>
+                    <li><strong>Docker optimization:</strong> Ask "Optimize this Dockerfile for production with multi-stage build"</li>
+                    <li><strong>Shell scripts:</strong> Copilot suggests deployment and setup scripts</li>
+                    <li><strong>SQL migrations:</strong> Ask "Generate migration to create [table] with [columns]"</li>
+                    <li><strong>Integration tests:</strong> Ask "Create Supertest integration test for [endpoint]"</li>
+                    <li><strong>Monitoring:</strong> Ask "Add health check endpoint with database and Redis checks"</li>
+                </ol>
+
+                <h3>Infrastructure Testing Checklist</h3>
+                <ul>
+                    <li>✓ All Docker containers start without errors</li>
+                    <li>✓ Health checks pass for all services</li>
+                    <li>✓ Database migrations run successfully</li>
+                    <li>✓ Redis connection working</li>
+                    <li>✓ Bull queue processes jobs</li>
+                    <li>✓ CI/CD workflows pass on every PR</li>
+                    <li>✓ Integration tests cover critical paths</li>
+                </ul>
+
+                <h3>Git Workflow for Infrastructure</h3>
+                <pre>git checkout -b feature/docker-setup
+# Build feature
+git add docker-compose.yml .github/workflows/
+git commit -m "feat: add Docker Compose development environment
+
+- Add PostgreSQL 15 and Redis 7 services
+- Configure backend and frontend containers
+- Set up database migrations
+- Add Bull queue with monitoring UI
+- Health checks for all services
+
+Closes #25"
+git push origin feature/docker-setup
+# Open PR, test locally, merge</pre>
+            </section>
+
+            <section class="card">
+                <h2>Week-by-Week Summary</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Week</th>
+                            <th>Focus Area</th>
+                            <th>Key Deliverables</th>
+                            <th>PRs</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>CI/CD Pipeline</td>
+                            <td>GitHub Actions workflows, Docker builds, code coverage</td>
+                            <td>1 PR</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Local Development</td>
+                            <td>Docker Compose, migrations, Bull queue setup</td>
+                            <td>1 PR</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Integration Testing</td>
+                            <td>Supertest API tests, Playwright E2E tests</td>
+                            <td>1 PR</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Deployment - Dev</td>
+                            <td>Deploy to Dev workflow, secrets, health checks</td>
+                            <td>1 PR</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>Deployment - Test</td>
+                            <td>Deploy to Test workflow, smoke tests, promotion</td>
+                            <td>1 PR</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="card">
+                <h2>Integration Testing Best Practices</h2>
+                
+                <h3>API Integration Tests (Supertest)</h3>
+                <pre>// tests/integration/connection.test.ts
+import request from 'supertest';
+import { app } from '../../src/app';
+import { setupTestDb, teardownTestDb } from '../helpers/db';
+
+describe('POST /api/v1/connections/test', () => {
+  beforeAll(async () => {
+    await setupTestDb();
+  });
+
+  afterAll(async () => {
+    await teardownTestDb();
+  });
+
+  it('should validate SFDC connection', async () => {
+    const response = await request(app)
+      .post('/api/v1/connections/test')
+      .send({
+        instanceUrl: 'https://test.salesforce.com',
+        accessToken: 'mock_token'
+      })
+      .expect(200);
+
+    expect(response.body.success).toBe(true);
+    expect(response.body.orgId).toBeDefined();
+  });
+
+  it('should return 400 for invalid credentials', async () => {
+    const response = await request(app)
+      .post('/api/v1/connections/test')
+      .send({
+        instanceUrl: 'invalid-url'
+      })
+      .expect(400);
+
+    expect(response.body.error).toBeDefined();
+  });
+});</pre>
+
+                <h3>E2E Tests (Playwright)</h3>
+                <pre>// tests/e2e/connection-wizard.spec.ts
+import { test, expect } from '@playwright/test';
+
+test.describe('Connection Wizard', () => {
+  test('should complete connection flow', async ({ page }) => {
+    await page.goto('http://localhost:5173/wizard/connection');
+    
+    // Select environment
+    await page.selectOption('#environment', 'sandbox');
+    
+    // Enter credentials
+    await page.fill('#instanceUrl', 'https://test.salesforce.com');
+    await page.fill('#username', 'test@example.com');
+    await page.fill('#password', 'testpass');
+    
+    // Submit
+    await page.click('button[type="submit"]');
+    
+    // Verify success
+    await expect(page.locator('.success-message')).toBeVisible();
+    await expect(page).toHaveURL('/wizard/analyze');
+  });
+});</pre>
+            </section>
+
+            <section class="card">
+                <h2>Next: Phase 2 Tasks</h2>
+                <p>After completing Phase 1, proceed to <a href="phase2-tasks.html">Phase 2: AI Configuration Features (Weeks 6-8)</a></p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
