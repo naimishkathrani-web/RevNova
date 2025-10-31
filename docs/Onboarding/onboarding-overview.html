@@ -50,7 +50,7 @@
         <li><strong>Testing:</strong> <code>naimishkathrani-web/RevNova-Test</code> (staging QA) — integration testing, pre-release branches.</li>
         <li><strong>Development:</strong> <code>naimishkathrani-web/RevNova-Dev</code> (your working repo) — daily development.</li>
       </ol>
-      <div class="callout"><strong>Action for Owner:</strong> Create <em>RevNova-Dev</em> and <em>RevNova-Test</em> repos under the same owner, enable branch protections, and grant developer access to <em>RevNova-Dev</em>. Configure GitHub Environments (Dev/Test/Prod) and required status checks.</div>
+      <div class="callout"><strong>Owner Setup Required:</strong> I've created a complete <a href="repo-setup-guide.html">Repository Setup Guide</a> with step-by-step instructions and an automated PowerShell script (<code>scripts/setup-repos.ps1</code>) to create the Dev and Test repos, configure branch protections, and grant access. Run the script or follow the manual steps in the guide.</div>
       <ul>
         <li><strong>Flow:</strong> feature branches in Dev → PR to Dev main → sync to Test via PR → release to Prod via PR and tags.</li>
         <li><strong>Remotes setup:</strong> on your local, add <code>origin</code> = RevNova-Dev and <code>test</code> = RevNova-Test for promotion.</li>

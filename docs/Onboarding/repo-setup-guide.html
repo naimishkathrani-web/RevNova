@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Repository Setup Guide — Dev/Test/Prod Environment</title>
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    body { margin:0; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,sans-serif; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+    .hero { background: linear-gradient(135deg,#11998e 0%,#38ef7d 100%); color:#fff; padding:2.5rem; border-radius:12px; margin:1.5rem 0; }
+    .card { background:#fff; border:1px solid #e0e0e0; border-radius:12px; padding:1.25rem; margin-bottom:1rem; }
+    h1,h2 { margin:0 0 .75rem 0; }
+    h3 { color:#11998e; margin:1rem 0 .5rem 0; }
+    code, pre { background:#f6f8fb; border:1px solid #e6ecf1; border-radius:6px; padding:.25rem .4rem; font-family: 'Consolas', 'Monaco', monospace; }
+    pre { padding: .8rem; overflow:auto; white-space: pre; }
+    ul, ol { line-height: 1.8; }
+    .warning { background:#fff3cd; border:1px solid #ffc107; padding: .8rem 1rem; border-radius:8px; margin:1rem 0; }
+    .success { background:#d4edda; border:1px solid #28a745; padding: .8rem 1rem; border-radius:8px; margin:1rem 0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="hero">
+      <h1>Repository Setup Guide</h1>
+      <p>Complete step-by-step instructions to create Dev/Test/Prod environments for RevNova</p>
+    </div>
+
+    <section class="card">
+      <h2>Overview</h2>
+      <p>This guide will help you set up three repositories:</p>
+      <ul>
+        <li><strong>RevNova</strong> (Production) - Already exists at <code>naimishkathrani-web/RevNova</code></li>
+        <li><strong>RevNova-Dev</strong> (Development) - To be created</li>
+        <li><strong>RevNova-Test</strong> (Testing/Staging) - To be created</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Prerequisites</h2>
+      <ul>
+        <li>GitHub CLI installed: <code>gh --version</code></li>
+        <li>Authenticated: <code>gh auth login</code></li>
+        <li>Owner or Admin access to <code>naimishkathrani-web</code> organization/account</li>
+      </ul>
+      <div class="warning">
+        <strong>⚠️ Important:</strong> You must be logged in as the owner (<code>naimishkathrani-web</code>) to create repositories and configure settings.
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Step 1: Create Development Repository</h2>
+      <p>Create <code>RevNova-Dev</code> from the current Production repository:</p>
+      <pre># Create Dev repo as a fork/clone of Production
+gh repo create naimishkathrani-web/RevNova-Dev --public --clone --source naimishkathrani-web/RevNova
+
+# Navigate to the new repo
+cd RevNova-Dev
+
+# Set main as default branch
+git branch -M main
+git push -u origin main</pre>
+      <p><em>Alternative (if fork doesn't work):</em></p>
+      <pre># Create empty repo and push current code
+gh repo create naimishkathrani-web/RevNova-Dev --public --description "RevNova Development Repository"
+
+# In your local RevNova folder, add dev remote
+cd C:\Dev\RevNovaRepository
+git remote add dev https://github.com/naimishkathrani-web/RevNova-Dev.git
+git push dev main</pre>
+    </section>
+
+    <section class="card">
+      <h2>Step 2: Create Testing Repository</h2>
+      <p>Create <code>RevNova-Test</code>:</p>
+      <pre># Create Test repo
+gh repo create naimishkathrani-web/RevNova-Test --public --description "RevNova Testing/Staging Repository"
+
+# Add test remote to your local repo
+cd C:\Dev\RevNovaRepository
+git remote add test https://github.com/naimishkathrani-web/RevNova-Test.git
+git push test main</pre>
+    </section>
+
+    <section class="card">
+      <h2>Step 3: Configure Branch Protections</h2>
+      <p>Protect the <code>main</code> branch in all three repositories:</p>
+      <pre># Production (RevNova)
+gh api repos/naimishkathrani-web/RevNova/branches/main/protection -X PUT -f required_status_checks='{"strict":true,"contexts":["ci/test","ci/lint"]}' -f enforce_admins=true -f required_pull_request_reviews='{"required_approving_review_count":1}' -f restrictions=null
+
+# Development (RevNova-Dev)
+gh api repos/naimishkathrani-web/RevNova-Dev/branches/main/protection -X PUT -f required_status_checks='{"strict":true,"contexts":["ci/test","ci/lint"]}' -f enforce_admins=false -f required_pull_request_reviews='{"required_approving_review_count":1}' -f restrictions=null
+
+# Testing (RevNova-Test)
+gh api repos/naimishkathrani-web/RevNova-Test/branches/main/protection -X PUT -f required_status_checks='{"strict":true,"contexts":["ci/test","ci/lint"]}' -f enforce_admins=false -f required_pull_request_reviews='{"required_approving_review_count":1}' -f restrictions=null</pre>
+      <div class="warning">
+        <strong>Note:</strong> If these commands fail, you can configure branch protection manually:
+        <ol>
+          <li>Go to repo → Settings → Branches</li>
+          <li>Add branch protection rule for <code>main</code></li>
+          <li>Enable: "Require pull request reviews before merging"</li>
+          <li>Enable: "Require status checks to pass before merging"</li>
+          <li>Add status checks: <code>ci/test</code>, <code>ci/lint</code></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Step 4: Grant Developer Access</h2>
+      <p>Add your three developers to the Development repository:</p>
+      <pre># Replace with actual GitHub usernames
+gh api repos/naimishkathrani-web/RevNova-Dev/collaborators/DEVELOPER1_USERNAME -X PUT -f permission=push
+gh api repos/naimishkathrani-web/RevNova-Dev/collaborators/DEVELOPER2_USERNAME -X PUT -f permission=push
+gh api repos/naimishkathrani-web/RevNova-Dev/collaborators/DEVELOPER3_USERNAME -X PUT -f permission=push</pre>
+      <p><em>Alternatively, via GitHub Web UI:</em></p>
+      <ol>
+        <li>Go to <code>RevNova-Dev</code> → Settings → Collaborators</li>
+        <li>Click "Add people"</li>
+        <li>Search for each developer and grant "Write" access</li>
+      </ol>
+    </section>
+
+    <section class="card">
+      <h2>Step 5: Configure GitHub Environments</h2>
+      <p>Set up environments for deployment gates:</p>
+      <pre># Create Development environment (in RevNova-Dev)
+gh api repos/naimishkathrani-web/RevNova-Dev/environments/development -X PUT
+
+# Create Testing environment (in RevNova-Test)
+gh api repos/naimishkathrani-web/RevNova-Test/environments/testing -X PUT -f reviewers='[{"type":"User","id":YOUR_USER_ID}]'
+
+# Create Production environment (in RevNova)
+gh api repos/naimishkathrani-web/RevNova/environments/production -X PUT -f reviewers='[{"type":"User","id":YOUR_USER_ID}]' -f wait_timer=0</pre>
+      <p><em>Manual setup via GitHub Web UI:</em></p>
+      <ol>
+        <li>Go to repo → Settings → Environments</li>
+        <li>Click "New environment"</li>
+        <li>Name: <code>development</code> / <code>testing</code> / <code>production</code></li>
+        <li>For Testing/Production: add required reviewers</li>
+        <li>For Production: optionally add deployment branch rule (only <code>main</code>)</li>
+      </ol>
+    </section>
+
+    <section class="card">
+      <h2>Step 6: Update Local Repository Remotes</h2>
+      <p>Configure your local repository to track all three environments:</p>
+      <pre>cd C:\Dev\RevNovaRepository
+
+# Verify current remote (should be 'origin' pointing to Production)
+git remote -v
+
+# Add dev remote
+git remote add dev https://github.com/naimishkathrani-web/RevNova-Dev.git
+
+# Add test remote
+git remote add test https://github.com/naimishkathrani-web/RevNova-Test.git
+
+# Rename origin to prod for clarity (optional)
+git remote rename origin prod
+
+# Verify all remotes
+git remote -v</pre>
+      <div class="success">
+        <strong>Expected output:</strong><br>
+        <code>dev&nbsp;&nbsp;&nbsp;&nbsp;https://github.com/naimishkathrani-web/RevNova-Dev.git</code><br>
+        <code>test&nbsp;&nbsp;&nbsp;https://github.com/naimishkathrani-web/RevNova-Test.git</code><br>
+        <code>prod&nbsp;&nbsp;&nbsp;https://github.com/naimishkathrani-web/RevNova.git</code>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Step 7: Verify Setup</h2>
+      <p>Confirm everything is configured correctly:</p>
+      <pre># Check all repositories exist
+gh repo view naimishkathrani-web/RevNova
+gh repo view naimishkathrani-web/RevNova-Dev
+gh repo view naimishkathrani-web/RevNova-Test
+
+# Check branch protection
+gh api repos/naimishkathrani-web/RevNova-Dev/branches/main/protection
+
+# Check collaborators
+gh api repos/naimishkathrani-web/RevNova-Dev/collaborators</pre>
+    </section>
+
+    <section class="card">
+      <h2>Automated Setup Script</h2>
+      <p>I've created a PowerShell script to automate most of this: <code>scripts/setup-repos.ps1</code></p>
+      <p>Run it with:</p>
+      <pre>cd C:\Dev\RevNovaRepository
+.\scripts\setup-repos.ps1</pre>
+      <p>The script will guide you through each step and confirm before making changes.</p>
+    </section>
+
+    <section class="card">
+      <h2>Next Steps for Developers</h2>
+      <ol>
+        <li>Send invitation emails to your three developers for <code>RevNova-Dev</code></li>
+        <li>Share the onboarding guides: <a href="onboarding-overview.html">Overview</a>, <a href="onboarding-dev1.html">Dev1</a>, <a href="onboarding-dev2.html">Dev2</a>, <a href="onboarding-dev3.html">Dev3</a></li>
+        <li>Developers clone <strong>only</strong> <code>RevNova-Dev</code> and add <code>test</code> remote</li>
+        <li>Create first feature branches and test the PR workflow</li>
+      </ol>
+    </section>
+
+    <p style="margin:2rem 0 0 0; color:#666;">If you encounter any issues during setup, check the <a href="https://cli.github.com/manual/">GitHub CLI documentation</a> or open an issue in the repository.</p>
+  </div>
+</body>
+</html>
