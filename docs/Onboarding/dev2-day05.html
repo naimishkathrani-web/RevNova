@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Day 5: API Client & Week 1 PR - RevNova Onboarding</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
+        .onboarding-layout { display: flex; min-height: calc(100vh - 80px); margin-top: 80px; }
+        .sidebar { width: 280px; background: #f8f9fa; border-right: 1px solid #e0e0e0; padding: 2rem 0; position: fixed; left: 0; top: 80px; height: calc(100vh - 80px); overflow-y: auto; z-index: 100; }
+        .sidebar h3 { padding: 0 1.5rem; font-size: 0.85rem; color: #666; text-transform: uppercase; letter-spacing: 0.5px; margin: 1.5rem 0 0.5rem; }
+        .sidebar h3:first-child { margin-top: 0; }
+        .sidebar ul { list-style: none; padding: 0; margin: 0; }
+        .sidebar ul li a { display: block; padding: 0.6rem 1.5rem; color: #333; text-decoration: none; font-size: 0.95rem; transition: all 0.2s; }
+        .sidebar ul li a:hover { background: #e9ecef; color: #667eea; }
+        .sidebar ul li a.active { background: #667eea; color: #fff; font-weight: 500; }
+        .sidebar ul ul { padding-left: 0; }
+        .sidebar ul ul li a { padding-left: 2.5rem; font-size: 0.9rem; }
+        .main-content { flex: 1; margin-left: 280px; padding: 3rem; background: #fff; min-width: 0; }
+        .day-header { background: linear-gradient(135deg, #43e97b, #38f9d7); color: #fff; padding: 2rem; border-radius: 12px; margin-bottom: 2rem; }
+        .day-header h1 { margin: 0 0 0.5rem 0; font-size: 2rem; }
+        .day-header p { margin: 0; font-size: 1.1rem; opacity: 0.95; }
+        .step-card { background: #fff; border: 2px solid #e0e0e0; border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; }
+        .step-number { display: inline-block; background: #43e97b; color: #fff; width: 36px; height: 36px; border-radius: 50%; text-align: center; line-height: 36px; font-weight: bold; margin-right: 1rem; }
+        .step-card h2 { color: #43e97b; margin: 0 0 1rem 0; display: flex; align-items: center; }
+        .command-box { background: #2d2d2d; color: #f8f8f2; padding: 1rem; border-radius: 8px; margin: 1rem 0; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.95rem; overflow-x: auto; }
+        .tip-box { background: #fff3cd; border-left: 4px solid #ffc107; padding: 1rem; margin: 1rem 0; border-radius: 4px; }
+        .tip-box strong { color: #856404; }
+        .checklist { list-style: none; padding: 0; }
+        .checklist li { padding: 0.5rem 0; position: relative; padding-left: 2rem; }
+        .checklist li:before { content: "☐"; position: absolute; left: 0; font-size: 1.5rem; color: #43e97b; }
+        .nav-buttons { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid #e0e0e0; }
+        .nav-btn { display: inline-block; padding: 0.75rem 2rem; border-radius: 8px; text-decoration: none; font-weight: 500; transition: all 0.3s; }
+        .nav-btn.back { background: #f0f0f0; color: #333; }
+        .nav-btn.back:hover { background: #e0e0e0; }
+        .nav-btn.next { background: #43e97b; color: #fff; }
+        .nav-btn.next:hover { background: #38f9d7; }
+        @media (max-width: 768px) { .sidebar { display: none; } .main-content { margin-left: 0; } }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="nav-left">
+                <a href="../index.html" class="logo"><div class="logo-box">RevNova</div></a>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="onboarding-home.html" class="active">Onboarding</a></li>
+                        <li><a href="../about-revnova.html">About RevNova</a></li>
+                        <li><a href="../features.html">Features</a></li>
+                        <li><a href="../pricing.html">Pricing</a></li>
+                        <li><a href="../contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header-right">
+                <div class="country-selector"><span class="fi fi-us"></span></div>
+                <a href="../login.html" class="btn btn-login">Login</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="onboarding-layout">
+        <aside class="sidebar">
+            <h3>Getting Started</h3>
+            <ul>
+                <li><a href="onboarding-home.html">Onboarding Home</a></li>
+                <li><a href="onboarding-overview.html">Project Overview</a></li>
+                <li><a href="manual-repo-setup.html">Manual Repository Setup</a></li>
+                <li><a href="repo-setup-guide.html">Automated Setup Guide</a></li>
+            </ul>
+            
+            <h3>Developer 2: Frontend & React</h3>
+            <ul>
+                <li><a href="dev2-week1.html">Week 1: React Setup & Components</a>
+                    <ul>
+                        <li><a href="dev2-day01.html">Day 1: React Setup</a></li>
+                        <li><a href="dev2-day02.html">Day 2: Component Library</a></li>
+                        <li><a href="dev2-day03.html">Day 3: Wizard Layout & Routing</a></li>
+                        <li><a href="dev2-day04.html">Day 4: State Management</a></li>
+                        <li><a href="dev2-day05.html" class="active">Day 5: API Client & Week 1 PR</a></li>
+                    </ul>
+                </li>
+                <li><a href="dev2-week2.html">Week 2: Connection Wizard Page</a></li>
+                <li><a href="dev2-week3.html">Week 3: Field Mapping UI</a></li>
+                <li><a href="dev2-week4.html">Week 4: Transformation & Validation UI</a></li>
+                <li><a href="dev2-week5.html">Week 5: Execution & Test Reports</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="day-header">
+                <h1>Day 5: API Client & Week 1 PR</h1>
+                <p>Developer 2 - Frontend & React | Duration: ~6-8 hours</p>
+            </div>
+
+            <div class="step-card">
+                <h2><span class="step-number">1</span> Install Axios</h2>
+                <p><strong>What you need to do:</strong> Add HTTP client library</p>
+                
+                <p>In terminal, run:</p>
+                <div class="command-box">cd frontend
+npm install axios</div>
+
+                <div class="tip-box">
+                    <strong>💡 Why Axios?</strong> It's simpler than fetch(), handles errors better, and works great with TypeScript!
+                </div>
+            </div>
+
+            <div class="step-card">
+                <h2><span class="step-number">2</span> Create API Client</h2>
+                <p><strong>What you need to do:</strong> Build reusable API client</p>
+                
+                <p>Create folder and file:</p>
+                <div class="command-box">mkdir src\services
+type nul > src\services\api.ts</div>
+
+                <p>Add this code to <code>frontend/src/services/api.ts</code>:</p>
+                
+                <div class="command-box">import axios, { AxiosInstance, AxiosError } from 'axios';
+
+// Create axios instance
+const apiClient: AxiosInstance = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1',
+  timeout: 30000,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// Request interceptor (for auth tokens later)
+apiClient.interceptors.request.use(
+  (config) => {
+    // Add auth token if exists
+    const token = localStorage.getItem('auth_token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+// Response interceptor (for error handling)
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error: AxiosError) => {
+    if (error.response?.status === 401) {
+      // Handle unauthorized
+      localStorage.removeItem('auth_token');
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
+
+export default apiClient;</div>
+            </div>
+
+            <div class="step-card">
+                <h2><span class="step-number">3</span> Create API Service Functions</h2>
+                <p><strong>What you need to do:</strong> Build typed API functions</p>
+                
+                <p>Create file: <code>frontend/src/services/migrationService.ts</code></p>
+                
+                <div class="command-box">import apiClient from './api';
+
+export interface HealthResponse {
+  status: string;
+  message: string;
+  timestamp: string;
+  database: string;
+}
+
+export const migrationService = {
+  // Health check
+  checkHealth: async (): Promise<HealthResponse> => {
+    const response = await apiClient.get<HealthResponse>('/health');
+    return response.data;
+  },
+
+  // Create migration (placeholder for Week 2)
+  createMigration: async (name: string) => {
+    const response = await apiClient.post('/migrations', { name });
+    return response.data;
+  },
+
+  // Get migrations list (placeholder)
+  getMigrations: async () => {
+    const response = await apiClient.get('/migrations');
+    return response.data;
+  },
+};</div>
+            </div>
+
+            <div class="step-card">
+                <h2><span class="step-number">4</span> Create Environment Variables</h2>
+                <p><strong>What you need to do:</strong> Configure API URL</p>
+                
+                <p>Create file in frontend folder: <code>frontend/.env</code></p>
+                
+                <div class="command-box">VITE_API_URL=http://localhost:3000/api/v1</div>
+
+                <div class="tip-box">
+                    <strong>💡 Environment variables:</strong> Use VITE_ prefix for Vite to expose them to your app. Never commit secrets to .env!
+                </div>
+            </div>
+
+            <div class="step-card">
+                <h2><span class="step-number">5</span> Test API Connection</h2>
+                <p><strong>What you need to do:</strong> Call backend health endpoint</p>
+                
+                <p>Update <code>frontend/src/App.tsx</code> to test API:</p>
+                
+                <div class="command-box">import { useState, useEffect } from 'react';
+import { migrationService, HealthResponse } from './services/migrationService';
+
+function App() {
+  const [health, setHealth] = useState<HealthResponse | null>(null);
+  const [error, setError] = useState<string>('');
+
+  useEffect(() => {
+    const checkAPI = async () => {
+      try {
+        const data = await migrationService.checkHealth();
+        setHealth(data);
+      } catch (err) {
+        setError('Failed to connect to backend. Is it running on port 3000?');
+      }
+    };
+    checkAPI();
+  }, []);
+
+  return (
+    <div className="p-8">
+      <h1 className="text-3xl font-bold mb-4">API Connection Test</h1>
+      {error && <div className="bg-red-100 text-red-700 p-4 rounded">{error}</div>}
+      {health && (
+        <div className="bg-green-100 p-4 rounded">
+          <p><strong>Status:</strong> {health.status}</p>
+          <p><strong>Message:</strong> {health.message}</p>
+          <p><strong>Database:</strong> {health.database}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default App;</div>
+
+                <p><strong>Important:</strong> Make sure Dev1's backend is running on port 3000!</p>
+            </div>
+
+            <div class="step-card">
+                <h2><span class="step-number">6</span> Commit Week 1 Work</h2>
+                <p><strong>What you need to do:</strong> Save your progress to Git</p>
+                
+                <p>Stop the dev server (Ctrl+C)</p>
+                
+                <p>Commit your work:</p>
+                <div class="command-box">git add .
+git commit -m "feat: Week 1 complete - React setup, components, routing, state, API client"
+git log --oneline -5</div>
+
+                <div class="tip-box">
+                    <strong>💡 Great teamwork!</strong> Next week you'll work with Dev1 to integrate real backend APIs!
+                </div>
+            </div>
+
+            <div class="step-card">
+                <h2>✅ Week 1 Complete!</h2>
+                <p>Excellent work! You've completed Week 1! You now have:</p>
+                <ul class="checklist">
+                    <li>React 18 + Vite development environment</li>
+                    <li>Reusable UI components (Button, Input, Card)</li>
+                    <li>7-step wizard with React Router</li>
+                    <li>Zustand state management with persistence</li>
+                    <li>Axios API client with interceptors</li>
+                    <li>TypeScript types for all services</li>
+                    <li>All work committed to Git</li>
+                </ul>
+                
+                <p><strong>Next Week:</strong> You'll build the Connection Wizard page with real Salesforce OAuth!</p>
+            </div>
+
+            <div class="nav-buttons">
+                <a href="dev2-day04.html" class="nav-btn back">← Day 4</a>
+                <a href="dev2-day06.html" class="nav-btn next">Next: Day 6 →</a>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

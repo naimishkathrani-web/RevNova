@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Day 4: State Management - RevNova Onboarding</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
+        .onboarding-layout { display: flex; min-height: calc(100vh - 80px); margin-top: 80px; }
+        .sidebar { width: 280px; background: #f8f9fa; border-right: 1px solid #e0e0e0; padding: 2rem 0; position: fixed; left: 0; top: 80px; height: calc(100vh - 80px); overflow-y: auto; z-index: 100; }
+        .sidebar h3 { padding: 0 1.5rem; font-size: 0.85rem; color: #666; text-transform: uppercase; letter-spacing: 0.5px; margin: 1.5rem 0 0.5rem; }
+        .sidebar h3:first-child { margin-top: 0; }
+        .sidebar ul { list-style: none; padding: 0; margin: 0; }
+        .sidebar ul li a { display: block; padding: 0.6rem 1.5rem; color: #333; text-decoration: none; font-size: 0.95rem; transition: all 0.2s; }
+        .sidebar ul li a:hover { background: #e9ecef; color: #667eea; }
+        .sidebar ul li a.active { background: #667eea; color: #fff; font-weight: 500; }
+        .sidebar ul ul { padding-left: 0; }
+        .sidebar ul ul li a { padding-left: 2.5rem; font-size: 0.9rem; }
+        .main-content { flex: 1; margin-left: 280px; padding: 3rem; background: #fff; min-width: 0; }
+        .day-header { background: linear-gradient(135deg, #43e97b, #38f9d7); color: #fff; padding: 2rem; border-radius: 12px; margin-bottom: 2rem; }
+        .day-header h1 { margin: 0 0 0.5rem 0; font-size: 2rem; }
+        .day-header p { margin: 0; font-size: 1.1rem; opacity: 0.95; }
+        .step-card { background: #fff; border: 2px solid #e0e0e0; border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; }
+        .step-number { display: inline-block; background: #43e97b; color: #fff; width: 36px; height: 36px; border-radius: 50%; text-align: center; line-height: 36px; font-weight: bold; margin-right: 1rem; }
+        .step-card h2 { color: #43e97b; margin: 0 0 1rem 0; display: flex; align-items: center; }
+        .command-box { background: #2d2d2d; color: #f8f8f2; padding: 1rem; border-radius: 8px; margin: 1rem 0; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.95rem; overflow-x: auto; }
+        .tip-box { background: #fff3cd; border-left: 4px solid #ffc107; padding: 1rem; margin: 1rem 0; border-radius: 4px; }
+        .tip-box strong { color: #856404; }
+        .checklist { list-style: none; padding: 0; }
+        .checklist li { padding: 0.5rem 0; position: relative; padding-left: 2rem; }
+        .checklist li:before { content: "☐"; position: absolute; left: 0; font-size: 1.5rem; color: #43e97b; }
+        .nav-buttons { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid #e0e0e0; }
+        .nav-btn { display: inline-block; padding: 0.75rem 2rem; border-radius: 8px; text-decoration: none; font-weight: 500; transition: all 0.3s; }
+        .nav-btn.back { background: #f0f0f0; color: #333; }
+        .nav-btn.back:hover { background: #e0e0e0; }
+        .nav-btn.next { background: #43e97b; color: #fff; }
+        .nav-btn.next:hover { background: #38f9d7; }
+        @media (max-width: 768px) { .sidebar { display: none; } .main-content { margin-left: 0; } }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="nav-left">
+                <a href="../index.html" class="logo"><div class="logo-box">RevNova</div></a>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="onboarding-home.html" class="active">Onboarding</a></li>
+                        <li><a href="../about-revnova.html">About RevNova</a></li>
+                        <li><a href="../features.html">Features</a></li>
+                        <li><a href="../pricing.html">Pricing</a></li>
+                        <li><a href="../contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header-right">
+                <div class="country-selector"><span class="fi fi-us"></span></div>
+                <a href="../login.html" class="btn btn-login">Login</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="onboarding-layout">
+        <aside class="sidebar">
+            <h3>Getting Started</h3>
+            <ul>
+                <li><a href="onboarding-home.html">Onboarding Home</a></li>
+                <li><a href="onboarding-overview.html">Project Overview</a></li>
+                <li><a href="manual-repo-setup.html">Manual Repository Setup</a></li>
+                <li><a href="repo-setup-guide.html">Automated Setup Guide</a></li>
+            </ul>
+            
+            <h3>Developer 2: Frontend & React</h3>
+            <ul>
+                <li><a href="dev2-week1.html">Week 1: React Setup & Components</a>
+                    <ul>
+                        <li><a href="dev2-day01.html">Day 1: React Setup</a></li>
+                        <li><a href="dev2-day02.html">Day 2: Component Library</a></li>
+                        <li><a href="dev2-day03.html">Day 3: Wizard Layout & Routing</a></li>
+                        <li><a href="dev2-day04.html" class="active">Day 4: State Management</a></li>
+                        <li><a href="dev2-day05.html">Day 5: API Client & Week 1 PR</a></li>
+                    </ul>
+                </li>
+                <li><a href="dev2-week2.html">Week 2: Connection Wizard Page</a></li>
+                <li><a href="dev2-week3.html">Week 3: Field Mapping UI</a></li>
+                <li><a href="dev2-week4.html">Week 4: Transformation & Validation UI</a></li>
+                <li><a href="dev2-week5.html">Week 5: Execution & Test Reports</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="day-header">
+                <h1>Day 4: State Management</h1>
+                <p>Developer 2 - Frontend & React | Duration: ~6-8 hours</p>
+            </div>
+
+            <div class="step-card">
+                <h2><span class="step-number">1</span> Install Zustand</h2>
+                <p><strong>What you need to do:</strong> Add state management library</p>
+                
+                <p>In terminal, run:</p>
+                <div class="command-box">cd frontend
+npm install zustand</div>
+
+                <p>You should see:</p>
+                <div class="command-box">added 1 package</div>
+
+                <div class="tip-box">
+                    <strong>💡 Why Zustand?</strong> Simpler than Redux, smaller than MobX. Perfect for beginners! Stores app-wide data like user settings, migration progress, etc.
+                </div>
+            </div>
+
+            <div class="step-card">
+                <h2><span class="step-number">2</span> Create Wizard Store</h2>
+                <p><strong>What you need to do:</strong> Build store to track wizard progress</p>
+                
+                <p>Create folder and file:</p>
+                <div class="command-box">mkdir src\store
+type nul > src\store\wizardStore.ts</div>
+
+                <p>Add this code to <code>frontend/src/store/wizardStore.ts</code>:</p>
+                
+                <div class="command-box">import { create } from 'zustand';
+
+interface WizardState {
+  currentStep: number;
+  completedSteps: number[];
+  migrationId: string | null;
+  setCurrentStep: (step: number) => void;
+  markStepComplete: (step: number) => void;
+  setMigrationId: (id: string) => void;
+  resetWizard: () => void;
+}
+
+export const useWizardStore = create<WizardState>((set) => ({
+  currentStep: 1,
+  completedSteps: [],
+  migrationId: null,
+  
+  setCurrentStep: (step) => set({ currentStep: step }),
+  
+  markStepComplete: (step) => set((state) => ({
+    completedSteps: state.completedSteps.includes(step)
+      ? state.completedSteps
+      : [...state.completedSteps, step]
+  })),
+  
+  setMigrationId: (id) => set({ migrationId: id }),
+  
+  resetWizard: () => set({
+    currentStep: 1,
+    completedSteps: [],
+    migrationId: null
+  })
+}));</div>
+            </div>
+
+            <div class="step-card">
+                <h2><span class="step-number">3</span> Create Connection Store</h2>
+                <p><strong>What you need to do:</strong> Build store for Salesforce connection data</p>
+                
+                <p>Create file: <code>frontend/src/store/connectionStore.ts</code></p>
+                
+                <div class="command-box">import { create } from 'zustand';
+
+interface ConnectionData {
+  instanceUrl: string;
+  username: string;
+  apiVersion: string;
+  isConnected: boolean;
+}
+
+interface ConnectionState {
+  source: ConnectionData;
+  target: ConnectionData;
+  setSourceConnection: (data: Partial<ConnectionData>) => void;
+  setTargetConnection: (data: Partial<ConnectionData>) => void;
+  resetConnections: () => void;
+}
+
+const defaultConnection: ConnectionData = {
+  instanceUrl: '',
+  username: '',
+  apiVersion: 'v58.0',
+  isConnected: false
+};
+
+export const useConnectionStore = create<ConnectionState>((set) => ({
+  source: defaultConnection,
+  target: defaultConnection,
+  
+  setSourceConnection: (data) => set((state) => ({
+    source: { ...state.source, ...data }
+  })),
+  
+  setTargetConnection: (data) => set((state) => ({
+    target: { ...state.target, ...data }
+  })),
+  
+  resetConnections: () => set({
+    source: defaultConnection,
+    target: defaultConnection
+  })
+}));</div>
+            </div>
+
+            <div class="step-card">
+                <h2><span class="step-number">4</span> Use Store in Component</h2>
+                <p><strong>What you need to do:</strong> Test the store by using it in a component</p>
+                
+                <p>Update <code>frontend/src/App.tsx</code> to test the store:</p>
+                
+                <div class="command-box">import { useWizardStore } from './store/wizardStore';
+import { useConnectionStore } from './store/connectionStore';
+
+function TestStore() {
+  const { currentStep, setCurrentStep, markStepComplete } = useWizardStore();
+  const { source, setSourceConnection } = useConnectionStore();
+
+  return (
+    <div className="p-8">
+      <h2 className="text-2xl font-bold mb-4">Zustand Store Test</h2>
+      
+      <div className="space-y-4">
+        <div>
+          <p>Current Step: {currentStep}</p>
+          <button 
+            onClick={() => setCurrentStep(currentStep + 1)}
+            className="px-4 py-2 bg-blue-500 text-white rounded"
+          >
+            Next Step
+          </button>
+          <button 
+            onClick={() => markStepComplete(currentStep)}
+            className="px-4 py-2 bg-green-500 text-white rounded ml-2"
+          >
+            Mark Complete
+          </button>
+        </div>
+        
+        <div>
+          <p>Source Instance: {source.instanceUrl || 'Not set'}</p>
+          <button 
+            onClick={() => setSourceConnection({ 
+              instanceUrl: 'https://test.salesforce.com',
+              isConnected: true 
+            })}
+            className="px-4 py-2 bg-purple-500 text-white rounded"
+          >
+            Set Source Connection
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default TestStore;</div>
+            </div>
+
+            <div class="step-card">
+                <h2><span class="step-number">5</span> Add Persistence (Optional)</h2>
+                <p><strong>What you need to do:</strong> Save state to localStorage</p>
+                
+                <p>Update <code>frontend/src/store/wizardStore.ts</code> to add persistence:</p>
+                
+                <div class="command-box">import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+
+// ... (keep existing interfaces)
+
+export const useWizardStore = create<WizardState>()(
+  persist(
+    (set) => ({
+      // ... (keep existing state and methods)
+    }),
+    {
+      name: 'wizard-storage', // localStorage key
+    }
+  )
+);</div>
+
+                <div class="tip-box">
+                    <strong>💡 Persistence:</strong> Now wizard progress saves to browser! Users can refresh the page without losing data.
+                </div>
+            </div>
+
+            <div class="step-card">
+                <h2><span class="step-number">6</span> Test State Persistence</h2>
+                <p><strong>What you need to do:</strong> Verify state persists across refreshes</p>
+                
+                <p>Start the dev server:</p>
+                <div class="command-box">npm run dev</div>
+
+                <p>Test these steps:</p>
+                <ol>
+                    <li>Click "Next Step" button a few times</li>
+                    <li>Click "Set Source Connection"</li>
+                    <li>Open browser DevTools (F12) → Application tab → Local Storage</li>
+                    <li>You should see "wizard-storage" with your data!</li>
+                    <li>Refresh the page (F5) - data should still be there!</li>
+                </ol>
+            </div>
+
+            <div class="step-card">
+                <h2>✅ Day 4 Complete!</h2>
+                <p>Amazing work! You now have:</p>
+                <ul class="checklist">
+                    <li>Zustand installed and configured</li>
+                    <li>wizardStore tracking wizard progress</li>
+                    <li>connectionStore storing Salesforce connections</li>
+                    <li>State persisting to localStorage</li>
+                    <li>Components accessing store with hooks</li>
+                    <li>TypeScript interfaces for type safety</li>
+                </ul>
+                
+                <p><strong>Tomorrow:</strong> You'll create an API client to talk to the backend!</p>
+            </div>
+
+            <div class="nav-buttons">
+                <a href="dev2-day03.html" class="nav-btn back">← Day 3</a>
+                <a href="dev2-day05.html" class="nav-btn next">Next: Day 5 →</a>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
