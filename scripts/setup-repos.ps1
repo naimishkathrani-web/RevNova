@@ -131,7 +131,7 @@ function Set-BranchProtection {
     $enforceAdminsStr = if ($EnforceAdmins) { "true" } else { "false" }
     
     # Note: This is a simplified version. Full configuration may need to be done via web UI
-    Write-Host "⚠️  Branch protection must be configured manually via GitHub UI" -ForegroundColor Yellow
+    Write-Host "Branch protection must be configured manually via GitHub UI" -ForegroundColor Yellow
     Write-Host "   Go to: https://github.com/$Owner/$RepoName/settings/branches" -ForegroundColor Yellow
 }
 
@@ -139,7 +139,7 @@ function Set-BranchProtection {
 Write-Host "This script will:" -ForegroundColor White
 Write-Host "  1. Create RevNova-Dev repository" -ForegroundColor White
 Write-Host "  2. Create RevNova-Test repository" -ForegroundColor White
-Write-Host "  3. Add git remotes (dev, test)" -ForegroundColor White
+Write-Host "  3. Add git remotes dev and test" -ForegroundColor White
 Write-Host "  4. Push current code to both repos" -ForegroundColor White
 Write-Host "  5. Guide you through branch protection setup" -ForegroundColor White
 Write-Host ""
@@ -147,7 +147,7 @@ Write-Host ""
 if (!$DryRun) {
     $confirm = Read-Host "Continue? (y/n)"
     if ($confirm -ne 'y') {
-        Write-Host "❌ Setup cancelled" -ForegroundColor Red
+        Write-Host "Setup cancelled" -ForegroundColor Red
         exit 0
     }
 }
@@ -173,7 +173,7 @@ if (New-Repository -RepoName "RevNova-Test" -Description "RevNova Testing/Stagin
 Write-Host ""
 
 # Step 3: Configure branch protection (manual step)
-Write-Host "🛡️  Branch Protection Setup" -ForegroundColor Cyan
+Write-Host "Branch Protection Setup" -ForegroundColor Cyan
 Write-Host "===========================" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "Please configure branch protection manually for each repository:" -ForegroundColor Yellow
@@ -182,8 +182,8 @@ Write-Host "For RevNova-Dev:" -ForegroundColor White
 Write-Host "  1. Go to: https://github.com/$Owner/RevNova-Dev/settings/branches" -ForegroundColor Cyan
 Write-Host "  2. Click 'Add branch protection rule'" -ForegroundColor White
 Write-Host "  3. Branch name pattern: main" -ForegroundColor White
-Write-Host "  4. Enable: ✓ Require pull request reviews (1 approval)" -ForegroundColor White
-Write-Host "  5. Enable: ✓ Require status checks (ci/test, ci/lint)" -ForegroundColor White
+Write-Host "  4. Enable: Require pull request reviews with 1 approval" -ForegroundColor White
+Write-Host "  5. Enable: Require status checks ci/test and ci/lint" -ForegroundColor White
 Write-Host ""
 Write-Host "For RevNova-Test:" -ForegroundColor White
 Write-Host "  1. Go to: https://github.com/$Owner/RevNova-Test/settings/branches" -ForegroundColor Cyan
@@ -192,24 +192,24 @@ Write-Host ""
 Write-Host "For RevNova (Production):" -ForegroundColor White
 Write-Host "  1. Go to: https://github.com/$Owner/RevNova/settings/branches" -ForegroundColor Cyan
 Write-Host "  2. Same settings as above" -ForegroundColor White
-Write-Host "  3. Additionally enable: ✓ Do not allow bypassing the above settings (enforce for admins)" -ForegroundColor White
+Write-Host "  3. Additionally enable: Do not allow bypassing settings - enforce for admins" -ForegroundColor White
 Write-Host ""
 
 # Step 4: Add collaborators
-Write-Host "👥 Adding Collaborators" -ForegroundColor Cyan
+Write-Host "Adding Collaborators" -ForegroundColor Cyan
 Write-Host "======================" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "To add developers to RevNova-Dev:" -ForegroundColor Yellow
 Write-Host "  1. Go to: https://github.com/$Owner/RevNova-Dev/settings/access" -ForegroundColor Cyan
-Write-Host "  2. Click 'Add people'" -ForegroundColor White
-Write-Host "  3. Add each developer with 'Write' permission" -ForegroundColor White
+Write-Host "  2. Click Add people" -ForegroundColor White
+Write-Host "  3. Add each developer with Write permission" -ForegroundColor White
 Write-Host ""
 Write-Host "Or use gh CLI:" -ForegroundColor Yellow
 Write-Host "  gh api repos/$Owner/RevNova-Dev/collaborators/USERNAME -X PUT -f permission=push" -ForegroundColor Cyan
 Write-Host ""
 
 # Summary
-Write-Host "✅ Setup Complete!" -ForegroundColor Green
+Write-Host "Setup Complete!" -ForegroundColor Green
 Write-Host "=================" -ForegroundColor Green
 Write-Host ""
 Write-Host "Next steps:" -ForegroundColor White

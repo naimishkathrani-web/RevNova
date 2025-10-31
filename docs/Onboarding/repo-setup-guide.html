@@ -37,6 +37,37 @@
     </section>
 
     <section class="card">
+      <h2>Quick Start: Automated Setup</h2>
+      <div class="success">
+        <strong>✓ Recommended:</strong> Use the automated script for one-click setup!
+      </div>
+      <p>We provide a PowerShell script that automates the entire repository creation process:</p>
+      <pre>cd C:\Dev\RevNovaRepository
+
+# Test first (dry run)
+.\scripts\create-repos.ps1 -DryRun
+
+# Create repositories and configure remotes
+.\scripts\create-repos.ps1</pre>
+      <p>This script will:</p>
+      <ul>
+        <li>Create <code>RevNova-Dev</code> and <code>RevNova-Test</code> repositories</li>
+        <li>Add <code>dev</code> and <code>test</code> git remotes to your local repository</li>
+        <li>Push your current code to both new repositories</li>
+        <li>Display instructions for branch protection and collaborators</li>
+      </ul>
+      <p><strong>After running the script, skip to Step 3 below to configure branch protection.</strong></p>
+      <div class="warning">
+        <strong>Prerequisites:</strong> You must have GitHub CLI installed and authenticated. Run <code>gh auth login</code> if needed.
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Manual Setup (Alternative)</h2>
+      <p>If you prefer to set up repositories manually, follow the steps below:</p>
+    </section>
+
+    <section class="card">
       <h2>Prerequisites</h2>
       <ul>
         <li>GitHub CLI installed: <code>gh --version</code></li>
