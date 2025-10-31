@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>RevNova Developer Onboarding</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
+        
+        .onboarding-layout {
+            display: flex;
+            min-height: calc(100vh - 80px);
+            margin-top: 80px;
+        }
+        
+        .sidebar {
+            width: 280px;
+            background: #f8f9fa;
+            border-right: 1px solid #e0e0e0;
+            padding: 2rem 0;
+            position: fixed;
+            left: 0;
+            top: 80px;
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+            z-index: 100;
+        }
+        
+        .sidebar h3 {
+            padding: 0 1.5rem;
+            font-size: 0.85rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 1.5rem 0 0.5rem;
+        }
+        
+        .sidebar h3:first-child { margin-top: 0; }
+        
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .sidebar ul li a {
+            display: block;
+            padding: 0.6rem 1.5rem;
+            color: #333;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+        
+        .sidebar ul li a:hover {
+            background: #e9ecef;
+            color: #667eea;
+        }
+        
+        .sidebar ul li a.active {
+            background: #667eea;
+            color: #fff;
+            font-weight: 500;
+        }
+        
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 3rem;
+            background: #fff;
+            min-width: 0;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            padding: 3rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+        
+        .hero h1 {
+            margin: 0 0 1rem 0;
+            font-size: 2.5rem;
+        }
+        
+        .hero p {
+            margin: 0;
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+        
+        .card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card h2 {
+            color: #667eea;
+            margin: 0 0 1rem 0;
+        }
+        
+        .card h3 {
+            color: #764ba2;
+            margin: 1.5rem 0 0.75rem 0;
+        }
+        
+        .timeline-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .timeline-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-left: 4px solid #667eea;
+            padding: 1.5rem;
+            border-radius: 8px;
+        }
+        
+        .timeline-card h4 {
+            color: #667eea;
+            margin: 0 0 0.5rem 0;
+        }
+        
+        .timeline-card .week-range {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+        
+        .timeline-card ul {
+            margin: 0;
+            padding-left: 1.25rem;
+            line-height: 1.8;
+        }
+        
+        .info-box {
+            background: #d1ecf1;
+            border: 1px solid #17a2b8;
+            padding: 1rem 1.25rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        
+        .warning-box {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 1rem 1.25rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        
+        .success-box {
+            background: #d4edda;
+            border: 1px solid #28a745;
+            padding: 1rem 1.25rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+        
+        table th, table td {
+            border: 1px solid #dee2e6;
+            padding: 0.75rem;
+            text-align: left;
+        }
+        
+        table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #667eea;
+        }
+        
+        table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .timeline-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="nav-left">
+                <a href="../index.html" class="logo"><div class="logo-box">RevNova</div></a>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="onboarding-home.html" class="active">Onboarding</a></li>
+                        <li><a href="../about-revnova.html">About RevNova</a></li>
+                        <li><a href="../features.html">Features</a></li>
+                        <li><a href="../pricing.html">Pricing</a></li>
+                        <li><a href="../RevNovaRequirements/requirements-home.html">RevNova Requirements</a></li>
+                        <li><a href="../contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header-right">
+                <div class="country-selector"><span class="fi fi-us"></span></div>
+                <a href="../login.html" class="btn btn-login">Login</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="onboarding-layout">
+        <!-- Left Sidebar Navigation -->
+        <aside class="sidebar">
+            <h3>Getting Started</h3>
+            <ul>
+                <li><a href="onboarding-home.html" class="active">Onboarding Home</a></li>
+                <li><a href="onboarding-overview.html">Project Overview</a></li>
+                <li><a href="manual-repo-setup.html">Manual Repository Setup</a></li>
+                <li><a href="repo-setup-guide.html">Automated Setup Guide</a></li>
+            </ul>
+            
+            <h3>Developer Guides</h3>
+            <ul>
+                <li><a href="onboarding-dev1.html">Developer 1: Backend & Database</a></li>
+                <li><a href="onboarding-dev2.html">Developer 2: Frontend & React</a></li>
+                <li><a href="onboarding-dev3.html">Developer 3: DevOps & QA</a></li>
+            </ul>
+            
+            <h3>8-Week Timeline</h3>
+            <ul>
+                <li><a href="#timeline">Project Timeline</a></li>
+                <li><a href="#phase1">Phase 1: SFDC CPQ Migration (Weeks 1-5)</a></li>
+                <li><a href="#phase2">Phase 2: AI Configuration (Weeks 6-8)</a></li>
+            </ul>
+            
+            <h3>Development Workflows</h3>
+            <ul>
+                <li><a href="#vscode">VS Code Setup & Extensions</a></li>
+                <li><a href="#copilot">GitHub Copilot Usage</a></li>
+                <li><a href="#git">Git Workflow & PRs</a></li>
+                <li><a href="#testing">Unit & Integration Testing</a></li>
+            </ul>
+            
+            <h3>Page Assignments</h3>
+            <ul>
+                <li><a href="#page-assignments">Phase 1 Pages</a></li>
+                <li><a href="#phase2-pages">Phase 2 Pages</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="hero">
+                <h1>RevNova Developer Onboarding</h1>
+                <p>8-week development plan to complete Phase 1 (SFDC CPQ Migration) and Phase 2 (AI Configuration) by end of December</p>
+            </div>
+
+            <section class="card">
+                <h2>Welcome to the RevNova Team!</h2>
+                <p>This comprehensive onboarding guide will help you get started with the RevNova platform development. We have an ambitious goal: <strong>complete Phase 1 and Phase 2 development in 8 weeks (by December 31, 2025)</strong>.</p>
+                
+                <div class="info-box">
+                    <strong>Target Completion:</strong> December 31, 2025<br>
+                    <strong>Duration:</strong> 8 weeks (November 4 - December 27, 2025)<br>
+                    <strong>Team Size:</strong> 3 developers<br>
+                    <strong>Scope:</strong> Phase 1 (7 migration pages) + Phase 2 (6 AI configuration pages)
+                </div>
+            </section>
+
+            <section class="card" id="timeline">
+                <h2>8-Week Development Timeline</h2>
+                
+                <div class="timeline-grid">
+                    <div class="timeline-card">
+                        <h4>Week 1: Setup & Foundation</h4>
+                        <div class="week-range">Nov 4-8, 2025</div>
+                        <ul>
+                            <li>Environment setup (all devs)</li>
+                            <li>Repository access & cloning</li>
+                            <li>Database schema creation</li>
+                            <li>Project structure setup</li>
+                            <li>First PRs merged</li>
+                        </ul>
+                    </div>
+
+                    <div class="timeline-card">
+                        <h4>Week 2-3: Phase 1 Core Pages</h4>
+                        <div class="week-range">Nov 11-22, 2025</div>
+                        <ul>
+                            <li>Connection Wizard (Dev2)</li>
+                            <li>Schema Analysis (Dev1)</li>
+                            <li>Field Mapping (Dev2)</li>
+                            <li>Backend APIs (Dev1)</li>
+                            <li>CI/CD pipeline (Dev3)</li>
+                        </ul>
+                    </div>
+
+                    <div class="timeline-card">
+                        <h4>Week 4-5: Phase 1 Completion</h4>
+                        <div class="week-range">Nov 25-Dec 6, 2025</div>
+                        <ul>
+                            <li>Data Transformation (Dev1 & Dev2)</li>
+                            <li>Validation Engine (Dev1)</li>
+                            <li>Migration Execution (Dev1)</li>
+                            <li>Post-Migration Testing (Dev2)</li>
+                            <li>Integration testing (Dev3)</li>
+                        </ul>
+                    </div>
+
+                    <div class="timeline-card">
+                        <h4>Week 6-7: Phase 2 AI Features</h4>
+                        <div class="week-range">Dec 9-20, 2025</div>
+                        <ul>
+                            <li>Generate with AI (Dev2)</li>
+                            <li>Modify with AI (Dev2)</li>
+                            <li>Planning Generators (Dev1)</li>
+                            <li>AI Engine Integration (Dev1)</li>
+                            <li>Queue system (Dev3)</li>
+                        </ul>
+                    </div>
+
+                    <div class="timeline-card">
+                        <h4>Week 8: Final Testing & Deployment</h4>
+                        <div class="week-range">Dec 23-27, 2025</div>
+                        <ul>
+                            <li>End-to-end testing (all devs)</li>
+                            <li>Performance optimization</li>
+                            <li>Bug fixes & polish</li>
+                            <li>Documentation updates</li>
+                            <li>Production deployment prep</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card" id="phase1">
+                <h2>Phase 1: SFDC CPQ → Revenue Cloud Migration (Weeks 1-5)</h2>
+                <p><strong>Goal:</strong> Build complete 7-step wizard for automated migration</p>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Page/Feature</th>
+                            <th>Assigned To</th>
+                            <th>Week</th>
+                            <th>Est. Effort</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>1. Connection Wizard</strong><br>OAuth, org connection, sandbox/prod</td>
+                            <td>Dev 2 (Frontend)</td>
+                            <td>Week 2</td>
+                            <td>5 days</td>
+                        </tr>
+                        <tr>
+                            <td><strong>2. Schema Analysis</strong><br>Metadata extraction, object analysis</td>
+                            <td>Dev 1 (Backend)</td>
+                            <td>Week 2-3</td>
+                            <td>6 days</td>
+                        </tr>
+                        <tr>
+                            <td><strong>3. Field Mapping</strong><br>AI suggestions, manual mapping UI</td>
+                            <td>Dev 2 (Frontend)</td>
+                            <td>Week 3</td>
+                            <td>7 days</td>
+                        </tr>
+                        <tr>
+                            <td><strong>4. Data Transformation</strong><br>ETL pipeline, staging database</td>
+                            <td>Dev 1 (Backend)</td>
+                            <td>Week 4</td>
+                            <td>6 days</td>
+                        </tr>
+                        <tr>
+                            <td><strong>5. Validation</strong><br>Pre-flight checks, error detection</td>
+                            <td>Dev 1 (Backend)</td>
+                            <td>Week 4</td>
+                            <td>4 days</td>
+                        </tr>
+                        <tr>
+                            <td><strong>6. Migration Execution</strong><br>Batch processing, progress tracking</td>
+                            <td>Dev 1 (Backend)</td>
+                            <td>Week 5</td>
+                            <td>5 days</td>
+                        </tr>
+                        <tr>
+                            <td><strong>7. Post-Migration Testing</strong><br>Verification reports, rollback</td>
+                            <td>Dev 2 (Frontend) + Dev 3 (Testing)</td>
+                            <td>Week 5</td>
+                            <td>4 days</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="card" id="phase2">
+                <h2>Phase 2: AI Product Configuration (Weeks 6-8)</h2>
+                <p><strong>Goal:</strong> Build AI-powered configuration and planning tools</p>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Page/Feature</th>
+                            <th>Assigned To</th>
+                            <th>Week</th>
+                            <th>Est. Effort</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Generate with AI</strong><br>Product config generator</td>
+                            <td>Dev 2 (Frontend) + Dev 1 (AI API)</td>
+                            <td>Week 6</td>
+                            <td>4 days</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Modify with AI</strong><br>AI-assisted editing</td>
+                            <td>Dev 2 (Frontend)</td>
+                            <td>Week 6</td>
+                            <td>3 days</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Adopt AI Suggestions</strong><br>Review & apply recommendations</td>
+                            <td>Dev 2 (Frontend)</td>
+                            <td>Week 7</td>
+                            <td>3 days</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Planning Generators</strong><br>Migration plan creation</td>
+                            <td>Dev 1 (Backend AI)</td>
+                            <td>Week 7</td>
+                            <td>4 days</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Impact Analyzer</strong><br>Change impact assessment</td>
+                            <td>Dev 1 (Backend)</td>
+                            <td>Week 7</td>
+                            <td>3 days</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Budget Calculator</strong><br>Cost estimation tool</td>
+                            <td>Dev 2 (Frontend) + Dev 1 (Backend)</td>
+                            <td>Week 7</td>
+                            <td>3 days</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="card" id="vscode">
+                <h2>Development Workflow Overview</h2>
+                
+                <h3>VS Code Setup & Extensions</h3>
+                <p>Each developer will use these essential extensions:</p>
+                <ul>
+                    <li><strong>GitHub Copilot</strong> - AI pair programmer (inline suggestions)</li>
+                    <li><strong>GitHub Copilot Chat</strong> - Conversational AI help</li>
+                    <li><strong>ESLint</strong> - JavaScript/TypeScript linting</li>
+                    <li><strong>Prettier</strong> - Code formatting</li>
+                    <li><strong>GitLens</strong> - Advanced Git integration</li>
+                    <li><strong>Tailwind CSS IntelliSense</strong> - CSS autocomplete (Dev2)</li>
+                    <li><strong>Thunder Client / REST Client</strong> - API testing (Dev1)</li>
+                    <li><strong>Docker</strong> - Container management (Dev3)</li>
+                </ul>
+                
+                <div class="success-box">
+                    <strong>See individual developer guides for detailed setup instructions and daily task breakdowns.</strong>
+                </div>
+            </section>
+
+            <section class="card">
+                <h2>Next Steps</h2>
+                <ol>
+                    <li><strong>Owner:</strong> Complete repository setup using <a href="manual-repo-setup.html">Manual Repository Setup Guide</a></li>
+                    <li><strong>Developers:</strong> Review your specific guide:
+                        <ul>
+                            <li><a href="onboarding-dev1.html">Developer 1: Backend & Database</a></li>
+                            <li><a href="onboarding-dev2.html">Developer 2: Frontend & React</a></li>
+                            <li><a href="onboarding-dev3.html">Developer 3: DevOps & QA</a></li>
+                        </ul>
+                    </li>
+                    <li><strong>All:</strong> Join the kickoff meeting (Week 1, Day 1) to align on timeline and assignments</li>
+                    <li><strong>All:</strong> Set up development environment by end of Week 1</li>
+                </ol>
+            </section>
+
+        </main>
+    </div>
+</body>
+</html>

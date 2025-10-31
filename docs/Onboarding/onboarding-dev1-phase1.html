@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Developer 1: Backend & Database - Phase 1 Tasks</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
+        
+        .onboarding-layout {
+            display: flex;
+            min-height: calc(100vh - 80px);
+            margin-top: 80px;
+        }
+        
+        .sidebar {
+            width: 280px;
+            background: #f8f9fa;
+            border-right: 1px solid #e0e0e0;
+            padding: 2rem 0;
+            position: fixed;
+            left: 0;
+            top: 80px;
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+            z-index: 100;
+        }
+        
+        .sidebar h3 {
+            padding: 0 1.5rem;
+            font-size: 0.85rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 1.5rem 0 0.5rem;
+        }
+        
+        .sidebar h3:first-child { margin-top: 0; }
+        
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .sidebar ul li a {
+            display: block;
+            padding: 0.6rem 1.5rem;
+            color: #333;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+        
+        .sidebar ul li a:hover {
+            background: #e9ecef;
+            color: #667eea;
+        }
+        
+        .sidebar ul li a.active {
+            background: #667eea;
+            color: #fff;
+            font-weight: 500;
+        }
+        
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 3rem;
+            background: #fff;
+            min-width: 0;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: #fff;
+            padding: 3rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+        
+        .hero h1 {
+            margin: 0 0 1rem 0;
+            font-size: 2.5rem;
+        }
+        
+        .card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card h2 {
+            color: #11998e;
+            margin: 0 0 1rem 0;
+        }
+        
+        .card h3 {
+            color: #38ef7d;
+            margin: 1.5rem 0 0.75rem 0;
+        }
+        
+        .day-card {
+            background: #f8f9fa;
+            border-left: 4px solid #11998e;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+        
+        .day-card h4 {
+            color: #11998e;
+            margin: 0 0 0.5rem 0;
+        }
+        
+        .day-card .duration {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+        
+        .copilot-tip {
+            background: #e7f3ff;
+            border-left: 4px solid #0066cc;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        
+        .copilot-tip strong {
+            color: #0066cc;
+        }
+        
+        .git-workflow {
+            background: #fff8e1;
+            border-left: 4px solid #ffc107;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        
+        .git-workflow strong {
+            color: #f57c00;
+        }
+        
+        .testing-section {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        
+        .testing-section strong {
+            color: #28a745;
+        }
+        
+        code {
+            background: #f6f8fb;
+            border: 1px solid #e6ecf1;
+            border-radius: 4px;
+            padding: 0.2rem 0.4rem;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+        }
+        
+        pre {
+            background: #f6f8fb;
+            border: 1px solid #e6ecf1;
+            border-radius: 6px;
+            padding: 1rem;
+            overflow-x: auto;
+            white-space: pre;
+        }
+        
+        pre code {
+            background: none;
+            border: none;
+            padding: 0;
+        }
+        
+        ul, ol {
+            line-height: 1.8;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+        
+        table th, table td {
+            border: 1px solid #dee2e6;
+            padding: 0.75rem;
+            text-align: left;
+        }
+        
+        table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #11998e;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="nav-left">
+                <a href="../index.html" class="logo"><div class="logo-box">RevNova</div></a>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="onboarding-home.html">Onboarding</a></li>
+                        <li><a href="../about-revnova.html">About RevNova</a></li>
+                        <li><a href="../features.html">Features</a></li>
+                        <li><a href="../pricing.html">Pricing</a></li>
+                        <li><a href="../RevNovaRequirements/requirements-home.html">RevNova Requirements</a></li>
+                        <li><a href="../contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header-right">
+                <div class="country-selector"><span class="fi fi-us"></span></div>
+                <a href="../login.html" class="btn btn-login">Login</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="onboarding-layout">
+        <aside class="sidebar">
+            <h3>Getting Started</h3>
+            <ul>
+                <li><a href="onboarding-home.html">Onboarding Home</a></li>
+                <li><a href="onboarding-overview.html">Project Overview</a></li>
+            </ul>
+            
+            <h3>Developer 1: Backend & DB</h3>
+            <ul>
+                <li><a href="onboarding-dev1-phase1.html" class="active">Phase 1 Tasks (Weeks 1-5)</a></li>
+                <li><a href="#week1">Week 1: Setup & Foundation</a></li>
+                <li><a href="#week2">Week 2: Schema Analysis</a></li>
+                <li><a href="#week3">Week 3: Mapping APIs</a></li>
+                <li><a href="#week4">Week 4: Transformation & Validation</a></li>
+                <li><a href="#week5">Week 5: Migration Execution</a></li>
+            </ul>
+            
+            <h3>Other Developers</h3>
+            <ul>
+                <li><a href="onboarding-dev2-phase1.html">Dev 2: Frontend Phase 1</a></li>
+                <li><a href="onboarding-dev3-phase1.html">Dev 3: DevOps Phase 1</a></li>
+            </ul>
+            
+            <h3>Phase 2</h3>
+            <ul>
+                <li><a href="phase2-tasks.html">Phase 2: AI Features (Weeks 6-8)</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="hero">
+                <h1>Developer 1: Backend & Database</h1>
+                <p>Phase 1 Tasks - SFDC CPQ Migration (Weeks 1-5)</p>
+                <p><strong>Your Focus:</strong> Database schema, REST APIs, ETL pipeline, validation engine, Bull queues</p>
+            </div>
+
+            <!-- WEEK 1 -->
+            <section class="card" id="week1">
+                <h2>Week 1: Environment Setup & Database Foundation (Nov 4-8, 2025)</h2>
+                <p><strong>Goal:</strong> Complete development environment setup, database schema, and first API endpoint</p>
+
+                <div class="day-card">
+                    <h4>Day 1 (Monday): Workstation Setup</h4>
+                    <div class="duration">Duration: Full day (8 hours)</div>
+                    
+                    <h5>Tasks:</h5>
+                    <ol>
+                        <li>Install all required software (Node.js 20, Git, VS Code, PostgreSQL client, Docker, Python)</li>
+                        <li>Clone RevNova-Dev repository to <code>C:\Dev\RevNovaRepository</code></li>
+                        <li>Install VS Code extensions:
+                            <ul>
+                                <li>GitHub Copilot & Copilot Chat</li>
+                                <li>ESLint, Prettier, GitLens</li>
+                                <li>REST Client or Thunder Client</li>
+                                <li>Docker, PostgreSQL</li>
+                            </ul>
+                        </li>
+                        <li>Configure VS Code settings (format on save, ESLint autofix)</li>
+                        <li>Run <code>npm install</code> in project root</li>
+                        <li>Connect to shared PostgreSQL database using provided credentials</li>
+                    </ol>
+
+                    <div class="copilot-tip">
+                        <strong>💡 Copilot Tip:</strong> Ask Copilot Chat: "Show me recommended VS Code settings for a Node.js + TypeScript + PostgreSQL backend project with ESLint and Prettier"
+                    </div>
+
+                    <div class="git-workflow">
+                        <strong>🌿 Git Workflow:</strong>
+                        <pre>git checkout -b feature/dev1-setup
+# Make initial config changes
+git add .
+git commit -m "chore: configure dev environment for backend work"
+git push -u origin feature/dev1-setup</pre>
+                    </div>
+
+                    <h5>Deliverable:</h5>
+                    <ul>
+                        <li>✓ All software installed and verified</li>
+                        <li>✓ VS Code connected to GitHub with Copilot enabled</li>
+                        <li>✓ Database connection successful</li>
+                        <li>✓ First branch pushed to RevNova-Dev</li>
+                    </ul>
+                </div>
+
+                <div class="day-card">
+                    <h4>Day 2 (Tuesday): Database Schema Design - STG1 (Raw)</h4>
+                    <div class="duration">Duration: 8 hours</div>
+                    
+                    <h5>Tasks:</h5>
+                    <ol>
+                        <li>Review Phase 1 database requirements in <code>requirements-phase1-technical.html#database</code></li>
+                        <li>Design STG1 (staging 1) schema for raw SFDC CPQ data:
+                            <ul>
+                                <li>Tables: <code>stg1_products</code>, <code>stg1_pricebooks</code>, <code>stg1_quotes</code>, etc.</li>
+                                <li>Store exact SFDC field names and data types</li>
+                                <li>Include metadata columns: <code>source_id</code>, <code>extracted_at</code>, <code>batch_id</code></li>
+                            </ul>
+                        </li>
+                        <li>Create migration script: <code>migrations/001_create_stg1_schema.sql</code></li>
+                        <li>Document schema in <code>docs/database-schema-stg1.md</code></li>
+                    </ol>
+
+                    <div class="copilot-tip">
+                        <strong>💡 Copilot Prompt:</strong> "Create a PostgreSQL table for staging SFDC Product2 data with fields: Id, Name, ProductCode, Description, IsActive, Family, CreatedDate, plus metadata columns for ETL tracking"
+                    </div>
+
+                    <h5>SQL Example (Copilot will help expand):</h5>
+                    <pre>CREATE TABLE IF NOT EXISTS stg1_products (
+  id BIGSERIAL PRIMARY KEY,
+  source_id VARCHAR(18) NOT NULL UNIQUE,
+  sfdc_name VARCHAR(255),
+  product_code VARCHAR(255),
+  description TEXT,
+  is_active BOOLEAN DEFAULT true,
+  family VARCHAR(255),
+  created_date TIMESTAMP,
+  -- Metadata
+  batch_id VARCHAR(50),
+  extracted_at TIMESTAMP DEFAULT NOW(),
+  tenant_id VARCHAR(50) NOT NULL,
+  INDEX idx_stg1_products_source_id (source_id),
+  INDEX idx_stg1_products_tenant (tenant_id)
+);</pre>
+
+                    <div class="testing-section">
+                        <strong>✅ Testing:</strong> Run migration script on local Docker PostgreSQL instance first, verify tables created successfully
+                    </div>
+
+                    <h5>Deliverable:</h5>
+                    <ul>
+                        <li>✓ STG1 schema migration script committed</li>
+                        <li>✓ Documentation updated</li>
+                        <li>✓ Schema tested locally</li>
+                    </ul>
+                </div>
+
+                <div class="day-card">
+                    <h4>Day 3 (Wednesday): Database Schema - STG2 & EAV Tables</h4>
+                    <div class="duration">Duration: 8 hours</div>
+                    
+                    <h5>Tasks:</h5>
+                    <ol>
+                        <li>Design STG2 (normalized) schema matching Revenue Cloud structure</li>
+                        <li>Create EAV (Entity-Attribute-Value) table for custom fields:
+                            <pre>CREATE TABLE stg_eav (
+  id BIGSERIAL PRIMARY KEY,
+  object_name VARCHAR(100) NOT NULL,
+  record_id VARCHAR(50) NOT NULL,
+  field_name VARCHAR(255) NOT NULL,
+  field_type VARCHAR(50) NOT NULL,
+  field_value TEXT,
+  stage VARCHAR(10) CHECK (stage IN ('STG1','STG2','TARGET')),
+  tenant_id VARCHAR(50) NOT NULL
+);</pre>
+                        </li>
+                        <li>Create indexes for performance</li>
+                        <li>Test with sample data inserts</li>
+                    </ol>
+
+                    <div class="copilot-tip">
+                        <strong>💡 Copilot Prompt:</strong> "Generate PostgreSQL schema for Revenue Cloud Product object with these fields: [paste from requirements]. Include foreign keys and indexes."
+                    </div>
+
+                    <h5>Deliverable:</h5>
+                    <ul>
+                        <li>✓ STG2 and EAV migration scripts</li>
+                        <li>✓ Sample data script for testing</li>
+                        <li>✓ PR opened: "feat: database schema for staging pipeline"</li>
+                    </ul>
+                </div>
+
+                <div class="day-card">
+                    <h4>Day 4 (Thursday): First API - Connection Test Endpoint</h4>
+                    <div class="duration">Duration: 8 hours</div>
+                    
+                    <h5>Tasks:</h5>
+                    <ol>
+                        <li>Create REST API structure:
+                            <ul>
+                                <li><code>src/api/routes/connections.ts</code></li>
+                                <li><code>src/api/controllers/connectionController.ts</code></li>
+                                <li><code>src/services/salesforceService.ts</code></li>
+                            </ul>
+                        </li>
+                        <li>Implement <code>POST /api/v1/connections/test</code> endpoint:
+                            <ul>
+                                <li>Accept SFDC credentials (OAuth or username/password)</li>
+                                <li>Test connection using jsforce library</li>
+                                <li>Return connection status + org info</li>
+                            </ul>
+                        </li>
+                        <li>Add error handling and logging</li>
+                    </ol>
+
+                    <div class="copilot-tip">
+                        <strong>💡 Copilot Prompt:</strong> "Create an Express.js controller function that tests Salesforce connection using jsforce, handles OAuth tokens, and returns org metadata"
+                    </div>
+
+                    <h5>Code Structure (Copilot will help complete):</h5>
+                    <pre>// src/api/controllers/connectionController.ts
+import { Request, Response } from 'express';
+import { SalesforceService } from '../../services/salesforceService';
+
+export class ConnectionController {
+  async testConnection(req: Request, res: Response) {
+    try {
+      const { instanceUrl, accessToken } = req.body;
+      const sf = new SalesforceService(instanceUrl, accessToken);
+      const orgInfo = await sf.testConnection();
+      res.json({ success: true, org: orgInfo });
+    } catch (error) {
+      res.status(400).json({ success: false, error: error.message });
+    }
+  }
+}</pre>
+
+                    <div class="testing-section">
+                        <strong>✅ Unit Test:</strong> Create <code>src/api/controllers/__tests__/connectionController.test.ts</code> using Jest + Supertest. Mock Salesforce API calls.
+                    </div>
+
+                    <h5>Deliverable:</h5>
+                    <ul>
+                        <li>✓ Connection test endpoint working</li>
+                        <li>✓ Unit tests passing</li>
+                        <li>✓ Tested with REST Client in VS Code</li>
+                    </ul>
+                </div>
+
+                <div class="day-card">
+                    <h4>Day 5 (Friday): Code Review & Week 1 Wrap-up</h4>
+                    <div class="duration">Duration: 6 hours</div>
+                    
+                    <h5>Tasks:</h5>
+                    <ol>
+                        <li>Complete unit tests for connection endpoint (aim for 80% coverage)</li>
+                        <li>Run linter: <code>npm run lint</code> and fix issues</li>
+                        <li>Run type check: <code>npm run type-check</code></li>
+                        <li>Update API documentation in <code>docs/api/connections.md</code></li>
+                        <li>Open PR to RevNova-Dev main branch</li>
+                        <li>Address code review feedback</li>
+                        <li>Merge if approved</li>
+                    </ol>
+
+                    <div class="git-workflow">
+                        <strong>🌿 Git Workflow:</strong>
+                        <pre># Before opening PR
+git add .
+git commit -m "feat: add connection test endpoint and database schema
+
+- Implement POST /api/v1/connections/test
+- Create STG1, STG2, and EAV database schemas
+- Add unit tests with 82% coverage
+- Update API documentation
+
+Closes #1"
+
+git push origin feature/dev1-setup
+
+# Open PR in GitHub UI, request review from Dev3</pre>
+                    </div>
+
+                    <div class="copilot-tip">
+                        <strong>💡 Copilot for PR:</strong> Use Copilot Chat: "Generate a comprehensive PR description for this feature branch with context from the commits"
+                    </div>
+
+                    <h5>Deliverable:</h5>
+                    <ul>
+                        <li>✓ PR merged to main</li>
+                        <li>✓ All tests green in CI/CD (if set up by Dev3)</li>
+                        <li>✓ Week 1 retrospective notes documented</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- WEEK 2 -->
+            <section class="card" id="week2">
+                <h2>Week 2: Schema Analysis API & Metadata Extraction (Nov 11-15, 2025)</h2>
+                <p><strong>Goal:</strong> Build API to extract and analyze SFDC CPQ schema metadata</p>
+                <p><strong>Your Pages:</strong> Schema Analysis (Backend portion)</p>
+
+                <div class="day-card">
+                    <h4>Day 6 (Monday): Metadata Extraction Service</h4>
+                    <div class="duration">Duration: 8 hours</div>
+                    
+                    <h5>Tasks:</h5>
+                    <ol>
+                        <li>Create branch: <code>feature/schema-analysis-api</code></li>
+                        <li>Implement <code>MetadataExtractionService</code>:
+                            <ul>
+                                <li>Use jsforce to fetch object metadata (Product2, Quote, QuoteLine, etc.)</li>
+                                <li>Extract field definitions, data types, relationships</li>
+                                <li>Identify custom fields vs standard fields</li>
+                            </ul>
+                        </li>
+                        <li>Cache metadata in database table: <code>metadata_cache</code></li>
+                    </ol>
+
+                    <div class="copilot-tip">
+                        <strong>💡 Copilot Prompt:</strong> "Create a TypeScript service class that uses jsforce to describe Salesforce objects, extract all field metadata including type, label, required status, and relationships"
+                    </div>
+
+                    <h5>Service Structure:</h5>
+                    <pre>// src/services/metadataExtractionService.ts
+export class MetadataExtractionService {
+  async extractObjectMetadata(objectName: string) {
+    const metadata = await this.sf.conn.describe(objectName);
+    return {
+      name: metadata.name,
+      label: metadata.label,
+      fields: metadata.fields.map(f => ({
+        name: f.name,
+        type: f.type,
+        label: f.label,
+        required: !f.nillable,
+        custom: f.custom,
+        referenceTo: f.referenceTo
+      }))
+    };
+  }
+}</pre>
+
+                    <h5>Deliverable:</h5>
+                    <ul>
+                        <li>✓ Metadata extraction working for Product2, Quote objects</li>
+                        <li>✓ Results stored in <code>metadata_cache</code> table</li>
+                    </ul>
+                </div>
+
+                <div class="day-card">
+                    <h4>Day 7 (Tuesday): Schema Analysis API Endpoint</h4>
+                    <div class="duration">Duration: 8 hours</div>
+                    
+                    <h5>Tasks:</h5>
+                    <ol>
+                        <li>Create <code>GET /api/v1/schema/source/:objectName</code> endpoint</li>
+                        <li>Return object metadata + field mappings</li>
+                        <li>Create <code>GET /api/v1/schema/target/:objectName</code> for Revenue Cloud schema</li>
+                        <li>Implement caching to avoid repeated SFDC API calls</li>
+                    </ol>
+
+                    <div class="copilot-tip">
+                        <strong>💡 Copilot Prompt:</strong> "Create Express route handler that fetches Salesforce object metadata, caches it in PostgreSQL with TTL, and returns formatted JSON response"
+                    </div>
+
+                    <div class="testing-section">
+                        <strong>✅ Testing:</strong> Write integration test that mocks jsforce connection, verifies metadata extraction and caching logic
+                    </div>
+
+                    <h5>Deliverable:</h5>
+                    <ul>
+                        <li>✓ Schema API endpoints working</li>
+                        <li>✓ Caching implemented with 1-hour TTL</li>
+                        <li>✓ Integration tests passing</li>
+                    </ul>
+                </div>
+
+                <div class="day-card">
+                    <h4>Day 8 (Wednesday): Data Type Mapping & Validation Rules</h4>
+                    <div class="duration">Duration: 8 hours</div>
+                    
+                    <h5>Tasks:</h5>
+                    <ol>
+                        <li>Create data type mapping utility:
+                            <ul>
+                                <li>SFDC Text → Revenue Cloud String</li>
+                                <li>SFDC Picklist → Revenue Cloud Enum</li>
+                                <li>SFDC Currency → Revenue Cloud Decimal</li>
+                                <li>Handle custom field types</li>
+                            </ul>
+                        </li>
+                        <li>Extract validation rules from SFDC metadata</li>
+                        <li>Store mapping rules in <code>field_type_mappings</code> table</li>
+                    </ol>
+
+                    <div class="copilot-tip">
+                        <strong>💡 Copilot Prompt:</strong> "Create a TypeScript utility that maps Salesforce field types to Revenue Cloud equivalents, handling edge cases like formula fields, lookup relationships, and master-detail"
+                    </div>
+
+                    <h5>Deliverable:</h5>
+                    <ul>
+                        <li>✓ Data type mapping utility complete</li>
+                        <li>✓ Validation rules extracted and stored</li>
+                    </ul>
+                </div>
+
+                <div class="day-card">
+                    <h4>Day 9 (Thursday): Relationship Analysis</h4>
+                    <div class="duration">Duration: 8 hours</div>
+                    
+                    <h5>Tasks:</h5>
+                    <ol>
+                        <li>Analyze object relationships (lookups, master-detail)</li>
+                        <li>Build dependency graph for migration order</li>
+                        <li>Create <code>GET /api/v1/schema/relationships/:objectName</code></li>
+                        <li>Return parent/child relationships</li>
+                    </ol>
+
+                    <div class="copilot-tip">
+                        <strong>💡 Copilot Prompt:</strong> "Create a function that analyzes Salesforce object relationships, builds a directed graph of dependencies, and determines the correct migration order using topological sort"
+                    </div>
+
+                    <h5>Deliverable:</h5>
+                    <ul>
+                        <li>✓ Relationship analysis endpoint working</li>
+                        <li>✓ Migration order algorithm implemented</li>
+                    </ul>
+                </div>
+
+                <div class="day-card">
+                    <h4>Day 10 (Friday): Week 2 Integration & PR</h4>
+                    <div class="duration">Duration: 6 hours</div>
+                    
+                    <h5>Tasks:</h5>
+                    <ol>
+                        <li>Complete unit tests for all schema analysis endpoints</li>
+                        <li>Test end-to-end flow with real SFDC sandbox</li>
+                        <li>Update API documentation</li>
+                        <li>Open PR with comprehensive description</li>
+                        <li>Address review feedback and merge</li>
+                    </ol>
+
+                    <div class="git-workflow">
+                        <strong>🌿 Git Workflow:</strong>
+                        <pre>git commit -m "feat: implement schema analysis and metadata extraction API
+
+- Add GET /api/v1/schema/source/:object
+- Add GET /api/v1/schema/target/:object  
+- Implement metadata caching with PostgreSQL
+- Add data type mapping utilities
+- Build relationship analysis engine
+- Add 85% test coverage
+
+Closes #5"
+
+git push origin feature/schema-analysis-api
+# Open PR and merge after approval</pre>
+                    </div>
+
+                    <h5>Deliverable:</h5>
+                    <ul>
+                        <li>✓ Schema analysis feature complete and merged</li>
+                        <li>✓ Ready for Dev2 to build UI</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Additional weeks continue with same pattern... -->
+            
+            <section class="card" id="week3">
+                <h2>Week 3: Field Mapping API & AI Suggestions (Nov 18-22, 2025)</h2>
+                <p><strong>Goal:</strong> Backend support for field mapping page with AI-powered suggestions</p>
+                <p><em>Detailed daily breakdown follows same pattern as Week 1-2...</em></p>
+                <p><strong>Key Tasks Summary:</strong></p>
+                <ul>
+                    <li>Day 11: Mapping storage API (<code>POST /api/v1/mappings</code>)</li>
+                    <li>Day 12: AI mapping suggestions using OpenAI embeddings</li>
+                    <li>Day 13: Bulk mapping operations</li>
+                    <li>Day 14: Mapping validation and conflict detection</li>
+                    <li>Day 15: Week 3 PR and code review</li>
+                </ul>
+            </section>
+
+            <section class="card" id="week4">
+                <h2>Week 4: Data Transformation & Validation Engine (Nov 25-29, 2025)</h2>
+                <p><strong>Goal:</strong> ETL pipeline and pre-flight validation</p>
+                <p><strong>Key Tasks Summary:</strong></p>
+                <ul>
+                    <li>Day 16: Transform service - STG1 to STG2 pipeline</li>
+                    <li>Day 17: Bull queue setup for batch transformation</li>
+                    <li>Day 18: Validation engine - data quality checks</li>
+                    <li>Day 19: Preview endpoint for transformation testing</li>
+                    <li>Day 20: Week 4 integration and PR</li>
+                </ul>
+            </section>
+
+            <section class="card" id="week5">
+                <h2>Week 5: Migration Execution & Monitoring (Dec 2-6, 2025)</h2>
+                <p><strong>Goal:</strong> Execute migrations with progress tracking and rollback</p>
+                <p><strong>Key Tasks Summary:</strong></p>
+                <ul>
+                    <li>Day 21: Migration execution API (<code>POST /api/v1/migrate/run</code>)</li>
+                    <li>Day 22: Progress tracking and status endpoint</li>
+                    <li>Day 23: Error handling and partial rollback</li>
+                    <li>Day 24: Post-migration verification</li>
+                    <li>Day 25: Phase 1 completion, final testing, PR merge</li>
+                </ul>
+            </section>
+
+            <section class="card">
+                <h2>VS Code + Copilot Best Practices</h2>
+                
+                <h3>Daily Copilot Workflow</h3>
+                <ol>
+                    <li><strong>Start with prompts:</strong> Open Copilot Chat, describe the feature you're building</li>
+                    <li><strong>Inline suggestions:</strong> Start typing function signature, let Copilot suggest implementation</li>
+                    <li><strong>Test generation:</strong> Ask "Generate unit tests for this function" in Chat</li>
+                    <li><strong>Refactoring:</strong> Select code, ask "Refactor this to improve error handling"</li>
+                    <li><strong>Documentation:</strong> Ask "Add JSDoc comments explaining this service class"</li>
+                </ol>
+
+                <h3>Git Commit Best Practices</h3>
+                <ul>
+                    <li>Use conventional commits: <code>feat:</code>, <code>fix:</code>, <code>chore:</code>, <code>test:</code></li>
+                    <li>Reference issue numbers: <code>Closes #123</code></li>
+                    <li>Keep commits atomic (one logical change per commit)</li>
+                    <li>Write descriptive messages explaining WHY, not just WHAT</li>
+                </ul>
+
+                <h3>Testing Checklist (Before Every PR)</h3>
+                <ul>
+                    <li>✓ Run <code>npm test</code> - all unit tests pass</li>
+                    <li>✓ Run <code>npm run lint</code> - no linting errors</li>
+                    <li>✓ Run <code>npm run type-check</code> - TypeScript compiles</li>
+                    <li>✓ Test manually with REST Client or Thunder Client</li>
+                    <li>✓ Check code coverage (aim for 80%+)</li>
+                    <li>✓ Update documentation if API changed</li>
+                </ul>
+            </section>
+
+            <section class="card">
+                <h2>Week-by-Week Summary</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Week</th>
+                            <th>Focus Area</th>
+                            <th>Key Deliverables</th>
+                            <th>PRs</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Setup & Foundation</td>
+                            <td>Database schema, connection API</td>
+                            <td>1 PR</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Schema Analysis</td>
+                            <td>Metadata extraction, relationships</td>
+                            <td>1 PR</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Field Mapping</td>
+                            <td>Mapping API, AI suggestions</td>
+                            <td>1 PR</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Transformation & Validation</td>
+                            <td>ETL pipeline, Bull queues</td>
+                            <td>1 PR</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>Migration Execution</td>
+                            <td>Execute, monitor, rollback</td>
+                            <td>1 PR</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="card">
+                <h2>Next: Phase 2 Tasks</h2>
+                <p>After completing Phase 1, proceed to <a href="phase2-tasks.html">Phase 2: AI Configuration Features (Weeks 6-8)</a></p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
