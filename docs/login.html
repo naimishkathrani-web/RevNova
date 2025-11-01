@@ -6,6 +6,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - RevNova</title>
+    <!-- Prevent indexing of demo login page -->
+    <meta name="robots" content="noindex, nofollow">
+    <!-- Tighten security policy for demo page -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; font-src 'self' data: https://cdnjs.cloudflare.com; script-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; upgrade-insecure-requests">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icons/6.6.4/css/flag-icons.min.css">
@@ -47,6 +51,11 @@
                         <p>Sign in to your account</p>
                     </div>
 
+                    <!-- Demo-only disclaimer -->
+                    <div class="tip-box" style="margin: 1rem; border-radius: 8px;">
+                        <strong>Demo only:</strong> This is a non-production demo UI. Do not enter real usernames or passwords. No authentication is performed and any data you enter is not stored.
+                    </div>
+
                     <div class="login-type-selector">
                         <div class="radio-group-horizontal">
                             <div class="radio-option">
@@ -76,7 +85,7 @@
                         </div>
                     </div>
 
-                    <form id="loginForm" class="login-form">
+                    <form id="loginForm" class="login-form" aria-label="Demo login form (no real authentication)">
                         <div class="form-group">
                             <div class="label-row">
                                 <label for="username">User ID</label>
@@ -121,9 +130,9 @@
                             </label>
                         </div>
 
-                        <button type="submit" class="btn btn-primary btn-block">
+                        <button type="button" id="loginButton" class="btn btn-primary btn-block">
                             <i class="fas fa-sign-in-alt"></i>
-                            Login to RevNova
+                            Login (Demo)
                         </button>
 
                         <div class="login-divider">
@@ -198,17 +207,17 @@
     </footer>
 
     <script>
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+        // Demo-only: no real authentication is performed.
+        document.getElementById('loginButton').addEventListener('click', function() {
             const loginType = document.querySelector('input[name="login-type"]:checked').value;
             const clientSelect = document.getElementById('client-select');
-            
+
             // Validate client selection for client login
             if (loginType === 'client' && !clientSelect.value) {
                 alert('Please select a client account to continue.');
                 return;
             }
-            
+
             if (loginType === 'employee') {
                 // Redirect to client accounts (admin view)
                 window.location.href = 'client-accounts.html';

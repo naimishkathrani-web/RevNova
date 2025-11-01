@@ -1,0 +1,6 @@
+# Robots policy for RevNova GitHub Pages
+User-agent: *
+# Do not index demo login page
+Disallow: /login.html
+# Allow everything else
+Allow: /
