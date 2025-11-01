@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initProcessingOverlays();
     initMigrationWizard();
     initDataTables();
+    initCollapsibleSidebar();
 });
 
 // Mobile Menu Toggle
@@ -232,6 +233,65 @@ function initDataTables() {
             }
         });
     });
+}
+
+// Collapsible Sidebar for Onboarding
+function initCollapsibleSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    if (!sidebar) return;
+
+    // Find all list items that have a nested <ul>
+    const parents = Array.from(sidebar.querySelectorAll('li')).filter(li => li.querySelector(':scope > ul'));
+    parents.forEach(li => {
+        li.classList.add('has-children');
+        const link = li.querySelector(':scope > a');
+
+        // Insert a toggle button after the link
+        const btn = document.createElement('button');
+        btn.className = 'collapse-toggle';
+        btn.setAttribute('aria-label', 'Toggle section');
+        btn.setAttribute('aria-expanded', 'false');
+        btn.innerHTML = '<span class="chevron">▶</span>';
+
+        // If link exists, place toggle right after it, otherwise prepend
+        if (link && link.nextSibling) {
+            link.parentNode.insertBefore(btn, link.nextSibling);
+        } else {
+            li.insertBefore(btn, li.firstChild);
+        }
+
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const expanded = li.classList.toggle('expanded');
+            btn.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+        });
+    });
+
+    // Auto-expand branch for current page
+    try {
+        const currentPath = window.location.pathname.replace(/\\/g, '/');
+        // Match any anchor whose href is a suffix of current path
+        const activeLink = Array.from(sidebar.querySelectorAll('a[href]')).find(a => {
+            try {
+                const href = a.getAttribute('href');
+                if (!href) return false;
+                // Resolve relative paths
+                const resolved = new URL(href, window.location.origin + currentPath).pathname;
+                return currentPath.endsWith(resolved);
+            } catch { return false; }
+        });
+        if (activeLink) {
+            let li = activeLink.closest('li');
+            while (li && sidebar.contains(li)) {
+                if (li.classList.contains('has-children')) {
+                    li.classList.add('expanded');
+                    const toggle = li.querySelector(':scope > .collapse-toggle');
+                    if (toggle) toggle.setAttribute('aria-expanded', 'true');
+                }
+                li = li.parentElement && li.parentElement.closest('li');
+            }
+        }
+    } catch {}
 }
 
 function sortTable(table, columnIndex) {

@@ -326,6 +326,28 @@ header {
     gap: var(--space-xl);
     margin-bottom: var(--space-lg);
 }
+.sidebar li { position: relative; }
+.sidebar li.has-children > ul { display: none; }
+.sidebar li.expanded > ul { display: block; }
+.sidebar .collapse-toggle {
+    position: absolute;
+    left: 0.8rem;
+    top: 0.65rem;
+    width: 18px;
+    height: 18px;
+    border: none;
+    background: transparent;
+    color: #666;
+    cursor: pointer;
+    padding: 0;
+}
+.sidebar .collapse-toggle:focus { outline: 2px solid #a0aec0; outline-offset: 2px; }
+.sidebar .collapse-toggle .chevron { display: inline-block; transition: transform 0.2s ease; }
+.sidebar li.expanded > a + .collapse-toggle .chevron { transform: rotate(90deg); }
+
+/* Indentation adjustment when toggle exists */
+.sidebar li.has-children > a { padding-left: 2rem; }
+.sidebar li.has-children > ul li a { padding-left: 2.5rem; }
 
 .stat {
     text-align: center;
