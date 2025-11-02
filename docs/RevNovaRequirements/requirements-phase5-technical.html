@@ -15,86 +15,335 @@
 <body>
   <div class="container">
     <h1>Phase 5 — Technical Requirements (LLD)</h1>
-    <p><strong>Scope:</strong> WS5 — RCA Data Model (product catalog advanced configuration). Technical design for product APIs, hierarchy management, and RCA-specific transforms.</p>
+    <p><strong>Scope:</strong> WS5 — ERP System Integration (SAP S/4HANA, Oracle ERP Cloud, Microsoft Dynamics 365 Finance, Workday Financials, NetSuite). Technical design for revenue recognition, contract lifecycle, billing integration, and ASC 606/IFRS 15 compliance.</p>
     <p>See also: <a href="requirements-phase5-functional.html">Phase 5 Functional Requirements</a> | <a href="requirements-mapping.html#WS5">WS5 Mapping</a></p>
 
-    <h2>1. API Endpoints</h2>
+    <h2>Supported ERP Systems</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin:2rem 0;">
+      <div style="background:linear-gradient(135deg,#1e3a8a 0%,#3b82f6 100%);color:#fff;padding:1.5rem;border-radius:8px;">
+        <h3 style="margin:0 0 0.5rem 0;font-size:1.2rem;">SAP S/4HANA</h3>
+        <p style="margin:0;font-size:0.9rem;opacity:0.95;">Revenue Accounting (RAR), OData APIs, BAPI integration</p>
+        <p style="margin:0.5rem 0 0 0;font-size:0.85rem;"><strong>Priority:</strong> 1 (Enterprise standard)</p>
+      </div>
+      <div style="background:linear-gradient(135deg,#065f46 0%,#10b981 100%);color:#fff;padding:1.5rem;border-radius:8px;">
+        <h3 style="margin:0 0 0.5rem 0;font-size:1.2rem;">Oracle ERP Cloud</h3>
+        <p style="margin:0;font-size:0.9rem;opacity:0.95;">Revenue Management, REST APIs, FBDI integration</p>
+        <p style="margin:0.5rem 0 0 0;font-size:0.85rem;"><strong>Priority:</strong> 1 (High demand)</p>
+      </div>
+      <div style="background:linear-gradient(135deg,#ea580c 0%,#fb923c 100%);color:#fff;padding:1.5rem;border-radius:8px;">
+        <h3 style="margin:0 0 0.5rem 0;font-size:1.2rem;">Dynamics 365 Finance</h3>
+        <p style="margin:0;font-size:0.9rem;opacity:0.95;">Revenue recognition, OData v4, Data entities</p>
+        <p style="margin:0.5rem 0 0 0;font-size:0.85rem;"><strong>Priority:</strong> 2 (Growing adoption)</p>
+      </div>
+      <div style="background:linear-gradient(135deg,#7c2d12 0%,#dc2626 100%);color:#fff;padding:1.5rem;border-radius:8px;">
+        <h3 style="margin:0 0 0.5rem 0;font-size:1.2rem;">Workday Financials</h3>
+        <p style="margin:0;font-size:0.9rem;opacity:0.95;">Revenue management, SOAP/REST APIs, RaaS reports</p>
+        <p style="margin:0.5rem 0 0 0;font-size:0.85rem;"><strong>Priority:</strong> 2 (SaaS companies)</p>
+      </div>
+      <div style="background:linear-gradient(135deg,#4338ca 0%,#818cf8 100%);color:#fff;padding:1.5rem;border-radius:8px;">
+        <h3 style="margin:0 0 0.5rem 0;font-size:1.2rem;">Oracle NetSuite</h3>
+        <p style="margin:0;font-size:0.9rem;opacity:0.95;">Advanced Revenue Management (ARM), SuiteTalk SOAP API</p>
+        <p style="margin:0.5rem 0 0 0;font-size:0.85rem;"><strong>Priority:</strong> 2 (Mid-market focus)</p>
+      </div>
+    </div>
+
+    <h2>1. Universal ERP Integration Framework</h2>
+    <p><strong>Core Components:</strong></p>
+    <ul>
+      <li><strong>Revenue Recognition Engine:</strong> ASC 606/IFRS 15 compliant revenue scheduling and waterfall calculations</li>
+      <li><strong>Contract Lifecycle Sync:</strong> Bi-directional sync of contracts, amendments, renewals between Salesforce CPQ and ERP</li>
+      <li><strong>Billing Integration Layer:</strong> Real-time invoice generation, payment status sync, dunning workflows</li>
+      <li><strong>Financial Data Mapper:</strong> Map Salesforce CPQ quote line items to ERP general ledger accounts and cost centers</li>
+      <li><strong>Multi-Currency Reconciliation:</strong> Exchange rate synchronization, currency conversion for global deployments</li>
+    </ul>
+
+    <h2>2. ERP Source System Assessment</h2>
+    <p><strong>Pre-Integration Data Analysis:</strong></p>
     <table class="tech-table">
-      <thead><tr><th>Endpoint</th><th>Method</th><th>Purpose</th><th>Request/Response</th></tr></thead>
+      <thead><tr><th>Assessment Category</th><th>Metrics Collected</th><th>Impact on Integration</th></tr></thead>
       <tbody>
         <tr>
-          <td><code>/api/v1/products/rca</code></td>
-          <td>POST</td>
-          <td>Create RCA product</td>
-          <td>Request: <code>{"productCode", "name", "type"}</code><br>Response: <code>{"productId"}</code></td>
+          <td><strong>Revenue Recognition Rules</strong></td>
+          <td>Recognition methods (point-in-time, over-time), deferral patterns</td>
+          <td>Determines Salesforce revenue schedule configuration</td>
         </tr>
         <tr>
-          <td><code>/api/v1/products/{id}/hierarchy</code></td>
-          <td>GET</td>
-          <td>Get product hierarchy</td>
-          <td>Response: <code>{"parentId", "children": [...]}</code></td>
+          <td><strong>Chart of Accounts</strong></td>
+          <td>GL account structure, cost center hierarchy, profit centers</td>
+          <td>Requires GL account mapping to Salesforce product families</td>
+        </tr>
+        <tr>
+          <td><strong>Billing Cycles</strong></td>
+          <td>Invoice frequency, payment terms, dunning policies</td>
+          <td>Configures Salesforce Billing invoice schedulers</td>
+        </tr>
+        <tr>
+          <td><strong>Tax Jurisdiction</strong></td>
+          <td>Tax codes, VAT rates, sales tax jurisdictions</td>
+          <td>Requires tax calculation integration (Avalara, Vertex)</td>
+        </tr>
+        <tr>
+          <td><strong>Reporting Requirements</strong></td>
+          <td>Financial close timelines, audit trails, compliance reports</td>
+          <td>Determines data retention and audit logging needs</td>
         </tr>
       </tbody>
     </table>
 
-    <h2>2. Database Schema</h2>
+    <h2>3. ERP Connector Framework</h2>
+    <table class="tech-table">
+      <thead><tr><th>Component</th><th>Purpose</th><th>Implementation</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Authentication Handler</strong></td>
+          <td>Manage OAuth 2.0, SAML SSO, API keys</td>
+          <td>Token refresh automation, secure credential vaulting (HashiCorp Vault)</td>
+        </tr>
+        <tr>
+          <td><strong>Data Extractor</strong></td>
+          <td>Extract ERP financial data (GL accounts, revenue schedules, invoices)</td>
+          <td>Batch processing with checkpoints, incremental sync via change data capture</td>
+        </tr>
+        <tr>
+          <td><strong>Schema Mapper</strong></td>
+          <td>Map ERP financial objects to Salesforce revenue/billing objects</td>
+          <td>GL account → Product Family, Revenue Schedule → Order Product Revenue</td>
+        </tr>
+        <tr>
+          <td><strong>Transformation Engine</strong></td>
+          <td>Convert ERP data formats to Salesforce standards</td>
+          <td>Date format normalization, currency conversion, tax calculation</td>
+        </tr>
+        <tr>
+          <td><strong>Validation Orchestrator</strong></td>
+          <td>Pre-sync data quality checks</td>
+          <td>Revenue schedule validation, invoice total reconciliation, GL account existence check</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>4. ERP-Specific Integration Details</h2>
+    <h3>SAP S/4HANA</h3>
+    <ul>
+      <li><strong>API:</strong> OData v2/v4 APIs, BAPI function modules, SAP Gateway</li>
+      <li><strong>Authentication:</strong> OAuth 2.0 SAML Bearer Assertion, X.509 client certificates</li>
+      <li><strong>Key Modules:</strong> Revenue Accounting and Reporting (RAR), Sales and Distribution (SD), Billing (FI-CA)</li>
+      <li><strong>Integration Complexity:</strong> High (complex revenue recognition rules, multi-entity consolidation)</li>
+      <li><strong>Special Handling:</strong> Preserve SAP Document Numbers (VBELN), profit center assignments, cost center allocations</li>
+    </ul>
+
+    <h3>Oracle ERP Cloud</h3>
+    <ul>
+      <li><strong>API:</strong> REST APIs (SCIM, Oracle Financials), File-Based Data Import (FBDI)</li>
+      <li><strong>Authentication:</strong> OAuth 2.0, Oracle Identity Cloud Service (IDCS)</li>
+      <li><strong>Key Modules:</strong> Revenue Management Cloud, Receivables, General Ledger, Advanced Collections</li>
+      <li><strong>Integration Complexity:</strong> Medium-High (well-documented REST APIs, FBDI for bulk operations)</li>
+      <li><strong>Special Handling:</strong> Preserve transaction source IDs, GL segment values (company, account, cost center, product)</li>
+    </ul>
+
+    <h3>Microsoft Dynamics 365 Finance</h3>
+    <ul>
+      <li><strong>API:</strong> OData v4 (Data entities), Batch Data API, Recurring integrations</li>
+      <li><strong>Authentication:</strong> Azure AD OAuth 2.0, service-to-service authentication</li>
+      <li><strong>Key Modules:</strong> Revenue recognition, Accounts receivable, General ledger, Project accounting</li>
+      <li><strong>Integration Complexity:</strong> Medium (standard OData, good documentation, Microsoft ecosystem integration)</li>
+      <li><strong>Special Handling:</strong> Preserve financial dimensions (department, project, business unit), withholding tax rules</li>
+    </ul>
+
+    <h3>Workday Financials</h3>
+    <ul>
+      <li><strong>API:</strong> Workday Web Services (SOAP), Workday REST API, Report-as-a-Service (RaaS)</li>
+      <li><strong>Authentication:</strong> Integration System User (ISU) with OAuth 2.0, API key authentication</li>
+      <li><strong>Key Modules:</strong> Revenue management, Customer accounts, Financial accounting, Billing</li>
+      <li><strong>Integration Complexity:</strong> Medium (SOAP-based, XML payloads, versioned APIs)</li>
+      <li><strong>Special Handling:</strong> Preserve Workday worktags (cost center, project, region), revenue category assignments</li>
+    </ul>
+
+    <h3>Oracle NetSuite</h3>
+    <ul>
+      <li><strong>API:</strong> SuiteTalk SOAP API, RESTlet custom endpoints, SuiteScript for business logic</li>
+      <li><strong>Authentication:</strong> Token-Based Authentication (TBA), OAuth 1.0</li>
+      <li><strong>Key Modules:</strong> Advanced Revenue Management (ARM), Accounts Receivable, SuiteAnalytics</li>
+      <li><strong>Integration Complexity:</strong> Medium-Low (mature API, extensive customization options)</li>
+      <li><strong>Special Handling:</strong> Preserve NetSuite internal IDs, custom segment values, multi-subsidiary configurations</li>
+    </ul>
+
+    <h2>5. API Endpoints</h2>
+    <table class="tech-table">
+      <thead><tr><th>Endpoint</th><th>Method</th><th>Purpose</th><th>Request/Response</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>/api/v1/erp/assess</code></td>
+          <td>POST</td>
+          <td>Run ERP pre-integration assessment</td>
+          <td>Request: <code>{"erpType": "SAP", "credentials": {...}}</code><br>Response: <code>{"assessmentId", "revenueRules", "glAccounts"}</code></td>
+        </tr>
+        <tr>
+          <td><code>/api/v1/erp/sync-contract</code></td>
+          <td>POST</td>
+          <td>Sync Salesforce contract to ERP</td>
+          <td>Request: <code>{"contractId", "erpType", "syncMode": "full"}</code><br>Response: <code>{"erpContractId", "status": "Synced"}</code></td>
+        </tr>
+        <tr>
+          <td><code>/api/v1/erp/revenue-schedule</code></td>
+          <td>POST</td>
+          <td>Generate revenue schedule from ERP rules</td>
+          <td>Request: <code>{"orderId", "revenueRules": {...}}</code><br>Response: <code>{"scheduleId", "scheduleLines": [...]}</code></td>
+        </tr>
+        <tr>
+          <td><code>/api/v1/erp/invoice-sync</code></td>
+          <td>POST</td>
+          <td>Sync invoice status between Salesforce and ERP</td>
+          <td>Request: <code>{"invoiceId", "direction": "bidirectional"}</code><br>Response: <code>{"syncStatus": "Completed"}</code></td>
+        </tr>
+        <tr>
+          <td><code>/api/v1/erp/gl-mapping</code></td>
+          <td>GET</td>
+          <td>Retrieve GL account mappings</td>
+          <td>Response: <code>{"mappings": [{"productFamily": "Software", "glAccount": "4000-1000"}]}</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>6. Database Schema</h2>
+    <h3>ERP Metadata Tables</h3>
+    <table class="tech-table">
+      <thead><tr><th>Table</th><th>Columns</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>ERP_CONNECTOR</code></td>
+          <td><code>connector_id, erp_type, api_endpoint, auth_method, sync_frequency, last_sync_time</code></td>
+          <td>Store ERP connection configurations</td>
+        </tr>
+        <tr>
+          <td><code>ERP_REVENUE_RULE</code></td>
+          <td><code>rule_id, erp_type, recognition_method, deferral_pattern, start_trigger, end_trigger</code></td>
+          <td>Revenue recognition rule definitions</td>
+        </tr>
+        <tr>
+          <td><code>ERP_GL_MAPPING</code></td>
+          <td><code>mapping_id, product_family, gl_account, cost_center, profit_center, business_unit</code></td>
+          <td>Product to GL account mappings</td>
+        </tr>
+        <tr>
+          <td><code>ERP_TAX_JURISDICTION</code></td>
+          <td><code>jurisdiction_id, country_code, state_province, tax_rate, tax_type, effective_date</code></td>
+          <td>Tax jurisdiction data for compliance</td>
+        </tr>
+      </tbody>
+    </table>
+
     <h3>Staging Tables</h3>
     <table class="tech-table">
       <thead><tr><th>Table</th><th>Columns</th><th>Purpose</th></tr></thead>
       <tbody>
         <tr>
-          <td><code>STG1_VANILLA_PRODUCT_RCA</code></td>
-          <td><code>product_id, source_id, product_code, name, type, parent_id</code></td>
-          <td>Raw RCA product data</td>
+          <td><code>STG1_ERP_CONTRACT</code></td>
+          <td><code>source_id, contract_number, account_id, start_date, end_date, total_contract_value, status</code></td>
+          <td>Raw ERP contract data</td>
         </tr>
         <tr>
-          <td><code>STG2_VANILLA_PRODUCT_RCA</code></td>
-          <td>Same + <code>is_valid, hierarchy_level</code></td>
-          <td>Validated products with hierarchy info</td>
+          <td><code>STG1_ERP_REVENUE_SCHEDULE</code></td>
+          <td><code>source_id, contract_id, revenue_amount, recognition_date, period_start, period_end, gl_account</code></td>
+          <td>Raw ERP revenue schedule data</td>
+        </tr>
+        <tr>
+          <td><code>STG1_ERP_INVOICE</code></td>
+          <td><code>source_id, invoice_number, account_id, invoice_date, due_date, amount, status, payment_date</code></td>
+          <td>Raw ERP invoice data</td>
+        </tr>
+        <tr>
+          <td><code>STG2_ERP_CONTRACT</code></td>
+          <td>Same + <code>is_valid, sf_contract_id, validation_errors</code></td>
+          <td>Validated ERP contract data</td>
+        </tr>
+        <tr>
+          <td><code>STG2_ERP_REVENUE_SCHEDULE</code></td>
+          <td>Same + <code>is_valid, sf_order_product_id, cumulative_revenue</code></td>
+          <td>Validated revenue schedule with Salesforce linkage</td>
+        </tr>
+        <tr>
+          <td><code>STG2_ERP_INVOICE</code></td>
+          <td>Same + <code>is_valid, sf_invoice_id, days_overdue</code></td>
+          <td>Validated invoice data with aging calculations</td>
         </tr>
       </tbody>
     </table>
 
-    <h3>Target Objects</h3>
-    <table class="tech-table">
-      <thead><tr><th>Object</th><th>Key Fields</th></tr></thead>
-      <tbody>
-        <tr>
-          <td><code>vlocity_cmt__Product__c</code></td>
-          <td><code>Id, vlocity_cmt__ProductCode__c, Name, vlocity_cmt__Type__c, vlocity_cmt__ParentProductId__c</code></td>
-        </tr>
-      </tbody>
-    </table>
-
-    <h2>3. Field Mapping</h2>
-    <p>See <a href="requirements-mapping.html#WS5">WS5 Mapping</a>. Key transform:</p>
-    <table class="tech-table">
-      <thead><tr><th>Source</th><th>Target</th><th>Transform</th></tr></thead>
-      <tbody>
-        <tr>
-          <td><code>vlocity_cmt__Product__c.vlocity_cmt__ProductCode__c</code></td>
-          <td><code>vlocity_cmt__Product__c.vlocity_cmt__ProductCode__c</code></td>
-          <td>Direct copy (DQ validation)</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <h2>4. Execution Flow</h2>
+    <h2>7. Revenue Recognition Logic (ASC 606 / IFRS 15)</h2>
+    <p><strong>5-Step Revenue Recognition Model:</strong></p>
     <ol>
-      <li>Extract RCA product data → STG1</li>
-      <li>Validate product codes, hierarchy references → STG2</li>
-      <li>Bulk load RCA products (parent products first, then children)</li>
-      <li>Update ID_MAPPING for parent-child relationships</li>
+      <li><strong>Identify the Contract:</strong> Map Salesforce Contract/Order to ERP contract entity</li>
+      <li><strong>Identify Performance Obligations:</strong> Map Salesforce Quote Line Items to distinct performance obligations</li>
+      <li><strong>Determine Transaction Price:</strong> Calculate total contract value including discounts, variable consideration</li>
+      <li><strong>Allocate Transaction Price:</strong> Use standalone selling price (SSP) to allocate revenue to each performance obligation</li>
+      <li><strong>Recognize Revenue:</strong> Apply recognition pattern (point-in-time for perpetual licenses, over-time for subscriptions/services)</li>
     </ol>
 
-    <h2>5. Rollback & Testing</h2>
+    <p><strong>Recognition Patterns:</strong></p>
     <ul>
-      <li><strong>Rollback:</strong> Delete RCA products by batch_id in reverse hierarchy order (children first, then parents)</li>
-      <li><strong>Test:</strong> Validate product hierarchy integrity, product type value mapping</li>
+      <li><strong>Point-in-Time:</strong> Recognize 100% revenue on delivery date (perpetual software licenses, hardware sales)</li>
+      <li><strong>Straight-Line:</strong> Recognize revenue evenly over contract term (SaaS subscriptions, maintenance contracts)</li>
+      <li><strong>Proportional Performance:</strong> Recognize based on completion percentage (professional services, custom development)</li>
+      <li><strong>Milestone-Based:</strong> Recognize revenue upon milestone completion (implementation projects, multi-phase services)</li>
+    </ul>
+
+    <h2>8. Billing Integration Scenarios</h2>
+    <p><strong>Invoice Generation Flow:</strong></p>
+    <ol>
+      <li>Salesforce CPQ generates Order → triggers billing event</li>
+      <li>RevNova extracts order line items, pricing, tax data</li>
+      <li>Map Salesforce products to ERP GL accounts</li>
+      <li>Call ERP API to create invoice (SAP SD invoice, Oracle AR transaction, NetSuite invoice)</li>
+      <li>ERP returns invoice number and PDF link</li>
+      <li>Update Salesforce Invoice record with ERP invoice number and status</li>
+      <li>Schedule follow-up sync for payment status updates (daily batch job)</li>
+    </ol>
+
+    <p><strong>Payment Sync Flow:</strong></p>
+    <ol>
+      <li>Customer makes payment in ERP payment portal or manual cash application</li>
+      <li>ERP updates invoice status to "Paid", records payment date and amount</li>
+      <li>RevNova detects payment event via webhook or scheduled poll</li>
+      <li>Update Salesforce Invoice status, Payment Date, Payment Amount</li>
+      <li>Trigger Salesforce workflow (send payment confirmation email, update forecasting dashboard)</li>
+    </ol>
+
+    <h2>9. Execution Flow</h2>
+    <ol>
+      <li><strong>Pre-Integration Assessment:</strong> Connect to ERP, analyze revenue rules, GL structure, billing cycles → generate integration blueprint</li>
+      <li><strong>GL Account Mapping:</strong> Map Salesforce Product Families to ERP GL accounts, cost centers, profit centers → store in ERP_GL_MAPPING table</li>
+      <li><strong>Revenue Rule Configuration:</strong> Configure Salesforce revenue schedules based on ERP recognition methods → create schedule templates</li>
+      <li><strong>Contract Sync (Initial Load):</strong> Extract existing ERP contracts → load into STG1_ERP_CONTRACT → validate and create Salesforce Contracts</li>
+      <li><strong>Revenue Schedule Migration:</strong> Extract ERP revenue schedules → load into STG1_ERP_REVENUE_SCHEDULE → create Salesforce Order Product Revenue records</li>
+      <li><strong>Invoice Sync (Initial Load):</strong> Extract ERP invoices → load into STG1_ERP_INVOICE → create Salesforce Invoice records</li>
+      <li><strong>Real-Time Integration Setup:</strong> Configure webhooks/change data capture for ongoing sync (new contracts, invoice updates, payments)</li>
+      <li><strong>Tax Calculation Integration:</strong> Integrate tax engine (Avalara, Vertex) if required for multi-jurisdiction compliance</li>
+      <li><strong>Reconciliation & Validation:</strong> Compare Salesforce revenue totals vs. ERP GL balances → generate reconciliation report</li>
+      <li><strong>Financial Close Support:</strong> Schedule end-of-month revenue recognition jobs, generate audit reports for compliance</li>
+    </ol>
+
+    <h2>10. Rollback & Testing</h2>
+    <ul>
+      <li><strong>Rollback Strategy:</strong> Delete synced records by batch_id, restore original ERP data from STG1 backup tables, reverse GL postings if necessary</li>
+      <li><strong>Test Scenarios:</strong>
+        <ul>
+          <li>Verify revenue schedule accuracy (compare Salesforce vs. ERP recognized revenue by period)</li>
+          <li>Validate invoice sync (confirm invoice totals, payment status, aging calculations)</li>
+          <li>Test multi-currency scenarios (exchange rate accuracy, currency conversion)</li>
+          <li><strong>ASC 606 Compliance:</strong> Validate 5-step revenue model implementation, SSP allocation accuracy</li>
+          <li>Test GL account mapping (ensure products map to correct GL accounts and cost centers)</li>
+          <li>Verify tax calculation (validate tax rates by jurisdiction, VAT/GST handling)</li>
+        </ul>
+      </li>
+      <li><strong>Audit Trail Verification:</strong> Confirm all financial transactions logged with timestamps, user IDs, and approval workflows</li>
+      <li><strong>Financial Close Simulation:</strong> Run end-of-month close process, generate financial reports, validate audit logs</li>
     </ul>
 
     <hr>
     <p><em>See <a href="requirements-phase5-functional.html">Phase 5 Functional Requirements</a> for UI and business rules.</em></p>
+  </div>
+  <script src="../script.js"></script>
   </div>
 </body>
 </html>

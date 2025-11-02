@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>AI-Powered Product Configuration - RevNova Platform</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
+        .requirements-layout { display: flex; min-height: calc(100vh - 80px); margin-top: 80px; }
+        .sidebar { width: 280px; background: #f8f9fa; border-right: 1px solid #e0e0e0; padding: 2rem 0; position: fixed; left: 0; top: 80px; height: calc(100vh - 80px); overflow-y: auto; z-index: 100; }
+        .sidebar h3 { padding: 0 1.5rem; font-size: 0.85rem; color: #666; text-transform: uppercase; letter-spacing: 0.5px; margin: 1.5rem 0 0.5rem; }
+        .sidebar h3:first-child { margin-top: 0; }
+        .sidebar ul { list-style: none; padding: 0; margin: 0; }
+        .sidebar ul li a { display: block; padding: 0.6rem 1.5rem; color: #333; text-decoration: none; font-size: 0.95rem; transition: all 0.2s; }
+        .sidebar ul li a:hover { background: #e9ecef; color: #11998e; }
+        .sidebar ul li a.active { background: #11998e; color: #fff; font-weight: 500; }
+        .sidebar ul ul { padding-left: 0; }
+        .sidebar ul ul li a { padding-left: 2.5rem; font-size: 0.9rem; }
+        .main-content { flex: 1; margin-left: 280px; padding: 3rem; background: #fff; min-width: 0; }
+        .section-header { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: #fff; padding: 2.5rem; border-radius: 12px; margin-bottom: 2rem; }
+        .section-header h1 { margin: 0 0 0.5rem 0; font-size: 2.5rem; }
+        .section-header p { margin: 0; font-size: 1.1rem; opacity: 0.95; }
+        .card { background: #fff; border: 2px solid #e0e0e0; border-radius: 12px; padding: 2rem; margin-bottom: 2rem; }
+        .card h2 { color: #11998e; margin: 0 0 1.5rem 0; font-size: 1.8rem; }
+        .card h3 { color: #555; margin: 1.5rem 0 1rem 0; font-size: 1.3rem; }
+        .ai-badge { display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.85rem; font-weight: 500; margin-left: 0.5rem; }
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+        .feature-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; padding: 1.5rem; border-radius: 8px; }
+        .feature-card h4 { margin: 0 0 0.5rem 0; font-size: 1.2rem; }
+        .feature-card p { margin: 0; font-size: 0.9rem; opacity: 0.95; }
+        .tech-spec { background: #2d2d2d; color: #f8f8f2; padding: 1rem; border-radius: 8px; margin: 1rem 0; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.9rem; overflow-x: auto; }
+        .feature-list { list-style: none; padding: 0; }
+        .feature-list li { padding: 0.75rem 0; padding-left: 2rem; position: relative; border-bottom: 1px solid #f0f0f0; }
+        .feature-list li:before { content: "✓"; position: absolute; left: 0; color: #11998e; font-weight: bold; font-size: 1.2rem; }
+        .info-box { background: #e7f3ff; border-left: 4px solid #0066cc; padding: 1.5rem; margin: 1rem 0; border-radius: 4px; }
+        .info-box strong { color: #0066cc; }
+        .workflow-step { background: #f8f9fa; border-left: 4px solid #11998e; padding: 1.5rem; margin: 1rem 0; border-radius: 4px; }
+        @media (max-width: 768px) { .sidebar { display: none; } .main-content { margin-left: 0; } }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="nav-left">
+                <a href="../index.html" class="logo"><div class="logo-box">RevNova</div></a>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="../about-revnova.html">About RevNova</a></li>
+                        <li><a href="../features.html">Features</a></li>
+                        <li><a href="../pricing.html">Pricing</a></li>
+                        <li><a href="requirements-home.html" class="active">Requirements</a></li>
+                        <li><a href="../contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header-right">
+                <div class="country-selector"><span class="fi fi-us"></span></div>
+                <a href="../login.html" class="btn btn-login">Login</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="requirements-layout">
+        <aside class="sidebar">
+            <h3>Platform Vision</h3>
+            <ul>
+                <li><a href="requirements-home.html">Home</a></li>
+                <li><a href="product-vision.html">Product Vision</a></li>
+                <li><a href="business-requirements.html">Business Requirements</a></li>
+                <li><a href="security-compliance.html">Security & Compliance</a></li>
+                <li><a href="ai-product-configuration.html" class="active">AI Product Configuration</a></li>
+                <li><a href="developer-environment.html">Developer Environment</a></li>
+            </ul>
+
+            <h3>Phase 2: AI Product Config</h3>
+            <ul>
+                <li><a href="requirements-phase2-technical.html">Technical Requirements</a></li>
+                <li><a href="requirements-phase2-generate.html">Generate with AI</a></li>
+                <li><a href="requirements-phase2-modify.html">Modify with AI</a></li>
+                <li><a href="requirements-phase2-adopt.html">Adopt AI Suggestions</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="section-header">
+                <h1>AI-Powered Product Configuration</h1>
+                <p>Intelligent product design, modification, and optimization using machine learning and market intelligence</p>
+            </div>
+
+            <!-- Generate with AI -->
+            <section class="card">
+                <h2>Generate with AI <span class="ai-badge">PHASE 2</span></h2>
+                <p>Create new product configurations using natural language specifications and AI-powered market intelligence.</p>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>🗣️ Natural Language Input</h4>
+                        <p>Describe products in plain English/business terms</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>📊 Market Analysis</h4>
+                        <p>Integrate Gartner & Forrester trend data</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🔍 Competitive Intelligence</h4>
+                        <p>Benchmark against competitor offerings</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>📦 Smart Bundling</h4>
+                        <p>Auto-generate product bundles based on usage patterns</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>💰 Pricing Optimization</h4>
+                        <p>AI-recommended pricing strategies</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>⚙️ Configuration Rules</h4>
+                        <p>Auto-generate constraint and dependency rules</p>
+                    </div>
+                </div>
+
+                <h3>Natural Language Product Specification</h3>
+                <p><strong>User Input Example:</strong></p>
+                <div class="tech-spec">"Create a mid-tier SaaS subscription product for small businesses (10-50 employees)
+targeting the project management space. Key features: task management, team collaboration,
+time tracking, basic reporting. Pricing should be competitive with Asana and Monday.com.
+Target ARPU: $25-30 per user/month."</div>
+
+                <p><strong>AI Processing Steps:</strong></p>
+                <ol class="feature-list">
+                    <li><strong>Intent Recognition:</strong> Identify product type (SaaS subscription), target market (SMB), and feature requirements</li>
+                    <li><strong>Market Research:</strong> Query Gartner Magic Quadrant data for project management software segment</li>
+                    <li><strong>Competitive Analysis:</strong> Pull pricing data for Asana, Monday.com, ClickUp, Wrike from public APIs/web scraping</li>
+                    <li><strong>Feature Extraction:</strong> Map "task management" → specific product capabilities (Kanban boards, Gantt charts, dependencies)</li>
+                    <li><strong>Bundle Creation:</strong> Generate product family (Basic, Professional, Enterprise tiers)</li>
+                    <li><strong>Pricing Calculation:</strong> Analyze competitor pricing + target ARPU → recommend $27/user/month for mid-tier</li>
+                </ol>
+
+                <h3>Market Trend Analysis Integration</h3>
+                <p><strong>Data Sources:</strong></p>
+                <ul class="feature-list">
+                    <li><strong>Gartner Research:</strong> Magic Quadrant data, Market Guide reports, Hype Cycle predictions</li>
+                    <li><strong>Forrester Wave:</strong> Vendor rankings, technology trends, buyer insights</li>
+                    <li><strong>IDC MarketScape:</strong> Technology adoption forecasts, vendor assessment</li>
+                    <li><strong>G2 Crowd:</strong> User reviews, feature satisfaction ratings, pricing transparency</li>
+                    <li><strong>Product Hunt:</strong> Emerging product trends, feature innovation</li>
+                </ul>
+
+                <p><strong>Integration Method:</strong></p>
+                <div class="tech-spec"># API Integration Architecture
+- Gartner API: OAuth 2.0 authentication, rate limit 100 req/hour
+- Forrester API: API key authentication, GraphQL endpoint
+- G2 API: REST API with pagination (50 results/page)
+- Web Scraping: Puppeteer/Playwright for dynamic content (Product Hunt, competitor sites)
+- Data Caching: Redis cache (24-hour TTL for market data, 7-day for historical trends)
+- ML Model: Fine-tuned GPT-4 for text analysis and recommendation generation</div>
+
+                <h3>Competitive Product Benchmarking</h3>
+                <table style="width:100%; border-collapse: collapse; margin: 1rem 0;">
+                    <thead>
+                        <tr style="background: #11998e; color: #fff;">
+                            <th style="padding: 0.75rem; text-align: left;">Benchmark Category</th>
+                            <th style="padding: 0.75rem; text-align: left;">Data Points Collected</th>
+                            <th style="padding: 0.75rem; text-align: left;">AI Analysis</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.75rem;"><strong>Feature Parity</strong></td>
+                            <td style="padding: 0.75rem;">Feature lists, user reviews, product demos</td>
+                            <td style="padding: 0.75rem;">Gap analysis, must-have vs. nice-to-have classification</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.75rem;"><strong>Pricing Strategy</strong></td>
+                            <td style="padding: 0.75rem;">Public pricing pages, discount structures, contract terms</td>
+                            <td style="padding: 0.75rem;">Pricing tier optimization, discount elasticity modeling</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.75rem;"><strong>User Satisfaction</strong></td>
+                            <td style="padding: 0.75rem;">G2/Capterra ratings, NPS scores, churn indicators</td>
+                            <td style="padding: 0.75rem;">Sentiment analysis, pain point identification</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem;"><strong>Go-to-Market</strong></td>
+                            <td style="padding: 0.75rem;">Marketing messaging, buyer personas, sales cycles</td>
+                            <td style="padding: 0.75rem;">Positioning recommendations, messaging frameworks</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Automated Product Bundle Generation</h3>
+                <p><strong>ML-Driven Bundling Logic:</strong></p>
+                <ul class="feature-list">
+                    <li>Analyze historical purchase data (co-occurrence patterns via association rule mining)</li>
+                    <li>Identify frequently bought together products (Apriori algorithm, min support 20%)</li>
+                    <li>Calculate bundle discount optimization (maximize profit margin while maintaining conversion)</li>
+                    <li>Generate bundle naming suggestions (GPT-4 for marketing-friendly names)</li>
+                    <li>Create tiered bundles (Good-Better-Best strategy)</li>
+                </ul>
+
+                <div class="workflow-step">
+                    <strong>Example Output:</strong>
+                    <ul>
+                        <li><strong>Starter Bundle:</strong> Core product + basic support (Margin: 70%)</li>
+                        <li><strong>Professional Bundle:</strong> Core + advanced features + priority support (Margin: 65%, most popular tier)</li>
+                        <li><strong>Enterprise Bundle:</strong> Full suite + premium support + custom integrations (Margin: 55%, highest ARPU)</li>
+                    </ul>
+                </div>
+
+                <h3>Pricing Strategy Recommendations</h3>
+                <p><strong>AI Pricing Models:</strong></p>
+                <ul class="feature-list">
+                    <li><strong>Value-Based Pricing:</strong> Calculate customer willingness to pay based on ROI delivered</li>
+                    <li><strong>Competitive Pricing:</strong> Position within ±10% of market leaders</li>
+                    <li><strong>Penetration Pricing:</strong> Aggressive discount for market entry (temporary 30% off)</li>
+                    <li><strong>Premium Pricing:</strong> 20%+ above market for differentiated features</li>
+                    <li><strong>Freemium Strategy:</strong> Free tier with upgrade triggers (usage limits, feature gates)</li>
+                </ul>
+
+                <div class="info-box">
+                    <strong>AI Pricing Optimization Engine:</strong> Uses regression analysis on historical pricing data, elasticity modeling, and competitor pricing intelligence to recommend optimal price points for each bundle tier. Continuously learns from won/lost deals to refine recommendations.
+                </div>
+            </section>
+
+            <!-- Modify with AI -->
+            <section class="card">
+                <h2>Modify with AI <span class="ai-badge">PHASE 2</span></h2>
+                <p>Intelligent product configuration modification with smart suggestions and conflict detection.</p>
+
+                <h3>Smart Product Attribute Suggestions</h3>
+                <p><strong>Context-Aware Recommendations:</strong></p>
+                <ul class="feature-list">
+                    <li><strong>Missing Attribute Detection:</strong> AI identifies critical missing fields (e.g., warranty period for hardware products)</li>
+                    <li><strong>Industry Best Practices:</strong> Suggest standard attributes based on product category (SaaS: integration APIs, Hardware: dimensions/weight)</li>
+                    <li><strong>Regulatory Compliance:</strong> Auto-recommend required fields (FDA approval for medical devices, CE marking for EU electronics)</li>
+                    <li><strong>Customer Preference Learning:</strong> Analyze customer inquiries to identify frequently requested attributes</li>
+                </ul>
+
+                <h3>Configuration Conflict Detection & Resolution</h3>
+                <p><strong>Real-Time Validation:</strong></p>
+                <div class="workflow-step">
+                    <strong>Conflict Detection Engine:</strong>
+                    <ol>
+                        <li><strong>Logical Inconsistencies:</strong> Detect mutually exclusive options (e.g., "Color: Red" + "Monochrome Display")</li>
+                        <li><strong>Pricing Anomalies:</strong> Flag pricing conflicts (discount exceeds 100%, negative margin)</li>
+                        <li><strong>Technical Constraints:</strong> Validate compatibility rules (software version incompatible with OS)</li>
+                        <li><strong>Regulatory Violations:</strong> Check compliance requirements (age restrictions, export controls)</li>
+                    </ol>
+                </div>
+
+                <p><strong>AI-Powered Conflict Resolution:</strong></p>
+                <div class="tech-spec"># Conflict Resolution Workflow
+IF conflict_detected:
+    1. Analyze conflict severity (blocking vs. warning)
+    2. Generate resolution options:
+       - Auto-fix: Remove conflicting option (if clear priority)
+       - Suggest: Recommend alternative configurations
+       - Escalate: Flag for human review (complex cases)
+    3. Apply resolution with audit trail
+    4. Notify user of changes with explanation</div>
+
+                <h3>Pricing Optimization Based on Market Data</h3>
+                <p><strong>Dynamic Pricing Adjustments:</strong></p>
+                <ul class="feature-list">
+                    <li><strong>Real-Time Competitor Monitoring:</strong> Daily price scraping of top 5 competitors</li>
+                    <li><strong>Demand Forecasting:</strong> Predict price elasticity using time-series analysis (ARIMA models)</li>
+                    <li><strong>Seasonal Pricing:</strong> Recommend discounts during low-demand periods</li>
+                    <li><strong>Margin Protection:</strong> Alert if suggested price drops below minimum margin threshold (e.g., 40%)</li>
+                    <li><strong>A/B Testing Integration:</strong> Track conversion rates for different price points</li>
+                </ul>
+
+                <h3>Bundle Composition Improvements</h3>
+                <p><strong>AI-Driven Bundle Optimization:</strong></p>
+                <ul class="feature-list">
+                    <li>Analyze bundle conversion rates vs. individual product sales</li>
+                    <li>Identify underperforming bundles (low attach rate, high return rate)</li>
+                    <li>Suggest bundle re-composition (swap low-demand product for higher-value item)</li>
+                    <li>Calculate optimal discount percentage (maximize revenue while maintaining margin)</li>
+                    <li>Generate upsell recommendations (next logical bundle upgrade)</li>
+                </ul>
+
+                <div class="info-box">
+                    <strong>Machine Learning Model:</strong> Gradient Boosting (XGBoost) trained on 2 years of historical sales data, product metadata, and customer behavior to predict bundle performance and recommend improvements. Model retraining cadence: monthly.
+                </div>
+            </section>
+
+            <!-- Adopt AI Suggestions -->
+            <section class="card">
+                <h2>Adopt AI Suggestions <span class="ai-badge">PHASE 2</span></h2>
+                <p>Governance and workflow for reviewing, approving, and implementing AI-generated product configurations.</p>
+
+                <h3>Impact Analysis Dashboard</h3>
+                <p><strong>Pre-Adoption Metrics:</strong></p>
+                <table style="width:100%; border-collapse: collapse; margin: 1rem 0;">
+                    <thead>
+                        <tr style="background: #11998e; color: #fff;">
+                            <th style="padding: 0.75rem; text-align: left;">Impact Category</th>
+                            <th style="padding: 0.75rem; text-align: left;">Metrics Displayed</th>
+                            <th style="padding: 0.75rem; text-align: left;">Data Source</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.75rem;"><strong>Revenue Impact</strong></td>
+                            <td style="padding: 0.75rem;">Projected ARPU change, conversion rate lift, upsell potential</td>
+                            <td style="padding: 0.75rem;">Sales forecasting model, historical revenue data</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.75rem;"><strong>Cost Impact</strong></td>
+                            <td style="padding: 0.75rem;">COGS change, support cost delta, implementation effort (hours)</td>
+                            <td style="padding: 0.75rem;">ERP cost data, engineering estimates</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.75rem;"><strong>Implementation Effort</strong></td>
+                            <td style="padding: 0.75rem;">Development time, testing requirements, rollout timeline</td>
+                            <td style="padding: 0.75rem;">JIRA/PM tool, historical velocity data</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem;"><strong>Risk Assessment</strong></td>
+                            <td style="padding: 0.75rem;">Cannibalization risk, customer churn risk, competitive response</td>
+                            <td style="padding: 0.75rem;">ML risk model, competitor intelligence</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Change Management Workflow Integration</h3>
+                <p><strong>Approval Process:</strong></p>
+                <div class="workflow-step">
+                    <strong>Multi-Stage Approval:</strong>
+                    <ol>
+                        <li><strong>AI Suggestion Generated:</strong> System creates draft product configuration with impact analysis</li>
+                        <li><strong>Product Manager Review:</strong> Review AI recommendations, edit as needed, approve/reject (SLA: 2 business days)</li>
+                        <li><strong>Pricing Committee Approval:</strong> Required for pricing changes >10% (SLA: 1 week)</li>
+                        <li><strong>Legal/Compliance Review:</strong> Auto-triggered for regulated industries or international products</li>
+                        <li><strong>Finance Sign-Off:</strong> Required if margin impact <-5%</li>
+                        <li><strong>Executive Approval:</strong> Required for new product lines or strategic bundles</li>
+                        <li><strong>Implementation:</strong> Automated deployment to staging → QA → production</li>
+                    </ol>
+                </div>
+
+                <h3>Stakeholder Notifications</h3>
+                <p><strong>Notification Triggers:</strong></p>
+                <ul class="feature-list">
+                    <li><strong>Slack Integration:</strong> Post to #product-updates channel with summary and approval link</li>
+                    <li><strong>Email Digest:</strong> Daily summary of pending AI suggestions (sent to Product, Sales, Finance teams)</li>
+                    <li><strong>Mobile Push:</strong> Urgent approvals (high-impact changes) sent via mobile app</li>
+                    <li><strong>Calendar Integration:</strong> Auto-schedule review meetings for complex changes</li>
+                    <li><strong>Escalation Path:</strong> Auto-escalate to VP if approval pending >5 business days</li>
+                </ul>
+
+                <h3>Automated Documentation Updates</h3>
+                <p><strong>Post-Approval Automation:</strong></p>
+                <ul class="feature-list">
+                    <li><strong>Product Catalog:</strong> Auto-update Salesforce Product2 records with new configurations</li>
+                    <li><strong>Pricing Sheets:</strong> Regenerate pricing PDFs and distribute to Sales team</li>
+                    <li><strong>Sales Enablement:</strong> Create battlecards and talking points (GPT-4 generated)</li>
+                    <li><strong>Customer Communication:</strong> Draft product announcement emails (review before send)</li>
+                    <li><strong>Knowledge Base:</strong> Update internal wiki/Confluence with configuration details</li>
+                    <li><strong>Training Materials:</strong> Generate training videos (AI voiceover + screen recording)</li>
+                </ul>
+
+                <div class="info-box">
+                    <strong>Audit Trail & Compliance:</strong> All AI suggestions, approvals, rejections, and modifications are logged with timestamps, user IDs, and justification notes. Audit logs retained for 7 years to meet SOC 2 and regulatory compliance requirements.
+                </div>
+
+                <h3>Success Metrics & Continuous Learning</h3>
+                <p><strong>AI Model Performance Tracking:</strong></p>
+                <ul class="feature-list">
+                    <li><strong>Adoption Rate:</strong> % of AI suggestions approved without modification (target: >70%)</li>
+                    <li><strong>Revenue Accuracy:</strong> Actual vs. predicted revenue impact (target: ±10%)</li>
+                    <li><strong>Time Savings:</strong> Hours saved vs. manual product configuration (baseline measurement)</li>
+                    <li><strong>User Satisfaction:</strong> NPS score from product managers using AI tools (target: >50)</li>
+                    <li><strong>Model Drift Detection:</strong> Monitor prediction accuracy degradation, trigger retraining if <80%</li>
+                </ul>
+
+                <div class="workflow-step">
+                    <strong>Feedback Loop:</strong> When AI suggestions are rejected or modified, capture the reason code (pricing too high, missing feature, competitive threat, etc.). Use this feedback to retrain ML models quarterly and improve future recommendations.
+                </div>
+            </section>
+
+            <!-- Technical Architecture -->
+            <section class="card">
+                <h2>Technical Architecture</h2>
+
+                <h3>AI/ML Stack</h3>
+                <div class="tech-spec"># Core Technologies
+- Language Models: GPT-4 (OpenAI API) for NLP and text generation
+- ML Framework: Python 3.9+ with scikit-learn, XGBoost, TensorFlow
+- Data Pipeline: Apache Airflow for ETL orchestration
+- Feature Store: Feast for ML feature management
+- Model Registry: MLflow for version control and deployment
+- Inference API: FastAPI with Redis caching (sub-100ms response time)
+
+# Infrastructure
+- Cloud Platform: AWS (EC2 GPU instances for training, Lambda for inference)
+- Database: PostgreSQL 14+ (product data), MongoDB (unstructured market intelligence)
+- Cache Layer: Redis (market data, ML predictions)
+- Message Queue: RabbitMQ (async AI job processing)
+- Monitoring: Prometheus + Grafana (model performance, API latency)</div>
+
+                <h3>Data Requirements</h3>
+                <p><strong>Training Data Sources:</strong></p>
+                <ul class="feature-list">
+                    <li>2+ years of historical sales data (orders, quotes, deals won/lost)</li>
+                    <li>Product catalog metadata (features, pricing, bundles)</li>
+                    <li>Customer behavior data (usage patterns, support tickets, NPS scores)</li>
+                    <li>Competitor intelligence (pricing, features, marketing messaging)</li>
+                    <li>Market research reports (Gartner, Forrester, IDC)</li>
+                </ul>
+
+                <p><strong>Data Privacy & Security:</strong></p>
+                <ul class="feature-list">
+                    <li>PII anonymization before ML training (hashing customer IDs, removing names/emails)</li>
+                    <li>GDPR-compliant data handling (right to erasure, data portability)</li>
+                    <li>Model training in isolated VPC (no internet access)</li>
+                    <li>Encryption at rest (AES-256) for all training datasets</li>
+                </ul>
+            </section>
+        </main>
+    </div>
+
+    <script src="../script.js"></script>
+</body>
+</html>

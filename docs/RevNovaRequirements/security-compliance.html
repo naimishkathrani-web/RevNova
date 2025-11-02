@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Security & Compliance Requirements - RevNova Platform</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
+        .requirements-layout { display: flex; min-height: calc(100vh - 80px); margin-top: 80px; }
+        .sidebar { width: 280px; background: #f8f9fa; border-right: 1px solid #e0e0e0; padding: 2rem 0; position: fixed; left: 0; top: 80px; height: calc(100vh - 80px); overflow-y: auto; z-index: 100; }
+        .sidebar h3 { padding: 0 1.5rem; font-size: 0.85rem; color: #666; text-transform: uppercase; letter-spacing: 0.5px; margin: 1.5rem 0 0.5rem; }
+        .sidebar h3:first-child { margin-top: 0; }
+        .sidebar ul { list-style: none; padding: 0; margin: 0; }
+        .sidebar ul li a { display: block; padding: 0.6rem 1.5rem; color: #333; text-decoration: none; font-size: 0.95rem; transition: all 0.2s; }
+        .sidebar ul li a:hover { background: #e9ecef; color: #11998e; }
+        .sidebar ul li a.active { background: #11998e; color: #fff; font-weight: 500; }
+        .sidebar ul ul { padding-left: 0; }
+        .sidebar ul ul li a { padding-left: 2.5rem; font-size: 0.9rem; }
+        .main-content { flex: 1; margin-left: 280px; padding: 3rem; background: #fff; min-width: 0; }
+        .section-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; padding: 2.5rem; border-radius: 12px; margin-bottom: 2rem; }
+        .section-header h1 { margin: 0 0 0.5rem 0; font-size: 2.5rem; }
+        .section-header p { margin: 0; font-size: 1.1rem; opacity: 0.95; }
+        .card { background: #fff; border: 2px solid #e0e0e0; border-radius: 12px; padding: 2rem; margin-bottom: 2rem; }
+        .card h2 { color: #667eea; margin: 0 0 1.5rem 0; font-size: 1.8rem; }
+        .card h3 { color: #555; margin: 1.5rem 0 1rem 0; font-size: 1.3rem; }
+        .security-badge { display: inline-block; background: #667eea; color: #fff; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.85rem; font-weight: 500; margin-left: 0.5rem; }
+        .compliance-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+        .compliance-card { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: #fff; padding: 1.5rem; border-radius: 8px; text-align: center; }
+        .compliance-card h4 { margin: 0 0 0.5rem 0; font-size: 1.2rem; }
+        .compliance-card p { margin: 0; font-size: 0.9rem; opacity: 0.95; }
+        .requirement-box { background: #f0f7ff; border-left: 4px solid #0066cc; padding: 1.5rem; margin: 1rem 0; border-radius: 4px; }
+        .requirement-box strong { color: #0066cc; }
+        .tech-spec { background: #2d2d2d; color: #f8f8f2; padding: 1rem; border-radius: 8px; margin: 1rem 0; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.9rem; overflow-x: auto; }
+        .feature-list { list-style: none; padding: 0; }
+        .feature-list li { padding: 0.75rem 0; padding-left: 2rem; position: relative; border-bottom: 1px solid #f0f0f0; }
+        .feature-list li:before { content: "✓"; position: absolute; left: 0; color: #11998e; font-weight: bold; font-size: 1.2rem; }
+        .warning-box { background: #fff3cd; border-left: 4px solid #ffc107; padding: 1rem; margin: 1rem 0; border-radius: 4px; }
+        .warning-box strong { color: #856404; }
+        @media (max-width: 768px) { .sidebar { display: none; } .main-content { margin-left: 0; } }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="nav-left">
+                <a href="../index.html" class="logo"><div class="logo-box">RevNova</div></a>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="../about-revnova.html">About RevNova</a></li>
+                        <li><a href="../features.html">Features</a></li>
+                        <li><a href="../pricing.html">Pricing</a></li>
+                        <li><a href="requirements-home.html" class="active">Requirements</a></li>
+                        <li><a href="../contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header-right">
+                <div class="country-selector"><span class="fi fi-us"></span></div>
+                <a href="../login.html" class="btn btn-login">Login</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="requirements-layout">
+        <aside class="sidebar">
+            <h3>Platform Vision</h3>
+            <ul>
+                <li><a href="requirements-home.html">Home</a></li>
+                <li><a href="product-vision.html">Product Vision</a></li>
+                <li><a href="business-requirements.html">Business Requirements</a></li>
+                <li><a href="high-level-functional.html">Functional Overview</a></li>
+                <li><a href="security-compliance.html" class="active">Security & Compliance</a></li>
+            </ul>
+
+            <h3>Phase 1: SFDC CPQ Migration</h3>
+            <ul>
+                <li><a href="requirements-phase1-technical.html">Technical Requirements</a></li>
+                <li><a href="requirements-phase1-connect.html">Connect Module</a></li>
+                <li><a href="requirements-phase1-analyze.html">Analyze Module</a></li>
+                <li><a href="requirements-phase1-mapping.html">Mapping Module</a></li>
+                <li><a href="requirements-phase1-transform.html">Transform Module</a></li>
+                <li><a href="requirements-phase1-validate.html">Validate Module</a></li>
+                <li><a href="requirements-phase1-execute.html">Execute Module</a></li>
+                <li><a href="requirements-phase1-test.html">Test Module</a></li>
+            </ul>
+
+            <h3>Phase 2: AI Product Config</h3>
+            <ul>
+                <li><a href="requirements-phase2-technical.html">Technical Requirements</a></li>
+                <li><a href="requirements-phase2-generate.html">Generate with AI</a></li>
+                <li><a href="requirements-phase2-modify.html">Modify with AI</a></li>
+                <li><a href="requirements-phase2-adopt.html">Adopt AI Suggestions</a></li>
+            </ul>
+
+            <h3>Phase 3-5: Enterprise Migration</h3>
+            <ul>
+                <li><a href="requirements-phase3-technical.html">Phase 3: Other CPQ Systems</a></li>
+                <li><a href="requirements-phase4-technical.html">Phase 4: CRM Migration</a></li>
+                <li><a href="requirements-phase5-technical.html">Phase 5: ERP Integration</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="section-header">
+                <h1>Security & Compliance Requirements</h1>
+                <p>Enterprise-grade security framework for multi-regional data handling and regulatory compliance</p>
+            </div>
+
+            <!-- Data Residency & Sovereignty -->
+            <section class="card">
+                <h2>Data Residency & Sovereignty <span class="security-badge">CRITICAL</span></h2>
+                
+                <h3>Regional Data Isolation</h3>
+                <p>RevNova implements strict geo-fencing and data isolation to ensure customer data remains within specified geographic boundaries.</p>
+                
+                <div class="compliance-grid">
+                    <div class="compliance-card">
+                        <h4>GDPR</h4>
+                        <p>European Union</p>
+                        <p>Data Protection Regulation</p>
+                    </div>
+                    <div class="compliance-card">
+                        <h4>CCPA</h4>
+                        <p>California, USA</p>
+                        <p>Consumer Privacy Act</p>
+                    </div>
+                    <div class="compliance-card">
+                        <h4>PIPEDA</h4>
+                        <p>Canada</p>
+                        <p>Personal Information Protection</p>
+                    </div>
+                    <div class="compliance-card">
+                        <h4>APP</h4>
+                        <p>Australia</p>
+                        <p>Privacy Principles</p>
+                    </div>
+                </div>
+
+                <h3>Implementation Requirements</h3>
+                <ul class="feature-list">
+                    <li><strong>Region-Based Tenant Isolation:</strong> Each customer tenant is assigned to a specific geographic region (EU, US, CA, AU, APAC)</li>
+                    <li><strong>Data Center Selection:</strong> Data stored in AWS/Azure regions matching customer jurisdiction requirements</li>
+                    <li><strong>Cross-Border Data Transfer Controls:</strong> Automated validation prevents data from crossing regional boundaries</li>
+                    <li><strong>Regional Salesforce Instance Mapping:</strong> Support for EU, US, Canada, and APAC Salesforce instances</li>
+                    <li><strong>Geo-Fencing API Layer:</strong> All API requests validated against allowed geographic zones</li>
+                </ul>
+
+                <div class="requirement-box">
+                    <strong>Requirement REQ-SEC-001:</strong> The platform must enforce data residency rules at the infrastructure level, preventing any data from being stored or processed outside the customer's designated region without explicit consent and legal approval.
+                </div>
+
+                <h3>Data Encryption Standards</h3>
+                <div class="tech-spec">
+# Encryption at Rest
+Algorithm: AES-256-GCM
+Key Management: AWS KMS / Azure Key Vault
+Key Rotation: Automatic every 90 days
+Backup Encryption: Same standard as primary data
+
+# Encryption in Transit
+Protocol: TLS 1.3 (minimum TLS 1.2)
+Certificate Authority: DigiCert/Let's Encrypt
+Certificate Rotation: Every 6 months
+API Communication: Mandatory HTTPS only</div>
+
+                <h3>Data Retention Policies</h3>
+                <table style="width:100%; border-collapse: collapse; margin: 1rem 0;">
+                    <thead>
+                        <tr style="background: #667eea; color: #fff;">
+                            <th style="padding: 0.75rem; text-align: left;">Region/Regulation</th>
+                            <th style="padding: 0.75rem; text-align: left;">Minimum Retention</th>
+                            <th style="padding: 0.75rem; text-align: left;">Maximum Retention</th>
+                            <th style="padding: 0.75rem; text-align: left;">Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.75rem;">GDPR (EU)</td>
+                            <td style="padding: 0.75rem;">As needed</td>
+                            <td style="padding: 0.75rem;">Until consent withdrawn</td>
+                            <td style="padding: 0.75rem;">Right to deletion honored within 30 days</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.75rem;">CCPA (California)</td>
+                            <td style="padding: 0.75rem;">2 years</td>
+                            <td style="padding: 0.75rem;">7 years (financial)</td>
+                            <td style="padding: 0.75rem;">Consumer data deletion upon request</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.75rem;">PIPEDA (Canada)</td>
+                            <td style="padding: 0.75rem;">2 years</td>
+                            <td style="padding: 0.75rem;">6 years</td>
+                            <td style="padding: 0.75rem;">Business records retention</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.75rem;">APP (Australia)</td>
+                            <td style="padding: 0.75rem;">2 years</td>
+                            <td style="padding: 0.75rem;">7 years</td>
+                            <td style="padding: 0.75rem;">Tax and financial compliance</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem;">SOX Compliance (US)</td>
+                            <td style="padding: 0.75rem;">7 years</td>
+                            <td style="padding: 0.75rem;">10 years</td>
+                            <td style="padding: 0.75rem;">Public company financial records</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Automated Data Sovereignty Validation</h3>
+                <p><strong>Pre-Migration Checks:</strong></p>
+                <ul class="feature-list">
+                    <li>Source system region detection and validation</li>
+                    <li>Target Salesforce instance region verification</li>
+                    <li>Customer jurisdiction mapping confirmation</li>
+                    <li>Cross-border transfer authorization check</li>
+                    <li>Data classification scanning (PII, financial, health)</li>
+                </ul>
+
+                <div class="warning-box">
+                    <strong>⚠️ Migration Blocking:</strong> If source and target regions do not match customer's data residency requirements, the migration will be blocked until legal approval is obtained and documented in the platform.
+                </div>
+            </section>
+
+            <!-- Access Control & Authentication -->
+            <section class="card">
+                <h2>Access Control & Authentication <span class="security-badge">MANDATORY</span></h2>
+
+                <h3>Multi-Factor Authentication (MFA)</h3>
+                <ul class="feature-list">
+                    <li><strong>Admin Users:</strong> MFA required for all administrator accounts (no exceptions)</li>
+                    <li><strong>Standard Users:</strong> MFA optional but strongly recommended</li>
+                    <li><strong>API Access:</strong> OAuth 2.0 with client credentials + MFA for admin API keys</li>
+                    <li><strong>Service Accounts:</strong> Certificate-based authentication for automated processes</li>
+                    <li><strong>Supported MFA Methods:</strong> Authenticator apps (Google/Microsoft), SMS (backup only), Hardware tokens (YubiKey)</li>
+                </ul>
+
+                <div class="requirement-box">
+                    <strong>Requirement REQ-SEC-002:</strong> All users with administrative privileges must complete MFA setup within 24 hours of account creation. Accounts without MFA will be automatically disabled after the grace period.
+                </div>
+
+                <h3>Role-Based Access Control (RBAC)</h3>
+                <table style="width:100%; border-collapse: collapse; margin: 1rem 0;">
+                    <thead>
+                        <tr style="background: #667eea; color: #fff;">
+                            <th style="padding: 0.75rem; text-align: left;">Role</th>
+                            <th style="padding: 0.75rem; text-align: left;">Permissions</th>
+                            <th style="padding: 0.75rem; text-align: left;">Data Access</th>
+                            <th style="padding: 0.75rem; text-align: left;">MFA Required</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.75rem;"><strong>Platform Admin</strong></td>
+                            <td style="padding: 0.75rem;">Full system access, user management, configuration</td>
+                            <td style="padding: 0.75rem;">All tenants (read/write)</td>
+                            <td style="padding: 0.75rem;">✅ Yes</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.75rem;"><strong>Tenant Admin</strong></td>
+                            <td style="padding: 0.75rem;">Tenant config, user management, migration setup</td>
+                            <td style="padding: 0.75rem;">Own tenant only (read/write)</td>
+                            <td style="padding: 0.75rem;">✅ Yes</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.75rem;"><strong>Migration Manager</strong></td>
+                            <td style="padding: 0.75rem;">Create/execute migrations, view reports</td>
+                            <td style="padding: 0.75rem;">Assigned migrations (read/write)</td>
+                            <td style="padding: 0.75rem;">✅ Yes</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.75rem;"><strong>Migration Analyst</strong></td>
+                            <td style="padding: 0.75rem;">View migrations, analyze data, export reports</td>
+                            <td style="padding: 0.75rem;">Assigned migrations (read-only)</td>
+                            <td style="padding: 0.75rem;">Recommended</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem;"><strong>Viewer</strong></td>
+                            <td style="padding: 0.75rem;">View-only access to reports and dashboards</td>
+                            <td style="padding: 0.75rem;">Public reports only (read-only)</td>
+                            <td style="padding: 0.75rem;">Optional</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Custom Permission Sets</h3>
+                <p>Granular permission management for specialized access patterns:</p>
+                <ul class="feature-list">
+                    <li><strong>Data Export Permissions:</strong> Control who can export customer data from the platform</li>
+                    <li><strong>API Access Permissions:</strong> Separate permissions for REST API, GraphQL, and Bulk API usage</li>
+                    <li><strong>Financial Data Access:</strong> Restrict pricing and revenue data to authorized roles</li>
+                    <li><strong>PII Access Control:</strong> Additional authorization layer for personally identifiable information</li>
+                    <li><strong>Audit Log Access:</strong> Separate permission for viewing security and compliance logs</li>
+                </ul>
+
+                <h3>Session Management</h3>
+                <div class="tech-spec">
+# Session Configuration
+Idle Timeout: 15 minutes (configurable 10-30 min)
+Absolute Timeout: 8 hours
+Concurrent Sessions: Maximum 3 per user
+Session Storage: Redis with encryption
+Token Format: JWT with RS256 signing
+Token Expiry: 1 hour (refresh token: 24 hours)
+
+# Session Security
+- HTTPOnly cookies for web sessions
+- Secure flag enabled (HTTPS only)
+- SameSite=Strict for CSRF protection
+- Session invalidation on password change
+- Force logout on suspicious activity detection</div>
+
+                <div class="requirement-box">
+                    <strong>Requirement REQ-SEC-003:</strong> User sessions must automatically terminate after 15 minutes of inactivity. Users must re-authenticate to resume work. Session timeout can be configured by Tenant Admins within the 10-30 minute range.
+                </div>
+
+                <h3>Audit Logging</h3>
+                <p><strong>All logged events include:</strong></p>
+                <ul class="feature-list">
+                    <li>User ID and email address</li>
+                    <li>Action performed (create, read, update, delete)</li>
+                    <li>Resource accessed (migration ID, object name, record count)</li>
+                    <li>Timestamp (UTC with millisecond precision)</li>
+                    <li>IP address and geolocation</li>
+                    <li>User agent and device information</li>
+                    <li>API endpoint or UI page accessed</li>
+                    <li>Success/failure status with error codes</li>
+                </ul>
+
+                <p><strong>Audit log retention:</strong></p>
+                <ul class="feature-list">
+                    <li>Security events: 1 year minimum (configurable up to 7 years)</li>
+                    <li>Data access events: 90 days minimum</li>
+                    <li>Administrative changes: Indefinite retention</li>
+                    <li>Login/logout events: 6 months minimum</li>
+                </ul>
+
+                <div class="warning-box">
+                    <strong>⚠️ Tamper Protection:</strong> Audit logs are write-once and cryptographically signed to prevent modification. Logs are replicated to a separate secure storage system within 5 minutes of generation.
+                </div>
+            </section>
+
+            <!-- SOC 2 Type II Compliance -->
+            <section class="card">
+                <h2>SOC 2 Type II Compliance Framework <span class="security-badge">IN PROGRESS</span></h2>
+
+                <h3>Trust Service Criteria Coverage</h3>
+                
+                <h4>1. Security (Common Criteria)</h4>
+                <ul class="feature-list">
+                    <li><strong>Access Controls:</strong> RBAC implementation with MFA and least privilege principles</li>
+                    <li><strong>Logical & Physical Security:</strong> AWS/Azure infrastructure with SOC 2 certification</li>
+                    <li><strong>System Operations:</strong> Automated monitoring, patch management, and incident response</li>
+                    <li><strong>Change Management:</strong> Code review, automated testing, and deployment approval workflows</li>
+                    <li><strong>Risk Mitigation:</strong> Annual risk assessments and security audits</li>
+                </ul>
+
+                <h4>2. Availability</h4>
+                <ul class="feature-list">
+                    <li><strong>Uptime SLA:</strong> 99.9% availability guarantee (8.76 hours downtime/year max)</li>
+                    <li><strong>Infrastructure Redundancy:</strong> Multi-AZ deployment with automatic failover</li>
+                    <li><strong>Backup Systems:</strong> Daily automated backups with 30-day retention</li>
+                    <li><strong>Disaster Recovery:</strong> RPO 1 hour, RTO 4 hours</li>
+                    <li><strong>Monitoring:</strong> 24/7 system monitoring with automated alerting</li>
+                </ul>
+
+                <h4>3. Processing Integrity</h4>
+                <ul class="feature-list">
+                    <li><strong>Data Validation:</strong> Input validation at API and UI layers</li>
+                    <li><strong>Processing Controls:</strong> Checksums and data integrity verification during migration</li>
+                    <li><strong>Error Handling:</strong> Comprehensive error logging and recovery procedures</li>
+                    <li><strong>Quality Assurance:</strong> Automated testing with 80%+ code coverage requirement</li>
+                </ul>
+
+                <h4>4. Confidentiality</h4>
+                <ul class="feature-list">
+                    <li><strong>Data Classification:</strong> Automatic PII and sensitive data identification</li>
+                    <li><strong>Encryption:</strong> AES-256 at rest, TLS 1.3 in transit</li>
+                    <li><strong>Access Restrictions:</strong> Need-to-know basis with audit trails</li>
+                    <li><strong>Data Masking:</strong> Production data masked in non-production environments</li>
+                </ul>
+
+                <h4>5. Privacy</h4>
+                <ul class="feature-list">
+                    <li><strong>Privacy Notice:</strong> Clear data collection and usage policies</li>
+                    <li><strong>Consent Management:</strong> Explicit opt-in for data processing</li>
+                    <li><strong>Data Subject Rights:</strong> Self-service data access, correction, and deletion</li>
+                    <li><strong>Third-Party Management:</strong> Vendor risk assessments and data processing agreements</li>
+                </ul>
+
+                <h3>Compliance Roadmap</h3>
+                <table style="width:100%; border-collapse: collapse; margin: 1rem 0;">
+                    <thead>
+                        <tr style="background: #667eea; color: #fff;">
+                            <th style="padding: 0.75rem; text-align: left;">Phase</th>
+                            <th style="padding: 0.75rem; text-align: left;">Timeline</th>
+                            <th style="padding: 0.75rem; text-align: left;">Deliverables</th>
+                            <th style="padding: 0.75rem; text-align: left;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.75rem;"><strong>Readiness Assessment</strong></td>
+                            <td style="padding: 0.75rem;">Q1 2025</td>
+                            <td style="padding: 0.75rem;">Gap analysis, policy documentation</td>
+                            <td style="padding: 0.75rem;">✅ Complete</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.75rem;"><strong>Control Implementation</strong></td>
+                            <td style="padding: 0.75rem;">Q2 2025</td>
+                            <td style="padding: 0.75rem;">Security controls, monitoring, logging</td>
+                            <td style="padding: 0.75rem;">🔄 In Progress (75%)</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.75rem;"><strong>Pre-Audit Readiness</strong></td>
+                            <td style="padding: 0.75rem;">Q3 2025</td>
+                            <td style="padding: 0.75rem;">Mock audits, remediation</td>
+                            <td style="padding: 0.75rem;">⏳ Planned</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem;"><strong>Type II Audit</strong></td>
+                            <td style="padding: 0.75rem;">Q4 2025 - Q1 2026</td>
+                            <td style="padding: 0.75rem;">6-month observation period, final report</td>
+                            <td style="padding: 0.75rem;">⏳ Planned</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="requirement-box">
+                    <strong>Requirement REQ-SEC-004:</strong> RevNova must achieve SOC 2 Type II certification by Q1 2026 to serve enterprise customers. All development and operations must align with SOC 2 Trust Service Criteria.
+                </div>
+            </section>
+
+            <!-- Security Incident Response -->
+            <section class="card">
+                <h2>Security Incident Response</h2>
+
+                <h3>Incident Classification</h3>
+                <table style="width:100%; border-collapse: collapse; margin: 1rem 0;">
+                    <thead>
+                        <tr style="background: #667eea; color: #fff;">
+                            <th style="padding: 0.75rem; text-align: left;">Severity</th>
+                            <th style="padding: 0.75rem; text-align: left;">Definition</th>
+                            <th style="padding: 0.75rem; text-align: left;">Response Time</th>
+                            <th style="padding: 0.75rem; text-align: left;">Notification</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.75rem;"><strong style="color: #dc3545;">Critical</strong></td>
+                            <td style="padding: 0.75rem;">Data breach, system compromise, PII exposure</td>
+                            <td style="padding: 0.75rem;">15 minutes</td>
+                            <td style="padding: 0.75rem;">Immediate customer notification</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.75rem;"><strong style="color: #fd7e14;">High</strong></td>
+                            <td style="padding: 0.75rem;">Unauthorized access attempt, DDoS attack</td>
+                            <td style="padding: 0.75rem;">1 hour</td>
+                            <td style="padding: 0.75rem;">Status page update</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.75rem;"><strong style="color: #ffc107;">Medium</strong></td>
+                            <td style="padding: 0.75rem;">Policy violation, failed MFA attempts</td>
+                            <td style="padding: 0.75rem;">4 hours</td>
+                            <td style="padding: 0.75rem;">Internal security team</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem;"><strong style="color: #28a745;">Low</strong></td>
+                            <td style="padding: 0.75rem;">Suspicious activity, anomaly detection</td>
+                            <td style="padding: 0.75rem;">24 hours</td>
+                            <td style="padding: 0.75rem;">Logged for review</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Response Procedures</h3>
+                <ul class="feature-list">
+                    <li><strong>Detection:</strong> Automated monitoring with SIEM integration (Splunk/Datadog)</li>
+                    <li><strong>Containment:</strong> Immediate isolation of affected systems and accounts</li>
+                    <li><strong>Investigation:</strong> Forensic analysis with chain of custody preservation</li>
+                    <li><strong>Eradication:</strong> Remove threat and patch vulnerabilities</li>
+                    <li><strong>Recovery:</strong> Restore services with verified security controls</li>
+                    <li><strong>Post-Incident:</strong> Root cause analysis and remediation plan</li>
+                </ul>
+
+                <h3>Customer Notification Requirements</h3>
+                <div class="requirement-box">
+                    <strong>Requirement REQ-SEC-005:</strong> In the event of a data breach affecting customer PII or confidential data, RevNova must notify affected customers within 72 hours of discovery, including details of the breach, affected data, and remediation steps taken.
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="../script.js"></script>
+</body>
+</html>

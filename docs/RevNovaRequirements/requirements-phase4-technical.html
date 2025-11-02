@@ -15,86 +15,328 @@
 <body>
   <div class="container">
     <h1>Phase 4 — Technical Requirements (LLD)</h1>
-    <p><strong>Scope:</strong> WS4 — Billing (Invoice migration and billing schedule setup). Technical design for invoice APIs, DB schema, and payment tracking.</p>
+    <p><strong>Scope:</strong> WS4 — CRM System Migration (Siebel, Dynamics 365, HubSpot, Zoho, Freshworks). Technical design for customer data, sales pipeline, and relationship preservation during CRM migrations.</p>
     <p>See also: <a href="requirements-phase4-functional.html">Phase 4 Functional Requirements</a> | <a href="requirements-mapping.html#WS4">WS4 Mapping</a></p>
 
-    <h2>1. API Endpoints</h2>
+    <h2>Supported CRM Systems</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin:2rem 0;">
+      <div style="background:linear-gradient(135deg,#1e3a8a 0%,#3b82f6 100%);color:#fff;padding:1.5rem;border-radius:8px;">
+        <h3 style="margin:0 0 0.5rem 0;font-size:1.2rem;">Oracle Siebel CRM</h3>
+        <p style="margin:0;font-size:0.9rem;opacity:0.95;">Thin client, Web Services API, EAI connectors</p>
+        <p style="margin:0.5rem 0 0 0;font-size:0.85rem;"><strong>Priority:</strong> 1 (Enterprise focus)</p>
+      </div>
+      <div style="background:linear-gradient(135deg,#065f46 0%,#10b981 100%);color:#fff;padding:1.5rem;border-radius:8px;">
+        <h3 style="margin:0 0 0.5rem 0;font-size:1.2rem;">Microsoft Dynamics 365</h3>
+        <p style="margin:0;font-size:0.9rem;opacity:0.95;">Sales, Customer Service, Marketing modules</p>
+        <p style="margin:0.5rem 0 0 0;font-size:0.85rem;"><strong>Priority:</strong> 1 (High demand)</p>
+      </div>
+      <div style="background:linear-gradient(135deg,#ea580c 0%,#fb923c 100%);color:#fff;padding:1.5rem;border-radius:8px;">
+        <h3 style="margin:0 0 0.5rem 0;font-size:1.2rem;">HubSpot CRM</h3>
+        <p style="margin:0;font-size:0.9rem;opacity:0.95;">Sales Hub, Marketing Hub, REST API v3</p>
+        <p style="margin:0.5rem 0 0 0;font-size:0.85rem;"><strong>Priority:</strong> 2 (SMB market)</p>
+      </div>
+      <div style="background:linear-gradient(135deg,#7c2d12 0%,#dc2626 100%);color:#fff;padding:1.5rem;border-radius:8px;">
+        <h3 style="margin:0 0 0.5rem 0;font-size:1.2rem;">Zoho CRM</h3>
+        <p style="margin:0;font-size:0.9rem;opacity:0.95;">Cloud CRM, REST API v2, bulk export</p>
+        <p style="margin:0.5rem 0 0 0;font-size:0.85rem;"><strong>Priority:</strong> 2 (Growing adoption)</p>
+      </div>
+      <div style="background:linear-gradient(135deg,#4338ca 0%,#818cf8 100%);color:#fff;padding:1.5rem;border-radius:8px;">
+        <h3 style="margin:0 0 0.5rem 0;font-size:1.2rem;">Freshworks CRM</h3>
+        <p style="margin:0;font-size:0.9rem;opacity:0.95;">Freshsales, REST API, email tracking</p>
+        <p style="margin:0.5rem 0 0 0;font-size:0.85rem;"><strong>Priority:</strong> 3 (Emerging player)</p>
+      </div>
+    </div>
+
+    <h2>1. Universal CRM Migration Framework</h2>
+    <p><strong>Core Components:</strong></p>
+    <ul>
+      <li><strong>CRM Connector Interface:</strong> Unified API abstraction layer for all CRM systems</li>
+      <li><strong>Data Normalization Layer:</strong> Transform CRM-specific data models to Salesforce standard objects</li>
+      <li><strong>Relationship Preservation Engine:</strong> Maintain account hierarchies, contact relationships, and opportunity associations</li>
+      <li><strong>Activity History Migration:</strong> Preserve email tracking, call logs, meeting notes, and task history</li>
+      <li><strong>Custom Field Mapper:</strong> Auto-detect and map custom fields from source CRM to Salesforce custom fields</li>
+    </ul>
+
+    <h2>2. CRM Source System Assessment</h2>
+    <p><strong>Pre-Migration Data Analysis:</strong></p>
     <table class="tech-table">
-      <thead><tr><th>Endpoint</th><th>Method</th><th>Purpose</th><th>Request/Response</th></tr></thead>
+      <thead><tr><th>Assessment Category</th><th>Metrics Collected</th><th>Impact on Migration</th></tr></thead>
       <tbody>
         <tr>
-          <td><code>/api/v1/invoices</code></td>
-          <td>POST</td>
-          <td>Create invoice</td>
-          <td>Request: <code>{"accountId", "amount", "dueDate"}</code><br>Response: <code>{"invoiceId", "invoiceNumber"}</code></td>
+          <td><strong>Data Volume</strong></td>
+          <td>Record counts (Accounts, Contacts, Opportunities, Leads, Cases)</td>
+          <td>Determines batch size and migration timeline</td>
         </tr>
         <tr>
-          <td><code>/api/v1/invoices/{id}/pay</code></td>
-          <td>PATCH</td>
-          <td>Mark invoice as paid</td>
-          <td>Request: <code>{"paymentDate", "amount"}</code><br>Response: <code>{"status": "Paid"}</code></td>
+          <td><strong>Data Quality</strong></td>
+          <td>Duplicate records, missing required fields, orphaned records</td>
+          <td>Triggers data cleansing workflows</td>
+        </tr>
+        <tr>
+          <td><strong>Customizations</strong></td>
+          <td>Custom entities, fields, workflows, business rules</td>
+          <td>Requires custom field creation in Salesforce</td>
+        </tr>
+        <tr>
+          <td><strong>Integrations</strong></td>
+          <td>Email systems (Outlook/Gmail), marketing automation, ERP</td>
+          <td>Post-migration integration reconfiguration</td>
+        </tr>
+        <tr>
+          <td><strong>User Adoption</strong></td>
+          <td>Active users, login frequency, feature usage</td>
+          <td>Training requirements and change management</td>
         </tr>
       </tbody>
     </table>
 
-    <h2>2. Database Schema</h2>
+    <h2>3. CRM Connector Framework</h2>
+    <table class="tech-table">
+      <thead><tr><th>Component</th><th>Purpose</th><th>Implementation</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Authentication Handler</strong></td>
+          <td>Manage OAuth 2.0, API keys, session tokens</td>
+          <td>Token refresh automation, credential encryption (AES-256)</td>
+        </tr>
+        <tr>
+          <td><strong>Data Extractor</strong></td>
+          <td>Bulk export via CRM APIs</td>
+          <td>Pagination handling, rate limit management, incremental sync</td>
+        </tr>
+        <tr>
+          <td><strong>Schema Mapper</strong></td>
+          <td>Map CRM data model to Salesforce schema</td>
+          <td>Auto-detect custom fields, relationship mapping, picklist conversion</td>
+        </tr>
+        <tr>
+          <td><strong>Transformation Engine</strong></td>
+          <td>Normalize data formats and values</td>
+          <td>Date format conversion, currency normalization, address standardization</td>
+        </tr>
+        <tr>
+          <td><strong>Validation Orchestrator</strong></td>
+          <td>Pre-load data quality checks</td>
+          <td>Required field validation, duplicate detection, referential integrity checks</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>4. CRM-Specific Integration Details</h2>
+    <h3>Oracle Siebel CRM</h3>
+    <ul>
+      <li><strong>API:</strong> Siebel Web Services (SOAP), EAI Connectors</li>
+      <li><strong>Authentication:</strong> Session-based with SSO support (LDAP/AD integration)</li>
+      <li><strong>Key Entities:</strong> Accounts, Contacts, Opportunities, Service Requests, Activities</li>
+      <li><strong>Migration Complexity:</strong> High (complex business logic, thick client customizations)</li>
+      <li><strong>Special Handling:</strong> Preserve applet configurations, workflow rules, assignment rules</li>
+    </ul>
+
+    <h3>Microsoft Dynamics 365</h3>
+    <ul>
+      <li><strong>API:</strong> Dynamics 365 Web API (OData v4), Organization Service (SOAP)</li>
+      <li><strong>Authentication:</strong> Azure AD OAuth 2.0, Service Principal authentication</li>
+      <li><strong>Key Entities:</strong> Accounts, Contacts, Leads, Opportunities, Cases, Marketing Lists</li>
+      <li><strong>Migration Complexity:</strong> Medium (well-documented API, standard data model)</li>
+      <li><strong>Special Handling:</strong> Preserve Power Automate flows, custom plugins, security roles</li>
+    </ul>
+
+    <h3>HubSpot CRM</h3>
+    <ul>
+      <li><strong>API:</strong> HubSpot REST API v3, batch endpoints for bulk operations</li>
+      <li><strong>Authentication:</strong> OAuth 2.0, private app access tokens</li>
+      <li><strong>Key Entities:</strong> Companies, Contacts, Deals, Tickets, Engagements (emails, calls, meetings)</li>
+      <li><strong>Migration Complexity:</strong> Low (simple data model, excellent API documentation)</li>
+      <li><strong>Special Handling:</strong> Preserve email tracking history, meeting recordings, workflow automation</li>
+    </ul>
+
+    <h3>Zoho CRM</h3>
+    <ul>
+      <li><strong>API:</strong> Zoho CRM REST API v2, bulk read/write APIs</li>
+      <li><strong>Authentication:</strong> OAuth 2.0, self-client authorization</li>
+      <li><strong>Key Entities:</strong> Accounts, Contacts, Leads, Deals, Tasks, Events, Notes</li>
+      <li><strong>Migration Complexity:</strong> Low-Medium (rate limits: 100 API calls/minute)</li>
+      <li><strong>Special Handling:</strong> Preserve Blueprint workflows, custom modules, validation rules</li>
+    </ul>
+
+    <h3>Freshworks CRM (Freshsales)</h3>
+    <ul>
+      <li><strong>API:</strong> Freshsales REST API, bulk export via CSV</li>
+      <li><strong>Authentication:</strong> API key authentication</li>
+      <li><strong>Key Entities:</strong> Accounts, Contacts, Deals, Appointments, Sales Activities</li>
+      <li><strong>Migration Complexity:</strong> Low (limited customization, straightforward data model)</li>
+      <li><strong>Special Handling:</strong> Preserve AI-based lead scoring, email sequences, appointment history</li>
+    </ul>
+
+    <h2>5. API Endpoints</h2>
+    <table class="tech-table">
+      <thead><tr><th>Endpoint</th><th>Method</th><th>Purpose</th><th>Request/Response</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>/api/v1/crm/assess</code></td>
+          <td>POST</td>
+          <td>Run CRM pre-migration assessment</td>
+          <td>Request: <code>{"crmType": "Siebel", "credentials": {...}}</code><br>Response: <code>{"assessmentId", "recordCounts", "dataQualityScore"}</code></td>
+        </tr>
+        <tr>
+          <td><code>/api/v1/crm/extract</code></td>
+          <td>POST</td>
+          <td>Extract CRM data to staging</td>
+          <td>Request: <code>{"crmType", "entities": ["Account", "Contact"]}</code><br>Response: <code>{"jobId", "status": "In Progress"}</code></td>
+        </tr>
+        <tr>
+          <td><code>/api/v1/crm/normalize</code></td>
+          <td>POST</td>
+          <td>Normalize CRM data to Salesforce schema</td>
+          <td>Request: <code>{"jobId", "mappingRules": {...}}</code><br>Response: <code>{"normalizedRecords": 15000}</code></td>
+        </tr>
+        <tr>
+          <td><code>/api/v1/crm/validate</code></td>
+          <td>POST</td>
+          <td>Validate data quality before load</td>
+          <td>Request: <code>{"jobId"}</code><br>Response: <code>{"validRecords": 14500, "errors": [...]}</code></td>
+        </tr>
+        <tr>
+          <td><code>/api/v1/crm/migrate</code></td>
+          <td>POST</td>
+          <td>Execute CRM to Salesforce migration</td>
+          <td>Request: <code>{"jobId", "batchSize": 2000}</code><br>Response: <code>{"migrationId", "estimatedCompletionTime"}</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>6. Database Schema</h2>
+    <h3>CRM Metadata Tables</h3>
+    <table class="tech-table">
+      <thead><tr><th>Table</th><th>Columns</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>CRM_CONNECTOR</code></td>
+          <td><code>connector_id, crm_type, api_endpoint, auth_method, rate_limit, batch_size</code></td>
+          <td>Store CRM connection configurations</td>
+        </tr>
+        <tr>
+          <td><code>CRM_ASSESSMENT</code></td>
+          <td><code>assessment_id, crm_type, account_count, contact_count, opportunity_count, data_quality_score, complexity_score, created_at</code></td>
+          <td>Pre-migration assessment results</td>
+        </tr>
+        <tr>
+          <td><code>CRM_FIELD_MAPPING</code></td>
+          <td><code>mapping_id, source_entity, source_field, target_object, target_field, transformation_rule</code></td>
+          <td>Field-level mapping rules</td>
+        </tr>
+        <tr>
+          <td><code>CRM_RELATIONSHIP_MAP</code></td>
+          <td><code>relationship_id, source_entity, source_relationship, target_relationship, preservation_rule</code></td>
+          <td>Preserve parent-child and lookup relationships</td>
+        </tr>
+      </tbody>
+    </table>
+
     <h3>Staging Tables</h3>
     <table class="tech-table">
       <thead><tr><th>Table</th><th>Columns</th><th>Purpose</th></tr></thead>
       <tbody>
         <tr>
-          <td><code>STG1_VANILLA_INVOICE</code></td>
-          <td><code>invoice_id, source_id, account_id, invoice_number, amount, invoice_date, due_date, status</code></td>
-          <td>Raw invoice data</td>
+          <td><code>STG1_CRM_ACCOUNT</code></td>
+          <td><code>source_id, account_name, industry, revenue, website, phone, billing_address, shipping_address, parent_account_id</code></td>
+          <td>Raw CRM account data</td>
         </tr>
         <tr>
-          <td><code>STG2_VANILLA_INVOICE</code></td>
-          <td>Same + <code>is_valid, days_until_due</code></td>
-          <td>Validated invoices with calculated fields</td>
+          <td><code>STG1_CRM_CONTACT</code></td>
+          <td><code>source_id, first_name, last_name, email, phone, title, account_id, mailing_address, lead_source</code></td>
+          <td>Raw CRM contact data</td>
+        </tr>
+        <tr>
+          <td><code>STG1_CRM_OPPORTUNITY</code></td>
+          <td><code>source_id, opportunity_name, account_id, amount, stage, probability, close_date, owner_id, created_date</code></td>
+          <td>Raw CRM opportunity/deal data</td>
+        </tr>
+        <tr>
+          <td><code>STG1_CRM_ACTIVITY</code></td>
+          <td><code>source_id, activity_type, subject, description, related_to_id, related_to_type, completed_date, owner_id</code></td>
+          <td>Raw CRM activity history (emails, calls, tasks)</td>
+        </tr>
+        <tr>
+          <td><code>STG2_CRM_ACCOUNT</code></td>
+          <td>Same + <code>is_valid, validation_errors, sf_account_id</code></td>
+          <td>Validated and normalized account data</td>
+        </tr>
+        <tr>
+          <td><code>STG2_CRM_CONTACT</code></td>
+          <td>Same + <code>is_valid, duplicate_check, sf_contact_id</code></td>
+          <td>Validated and deduplicated contact data</td>
+        </tr>
+        <tr>
+          <td><code>STG2_CRM_OPPORTUNITY</code></td>
+          <td>Same + <code>is_valid, adjusted_close_date, sf_opportunity_id</code></td>
+          <td>Validated opportunity data with date adjustments</td>
         </tr>
       </tbody>
     </table>
 
-    <h3>Target Objects</h3>
-    <table class="tech-table">
-      <thead><tr><th>Object</th><th>Key Fields</th></tr></thead>
-      <tbody>
-        <tr>
-          <td><code>Invoice</code></td>
-          <td><code>Id, InvoiceNumber, AccountId, Amount, InvoiceDate, DueDate, Status</code></td>
-        </tr>
-      </tbody>
-    </table>
+    <h2>7. Data Normalization & Transformation</h2>
+    <p><strong>Common Transformations:</strong></p>
+    <ul>
+      <li><strong>Date Formats:</strong> Convert all date fields to ISO 8601 format (YYYY-MM-DD)</li>
+      <li><strong>Phone Numbers:</strong> Standardize to E.164 format (+1-555-123-4567)</li>
+      <li><strong>Addresses:</strong> Parse and map to Salesforce compound address fields (Street, City, State, PostalCode, Country)</li>
+      <li><strong>Picklist Values:</strong> Map source CRM picklist values to Salesforce picklist API names</li>
+      <li><strong>Currency:</strong> Normalize to organization default currency (use exchange rates for multi-currency orgs)</li>
+      <li><strong>Owner Assignment:</strong> Map source CRM users to Salesforce users by email or username</li>
+    </ul>
 
-    <h2>3. Field Mapping</h2>
-    <p>See <a href="requirements-mapping.html#WS4">WS4 Mapping</a>. Key transform:</p>
-    <table class="tech-table">
-      <thead><tr><th>Source</th><th>Target</th><th>Transform</th></tr></thead>
-      <tbody>
-        <tr>
-          <td><code>Invoice.InvoiceNumber</code></td>
-          <td><code>Invoice.InvoiceNumber</code></td>
-          <td>Direct copy</td>
-        </tr>
-      </tbody>
-    </table>
+    <h2>8. Relationship Preservation Logic</h2>
+    <p><strong>Parent-Child Relationships:</strong></p>
+    <ul>
+      <li>Account Hierarchies: Preserve parent account relationships (map source <code>parent_account_id</code> to Salesforce <code>ParentId</code>)</li>
+      <li>Contact-Account Association: Maintain primary contact designation, account roles</li>
+      <li>Opportunity-Account Link: Preserve opportunity ownership and account relationships</li>
+      <li>Case-Contact/Account: Migrate service request associations to Salesforce Cases</li>
+    </ul>
 
-    <h2>4. Execution Flow</h2>
+    <p><strong>Many-to-Many Relationships:</strong></p>
+    <ul>
+      <li>Contact Roles on Opportunities: Migrate contact-opportunity associations with role preservation</li>
+      <li>Campaign Members: Preserve marketing list memberships (HubSpot lists → Salesforce Campaigns)</li>
+      <li>Account Teams: Map CRM account teams to Salesforce Account Team members</li>
+    </ul>
+
+    <h2>9. Execution Flow</h2>
     <ol>
-      <li>Extract invoice data → STG1</li>
-      <li>Validate dates, amounts → STG2</li>
-      <li>Bulk load Invoice objects</li>
-      <li>Update ID_MAPPING</li>
+      <li><strong>Pre-Migration Assessment:</strong> Connect to source CRM, analyze data volume, quality, and customizations → generate assessment report</li>
+      <li><strong>Schema Mapping:</strong> Auto-detect custom fields, create mapping rules, generate Salesforce custom field definitions</li>
+      <li><strong>Data Extraction:</strong> Bulk export CRM data via API → load into STG1 staging tables (raw data preservation)</li>
+      <li><strong>Data Normalization:</strong> Transform data formats, standardize values, map picklists → populate STG2 staging tables</li>
+      <li><strong>Data Validation:</strong> Run validation rules (required fields, duplicates, referential integrity) → flag errors for review</li>
+      <li><strong>Parent Object Migration:</strong> Load Accounts first (to establish parent relationships), then migrate Contacts</li>
+      <li><strong>Child Object Migration:</strong> Load Opportunities, Cases, Leads (dependent on Account/Contact IDs)</li>
+      <li><strong>Activity History Migration:</strong> Load Tasks, Events, EmailMessages (preserve timestamp order)</li>
+      <li><strong>Relationship Preservation:</strong> Create Contact Roles, Account Teams, Campaign Members (junction objects)</li>
+      <li><strong>ID Mapping Update:</strong> Store source CRM IDs → Salesforce IDs in ID_MAPPING table for post-migration lookups</li>
+      <li><strong>Validation & Reconciliation:</strong> Compare record counts source vs. target, verify key relationships, generate migration report</li>
     </ol>
 
-    <h2>5. Rollback & Testing</h2>
+    <h2>10. Rollback & Testing</h2>
     <ul>
-      <li><strong>Rollback:</strong> Delete invoices by batch_id</li>
-      <li><strong>Test:</strong> Validate overdue calculation, payment status updates</li>
+      <li><strong>Rollback Strategy:</strong> Delete migrated records by batch_id (cascade delete for child records), restore from STG1 backup tables</li>
+      <li><strong>Test Scenarios:</strong>
+        <ul>
+          <li>Verify account hierarchy preservation (parent-child relationships intact)</li>
+          <li>Validate contact-account associations (no orphaned contacts)</li>
+          <li>Confirm opportunity-contact roles (primary contact correctly assigned)</li>
+          <li>Check activity history completeness (all emails, calls, tasks migrated)</li>
+          <li>Test duplicate detection (no duplicate accounts or contacts created)</li>
+        </ul>
+      </li>
+      <li><strong>Data Quality Checks:</strong> Run Salesforce data quality tools (duplicate rules, validation rules) post-migration</li>
+      <li><strong>User Acceptance Testing:</strong> Sales team validates opportunity pipeline accuracy, contact information completeness</li>
     </ul>
 
     <hr>
     <p><em>See <a href="requirements-phase4-functional.html">Phase 4 Functional Requirements</a> for UI and business rules.</em></p>
+  </div>
+  <script src="../script.js"></script>
   </div>
 </body>
 </html>

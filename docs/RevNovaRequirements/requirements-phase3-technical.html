@@ -3,20 +3,203 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Phase 3 — Technical Requirements (LLD)</title>
+  <title>Phase 3: Other CPQ Systems → Salesforce Revenue Cloud — Technical Requirements</title>
   <link rel="stylesheet" href="../styles.css">
   <style>
     .tech-table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:13px}
     .tech-table th,.tech-table td{border:1px solid #ddd;padding:8px;text-align:left}
     .tech-table th{background:#e3f2fd;font-weight:600}
     code{background:#f5f5f5;padding:2px 6px;border-radius:3px}
+    .cpq-system-card{background:#f0f7ff;border-left:4px solid #0066cc;padding:1.5rem;margin:1rem 0;border-radius:4px}
+    .feature-badge{display:inline-block;background:#11998e;color:#fff;padding:0.3rem 0.8rem;border-radius:20px;font-size:0.85rem;margin-left:0.5rem}
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Phase 3 — Technical Requirements (LLD)</h1>
-    <p><strong>Scope:</strong> WS3 — Contracts & Assets migration (CPQ Subscriptions → Assets, Contract objects). Technical design for APIs, DB schema, transforms, and rollback.</p>
+    <h1>Phase 3: Other CPQ Systems → Salesforce Revenue Cloud</h1>
+    <p><strong>Scope:</strong> Migration from third-party CPQ systems (Oracle, SAP, Apttus, IBM, Pros, CallidusCloud) to Salesforce Revenue Cloud. Includes contracts & assets migration, commerce process translation, and configuration rule mapping.</p>
     <p>See also: <a href="requirements-phase3-functional.html">Phase 3 Functional Requirements</a> | <a href="requirements-mapping.html#WS3">WS3 Mapping</a></p>
+
+    <h2>Supported Source CPQ Systems</h2>
+    
+    <div class="cpq-system-card">
+      <h3>Oracle CPQ Cloud (Big Machines) <span class="feature-badge">PRIORITY 1</span></h3>
+      <p><strong>Migration Scope:</strong></p>
+      <ul>
+        <li>Commerce processes and approval workflows</li>
+        <li>Product configuration rules and constraints</li>
+        <li>Pricing policies and discount schedules</li>
+        <li>Quote templates and document generation</li>
+        <li>Integration patterns with Oracle ERP/CRM</li>
+      </ul>
+      <p><strong>Technical Approach:</strong></p>
+      <ul>
+        <li><strong>API Integration:</strong> Oracle CPQ REST APIs v1/v2 for data extraction</li>
+        <li><strong>Middleware:</strong> Custom Node.js connector for Oracle CPQ authentication (OAuth 2.0)</li>
+        <li><strong>Data Extraction:</strong> Paginated queries with batch processing (1000 records/batch)</li>
+        <li><strong>Schema Discovery:</strong> Automated metadata extraction from Oracle CPQ data model</li>
+      </ul>
+      <p><strong>Key Data Mappings:</strong></p>
+      <table class="tech-table">
+        <thead><tr><th>Oracle CPQ Object</th><th>Salesforce Target</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Commerce Process</td><td>Product2 / ProductOption</td><td>Product models → Product2, config attributes → Options</td></tr>
+          <tr><td>Configuration Attribute</td><td>Product2.Configurable__c + ProductAttribute</td><td>Dynamic attributes with picklist/text types</td></tr>
+          <tr><td>Pricing Rule</td><td>PriceRule / DiscountSchedule</td><td>Volume pricing, tiered discounts</td></tr>
+          <tr><td>Quote Template</td><td>QuoteTemplate</td><td>HTML/PDF template migration</td></tr>
+          <tr><td>Approval Workflow</td><td>Approval Process / Flow</td><td>Multi-step approval chains</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="cpq-system-card">
+      <h3>SAP CPQ <span class="feature-badge">PRIORITY 1</span></h3>
+      <p><strong>Migration Scope:</strong></p>
+      <ul>
+        <li>Complex pricing engine with calculation procedures</li>
+        <li>Bundle configuration and product hierarchy</li>
+        <li>Variant configuration (VC) rules</li>
+        <li>ERP integration patterns (SAP S/4HANA)</li>
+      </ul>
+      <p><strong>Technical Challenges:</strong></p>
+      <ul>
+        <li>Pricing procedure translation to Revenue Cloud pricing rules</li>
+        <li>Variant configuration mapping to Salesforce options/features</li>
+        <li>Material master data synchronization</li>
+      </ul>
+    </div>
+
+    <div class="cpq-system-card">
+      <h3>Apttus (Conga) CPQ <span class="feature-badge">PRIORITY 2</span></h3>
+      <p><strong>Migration Scope:</strong></p>
+      <ul>
+        <li>Product catalog and bundle hierarchy</li>
+        <li>Pricing rules and constraint rules</li>
+        <li>Quote-to-cash workflow</li>
+      </ul>
+      <p><strong>Technical Approach:</strong></p>
+      <ul>
+        <li>Direct Salesforce-to-Salesforce data migration (same platform)</li>
+        <li>Custom object field mapping automation</li>
+        <li>Workflow rule translation to Flow</li>
+      </ul>
+    </div>
+
+    <div class="cpq-system-card">
+      <h3>IBM Configure Price Quote <span class="feature-badge">PRIORITY 2</span></h3>
+      <p><strong>Migration Scope:</strong></p>
+      <ul>
+        <li>Product models and configuration logic</li>
+        <li>Contract pricing agreements</li>
+        <li>Quote generation and approval</li>
+      </ul>
+    </div>
+
+    <div class="cpq-system-card">
+      <h3>Pros CPQ <span class="feature-badge">PRIORITY 3</span></h3>
+      <p><strong>Migration Focus:</strong> AI-driven pricing optimization data, discount approval matrices</p>
+    </div>
+
+    <div class="cpq-system-card">
+      <h3>CallidusCloud CPQ (SAP Cloud CPQ) <span class="feature-badge">PRIORITY 3</span></h3>
+      <p><strong>Migration Focus:</strong> Quote lifecycle management, sales compensation rules</p>
+    </div>
+
+    <h2>Universal CPQ Migration Framework</h2>
+    
+    <h3>Source System Assessment Toolkit</h3>
+    <p>Automated discovery and analysis of source CPQ systems:</p>
+    <ul>
+      <li><strong>Schema Discovery:</strong> Automatic metadata extraction for product catalogs, pricing rules, and configuration logic</li>
+      <li><strong>Data Volume Analysis:</strong> Record counts, storage size, relationship complexity</li>
+      <li><strong>Custom Logic Inventory:</strong> Workflows, validation rules, formula fields requiring translation</li>
+      <li><strong>Integration Mapping:</strong> External system dependencies (ERP, CRM, billing)</li>
+      <li><strong>Complexity Scoring:</strong> Pre-migration compatibility score (0-100) based on feature usage</li>
+    </ul>
+
+    <h3>Custom Connector Framework</h3>
+    <p>Pluggable architecture for CPQ system integration:</p>
+    <table class="tech-table">
+      <thead><tr><th>Component</th><th>Purpose</th><th>Implementation</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Authentication Layer</strong></td>
+          <td>OAuth 2.0, SAML, API key management</td>
+          <td>Node.js with Passport.js strategy pattern</td>
+        </tr>
+        <tr>
+          <td><strong>Data Extraction Engine</strong></td>
+          <td>Paginated API queries, CSV/XML parsing</td>
+          <td>Async batch processing with Bull queue</td>
+        </tr>
+        <tr>
+          <td><strong>Schema Mapper</strong></td>
+          <td>Source → Salesforce field mapping</td>
+          <td>AI-assisted mapping with manual override</td>
+        </tr>
+        <tr>
+          <td><strong>Transformation Pipeline</strong></td>
+          <td>Data cleansing, validation, enrichment</td>
+          <td>PostgreSQL staging + Redis cache</td>
+        </tr>
+        <tr>
+          <td><strong>Load Orchestrator</strong></td>
+          <td>Bulk API upload, error handling, retry</td>
+          <td>Salesforce Bulk API 2.0 with exponential backoff</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Legacy Data Validation & Cleansing</h3>
+    <p>Pre-migration data quality checks:</p>
+    <ul>
+      <li><strong>Required Field Validation:</strong> Ensure all mandatory Salesforce fields have source data</li>
+      <li><strong>Data Type Compatibility:</strong> Convert currency, date, picklist values to Salesforce formats</li>
+      <li><strong>Referential Integrity:</strong> Validate parent-child relationships (Account → Contract → Asset)</li>
+      <li><strong>Duplicate Detection:</strong> Fuzzy matching algorithm for duplicate accounts/products</li>
+      <li><strong>Character Encoding:</strong> UTF-8 normalization for international characters</li>
+      <li><strong>Field Length Truncation:</strong> Auto-truncate or warn for fields exceeding Salesforce limits</li>
+    </ul>
+
+    <h3>Pre-Migration Compatibility Scoring</h3>
+    <p>Automated assessment of migration complexity:</p>
+    <table class="tech-table">
+      <thead><tr><th>Scoring Category</th><th>Weight</th><th>Criteria</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Data Volume</strong></td>
+          <td>20%</td>
+          <td>Record count, storage size, API rate limits</td>
+        </tr>
+        <tr>
+          <td><strong>Schema Complexity</strong></td>
+          <td>30%</td>
+          <td>Custom objects, fields, relationships</td>
+        </tr>
+        <tr>
+          <td><strong>Business Logic</strong></td>
+          <td>25%</td>
+          <td>Workflows, validation rules, formula complexity</td>
+        </tr>
+        <tr>
+          <td><strong>Integration Density</strong></td>
+          <td>15%</td>
+          <td>External system dependencies, API calls</td>
+        </tr>
+        <tr>
+          <td><strong>Data Quality</strong></td>
+          <td>10%</td>
+          <td>Missing fields, duplicates, orphaned records</td>
+        </tr>
+      </tbody>
+    </table>
+    <p><strong>Scoring Output:</strong></p>
+    <ul>
+      <li>90-100: Low complexity (2-3 weeks)</li>
+      <li>70-89: Medium complexity (4-6 weeks)</li>
+      <li>50-69: High complexity (7-10 weeks)</li>
+      <li>Below 50: Very high complexity (requires custom development)</li>
+    </ul>
 
     <h2>1. API Endpoints</h2>
     <table class="tech-table">
@@ -24,6 +207,18 @@
         <tr><th>Endpoint</th><th>Method</th><th>Purpose</th><th>Request/Response</th></tr>
       </thead>
       <tbody>
+        <tr>
+          <td><code>/api/v1/cpq-connectors</code></td>
+          <td>GET</td>
+          <td>List available CPQ system connectors</td>
+          <td>Response: <code>[{"id": "oracle-cpq", "name": "Oracle CPQ Cloud", "status": "active"}]</code></td>
+        </tr>
+        <tr>
+          <td><code>/api/v1/cpq-connectors/{id}/assess</code></td>
+          <td>POST</td>
+          <td>Run source system assessment</td>
+          <td>Request: <code>{"credentials": {}, "options": {}}</code><br>Response: <code>{"score": 85, "complexity": "medium"}</code></td>
+        </tr>
         <tr>
           <td><code>/api/v1/contracts</code></td>
           <td>POST</td>
@@ -36,14 +231,57 @@
           <td>Create asset (subscription)</td>
           <td>Request: <code>{"productId", "installDate", "quantity"}</code><br>Response: <code>{"assetId"}</code></td>
         </tr>
+        <tr>
+          <td><code>/api/v1/cpq-mappings</code></td>
+          <td>POST</td>
+          <td>Create custom field mapping</td>
+          <td>Request: <code>{"sourceSystem": "oracle-cpq", "sourceField": "Commerce.Attribute1", "targetField": "Product2.Custom__c"}</code></td>
+        </tr>
       </tbody>
     </table>
 
     <h2>2. Database Schema</h2>
+    <h3>CPQ Connector Metadata Tables</h3>
+    <table class="tech-table">
+      <thead><tr><th>Table</th><th>Columns</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>CPQ_CONNECTOR</code></td>
+          <td><code>id, name, system_type, auth_type, api_version, status</code></td>
+          <td>Registered CPQ system connectors</td>
+        </tr>
+        <tr>
+          <td><code>CPQ_ASSESSMENT</code></td>
+          <td><code>id, connector_id, migration_id, score, complexity, data_volume, created_at</code></td>
+          <td>Pre-migration assessment results</td>
+        </tr>
+        <tr>
+          <td><code>CPQ_FIELD_MAPPING</code></td>
+          <td><code>id, connector_id, source_object, source_field, target_object, target_field, transform_logic</code></td>
+          <td>Custom field mapping overrides</td>
+        </tr>
+      </tbody>
+    </table>
+
     <h3>Staging Tables</h3>
     <table class="tech-table">
       <thead><tr><th>Table</th><th>Columns</th><th>Purpose</th></tr></thead>
       <tbody>
+        <tr>
+          <td><code>STG1_CPQ_PRODUCT</code></td>
+          <td><code>product_id, source_system, source_id, name, sku, description, is_bundle</code></td>
+          <td>Raw product data from source CPQ</td>
+        </tr>
+        <tr>
+          <td><code>STG1_CPQ_CONFIG_ATTR</code></td>
+          <td><code>attr_id, product_id, name, data_type, picklist_values, required</code></td>
+          <td>Configuration attributes/options</td>
+        </tr>
+        <tr>
+          <td><code>STG1_CPQ_PRICING_RULE</code></td>
+          <td><code>rule_id, name, condition, action, discount_type, discount_value</code></td>
+          <td>Pricing rules and discounts</td>
+        </tr>
         <tr>
           <td><code>STG1_VANILLA_CONTRACT</code></td>
           <td><code>contract_id, source_id, account_id, start_date, end_date, status</code></td>
@@ -72,6 +310,18 @@
       <thead><tr><th>Object</th><th>Key Fields</th></tr></thead>
       <tbody>
         <tr>
+          <td><code>Product2</code></td>
+          <td><code>Id, Name, ProductCode, IsActive, Description, Family</code></td>
+        </tr>
+        <tr>
+          <td><code>ProductAttribute</code></td>
+          <td><code>Id, Name, Product2Id, DataType, PicklistValues, Required</code></td>
+        </tr>
+        <tr>
+          <td><code>PriceRule</code></td>
+          <td><code>Id, Name, ConditionCriteria, ActionCriteria, Active</code></td>
+        </tr>
+        <tr>
           <td><code>Contract</code></td>
           <td><code>Id, ContractNumber, AccountId, StartDate, EndDate, Status</code></td>
         </tr>
@@ -88,6 +338,16 @@
       <thead><tr><th>Source</th><th>Target</th><th>Transform</th></tr></thead>
       <tbody>
         <tr>
+          <td><code>Oracle CPQ: Commerce.AttributeName</code></td>
+          <td><code>ProductAttribute.Name</code></td>
+          <td>Direct copy + camelCase conversion</td>
+        </tr>
+        <tr>
+          <td><code>SAP CPQ: Material.MATNR</code></td>
+          <td><code>Product2.ProductCode</code></td>
+          <td>Direct copy (18-char SAP material number)</td>
+        </tr>
+        <tr>
           <td><code>SBQQ__Subscription__c.SBQQ__StartDate__c</code></td>
           <td><code>Asset.InstallDate</code></td>
           <td>Direct copy</td>
@@ -102,21 +362,36 @@
 
     <h2>4. Execution Flow</h2>
     <ol>
-      <li>Extract CPQ subscriptions and contracts → STG1</li>
-      <li>Validate dates, references → STG2</li>
-      <li>Transform subscription → asset mapping</li>
-      <li>Bulk load Contract and Asset objects</li>
+      <li>Run pre-migration assessment → Generate complexity score</li>
+      <li>Configure CPQ connector (credentials, API version, batch size)</li>
+      <li>Extract products, configuration attributes, pricing rules → STG1_CPQ tables</li>
+      <li>Extract CPQ subscriptions and contracts → STG1_VANILLA tables</li>
+      <li>Validate data types, required fields, referential integrity → STG2</li>
+      <li>Transform source schema to Salesforce schema (Product2, ProductAttribute, PriceRule)</li>
+      <li>Transform subscription → asset mapping, contract → contract</li>
+      <li>Bulk load Product2, ProductAttribute, PriceRule, Contract, Asset objects</li>
       <li>Update ID_MAPPING for parent-child relationships</li>
+      <li>Run post-migration validation tests</li>
     </ol>
 
     <h2>5. Rollback & Test Scenarios</h2>
     <ul>
-      <li><strong>Rollback:</strong> Delete contracts and assets by batch_id via Bulk API</li>
-      <li><strong>Test:</strong> Validate date overlap, asset-contract linkage, subscription status mapping</li>
+      <li><strong>Rollback:</strong> Delete products, contracts, assets by batch_id via Bulk API</li>
+      <li><strong>Configuration Rollback:</strong> Restore previous ProductAttribute and PriceRule records</li>
+      <li><strong>Test Scenarios:</strong>
+        <ul>
+          <li>Validate Oracle CPQ commerce process → Product2 mapping accuracy</li>
+          <li>Verify SAP pricing procedure → Salesforce PriceRule translation</li>
+          <li>Test date overlap validation for contracts</li>
+          <li>Confirm asset-contract linkage and subscription status mapping</li>
+          <li>End-to-end quote-to-cash workflow test in Salesforce Revenue Cloud</li>
+        </ul>
+      </li>
     </ul>
 
     <hr>
     <p><em>See <a href="requirements-phase3-functional.html">Phase 3 Functional Requirements</a> for UI and business rules.</em></p>
   </div>
+  <script src="../script.js"></script>
 </body>
 </html>

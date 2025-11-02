@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Developer Environment Setup - RevNova Platform</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
+        .requirements-layout { display: flex; min-height: calc(100vh - 80px); margin-top: 80px; }
+        .sidebar { width: 280px; background: #f8f9fa; border-right: 1px solid #e0e0e0; padding: 2rem 0; position: fixed; left: 0; top: 80px; height: calc(100vh - 80px); overflow-y: auto; z-index: 100; }
+        .sidebar h3 { padding: 0 1.5rem; font-size: 0.85rem; color: #666; text-transform: uppercase; letter-spacing: 0.5px; margin: 1.5rem 0 0.5rem; }
+        .sidebar h3:first-child { margin-top: 0; }
+        .sidebar ul { list-style: none; padding: 0; margin: 0; }
+        .sidebar ul li a { display: block; padding: 0.6rem 1.5rem; color: #333; text-decoration: none; font-size: 0.95rem; transition: all 0.2s; }
+        .sidebar ul li a:hover { background: #e9ecef; color: #11998e; }
+        .sidebar ul li a.active { background: #11998e; color: #fff; font-weight: 500; }
+        .main-content { flex: 1; margin-left: 280px; padding: 3rem; background: #fff; min-width: 0; }
+        .section-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; padding: 2.5rem; border-radius: 12px; margin-bottom: 2rem; }
+        .section-header h1 { margin: 0 0 0.5rem 0; font-size: 2.5rem; }
+        .section-header p { margin: 0; font-size: 1.1rem; opacity: 0.95; }
+        .card { background: #fff; border: 2px solid #e0e0e0; border-radius: 12px; padding: 2rem; margin-bottom: 2rem; }
+        .card h2 { color: #11998e; margin: 0 0 1.5rem 0; font-size: 1.8rem; }
+        .card h3 { color: #555; margin: 1.5rem 0 1rem 0; font-size: 1.3rem; }
+        .code-block { background: #2d2d2d; color: #f8f8f2; padding: 1.5rem; border-radius: 8px; margin: 1rem 0; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.9rem; overflow-x: auto; position: relative; }
+        .code-block .comment { color: #6a9955; }
+        .code-block .command { color: #ce9178; }
+        .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: #11998e; color: #fff; border: none; padding: 0.3rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.8rem; }
+        .copy-btn:hover { background: #0e7a6e; }
+        .prereq-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+        .prereq-card { background: #f8f9fa; border-left: 4px solid #11998e; padding: 1.5rem; border-radius: 4px; }
+        .prereq-card h4 { margin: 0 0 0.5rem 0; color: #11998e; font-size: 1.1rem; }
+        .prereq-card p { margin: 0.5rem 0 0 0; font-size: 0.9rem; color: #666; }
+        .step-card { background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); padding: 1.5rem; border-radius: 8px; margin: 1rem 0; border-left: 5px solid #11998e; }
+        .step-card h4 { margin: 0 0 0.75rem 0; color: #333; font-size: 1.2rem; }
+        .info-box { background: #e7f3ff; border-left: 4px solid #0066cc; padding: 1.5rem; margin: 1rem 0; border-radius: 4px; }
+        .info-box strong { color: #0066cc; }
+        .warning-box { background: #fff3cd; border-left: 4px solid #ff9800; padding: 1.5rem; margin: 1rem 0; border-radius: 4px; }
+        .warning-box strong { color: #ff9800; }
+        ul.checklist { list-style: none; padding: 0; }
+        ul.checklist li { padding: 0.5rem 0; padding-left: 2rem; position: relative; }
+        ul.checklist li:before { content: "☐"; position: absolute; left: 0; font-size: 1.3rem; color: #11998e; }
+        @media (max-width: 768px) { .sidebar { display: none; } .main-content { margin-left: 0; } }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="nav-left">
+                <a href="../index.html" class="logo"><div class="logo-box">RevNova</div></a>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="../about-revnova.html">About RevNova</a></li>
+                        <li><a href="../features.html">Features</a></li>
+                        <li><a href="../pricing.html">Pricing</a></li>
+                        <li><a href="requirements-home.html" class="active">Requirements</a></li>
+                        <li><a href="../contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header-right">
+                <div class="country-selector"><span class="fi fi-us"></span></div>
+                <a href="../login.html" class="btn btn-login">Login</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="requirements-layout">
+        <aside class="sidebar">
+            <h3>Platform Vision</h3>
+            <ul>
+                <li><a href="requirements-home.html">Home</a></li>
+                <li><a href="product-vision.html">Product Vision</a></li>
+                <li><a href="business-requirements.html">Business Requirements</a></li>
+                <li><a href="security-compliance.html">Security & Compliance</a></li>
+                <li><a href="ai-product-configuration.html">AI Product Configuration</a></li>
+                <li><a href="developer-environment.html" class="active">Developer Environment</a></li>
+            </ul>
+
+            <h3>Onboarding Resources</h3>
+            <ul>
+                <li><a href="../Onboarding/onboarding-home.html">Onboarding Home</a></li>
+                <li><a href="../Onboarding/onboarding-overview.html">Getting Started</a></li>
+                <li><a href="../Onboarding/repo-setup-guide.html">Repository Setup</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="section-header">
+                <h1>Developer Environment Setup</h1>
+                <p>Comprehensive guide for setting up local development environment for RevNova Platform</p>
+            </div>
+
+            <!-- Prerequisites -->
+            <section class="card">
+                <h2>Prerequisites</h2>
+                <p>Ensure the following tools and services are installed and configured before proceeding:</p>
+
+                <div class="prereq-grid">
+                    <div class="prereq-card">
+                        <h4>📦 Node.js & npm</h4>
+                        <p><strong>Version:</strong> Node.js 18.x or 20.x (LTS)</p>
+                        <p><strong>Download:</strong> <a href="https://nodejs.org/" target="_blank">nodejs.org</a></p>
+                        <div class="code-block" style="margin-top: 0.5rem;">node --version  <span class="comment"># v18.17.0 or higher</span>
+npm --version   <span class="comment"># 9.x or higher</span></div>
+                    </div>
+
+                    <div class="prereq-card">
+                        <h4>🐍 Python</h4>
+                        <p><strong>Version:</strong> Python 3.9+ (3.11 recommended)</p>
+                        <p><strong>Download:</strong> <a href="https://www.python.org/" target="_blank">python.org</a></p>
+                        <div class="code-block" style="margin-top: 0.5rem;">python --version  <span class="comment"># Python 3.9.x or higher</span>
+pip --version      <span class="comment"># 21.x or higher</span></div>
+                    </div>
+
+                    <div class="prereq-card">
+                        <h4>🐳 Docker Desktop</h4>
+                        <p><strong>Version:</strong> Docker 24.x or higher</p>
+                        <p><strong>Download:</strong> <a href="https://www.docker.com/products/docker-desktop/" target="_blank">docker.com</a></p>
+                        <div class="code-block" style="margin-top: 0.5rem;">docker --version  <span class="comment"># Docker 24.0.x</span>
+docker-compose --version</div>
+                    </div>
+
+                    <div class="prereq-card">
+                        <h4>☁️ Salesforce CLI</h4>
+                        <p><strong>Version:</strong> sfdx-cli 7.x or sf-cli 2.x</p>
+                        <p><strong>Download:</strong> <a href="https://developer.salesforce.com/tools/sfdxcli" target="_blank">Salesforce CLI</a></p>
+                        <div class="code-block" style="margin-top: 0.5rem;">sf --version  <span class="comment"># @salesforce/cli/2.x</span>
+sfdx --version  <span class="comment"># sfdx-cli/7.x (legacy)</span></div>
+                    </div>
+
+                    <div class="prereq-card">
+                        <h4>🗄️ PostgreSQL</h4>
+                        <p><strong>Version:</strong> PostgreSQL 14.x or 15.x</p>
+                        <p><strong>Download:</strong> <a href="https://www.postgresql.org/download/" target="_blank">postgresql.org</a></p>
+                        <div class="code-block" style="margin-top: 0.5rem;">psql --version  <span class="comment"># PostgreSQL 14.x or 15.x</span></div>
+                    </div>
+
+                    <div class="prereq-card">
+                        <h4>🔧 Git</h4>
+                        <p><strong>Version:</strong> Git 2.x</p>
+                        <p><strong>Download:</strong> <a href="https://git-scm.com/" target="_blank">git-scm.com</a></p>
+                        <div class="code-block" style="margin-top: 0.5rem;">git --version  <span class="comment"># git version 2.x</span></div>
+                    </div>
+
+                    <div class="prereq-card">
+                        <h4>📝 VS Code (Recommended)</h4>
+                        <p><strong>Version:</strong> Latest stable release</p>
+                        <p><strong>Download:</strong> <a href="https://code.visualstudio.com/" target="_blank">code.visualstudio.com</a></p>
+                        <p style="margin-top: 0.5rem;"><strong>Extensions:</strong> Salesforce Extension Pack, Python, ESLint</p>
+                    </div>
+
+                    <div class="prereq-card">
+                        <h4>🔑 Access Credentials</h4>
+                        <p><strong>Required:</strong></p>
+                        <ul style="margin: 0.5rem 0 0 1rem; padding: 0; font-size: 0.9rem;">
+                            <li>Salesforce Sandbox Org</li>
+                            <li>GitHub account (repository access)</li>
+                            <li>AWS credentials (optional, for cloud resources)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <strong>💡 Tip:</strong> Use a version manager for Node.js (nvm/nvm-windows) and Python (pyenv) to easily switch between versions across projects.
+                </div>
+            </section>
+
+            <!-- Quick Start -->
+            <section class="card">
+                <h2>Quick Start (Automated Setup)</h2>
+                <p>Use the automated setup script to configure your development environment in minutes:</p>
+
+                <div class="step-card">
+                    <h4>Step 1: Clone Repository</h4>
+                    <div class="code-block">git clone https://github.com/your-org/revnova-platform.git
+cd revnova-platform</div>
+                </div>
+
+                <div class="step-card">
+                    <h4>Step 2: Run Setup Script</h4>
+                    <p><strong>Windows (PowerShell):</strong></p>
+                    <div class="code-block">.\scripts\setup-dev-env.ps1</div>
+
+                    <p><strong>macOS/Linux:</strong></p>
+                    <div class="code-block">chmod +x scripts/setup-dev-env.sh
+./scripts/setup-dev-env.sh</div>
+                </div>
+
+                <div class="step-card">
+                    <h4>Step 3: Configure Environment Variables</h4>
+                    <div class="code-block"><span class="comment"># Copy environment template</span>
+cp .env.example .env
+
+<span class="comment"># Edit .env with your credentials</span>
+<span class="comment"># - SALESFORCE_ORG_URL</span>
+<span class="comment"># - SALESFORCE_USERNAME</span>
+<span class="comment"># - DATABASE_URL</span>
+<span class="comment"># - OPENAI_API_KEY (for AI features)</span></div>
+                </div>
+
+                <div class="step-card">
+                    <h4>Step 4: Initialize Database</h4>
+                    <div class="code-block">npm run db:setup  <span class="comment"># Creates database, runs migrations, seeds test data</span></div>
+                </div>
+
+                <div class="step-card">
+                    <h4>Step 5: Authenticate with Salesforce</h4>
+                    <div class="code-block">sf org login web --alias revnova-dev  <span class="comment"># Opens browser for OAuth flow</span>
+sf org display --target-org revnova-dev  <span class="comment"># Verify connection</span></div>
+                </div>
+
+                <div class="step-card">
+                    <h4>Step 6: Start Development Servers</h4>
+                    <div class="code-block">npm run dev  <span class="comment"># Starts all services (frontend, backend, workers)</span></div>
+                </div>
+
+                <div class="info-box">
+                    <strong>✅ Setup Complete!</strong> Access the application at <code>http://localhost:3000</code>. Default credentials: <code>admin@revnova.local</code> / <code>DevPassword123!</code>
+                </div>
+            </section>
+
+            <!-- Manual Setup -->
+            <section class="card">
+                <h2>Manual Setup (Step-by-Step)</h2>
+                <p>For troubleshooting or custom configurations, follow these detailed manual setup instructions:</p>
+
+                <h3>1. Frontend Setup (React/TypeScript)</h3>
+                <div class="code-block"><span class="comment"># Navigate to frontend directory</span>
+cd frontend
+
+<span class="comment"># Install dependencies</span>
+npm install
+
+<span class="comment"># Build static assets</span>
+npm run build
+
+<span class="comment"># Start development server with hot reload</span>
+npm run dev
+
+<span class="comment"># Runs on http://localhost:3000</span></div>
+
+                <h3>2. Backend API Setup (Node.js/Express)</h3>
+                <div class="code-block"><span class="comment"># Navigate to backend directory</span>
+cd backend
+
+<span class="comment"># Install dependencies</span>
+npm install
+
+<span class="comment"># Run database migrations</span>
+npm run migrate:latest
+
+<span class="comment"># Seed development data</span>
+npm run db:seed
+
+<span class="comment"># Start API server</span>
+npm run dev
+
+<span class="comment"># Runs on http://localhost:4000</span></div>
+
+                <h3>3. Python Services Setup (AI/ML & Data Processing)</h3>
+                <div class="code-block"><span class="comment"># Navigate to Python services directory</span>
+cd services/python
+
+<span class="comment"># Create virtual environment</span>
+python -m venv venv
+
+<span class="comment"># Activate virtual environment</span>
+<span class="comment"># Windows:</span>
+venv\Scripts\activate
+<span class="comment"># macOS/Linux:</span>
+source venv/bin/activate
+
+<span class="comment"># Install dependencies</span>
+pip install -r requirements.txt
+
+<span class="comment"># Run AI service</span>
+python -m uvicorn ai_service.main:app --reload --port 5000
+
+<span class="comment"># Runs on http://localhost:5000</span></div>
+
+                <h3>4. Database Setup (PostgreSQL)</h3>
+                <div class="code-block"><span class="comment"># Create database</span>
+createdb revnova_dev
+
+<span class="comment"># Restore database schema from dump (if available)</span>
+psql revnova_dev < db/schema.sql
+
+<span class="comment"># OR run migrations to create schema</span>
+npm run migrate:latest
+
+<span class="comment"># Verify database connection</span>
+psql revnova_dev -c "SELECT version();"</div>
+
+                <h3>5. Salesforce Metadata Deployment</h3>
+                <div class="code-block"><span class="comment"># Deploy custom objects and fields</span>
+sf project deploy start --source-dir force-app/main/default --target-org revnova-dev
+
+<span class="comment"># Deploy permission sets</span>
+sf project deploy start --source-dir force-app/permsets --target-org revnova-dev
+
+<span class="comment"># Assign permission set to your user</span>
+sf org assign permset --name RevNova_Admin --target-org revnova-dev
+
+<span class="comment"># Import sample data</span>
+sf data import tree --plan data/sample-data-plan.json --target-org revnova-dev</div>
+
+                <h3>6. Redis Cache Setup (Optional but Recommended)</h3>
+                <div class="code-block"><span class="comment"># Using Docker (easiest method)</span>
+docker run -d -p 6379:6379 --name revnova-redis redis:7-alpine
+
+<span class="comment"># Verify Redis connection</span>
+docker exec -it revnova-redis redis-cli ping  <span class="comment"># Should return "PONG"</span></div>
+
+                <h3>7. Message Queue Setup (RabbitMQ for async jobs)</h3>
+                <div class="code-block"><span class="comment"># Using Docker</span>
+docker run -d -p 5672:5672 -p 15672:15672 --name revnova-rabbitmq rabbitmq:3-management
+
+<span class="comment"># Access management UI: http://localhost:15672</span>
+<span class="comment"># Default credentials: guest / guest</span></div>
+            </section>
+
+            <!-- NPM Scripts -->
+            <section class="card">
+                <h2>NPM Scripts Reference</h2>
+                <p>Common commands for daily development tasks:</p>
+
+                <table style="width:100%; border-collapse: collapse; margin: 1rem 0;">
+                    <thead>
+                        <tr style="background: #11998e; color: #fff;">
+                            <th style="padding: 0.75rem; text-align: left;">Command</th>
+                            <th style="padding: 0.75rem; text-align: left;">Description</th>
+                            <th style="padding: 0.75rem; text-align: left;">Usage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.75rem;"><code>npm run dev</code></td>
+                            <td style="padding: 0.75rem;">Start all services in development mode</td>
+                            <td style="padding: 0.75rem;">Daily development</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.75rem;"><code>npm run setup:dev</code></td>
+                            <td style="padding: 0.75rem;">One-time setup (install deps, DB, seed data)</td>
+                            <td style="padding: 0.75rem;">Initial setup</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.75rem;"><code>npm run auth:sandbox</code></td>
+                            <td style="padding: 0.75rem;">Authenticate with Salesforce sandbox</td>
+                            <td style="padding: 0.75rem;">Salesforce integration</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.75rem;"><code>npm run db:seed</code></td>
+                            <td style="padding: 0.75rem;">Populate database with test data</td>
+                            <td style="padding: 0.75rem;">Testing/demos</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.75rem;"><code>npm run db:reset</code></td>
+                            <td style="padding: 0.75rem;">Drop database, re-run migrations, reseed</td>
+                            <td style="padding: 0.75rem;">Fresh start</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.75rem;"><code>npm run test</code></td>
+                            <td style="padding: 0.75rem;">Run all unit and integration tests</td>
+                            <td style="padding: 0.75rem;">Pre-commit validation</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.75rem;"><code>npm run test:watch</code></td>
+                            <td style="padding: 0.75rem;">Run tests in watch mode (auto-rerun on save)</td>
+                            <td style="padding: 0.75rem;">TDD workflow</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.75rem;"><code>npm run lint</code></td>
+                            <td style="padding: 0.75rem;">Run ESLint and Prettier checks</td>
+                            <td style="padding: 0.75rem;">Code quality</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.75rem;"><code>npm run lint:fix</code></td>
+                            <td style="padding: 0.75rem;">Auto-fix linting issues</td>
+                            <td style="padding: 0.75rem;">Code cleanup</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.75rem;"><code>npm run migrate:latest</code></td>
+                            <td style="padding: 0.75rem;">Run pending database migrations</td>
+                            <td style="padding: 0.75rem;">Schema updates</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.75rem;"><code>npm run migrate:rollback</code></td>
+                            <td style="padding: 0.75rem;">Rollback last migration batch</td>
+                            <td style="padding: 0.75rem;">Undo schema changes</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem;"><code>npm run deploy:sandbox</code></td>
+                            <td style="padding: 0.75rem;">Deploy Salesforce metadata to sandbox</td>
+                            <td style="padding: 0.75rem;">Salesforce deployments</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Troubleshooting -->
+            <section class="card">
+                <h2>Troubleshooting</h2>
+
+                <h3>Common Issues & Solutions</h3>
+
+                <div class="warning-box">
+                    <strong>⚠️ Issue:</strong> <code>ECONNREFUSED</code> when connecting to PostgreSQL
+                    <p style="margin-top: 0.5rem;"><strong>Solution:</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1rem; padding: 0;">
+                        <li>Verify PostgreSQL is running: <code>pg_isready</code></li>
+                        <li>Check connection string in <code>.env</code> file</li>
+                        <li>Ensure firewall allows port 5432</li>
+                    </ul>
+                </div>
+
+                <div class="warning-box">
+                    <strong>⚠️ Issue:</strong> Salesforce CLI authentication fails
+                    <p style="margin-top: 0.5rem;"><strong>Solution:</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1rem; padding: 0;">
+                        <li>Clear cached auth: <code>sf org logout --all</code></li>
+                        <li>Use device flow: <code>sf org login web --alias revnova-dev</code></li>
+                        <li>Check Salesforce My Domain is enabled and accessible</li>
+                    </ul>
+                </div>
+
+                <div class="warning-box">
+                    <strong>⚠️ Issue:</strong> Python packages installation fails
+                    <p style="margin-top: 0.5rem;"><strong>Solution:</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1rem; padding: 0;">
+                        <li>Upgrade pip: <code>python -m pip install --upgrade pip</code></li>
+                        <li>Install build tools (Windows): Install Visual Studio Build Tools</li>
+                        <li>Use pre-built wheels: <code>pip install --only-binary :all: -r requirements.txt</code></li>
+                    </ul>
+                </div>
+
+                <div class="warning-box">
+                    <strong>⚠️ Issue:</strong> Port already in use (3000, 4000, 5000)
+                    <p style="margin-top: 0.5rem;"><strong>Solution:</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1rem; padding: 0;">
+                        <li>Find process using port: <code>netstat -ano | findstr :3000</code> (Windows) or <code>lsof -i :3000</code> (macOS/Linux)</li>
+                        <li>Kill process or change port in <code>.env</code> file</li>
+                    </ul>
+                </div>
+
+                <div class="warning-box">
+                    <strong>⚠️ Issue:</strong> Docker container won't start
+                    <p style="margin-top: 0.5rem;"><strong>Solution:</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1rem; padding: 0;">
+                        <li>Check Docker Desktop is running</li>
+                        <li>Clear Docker cache: <code>docker system prune -a</code></li>
+                        <li>Restart Docker service</li>
+                    </ul>
+                </div>
+
+                <h3>Get Help</h3>
+                <ul class="checklist">
+                    <li>Check internal wiki: <a href="https://wiki.revnova.local/dev-setup" target="_blank">wiki.revnova.local/dev-setup</a></li>
+                    <li>Ask in Slack: <code>#engineering-help</code> channel</li>
+                    <li>Open GitHub issue: <a href="https://github.com/your-org/revnova-platform/issues" target="_blank">GitHub Issues</a></li>
+                    <li>Email DevOps team: <code>devops@revnova.com</code></li>
+                </ul>
+            </section>
+
+            <!-- Best Practices -->
+            <section class="card">
+                <h2>Development Best Practices</h2>
+
+                <h3>Code Quality</h3>
+                <ul class="checklist">
+                    <li>Run linter before committing: <code>npm run lint</code></li>
+                    <li>Write unit tests for new features (target: 80% coverage)</li>
+                    <li>Use TypeScript strict mode (no implicit <code>any</code>)</li>
+                    <li>Follow naming conventions: camelCase (JS), snake_case (Python), PascalCase (classes)</li>
+                </ul>
+
+                <h3>Git Workflow</h3>
+                <ul class="checklist">
+                    <li>Create feature branches from <code>develop</code>: <code>git checkout -b feature/ABC-123-feature-name</code></li>
+                    <li>Write descriptive commit messages: <code>feat(migration): add CPQ data validation</code></li>
+                    <li>Rebase before merging: <code>git pull --rebase origin develop</code></li>
+                    <li>Squash commits for clean history before PR</li>
+                </ul>
+
+                <h3>Testing Strategy</h3>
+                <ul class="checklist">
+                    <li>Unit tests: Test individual functions/components in isolation</li>
+                    <li>Integration tests: Test API endpoints with database interactions</li>
+                    <li>E2E tests: Cypress for critical user flows</li>
+                    <li>Run tests before pushing: <code>npm run test</code></li>
+                </ul>
+
+                <h3>Performance</h3>
+                <ul class="checklist">
+                    <li>Use database indexes for frequently queried fields</li>
+                    <li>Implement caching for expensive operations (Redis)</li>
+                    <li>Lazy load heavy components in frontend</li>
+                    <li>Monitor bundle size: <code>npm run build:analyze</code></li>
+                </ul>
+            </section>
+        </main>
+    </div>
+
+    <script src="../script.js"></script>
+</body>
+</html>
