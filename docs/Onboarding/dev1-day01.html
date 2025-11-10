@@ -241,42 +241,32 @@
                 <li><a href="repo-setup-guide.html">Automated Setup Guide</a></li>
             </ul>
             
-            <h3>Developer 1: Backend & Database</h3>
+            <h3>Developer Guides</h3>
             <ul>
-                <li class="has-children">
-                    <a href="#">Week 1: Setup & Database Foundation</a>
-                    <ul>
-                        <li><a href="dev1-day01.html" class="active">Day 1: Workstation Setup</a></li>
-                        <li><a href="dev1-day02.html">Day 2: Database Tables (STG1)</a></li>
-                        <li><a href="dev1-day03.html">Day 3: Database Tables (STG2)</a></li>
-                        <li><a href="dev1-day04.html">Day 4: Database Tables (EAV)</a></li>
-                        <li><a href="dev1-day05.html">Day 5: First API Endpoint</a></li>
-                    </ul>
-                </li>
-                <li class="has-children">
-                    <a href="#">Week 2: Schema Analysis APIs</a>
-                    <ul>
-                        <li><a href="#">Day 6-10: Coming Soon</a></li>
-                    </ul>
-                </li>
-                <li class="has-children">
-                    <a href="#">Week 3: Field Mapping & AI</a>
-                    <ul>
-                        <li><a href="#">Day 11-15: Coming Soon</a></li>
-                    </ul>
-                </li>
-                <li class="has-children">
-                    <a href="#">Week 4: Data Transformation & Queue</a>
-                    <ul>
-                        <li><a href="#">Day 16-20: Coming Soon</a></li>
-                    </ul>
-                </li>
-                <li class="has-children">
-                    <a href="#">Week 5: Migration Execution & Testing</a>
-                    <ul>
-                        <li><a href="#">Day 21-25: Coming Soon</a></li>
-                    </ul>
-                </li>
+                <li><a href="onboarding-dev1-phase1.html">Developer 1: Backend & Database</a></li>
+                <li><a href="onboarding-dev2-phase1.html">Developer 2: Frontend & React</a></li>
+                <li><a href="onboarding-dev3-phase1.html">Developer 3: DevOps & QA</a></li>
+            </ul>
+            
+            <h3>8-Week Timeline</h3>
+            <ul>
+                <li><a href="onboarding-home.html#timeline">Project Timeline</a></li>
+                <li><a href="onboarding-home.html#phase1">Phase 1: SFDC CPQ Migration (Weeks 1-5)</a></li>
+                <li><a href="onboarding-home.html#phase2">Phase 2: AI Configuration (Weeks 6-8)</a></li>
+            </ul>
+            
+            <h3>Development Workflows</h3>
+            <ul>
+                <li><a href="onboarding-home.html#vscode">VS Code Setup & Extensions</a></li>
+                <li><a href="onboarding-home.html#copilot">GitHub Copilot Usage</a></li>
+                <li><a href="onboarding-home.html#git">Git Workflow & PRs</a></li>
+                <li><a href="onboarding-home.html#testing">Unit & Integration Testing</a></li>
+            </ul>
+            
+            <h3>Page Assignments</h3>
+            <ul>
+                <li><a href="onboarding-home.html#page-assignments">Phase 1 Pages</a></li>
+                <li><a href="phase2-tasks.html">Phase 2 Pages</a></li>
             </ul>
         </aside>
 
@@ -398,50 +388,11 @@
             </div>
 
             <div class="step-card">
-                <h2><span class="step-number">6</span> Create Project Folder Structure</h2>
-                <p><strong>What you need to do:</strong> Create the backend and frontend folders for the project</p>
-                
-                <p>In the VS Code terminal (make sure you're in <code>C:\Dev\RevNovaRepository</code>), type:</p>
-                <div class="command-box">mkdir backend<br>mkdir frontend<br>mkdir scripts<br>mkdir tests</div>
-                
-                <p>This creates the main folders for our project:</p>
-                <ul>
-                    <li><strong>backend</strong> - Node.js API server (your work!)</li>
-                    <li><strong>frontend</strong> - React user interface</li>
-                    <li><strong>scripts</strong> - Helper scripts</li>
-                    <li><strong>tests</strong> - Test files</li>
-                </ul>
-                
-                <div class="tip-box">
-                    <strong>💡 Tip:</strong> You can see these new folders appear in the VS Code Explorer panel on the left!
-                </div>
-            </div>
-
-            <div class="step-card">
-                <h2><span class="step-number">7</span> Initialize Backend Project</h2>
-                <p><strong>What you need to do:</strong> Set up the backend as a Node.js project</p>
-                
-                <p>In the VS Code terminal, navigate to the backend folder:</p>
-                <div class="command-box">cd backend</div>
-                
-                <p>Now initialize a new Node.js project:</p>
-                <div class="command-box">npm init -y</div>
-                
-                <p>This creates a <code>package.json</code> file which tracks all your project dependencies.</p>
-                
-                <p>You should see:</p>
-                <div class="command-box">Wrote to C:\Dev\RevNovaRepository\backend\package.json</div>
-            </div>
-
-            <div class="step-card">
-                <h2><span class="step-number">8</span> Install Project Dependencies</h2>
+                <h2><span class="step-number">6</span> Install Project Dependencies</h2>
                 <p><strong>What you need to do:</strong> Install all the libraries that RevNova needs</p>
                 
-                <p>Still in the backend folder, install the core dependencies:</p>
-                <div class="command-box">npm install express cors dotenv pg bull jsforce axios</div>
-                
-                <p>Then install development dependencies:</p>
-                <div class="command-box">npm install --save-dev typescript @types/node @types/express ts-node nodemon eslint prettier</div>
+                <p>In the VS Code terminal, type:</p>
+                <div class="command-box">cd backend<br>npm install</div>
                 
                 <p>This will download all the required packages. It might take 3-5 minutes. You'll see lots of text scrolling - that's normal!</p>
                 
@@ -451,13 +402,10 @@
                 
                 <p>Wait until you see something like:</p>
                 <div class="command-box">added 847 packages in 4m</div>
-                
-                <p><strong>Go back to the root folder:</strong></p>
-                <div class="command-box">cd ..</div>
             </div>
 
             <div class="step-card">
-                <h2><span class="step-number">9</span> Verify Everything Works</h2>
+                <h2><span class="step-number">7</span> Verify Everything Works</h2>
                 <p><strong>Final check:</strong> Make sure everything is installed correctly</p>
                 
                 <ul class="checklist">
@@ -465,15 +413,17 @@
                     <li>Git installed (run: <code>git --version</code>)</li>
                     <li>VS Code open with RevNova project</li>
                     <li>Extensions installed (check Extensions panel in VS Code)</li>
-                    <li>Repository cloned (you can see the RevNovaRepository folder)</li>
-                    <li>Folders created (backend, frontend, scripts, tests visible in Explorer)</li>
-                    <li>Backend initialized (package.json exists in backend folder)</li>
-                    <li>Dependencies installed (node_modules folder exists in backend)</li>
+                    <li>Repository cloned (you can see folders like "backend", "frontend", "docs")</li>
+                    <li>Backend dependencies installed (you have a "node_modules" folder in backend)</li>
                 </ul>
                 
-                <div class="tip-box">
-                    <strong>💡 Note:</strong> We'll create the actual server file and test it tomorrow in Day 2!
-                </div>
+                <p><strong>Test that backend runs:</strong></p>
+                <div class="command-box">npm run dev</div>
+                
+                <p>You should see:</p>
+                <div class="command-box">Server running on port 3000</div>
+                
+                <p>Press <code>Ctrl+C</code> to stop the server.</p>
             </div>
 
             <div class="step-card">

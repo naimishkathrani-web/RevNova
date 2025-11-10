@@ -71,37 +71,32 @@
                 <li><a href="repo-setup-guide.html">Automated Setup Guide</a></li>
             </ul>
             
-            <h3>Developer 3: DevOps & QA</h3>
+            <h3>Developer Guides</h3>
             <ul>
-                <li class="has-children"><a href="#">Week 1: CI/CD Pipeline & Docker</a>
-                    <ul>
-                        <li><a href="dev3-day01.html" class="active">Day 1: GitHub Actions Setup</a></li>
-                        <li><a href="dev3-day02.html">Day 2: CI Pipeline (Lint & Test)</a></li>
-                        <li><a href="dev3-day03.html">Day 3: Docker for Backend</a></li>
-                        <li><a href="dev3-day04.html">Day 4: Docker for Frontend</a></li>
-                        <li><a href="dev3-day05.html">Day 5: Code Coverage & Week 1 PR</a></li>
-                    </ul>
-                </li>
-                <li class="has-children"><a href="#">Week 2: Local Dev Environment</a>
-                    <ul>
-                        <li>Day 6-10: Coming Soon</li>
-                    </ul>
-                </li>
-                <li class="has-children"><a href="#">Week 3: Integration & E2E Testing</a>
-                    <ul>
-                        <li>Day 11-15: Coming Soon</li>
-                    </ul>
-                </li>
-                <li class="has-children"><a href="#">Week 4: Deployment Automation</a>
-                    <ul>
-                        <li>Day 16-20: Coming Soon</li>
-                    </ul>
-                </li>
-                <li class="has-children"><a href="#">Week 5: Production Ready & Testing</a>
-                    <ul>
-                        <li>Day 21-25: Coming Soon</li>
-                    </ul>
-                </li>
+                <li><a href="onboarding-dev1-phase1.html">Developer 1: Backend & Database</a></li>
+                <li><a href="onboarding-dev2-phase1.html">Developer 2: Frontend & React</a></li>
+                <li><a href="onboarding-dev3-phase1.html">Developer 3: DevOps & QA</a></li>
+            </ul>
+            
+            <h3>8-Week Timeline</h3>
+            <ul>
+                <li><a href="onboarding-home.html#timeline">Project Timeline</a></li>
+                <li><a href="onboarding-home.html#phase1">Phase 1: SFDC CPQ Migration (Weeks 1-5)</a></li>
+                <li><a href="onboarding-home.html#phase2">Phase 2: AI Configuration (Weeks 6-8)</a></li>
+            </ul>
+            
+            <h3>Development Workflows</h3>
+            <ul>
+                <li><a href="onboarding-home.html#vscode">VS Code Setup & Extensions</a></li>
+                <li><a href="onboarding-home.html#copilot">GitHub Copilot Usage</a></li>
+                <li><a href="onboarding-home.html#git">Git Workflow & PRs</a></li>
+                <li><a href="onboarding-home.html#testing">Unit & Integration Testing</a></li>
+            </ul>
+            
+            <h3>Page Assignments</h3>
+            <ul>
+                <li><a href="onboarding-home.html#page-assignments">Phase 1 Pages</a></li>
+                <li><a href="phase2-tasks.html">Phase 2 Pages</a></li>
             </ul>
         </aside>
 
@@ -183,32 +178,13 @@ cd RevNovaRepository</div>
             </div>
 
             <div class="step-card">
-                <h2><span class="step-number">5</span> Create Project Folder Structure</h2>
-                <p><strong>What you need to do:</strong> Create the main project folders</p>
-                
-                <p>In the VS Code terminal (make sure you're in <code>C:\Dev\RevNovaRepository</code>), type:</p>
-                <div class="command-box">mkdir backend<br>mkdir frontend<br>mkdir scripts<br>mkdir tests<br>mkdir docs</div>
-                
-                <p>This creates the main folders for our project:</p>
-                <ul>
-                    <li><strong>backend</strong> - Node.js API server</li>
-                    <li><strong>frontend</strong> - React user interface</li>
-                    <li><strong>scripts</strong> - Helper scripts</li>
-                    <li><strong>tests</strong> - Test files (your focus!)</li>
-                    <li><strong>docs</strong> - Documentation</li>
-                </ul>
-                
-                <div class="tip-box">
-                    <strong>💡 Tip:</strong> You can see these new folders appear in the VS Code Explorer panel on the left!
-                </div>
-            </div>
-
-            <div class="step-card">
-                <h2><span class="step-number">6</span> Create GitHub Actions Folder</h2>
+                <h2><span class="step-number">5</span> Create GitHub Actions Folder</h2>
                 <p><strong>What you need to do:</strong> Set up CI/CD directory structure</p>
                 
                 <p>In VS Code terminal, run:</p>
-                <div class="command-box">mkdir .github<br>mkdir .github\workflows<br>type nul > .github\workflows\.gitkeep</div>
+                <div class="command-box">mkdir .github
+mkdir .github\workflows
+type nul > .github\workflows\.gitkeep</div>
 
                 <div class="tip-box">
                     <strong>💡 What is .github/workflows?</strong> This folder holds YAML files that define automated workflows (CI/CD pipelines).
@@ -216,7 +192,7 @@ cd RevNovaRepository</div>
             </div>
 
             <div class="step-card">
-                <h2><span class="step-number">7</span> Understand YAML Basics</h2>
+                <h2><span class="step-number">6</span> Learn YAML Basics</h2>
                 <p><strong>What you need to do:</strong> Understand YAML syntax for workflows</p>
                 
                 <p><strong>YAML Key Concepts:</strong></p>
@@ -251,21 +227,23 @@ jobs:
             </div>
 
             <div class="step-card">
-                <h2><span class="step-number">8</span> Verify Setup</h2>
+                <h2><span class="step-number">7</span> Verify Setup</h2>
                 <p><strong>What you need to do:</strong> Check all tools are ready</p>
                 
                 <p>Run these commands:</p>
-                <div class="command-box">git --version<br>node --version<br>docker --version<br>docker ps</div>
+                <div class="command-box">git --version
+node --version
+docker --version
+docker ps</div>
 
                 <p>Check folder structure:</p>
-                <div class="command-box">dir backend<br>dir frontend<br>dir .github\workflows</div>
+                <div class="command-box">dir .github\workflows</div>
                 
                 <ul class="checklist">
                     <li>Git installed and working</li>
                     <li>Node.js and npm installed</li>
                     <li>Docker Desktop running</li>
                     <li>Repository cloned</li>
-                    <li>Project folders created (backend, frontend, scripts, tests, docs)</li>
                     <li>.github/workflows folder created</li>
                     <li>Understand basic YAML syntax</li>
                 </ul>
@@ -279,7 +257,6 @@ jobs:
                     <li>Node.js for running JavaScript tests</li>
                     <li>Docker Desktop for containerization</li>
                     <li>Repository cloned and opened in VS Code</li>
-                    <li>Project folder structure created</li>
                     <li>.github/workflows folder ready for CI/CD</li>
                     <li>Basic understanding of YAML syntax</li>
                 </ul>

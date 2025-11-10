@@ -1,0 +1,16 @@
+node_modules
+npm-debug.log
+.env
+.git
+.gitignore
+README.md
+.vscode
+.idea
+coverage
+*.test.ts
+*.spec.ts
+__tests__
+
+
+# Optional: ignore build output if you don't want it copied from host
+/dist

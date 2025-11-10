@@ -71,42 +71,32 @@
                 <li><a href="repo-setup-guide.html">Automated Setup Guide</a></li>
             </ul>
             
-            <h3>Developer 2: Frontend & React</h3>
+            <h3>Developer Guides</h3>
             <ul>
-                <li class="has-children">
-                    <a href="#">Week 1: React Setup & Components</a>
-                    <ul>
-                        <li><a href="dev2-day01.html" class="active">Day 1: React Setup</a></li>
-                        <li><a href="dev2-day02.html">Day 2: Component Library</a></li>
-                        <li><a href="dev2-day03.html">Day 3: Wizard Layout & Routing</a></li>
-                        <li><a href="dev2-day04.html">Day 4: State Management</a></li>
-                        <li><a href="dev2-day05.html">Day 5: API Client & Week 1 PR</a></li>
-                    </ul>
-                </li>
-                <li class="has-children">
-                    <a href="#">Week 2: Connection Wizard Page</a>
-                    <ul>
-                        <li><a href="#">Day 6-10: Coming Soon</a></li>
-                    </ul>
-                </li>
-                <li class="has-children">
-                    <a href="#">Week 3: Field Mapping UI</a>
-                    <ul>
-                        <li><a href="#">Day 11-15: Coming Soon</a></li>
-                    </ul>
-                </li>
-                <li class="has-children">
-                    <a href="#">Week 4: Transformation & Validation UI</a>
-                    <ul>
-                        <li><a href="#">Day 16-20: Coming Soon</a></li>
-                    </ul>
-                </li>
-                <li class="has-children">
-                    <a href="#">Week 5: Execution & Test Reports</a>
-                    <ul>
-                        <li><a href="#">Day 21-25: Coming Soon</a></li>
-                    </ul>
-                </li>
+                <li><a href="onboarding-dev1-phase1.html">Developer 1: Backend & Database</a></li>
+                <li><a href="onboarding-dev2-phase1.html">Developer 2: Frontend & React</a></li>
+                <li><a href="onboarding-dev3-phase1.html">Developer 3: DevOps & QA</a></li>
+            </ul>
+            
+            <h3>8-Week Timeline</h3>
+            <ul>
+                <li><a href="onboarding-home.html#timeline">Project Timeline</a></li>
+                <li><a href="onboarding-home.html#phase1">Phase 1: SFDC CPQ Migration (Weeks 1-5)</a></li>
+                <li><a href="onboarding-home.html#phase2">Phase 2: AI Configuration (Weeks 6-8)</a></li>
+            </ul>
+            
+            <h3>Development Workflows</h3>
+            <ul>
+                <li><a href="onboarding-home.html#vscode">VS Code Setup & Extensions</a></li>
+                <li><a href="onboarding-home.html#copilot">GitHub Copilot Usage</a></li>
+                <li><a href="onboarding-home.html#git">Git Workflow & PRs</a></li>
+                <li><a href="onboarding-home.html#testing">Unit & Integration Testing</a></li>
+            </ul>
+            
+            <h3>Page Assignments</h3>
+            <ul>
+                <li><a href="onboarding-home.html#page-assignments">Phase 1 Pages</a></li>
+                <li><a href="phase2-tasks.html">Phase 2 Pages</a></li>
             </ul>
         </aside>
 
@@ -182,73 +172,27 @@ cd RevNovaRepository</div>
             </div>
 
             <div class="step-card">
-                <h2><span class="step-number">5</span> Create Project Folder Structure</h2>
-                <p><strong>What you need to do:</strong> Create the frontend and backend folders for the project</p>
-                
-                <p>In the VS Code terminal (make sure you're in <code>C:\Dev\RevNovaRepository</code>), type:</p>
-                <div class="command-box">mkdir frontend<br>mkdir backend<br>mkdir scripts<br>mkdir tests</div>
-                
-                <p>This creates the main folders for our project:</p>
-                <ul>
-                    <li><strong>frontend</strong> - React user interface (your work!)</li>
-                    <li><strong>backend</strong> - Node.js API server</li>
-                    <li><strong>scripts</strong> - Helper scripts</li>
-                    <li><strong>tests</strong> - Test files</li>
-                </ul>
-                
-                <div class="tip-box">
-                    <strong>💡 Tip:</strong> You can see these new folders appear in the VS Code Explorer panel on the left!
-                </div>
-            </div>
-
-            <div class="step-card">
-                <h2><span class="step-number">6</span> Initialize Frontend Project</h2>
-                <p><strong>What you need to do:</strong> Set up React with Vite</p>
-                
-                <p>Navigate to the frontend folder:</p>
-                <div class="command-box">cd frontend</div>
-                
-                <p>Create a new React + TypeScript project with Vite:</p>
-                <div class="command-box">npm create vite@latest . -- --template react-ts</div>
-                
-                <p>When prompted "Current directory is not empty. Remove existing files and continue?", type <strong>y</strong> and press Enter.</p>
-                
-                <p>This sets up a modern React project with:</p>
-                <ul>
-                    <li>⚛️ React 18</li>
-                    <li>📘 TypeScript support</li>
-                    <li>⚡ Vite for super-fast dev server</li>
-                    <li>🎨 Hot Module Replacement (HMR)</li>
-                </ul>
-            </div>
-
-            <div class="step-card">
-                <h2><span class="step-number">7</span> Install Frontend Dependencies</h2>
+                <h2><span class="step-number">5</span> Install Frontend Dependencies</h2>
                 <p><strong>What you need to do:</strong> Install React and all packages</p>
                 
-                <p>Still in the frontend folder, install the dependencies:</p>
-                <div class="command-box">npm install</div>
+                <p>Navigate to frontend folder and install:</p>
+                <div class="command-box">cd frontend
+npm install</div>
 
                 <p>This will take 2-3 minutes. You should see:</p>
                 <div class="command-box">added 1234 packages in 2m</div>
 
-                <p>Now install additional packages we'll need:</p>
-                <div class="command-box">npm install react-router-dom axios @tanstack/react-query tailwindcss postcss autoprefixer</div>
-
                 <div class="tip-box">
-                    <strong>💡 What did this install?</strong> React Router (navigation), Axios (API calls), React Query (data fetching), and TailwindCSS (styling).
+                    <strong>💡 What did this install?</strong> React 18, TypeScript, Vite (build tool), TailwindCSS, and development tools.
                 </div>
-                
-                <p><strong>Go back to the root folder:</strong></p>
-                <div class="command-box">cd ..</div>
             </div>
 
             <div class="step-card">
-                <h2><span class="step-number">8</span> Start Development Server</h2>
+                <h2><span class="step-number">6</span> Start Development Server</h2>
                 <p><strong>What you need to do:</strong> Run the React app</p>
                 
-                <p>Navigate to the frontend folder and start the dev server:</p>
-                <div class="command-box">cd frontend<br>npm run dev</div>
+                <p>Start the dev server:</p>
+                <div class="command-box">npm run dev</div>
 
                 <p>You should see:</p>
                 <div class="command-box">VITE v5.x.x  ready in 500 ms
@@ -262,7 +206,7 @@ cd RevNovaRepository</div>
             </div>
 
             <div class="step-card">
-                <h2><span class="step-number">9</span> Verify Everything Works</h2>
+                <h2><span class="step-number">7</span> Verify Everything Works</h2>
                 <p><strong>What you need to do:</strong> Test that hot reload works</p>
                 
                 <p>With the server still running, open <code>frontend/src/App.tsx</code></p>
@@ -274,9 +218,6 @@ cd RevNovaRepository</div>
                 <p>Press <code>Ctrl+C</code> in terminal to stop the server.</p>
                 
                 <ul class="checklist">
-                    <li>Folders created (frontend, backend, scripts, tests visible)</li>
-                    <li>Frontend initialized with Vite + React + TypeScript</li>
-                    <li>Dependencies installed (node_modules exists in frontend)</li>
                     <li>Server starts without errors</li>
                     <li>Browser shows React app at localhost:5173</li>
                     <li>Hot reload works when you edit files</li>

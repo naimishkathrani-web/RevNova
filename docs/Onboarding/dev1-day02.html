@@ -202,7 +202,7 @@
         }
         
         .nav-btn.next:hover {
-            background: #00f2fe;
+            background: ##00f2fe;
         }
         
         @media (max-width: 768px) {
@@ -249,37 +249,32 @@
                 <li><a href="repo-setup-guide.html">Automated Setup Guide</a></li>
             </ul>
             
-            <h3>Developer 1: Backend & Database</h3>
+            <h3>Developer Guides</h3>
             <ul>
-                <li class="has-children"><a href="#">Week 1: Setup & Database Foundation</a>
-                    <ul>
-                        <li><a href="dev1-day01.html">Day 1: Workstation Setup</a></li>
-                        <li><a href="dev1-day02.html" class="active">Day 2: Database Tables (STG1)</a></li>
-                        <li><a href="dev1-day03.html">Day 3: Database Tables (STG2)</a></li>
-                        <li><a href="dev1-day04.html">Day 4: Database Tables (EAV)</a></li>
-                        <li><a href="dev1-day05.html">Day 5: First API Endpoint</a></li>
-                    </ul>
-                </li>
-                <li class="has-children"><a href="#">Week 2: Schema Analysis APIs</a>
-                    <ul>
-                        <li>Day 6-10: Coming Soon</li>
-                    </ul>
-                </li>
-                <li class="has-children"><a href="#">Week 3: Field Mapping & AI</a>
-                    <ul>
-                        <li>Day 11-15: Coming Soon</li>
-                    </ul>
-                </li>
-                <li class="has-children"><a href="#">Week 4: Data Transformation & Queue</a>
-                    <ul>
-                        <li>Day 16-20: Coming Soon</li>
-                    </ul>
-                </li>
-                <li class="has-children"><a href="#">Week 5: Migration Execution & Testing</a>
-                    <ul>
-                        <li>Day 21-25: Coming Soon</li>
-                    </ul>
-                </li>
+                <li><a href="onboarding-dev1-phase1.html">Developer 1: Backend & Database</a></li>
+                <li><a href="onboarding-dev2-phase1.html">Developer 2: Frontend & React</a></li>
+                <li><a href="onboarding-dev3-phase1.html">Developer 3: DevOps & QA</a></li>
+            </ul>
+            
+            <h3>8-Week Timeline</h3>
+            <ul>
+                <li><a href="onboarding-home.html#timeline">Project Timeline</a></li>
+                <li><a href="onboarding-home.html#phase1">Phase 1: SFDC CPQ Migration (Weeks 1-5)</a></li>
+                <li><a href="onboarding-home.html#phase2">Phase 2: AI Configuration (Weeks 6-8)</a></li>
+            </ul>
+            
+            <h3>Development Workflows</h3>
+            <ul>
+                <li><a href="onboarding-home.html#vscode">VS Code Setup & Extensions</a></li>
+                <li><a href="onboarding-home.html#copilot">GitHub Copilot Usage</a></li>
+                <li><a href="onboarding-home.html#git">Git Workflow & PRs</a></li>
+                <li><a href="onboarding-home.html#testing">Unit & Integration Testing</a></li>
+            </ul>
+            
+            <h3>Page Assignments</h3>
+            <ul>
+                <li><a href="onboarding-home.html#page-assignments">Phase 1 Pages</a></li>
+                <li><a href="phase2-tasks.html">Phase 2 Pages</a></li>
             </ul>
         </aside>
 
@@ -292,7 +287,6 @@
             <div class="step-card">
                 <h2><span class="step-number">1</span> Understand the Database Strategy</h2>
                 <p><strong>What you need to do:</strong> Learn why we have 3 types of tables</p>
-                
                 <p><strong>RevNova uses 3 table types:</strong></p>
                 <ol>
                     <li><strong>STG1 Tables</strong> - Stores raw data exactly as it comes from Salesforce (what you'll build today)</li>
@@ -304,11 +298,9 @@
                     <strong>💡 Why 3 tables?</strong> STG1 keeps original data safe. STG2 has cleaned data for migration. EAV handles custom fields dynamically.
                 </div>
             </div>
-
             <div class="step-card">
                 <h2><span class="step-number">2</span> Install PostgreSQL</h2>
                 <p><strong>What you need to do:</strong> Install the database on your computer</p>
-                
                 <ol>
                     <li>Go to <a href="https://www.postgresql.org/download/windows/" target="_blank">https://www.postgresql.org/download/windows/</a></li>
                     <li>Download PostgreSQL 15 or 16</li>
@@ -324,11 +316,9 @@
                 <p>You should see:</p>
                 <div class="command-box">psql (PostgreSQL) 15.x</div>
             </div>
-
             <div class="step-card">
                 <h2><span class="step-number">3</span> Create RevNova Database</h2>
                 <p><strong>What you need to do:</strong> Create a new database for our project</p>
-                
                 <p>Open terminal in VS Code and type:</p>
                 <div class="command-box">psql -U postgres</div>
                 
@@ -339,20 +329,18 @@
                 
                 <p>You should see <code>revnova_dev</code> in the list. Type <code>\q</code> to exit.</p>
             </div>
-
             <div class="step-card">
                 <h2><span class="step-number">4</span> Create Migration File for STG1 Table</h2>
                 <p><strong>What you need to do:</strong> Create a file that will build the STG1 table</p>
-                
                 <p>In VS Code, create this file:</p>
                 <p><strong>Location:</strong> <code>backend/src/database/migrations/001_create_stg1_table.sql</code></p>
                 
                 <p>Copy and paste this code:</p>
-                <div class="command-box">-- STG1: Raw data staging table
+                <div class="command-box">-- STG1: Raw data staging table with dynamic columns
 CREATE TABLE IF NOT EXISTS stg1_raw_data (
     id SERIAL PRIMARY KEY,
     migration_id VARCHAR(50) NOT NULL,
-    source_system VARCHAR(50) NOT NULL DEFAULT 'SFDC',
+    source_system VARCHAR(50) NOT NULL,
     object_name VARCHAR(100) NOT NULL,
     record_id VARCHAR(50) NOT NULL,
     raw_data JSONB NOT NULL,
@@ -360,7 +348,7 @@ CREATE TABLE IF NOT EXISTS stg1_raw_data (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Indexes for faster queries
+-- Add index for faster queries
 CREATE INDEX idx_stg1_migration ON stg1_raw_data(migration_id);
 CREATE INDEX idx_stg1_object ON stg1_raw_data(object_name);
 CREATE INDEX idx_stg1_record ON stg1_raw_data(record_id);</div>
@@ -369,11 +357,9 @@ CREATE INDEX idx_stg1_record ON stg1_raw_data(record_id);</div>
                     <strong>💡 What does this do?</strong> Creates a table that stores raw Salesforce data in JSON format. The indexes make searching faster.
                 </div>
             </div>
-
             <div class="step-card">
                 <h2><span class="step-number">5</span> Run the Migration</h2>
                 <p><strong>What you need to do:</strong> Execute the SQL file to create the table</p>
-                
                 <p>Run this command in terminal:</p>
                 <div class="command-box">psql -U postgres -d revnova_dev -f backend/src/database/migrations/001_create_stg1_table.sql</div>
                 
@@ -382,11 +368,9 @@ CREATE INDEX idx_stg1_record ON stg1_raw_data(record_id);</div>
                 
                 <p>You should see <code>stg1_raw_data</code> table in the list!</p>
             </div>
-
             <div class="step-card">
                 <h2><span class="step-number">6</span> Test the Table</h2>
                 <p><strong>What you need to do:</strong> Insert sample data to verify table works</p>
-                
                 <p>Connect to database:</p>
                 <div class="command-box">psql -U postgres -d revnova_dev</div>
                 
@@ -399,16 +383,16 @@ VALUES ('TEST001', 'SFDC', 'Quote', 'Q001', '{"name": "Test Quote", "amount": 50
                 
                 <p>You should see your test record! Type <code>\q</code> to exit.</p>
             </div>
-
+            
             <div class="step-card">
                 <h2>✅ Day 2 Complete!</h2>
                 <p>Great job! You now have:</p>
                 <ul class="checklist">
-                    <li>PostgreSQL installed and running</li>
-                    <li>revnova_dev database created</li>
-                    <li>Migration file created (001_create_stg1_table.sql)</li>
-                    <li>STG1 table created successfully</li>
-                    <li>Test data inserted and queried</li>
+<li>PostgreSQL installed and running</li>
+<li>revnova_dev database created</li>
+<li>Migration file created (001_create_stg1_table.sql)</li>
+<li>STG1 table created successfully</li>
+<li>Test data inserted and queried</li>
                 </ul>
                 
                 <p><strong>Tomorrow:</strong> You'll create STG2 tables for normalized data!</p>
@@ -420,6 +404,5 @@ VALUES ('TEST001', 'SFDC', 'Quote', 'Q001', '{"name": "Test Quote", "amount": 50
             </div>
         </main>
     </div>
-    <script src="../script.js"></script>
 </body>
 </html>
