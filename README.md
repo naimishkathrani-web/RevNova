@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # RevNova
 
 A web-based application with TypeScript/Node.js backend and HTML/CSS frontend.
@@ -16,3 +17,4 @@ Access:
 - Frontend: http://localhost:5173
 - Backend API: http://localhost:3000
 - PostgreSQL: localhost:5432
+
