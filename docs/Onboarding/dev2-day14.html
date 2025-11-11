@@ -20,18 +20,71 @@ git pull origin main
             </div>
             <p>This ensures you have the latest code from your teammates. Always pull before starting work!</p>
         </div>
-<div class="step-card">
-            <h2>Objective</h2>
-            <p>Add bulk actions for mapping operations (accept all AI suggestions, clear mappings, export/import CSV).</p>
-        </div>
         <div class="step-card">
-            <h2>Tasks</h2>
-            <ol>
-                <li>Add checkbox column for multi-select</li>
-                <li>Implement "Accept All Suggestions" button</li>
-                <li>Add CSV export and import functionality</li>
-                <li>Show bulk operation confirmation dialogs</li>
-            </ol>
+            <h2>📋 Objective</h2>
+            <p>Add bulk operations: Accept all AI suggestions, clear mappings, export/import JSON.</p>
+        </div>
+
+        <div class="step-card">
+            <h2>✅ Step 1: Accept All AI Suggestions</h2>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+const acceptAllSuggestions = async () => {<br>
+&nbsp;&nbsp;const confirmed = window.confirm('Accept all AI suggestions?');<br>
+&nbsp;&nbsp;if (!confirmed) return;<br>
+<br>
+&nbsp;&nbsp;const mappings = suggestions.map(s => ({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sourceObject: s.sourceObject,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sourceField: s.sourceField,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;targetObject: s.targetObject,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;targetField: s.targetField,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;mappingType: 'direct'<br>
+&nbsp;&nbsp;}));<br>
+<br>
+&nbsp;&nbsp;await fetch('/api/v1/projects/1/mappings', {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;method: 'POST',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;body: JSON.stringify({ mappings })<br>
+&nbsp;&nbsp;});<br>
+};<br>
+<br>
+&lt;button onClick={acceptAllSuggestions}&gt;✓ Accept All&lt;/button&gt;
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>📤 Step 2: Export/Import Mappings JSON</h2>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+const exportMappings = () => {<br>
+&nbsp;&nbsp;const json = JSON.stringify(mappings, null, 2);<br>
+&nbsp;&nbsp;const blob = new Blob([json], { type: 'application/json' });<br>
+&nbsp;&nbsp;const url = URL.createObjectURL(blob);<br>
+&nbsp;&nbsp;const a = document.createElement('a');<br>
+&nbsp;&nbsp;a.href = url;<br>
+&nbsp;&nbsp;a.download = 'mappings.json';<br>
+&nbsp;&nbsp;a.click();<br>
+};<br>
+<br>
+&lt;button onClick={exportMappings}&gt;💾 Export JSON&lt;/button&gt;
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>📊 Step 3: Show Mapping Progress</h2>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+const mapped = mappings.filter(m => m.target_field).length;<br>
+const total = mappings.length;<br>
+<br>
+&lt;div&gt;Progress: {mapped} of {total} fields mapped ({Math.round(mapped/total*100)}%)&lt;/div&gt;
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🎯 End of Day Checklist</h2>
+            <ul style="list-style:none;padding-left:0;">
+                <li>☐ Accept all AI suggestions works</li>
+                <li>☐ Export/import JSON functional</li>
+                <li>☐ Mapping progress displayed</li>
+                <li>☐ Code committed and pushed</li>
+            </ul>
         </div>
         <div class="nav-buttons"><a href="dev2-day13.html" class="nav-btn back">← Back to Day 13</a><a href="dev2-day15.html" class="nav-btn next">Next: Day 15 →</a></div>
     </div>

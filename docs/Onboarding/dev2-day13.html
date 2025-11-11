@@ -20,18 +20,65 @@ git pull origin main
             </div>
             <p>This ensures you have the latest code from your teammates. Always pull before starting work!</p>
         </div>
-<div class="step-card">
-            <h2>Objective</h2>
-            <p>Implement drag-and-drop functionality to visually map source to target fields.</p>
-        </div>
         <div class="step-card">
-            <h2>Tasks</h2>
-            <ol>
-                <li>Use react-beautiful-dnd or similar library</li>
-                <li>Make source fields draggable</li>
-                <li>Make target field rows drop targets</li>
-                <li>Update mapping state on drop and sync with backend</li>
-            </ol>
+            <h2>📋 Objective</h2>
+            <p>Implement drag-and-drop interface using @dnd-kit/core for visual field mapping.</p>
+        </div>
+
+        <div class="step-card">
+            <h2>📦 Step 1: Install DnD Library</h2>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+cd frontend<br>
+npm install @dnd-kit/core @dnd-kit/sortable
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🎯 Step 2: Make Source Fields Draggable</h2>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+import { useDraggable } from '@dnd-kit/core';<br>
+<br>
+const DraggableField = ({ field }) => {<br>
+&nbsp;&nbsp;const { attributes, listeners, setNodeRef } = useDraggable({ id: field.name });<br>
+<br>
+&nbsp;&nbsp;return (<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;div ref={setNodeRef} {...listeners} {...attributes} className="cursor-move p-2 bg-blue-100 rounded"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{field.label}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;);<br>
+};
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>📥 Step 3: Make Target Rows Droppable</h2>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+import { useDroppable } from '@dnd-kit/core';<br>
+<br>
+const DroppableTarget = ({ targetField, onDrop }) => {<br>
+&nbsp;&nbsp;const { setNodeRef } = useDroppable({ id: targetField.name });<br>
+<br>
+&nbsp;&nbsp;const handleDragEnd = (event) => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const { active, over } = event;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (over) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;onDrop(active.id, over.id); // sourceField, targetField<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;};<br>
+<br>
+&nbsp;&nbsp;return &lt;div ref={setNodeRef} className="p-2 border-2 border-dashed"&gt;Drop here&lt;/div&gt;;<br>
+};
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🎯 End of Day Checklist</h2>
+            <ul style="list-style:none;padding-left:0;">
+                <li>☐ @dnd-kit installed and configured</li>
+                <li>☐ Source fields draggable</li>
+                <li>☐ Target rows droppable</li>
+                <li>☐ Mapping state updates on drop</li>
+                <li>☐ Code committed and pushed</li>
+            </ul>
         </div>
         <div class="nav-buttons"><a href="dev2-day12.html" class="nav-btn back">← Back to Day 12</a><a href="dev2-day14.html" class="nav-btn next">Next: Day 14 →</a></div>
     </div>

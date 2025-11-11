@@ -20,18 +20,69 @@ git pull origin main
             </div>
             <p>This ensures you have the latest code from your teammates. Always pull before starting work!</p>
         </div>
-<div class="step-card">
-            <h2>Objective</h2>
-            <p>Install and configure Playwright for end-to-end browser testing.</p>
-        </div>
         <div class="step-card">
-            <h2>Tasks</h2>
-            <ol>
-                <li>Install @playwright/test and browsers</li>
-                <li>Configure playwright.config.ts with base URL</li>
-                <li>Create test helpers for common actions (login, navigate)</li>
-                <li>Write first smoke test (homepage loads)</li>
-            </ol>
+            <h2>📋 Objective</h2>
+            <p>Install Playwright for E2E browser testing and write first smoke test.</p>
+        </div>
+
+        <div class="step-card">
+            <h2>📦 Step 1: Install Playwright</h2>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+npm install --save-dev @playwright/test<br>
+npx playwright install chromium
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>⚙️ Step 2: Configure Playwright</h2>
+            <p><strong>File:</strong> <code>playwright.config.ts</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+import { defineConfig } from '@playwright/test';<br>
+<br>
+export default defineConfig({<br>
+&nbsp;&nbsp;testDir: './e2e',<br>
+&nbsp;&nbsp;use: {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;baseURL: 'http://localhost:5173',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;screenshot: 'only-on-failure'<br>
+&nbsp;&nbsp;},<br>
+&nbsp;&nbsp;webServer: {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;command: 'npm run dev',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;port: 5173<br>
+&nbsp;&nbsp;}<br>
+});
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🧪 Step 3: Write First E2E Test</h2>
+            <p><strong>File:</strong> <code>e2e/homepage.spec.ts</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+import { test, expect } from '@playwright/test';<br>
+<br>
+test('homepage loads successfully', async ({ page }) => {<br>
+&nbsp;&nbsp;await page.goto('/');<br>
+&nbsp;&nbsp;await expect(page.locator('h1')).toContainText('RevNova');<br>
+});<br>
+<br>
+test('login redirects to dashboard', async ({ page }) => {<br>
+&nbsp;&nbsp;await page.goto('/login');<br>
+&nbsp;&nbsp;await page.fill('#username', 'test@example.com');<br>
+&nbsp;&nbsp;await page.fill('#password', 'password');<br>
+&nbsp;&nbsp;await page.click('button[type="submit"]');<br>
+&nbsp;&nbsp;await expect(page).toHaveURL('/app/dashboard');<br>
+});
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🎯 End of Day Checklist</h2>
+            <ul style="list-style:none;padding-left:0;">
+                <li>☐ Playwright installed with browsers</li>
+                <li>☐ playwright.config.ts configured</li>
+                <li>☐ First smoke test passes</li>
+                <li>☐ Login flow E2E test passes</li>
+                <li>☐ Code committed and pushed</li>
+            </ul>
         </div>
         <div class="nav-buttons"><a href="dev3-day13.html" class="nav-btn back">← Back to Day 13</a><a href="dev3-day15.html" class="nav-btn next">Next: Day 15 →</a></div>
     </div>

@@ -20,18 +20,61 @@ git pull origin main
             </div>
             <p>This ensures you have the latest code from your teammates. Always pull before starting work!</p>
         </div>
-<div class="step-card">
-            <h2>Objective</h2>
-            <p>Fetch and display AI-generated mapping suggestions with confidence scores.</p>
-        </div>
         <div class="step-card">
-            <h2>Tasks</h2>
-            <ol>
-                <li>Add "Get AI Suggestions" button to trigger backend call</li>
-                <li>Display suggestions as badges or pills with confidence %</li>
-                <li>Allow user to accept/reject suggestions with one click</li>
-                <li>Show loading state during AI processing</li>
-            </ol>
+            <h2>📋 Objective</h2>
+            <p>Add "Get AI Suggestions" button and display confidence scores with color-coded badges (green >90%, yellow 70-90%, red <70%).</p>
+        </div>
+
+        <div class="step-card">
+            <h2>🤖 Step 1: Fetch AI Suggestions</h2>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+const [suggestions, setSuggestions] = useState([]);<br>
+const [loading, setLoading] = useState(false);<br>
+<br>
+const getAISuggestions = async () => {<br>
+&nbsp;&nbsp;setLoading(true);<br>
+&nbsp;&nbsp;const res = await fetch('/api/v1/projects/1/mappings/suggest', { method: 'POST' });<br>
+&nbsp;&nbsp;const data = await res.json();<br>
+&nbsp;&nbsp;setSuggestions(data.suggestions);<br>
+&nbsp;&nbsp;setLoading(false);<br>
+};<br>
+<br>
+&lt;button onClick={getAISuggestions} disabled={loading}&gt;<br>
+&nbsp;&nbsp;{loading ? 'Analyzing...' : '🤖 Get AI Suggestions'}<br>
+&lt;/button&gt;
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🎨 Step 2: Display Confidence Scores</h2>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+const getConfidenceColor = (score: number) => {<br>
+&nbsp;&nbsp;if (score >= 0.9) return 'bg-green-500';<br>
+&nbsp;&nbsp;if (score >= 0.7) return 'bg-yellow-500';<br>
+&nbsp;&nbsp;return 'bg-red-500';<br>
+};<br>
+<br>
+{suggestions.map(s => (<br>
+&nbsp;&nbsp;&lt;div key={s.id} className="flex items-center gap-2"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;span&gt;{s.sourceField} → {s.targetField}&lt;/span&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;span className={`px-2 py-1 rounded ${getConfidenceColor(s.confidence)}`}&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{(s.confidence * 100).toFixed(0)}%<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/span&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;button onClick={() => acceptSuggestion(s)}&gt;✓ Accept&lt;/button&gt;<br>
+&nbsp;&nbsp;&lt;/div&gt;<br>
+))}
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🎯 End of Day Checklist</h2>
+            <ul style="list-style:none;padding-left:0;">
+                <li>☐ AI suggestions button calls backend</li>
+                <li>☐ Confidence scores color-coded</li>
+                <li>☐ Accept/reject buttons work</li>
+                <li>☐ Loading state displayed</li>
+                <li>☐ Code committed and pushed</li>
+            </ul>
         </div>
         <div class="nav-buttons"><a href="dev2-day11.html" class="nav-btn back">← Back to Day 11</a><a href="dev2-day13.html" class="nav-btn next">Next: Day 13 →</a></div>
     </div>

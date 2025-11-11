@@ -20,18 +20,70 @@ git pull origin main
             </div>
             <p>This ensures you have the latest code from your teammates. Always pull before starting work!</p>
         </div>
-<div class="step-card">
-            <h2>Objective</h2>
-            <p>Configure dedicated test database with automated setup/teardown for integration tests.</p>
-        </div>
         <div class="step-card">
-            <h2>Tasks</h2>
-            <ol>
-                <li>Create separate test database in docker-compose</li>
-                <li>Add beforeAll/afterAll hooks for migrations and cleanup</li>
-                <li>Seed test data fixtures for consistent test runs</li>
-                <li>Document test DB setup in README</li>
-            </ol>
+            <h2>📋 Objective</h2>
+            <p>Create separate test database with automated setup/teardown for integration tests.</p>
+        </div>
+
+        <div class="step-card">
+            <h2>🗄️ Step 1: Add Test Database to Docker Compose</h2>
+            <p><strong>File:</strong> <code>docker-compose.yml</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+postgres-test:<br>
+&nbsp;&nbsp;image: postgres:16<br>
+&nbsp;&nbsp;environment:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;POSTGRES_USER: revnova<br>
+&nbsp;&nbsp;&nbsp;&nbsp;POSTGRES_PASSWORD: test123<br>
+&nbsp;&nbsp;&nbsp;&nbsp;POSTGRES_DB: revnova_test<br>
+&nbsp;&nbsp;ports: ['5433:5432']<br>
+&nbsp;&nbsp;volumes: ['./data/postgres-test:/var/lib/postgresql/data']
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🔧 Step 2: Add Test Setup/Teardown Hooks</h2>
+            <p><strong>File:</strong> <code>backend/src/__tests__/setup.ts</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+import { Pool } from 'pg';<br>
+<br>
+const testDb = new Pool({ connectionString: 'postgres://revnova:test123@localhost:5433/revnova_test' });<br>
+<br>
+beforeAll(async () => {<br>
+&nbsp;&nbsp;// Run migrations<br>
+&nbsp;&nbsp;await testDb.query('CREATE TABLE IF NOT EXISTS projects...');<br>
+});<br>
+<br>
+afterAll(async () => {<br>
+&nbsp;&nbsp;// Cleanup<br>
+&nbsp;&nbsp;await testDb.query('TRUNCATE projects CASCADE');<br>
+&nbsp;&nbsp;await testDb.end();<br>
+});
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🌱 Step 3: Create Test Fixtures</h2>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+export const testFixtures = {<br>
+&nbsp;&nbsp;project: { id: 1, name: 'Test Project', status: 'active' },<br>
+&nbsp;&nbsp;connection: { id: 1, provider: 'salesforce', username: 'test@example.com' }<br>
+};<br>
+<br>
+export async function seedTestData(db: Pool) {<br>
+&nbsp;&nbsp;await db.query('INSERT INTO projects (name, status) VALUES ($1, $2)', [testFixtures.project.name, testFixtures.project.status]);<br>
+}
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🎯 End of Day Checklist</h2>
+            <ul style="list-style:none;padding-left:0;">
+                <li>☐ Test database runs in Docker</li>
+                <li>☐ Setup/teardown hooks work</li>
+                <li>☐ Test fixtures created</li>
+                <li>☐ Test DB documented in README</li>
+                <li>☐ Code committed and pushed</li>
+            </ul>
         </div>
         <div class="nav-buttons"><a href="dev3-day12.html" class="nav-btn back">← Back to Day 12</a><a href="dev3-day14.html" class="nav-btn next">Next: Day 14 →</a></div>
     </div>

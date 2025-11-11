@@ -20,18 +20,71 @@ git pull origin main
             </div>
             <p>This ensures you have the latest code from your teammates. Always pull before starting work!</p>
         </div>
-<div class="step-card">
-            <h2>Objective</h2>
-            <p>Write critical user journey E2E tests and open PR for week 3 testing work.</p>
-        </div>
         <div class="step-card">
-            <h2>Tasks</h2>
-            <ol>
-                <li>Write E2E test: Create connection flow</li>
-                <li>Write E2E test: View and map fields</li>
-                <li>Add CI job to run E2E tests</li>
-                <li>Document test execution and open PR</li>
-            </ol>
+            <h2>📋 Objective</h2>
+            <p>Write E2E tests for mapping wizard flow and integrate with CI pipeline.</p>
+        </div>
+
+        <div class="step-card">
+            <h2>🧪 Step 1: Write Mapping Flow E2E Test</h2>
+            <p><strong>File:</strong> <code>e2e/mapping-wizard.spec.ts</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+test('complete mapping wizard flow', async ({ page }) => {<br>
+&nbsp;&nbsp;// Login<br>
+&nbsp;&nbsp;await page.goto('/login');<br>
+&nbsp;&nbsp;await page.fill('#username', 'test@example.com');<br>
+&nbsp;&nbsp;await page.click('button[type="submit"]');<br>
+<br>
+&nbsp;&nbsp;// Navigate to mapping page<br>
+&nbsp;&nbsp;await page.goto('/app/mapping');<br>
+<br>
+&nbsp;&nbsp;// Get AI suggestions<br>
+&nbsp;&nbsp;await page.click('text=Get AI Suggestions');<br>
+&nbsp;&nbsp;await page.waitForSelector('text=/confidence/i');<br>
+<br>
+&nbsp;&nbsp;// Accept first suggestion<br>
+&nbsp;&nbsp;await page.click('button:has-text("Accept"):first');<br>
+<br>
+&nbsp;&nbsp;// Verify mapping saved<br>
+&nbsp;&nbsp;await expect(page.locator('text=✅ Mapped')).toBeVisible();<br>
+});
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🤖 Step 2: Add E2E Tests to CI</h2>
+            <p><strong>File:</strong> <code>.github/workflows/ci.yml</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+- name: Run E2E Tests<br>
+&nbsp;&nbsp;run: |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;npx playwright test<br>
+- name: Upload test results<br>
+&nbsp;&nbsp;if: failure()<br>
+&nbsp;&nbsp;uses: actions/upload-artifact@v3<br>
+&nbsp;&nbsp;with:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;name: playwright-report<br>
+&nbsp;&nbsp;&nbsp;&nbsp;path: playwright-report/
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🔀 Step 3: Open Pull Request</h2>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+git add .<br>
+git commit -m "feat: integration and E2E tests with Playwright"<br>
+git push origin dev3-week3<br>
+gh pr create --title "Week 3: Testing Suite" --body "Implements supertest integration tests, Playwright E2E, test database"
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🎯 End of Day Checklist</h2>
+            <ul style="list-style:none;padding-left:0;">
+                <li>☐ Mapping wizard E2E test passes</li>
+                <li>☐ CI runs E2E tests automatically</li>
+                <li>☐ Test execution documented</li>
+                <li>☐ PR opened with test coverage report</li>
+            </ul>
         </div>
         <div class="nav-buttons"><a href="dev3-day14.html" class="nav-btn back">← Back to Day 14</a><a href="dev3-day16.html" class="nav-btn next">Next: Day 16 →</a></div>
     </div>

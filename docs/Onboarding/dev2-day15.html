@@ -20,18 +20,60 @@ git pull origin main
             </div>
             <p>This ensures you have the latest code from your teammates. Always pull before starting work!</p>
         </div>
-<div class="step-card">
-            <h2>Objective</h2>
-            <p>Test mapping UI interactions, drag-drop, bulk operations, and open PR.</p>
-        </div>
         <div class="step-card">
-            <h2>Tasks</h2>
-            <ol>
-                <li>Write component tests for mapping table</li>
-                <li>Manual test all mapping flows (AI suggest, drag-drop, bulk)</li>
-                <li>Update UI documentation and screenshots</li>
-                <li>Open PR and request review</li>
-            </ol>
+            <h2>📋 Objective</h2>
+            <p>Write component tests for mapping UI, test all flows, and create Week 3 PR.</p>
+        </div>
+
+        <div class="step-card">
+            <h2>🧪 Step 1: Write Component Tests</h2>
+            <p><strong>File:</strong> <code>frontend/src/components/__tests__/MappingTable.test.tsx</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+import { render, screen, fireEvent } from '@testing-library/react';<br>
+import { MappingTable } from '../MappingTable';<br>
+<br>
+test('renders mapping table with 70+ fields', () => {<br>
+&nbsp;&nbsp;render(&lt;MappingTable /&gt;);<br>
+&nbsp;&nbsp;expect(screen.getAllByRole('row').length).toBeGreaterThan(70);<br>
+});<br>
+<br>
+test('AI suggestions button fetches suggestions', async () => {<br>
+&nbsp;&nbsp;render(&lt;MappingTable /&gt;);<br>
+&nbsp;&nbsp;fireEvent.click(screen.getByText('Get AI Suggestions'));<br>
+&nbsp;&nbsp;expect(await screen.findByText(/confidence/i)).toBeInTheDocument();<br>
+});
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>✅ Step 2: Manual Testing Checklist</h2>
+            <ul style="list-style:none;padding-left:0;">
+                <li>☐ Search/filter fields works</li>
+                <li>☐ Drag-drop updates mappings</li>
+                <li>☐ AI suggestions display correctly</li>
+                <li>☐ Accept all bulk operation works</li>
+                <li>☐ Export JSON downloads file</li>
+            </ul>
+        </div>
+
+        <div class="step-card">
+            <h2>🔀 Step 3: Open Pull Request</h2>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+git add .<br>
+git commit -m "feat: field mapping UI with AI suggestions and drag-drop"<br>
+git push origin dev2-week3<br>
+gh pr create --title "Week 3: Mapping UI" --body "Implements mapping table, AI suggestions, drag-drop, bulk operations"
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🎯 End of Day Checklist</h2>
+            <ul style="list-style:none;padding-left:0;">
+                <li>☐ Component tests pass</li>
+                <li>☐ Manual testing complete</li>
+                <li>☐ Screenshots added to PR</li>
+                <li>☐ PR opened and reviewers assigned</li>
+            </ul>
         </div>
         <div class="nav-buttons"><a href="dev2-day14.html" class="nav-btn back">← Back to Day 14</a><a href="dev2-day16.html" class="nav-btn next">Next: Day 16 →</a></div>
     </div>
