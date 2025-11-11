@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+<<<<<<< HEAD
     /* File Layout */
     "rootDir": "./src",
     "outDir": "./dist",
@@ -29,5 +30,22 @@
     "forceConsistentCasingInFileNames": true
   },
   "include": ["src/**/*"],
+=======
+    "target": "ES2020",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "rootDir": "src",
+    "outDir": "dist",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "sourceMap": true,
+    "verbatimModuleSyntax": false,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "include": ["src"],
+>>>>>>> de55bc3 (feat(backend): add schema analysis API endpoint with jsforce integration)
   "exclude": ["node_modules", "dist"]
 }
