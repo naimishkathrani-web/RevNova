@@ -15,18 +15,157 @@
         </div>
 
         <div class="step-card">
-            <h2>Objective</h2>
-            <p>Enhance the schema API to include type normalization, sample values, and column statistics.</p>
+            <h2>📋 Objective</h2>
+            <p>Enhance the schema analysis API to fetch detailed field metadata, implement job status polling, and add Redis caching for performance.</p>
+            <p><strong>API Endpoints:</strong></p>
+            <ul>
+                <li><code>GET /api/v1/projects/{id}/analyze/{job_id}</code> - Poll job status</li>
+                <li><code>GET /api/v1/projects/{id}/analyze/summary</code> - Get analysis summary</li>
+            </ul>
         </div>
 
         <div class="step-card">
-            <h2>Tasks</h2>
-            <ol>
-                <li>Add type normalization (map vendor types to canonical types: string, number, boolean, datetime)</li>
-                <li>Query sample values (LIMIT 10) for each column to detect patterns</li>
-                <li>Include null/nonnull counts where feasible</li>
-                <li>Document the endpoint and update OpenAPI spec (if present)</li>
-            </ol>
+            <h2>📦 Step 1: Install Redis Client</h2>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+cd backend<br>
+npm install redis @types/redis
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🔧 Step 2: Create Redis Service</h2>
+            <p><strong>File:</strong> <code>backend/src/services/redis.service.ts</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+import { createClient } from 'redis';<br>
+<br>
+export class RedisService {<br>
+&nbsp;&nbsp;private client;<br>
+<br>
+&nbsp;&nbsp;async connect() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;this.client = createClient({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;url: process.env.REDIS_URL || 'redis://localhost:6379'<br>
+&nbsp;&nbsp;&nbsp;&nbsp;});<br>
+&nbsp;&nbsp;&nbsp;&nbsp;await this.client.connect();<br>
+&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;async set(key: string, value: any, expirySeconds = 3600) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;await this.client.set(key, JSON.stringify(value), { EX: expirySeconds });<br>
+&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;async get(key: string) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const data = await this.client.get(key);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return data ? JSON.parse(data) : null;<br>
+&nbsp;&nbsp;}<br>
+}
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🚀 Step 3: Implement Job Status Endpoint</h2>
+            <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
+            <p>Add this route to check analysis job status:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+router.get('/projects/:id/analyze/:jobId', async (req, res) => {<br>
+&nbsp;&nbsp;try {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const { id, jobId } = req.params;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Check job status in Redis<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const redisService = new RedisService();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;await redisService.connect();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const jobStatus = await redisService.get(`job:${jobId}`);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (!jobStatus) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return res.status(404).json({ error: 'Job not found' });<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;res.json(jobStatus);<br>
+&nbsp;&nbsp;} catch (error) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;res.status(500).json({ error: error.message });<br>
+&nbsp;&nbsp;}<br>
+});
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🔍 Step 4: Enhance Schema Discovery</h2>
+            <p>Update SalesforceService to get detailed field metadata including picklists, lookups, and field properties.</p>
+            <p><strong>File:</strong> <code>backend/src/services/salesforce.service.ts</code></p>
+            <p>Add this method:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+async getDetailedMetadata(conn: jsforce.Connection, objectName: string) {<br>
+&nbsp;&nbsp;const metadata = await this.describeObject(conn, objectName);<br>
+&nbsp;&nbsp;<br>
+&nbsp;&nbsp;return {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;name: metadata.name,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;label: metadata.label,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;custom: metadata.custom,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;fields: metadata.fields.map(field => ({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;name: field.name,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;label: field.label,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type: field.type,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;length: field.length,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;required: !field.nillable,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unique: field.unique,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;custom: field.custom,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;picklistValues: field.picklistValues || [],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;referenceTo: field.referenceTo || []<br>
+&nbsp;&nbsp;&nbsp;&nbsp;})),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;recordCount: 0 // Will query this later<br>
+&nbsp;&nbsp;};<br>
+}
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>📊 Step 5: Create Analysis Summary Endpoint</h2>
+            <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+router.get('/projects/:id/analyze/summary', async (req, res) => {<br>
+&nbsp;&nbsp;try {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const projectId = parseInt(req.params.id);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Query schema_analysis table for this project<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// TODO: Add actual DB query<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const summary = {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;total_objects: 3,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;custom_objects: 0,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;total_fields: 45,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;custom_fields: 12,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;readiness_score: 0.92,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;warnings: ['Custom field Product2.Special__c has no target mapping']<br>
+&nbsp;&nbsp;&nbsp;&nbsp;};<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;res.json(summary);<br>
+&nbsp;&nbsp;} catch (error) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;res.status(500).json({ error: error.message });<br>
+&nbsp;&nbsp;}<br>
+});
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>✅ Step 6: Test All Endpoints</h2>
+            <p><strong>Test job status:</strong></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+curl http://localhost:3000/api/v1/projects/1/analyze/job_1699632000000
+            </div>
+            <p><strong>Test summary:</strong></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+curl http://localhost:3000/api/v1/projects/1/analyze/summary
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🎯 End of Day Checklist</h2>
+            <ul style="list-style:none;padding-left:0;">
+                <li>☐ Redis client installed and connected</li>
+                <li>☐ Job status endpoint returns job progress</li>
+                <li>☐ Enhanced metadata includes picklists and lookups</li>
+                <li>☐ Summary endpoint aggregates analysis results</li>
+                <li>☐ All endpoints tested and working</li>
+                <li>☐ Code committed with tests</li>
+            </ul>
+            <p><strong>Commit Message:</strong> <code>feat(backend): add job polling, detailed metadata, and Redis caching</code></p>
         </div>
 
         <div class="nav-buttons">

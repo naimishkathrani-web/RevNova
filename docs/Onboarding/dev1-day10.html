@@ -15,18 +15,99 @@
         </div>
 
         <div class="step-card">
-            <h2>Objective</h2>
-            <p>Write tests, polish the APIs, and open a PR for week 2 work.</p>
+            <h2>📋 Objective</h2>
+            <p>Write unit and integration tests for Week 2 schema analysis APIs, update documentation, and open a PR for code review.</p>
         </div>
 
         <div class="step-card">
-            <h2>Tasks</h2>
-            <ol>
-                <li>Add unit tests for schema API and catalog updater</li>
-                <li>Run integration test against local Postgres (use test DB)</li>
-                <li>Update README and API docs</li>
-                <li>Open PR against main branch, add reviewers, and request merge</li>
-            </ol>
+            <h2>🧪 Step 1: Install Testing Dependencies</h2>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+cd backend<br>
+npm install --save-dev jest ts-jest @types/jest supertest @types/supertest
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>✅ Step 2: Write Unit Tests for Services</h2>
+            <p><strong>File:</strong> <code>backend/src/services/__tests__/salesforce.service.test.ts</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+import { SalesforceService } from '../salesforce.service';<br>
+<br>
+describe('SalesforceService', () => {<br>
+&nbsp;&nbsp;it('should connect with valid credentials', async () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const service = new SalesforceService();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const result = await service.connect('user', 'pass', 'token');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;expect(result.success).toBe(true);<br>
+&nbsp;&nbsp;});<br>
+<br>
+&nbsp;&nbsp;it('should describe object metadata', async () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const service = new SalesforceService();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const metadata = await service.describeObject('Account');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;expect(metadata.fields).toBeDefined();<br>
+&nbsp;&nbsp;});<br>
+});
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🧪 Step 3: Write Integration Tests for Endpoints</h2>
+            <p><strong>File:</strong> <code>backend/src/routes/__tests__/analyze.test.ts</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+import request from 'supertest';<br>
+import app from '../../app';<br>
+<br>
+describe('POST /projects/:id/analyze', () => {<br>
+&nbsp;&nbsp;it('should queue schema analysis job', async () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const res = await request(app)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.post('/api/v1/projects/1/analyze')<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.send({ objects: ['Account'] });<br>
+&nbsp;&nbsp;&nbsp;&nbsp;expect(res.status).toBe(202);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;expect(res.body.jobId).toBeDefined();<br>
+&nbsp;&nbsp;});<br>
+});
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>📝 Step 4: Update API Documentation</h2>
+            <p><strong>File:</strong> <code>backend/docs/api.md</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+## Schema Analysis Endpoints<br>
+<br>
+### POST /api/v1/projects/:id/analyze<br>
+Analyze Salesforce objects and extract metadata.<br>
+<br>
+**Request:**<br>
+```json<br>
+{ "objects": ["Account", "Contact"] }<br>
+```<br>
+<br>
+**Response:**<br>
+```json<br>
+{ "jobId": "abc123", "status": "queued" }<br>
+```
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🔀 Step 5: Open Pull Request</h2>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+git add .<br>
+git commit -m "feat: schema analysis API with catalog and relationships"<br>
+git push origin dev1-week2<br>
+gh pr create --title "Week 2: Schema Analysis API" --body "Implements schema discovery, catalog search, and relationship detection"
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🎯 End of Day Checklist</h2>
+            <ul style="list-style:none;padding-left:0;">
+                <li>☐ Jest configured with ts-jest</li>
+                <li>☐ Unit tests written for SalesforceService</li>
+                <li>☐ Integration tests for /analyze endpoints</li>
+                <li>☐ API documentation updated</li>
+                <li>☐ PR opened and reviewers assigned</li>
+            </ul>
         </div>
 
         <div class="nav-buttons">

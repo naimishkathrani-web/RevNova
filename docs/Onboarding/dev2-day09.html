@@ -20,21 +20,68 @@ git pull origin main
             </div>
             <p>This ensures you have the latest code from your teammates. Always pull before starting work!</p>
         </div>
-<div class="step-card">
-            <h2>Objective</h2>
-            <p>Improve resilience of the connection wizard: retries, graceful failures, and logging.</p>
+        <div class="step-card">
+            <h2>📋 Objective</h2>
+            <p>Add robust error handling with retry logic, telemetry tracking, and secure logging (no token exposure).</p>
         </div>
 
         <div class="step-card">
-            <h2>Tasks</h2>
-            <ol>
-                <li>Show retry option for transient failures</li>
-                <li>Add telemetry events for connection attempts</li>
-                <li>Ensure sensitive tokens are never printed to UI logs</li>
-            </ol>
+            <h2>🔄 Step 1: Implement Retry Logic</h2>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+const [retryCount, setRetryCount] = useState(0);<br>
+<br>
+const testWithRetry = async () => {<br>
+&nbsp;&nbsp;try {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const res = await fetch('/api/v1/connections/test', { method: 'POST', body: JSON.stringify(credentials) });<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (!res.ok && retryCount < 3) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setRetryCount(retryCount + 1);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setTimeout(testWithRetry, 2000);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;} catch (err) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;console.error('Connection failed:', err.message);<br>
+&nbsp;&nbsp;}<br>
+};
+            </div>
         </div>
 
-        <div class="nav-buttons"><a href="dev2-day08.html" class="nav-btn back">← Back to Day 8</a><a href="dev2-day10.html" class="nav-btn next">Next: Day 10 →</a></div>
+        <div class="step-card">
+            <h2>📊 Step 2: Add Telemetry Events</h2>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+const trackEvent = (eventName: string, metadata: any) => {<br>
+&nbsp;&nbsp;fetch('/api/v1/telemetry', {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;method: 'POST',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;body: JSON.stringify({ event: eventName, ...metadata })<br>
+&nbsp;&nbsp;});<br>
+};<br>
+<br>
+trackEvent('connection_test_started', { provider: 'salesforce' });<br>
+trackEvent('connection_test_success', { duration: 1200 });
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🔒 Step 3: Secure Logging (Redact Tokens)</h2>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+const sanitizeLog = (data: any) => {<br>
+&nbsp;&nbsp;const sanitized = { ...data };<br>
+&nbsp;&nbsp;if (sanitized.password) sanitized.password = '***';<br>
+&nbsp;&nbsp;if (sanitized.securityToken) sanitized.securityToken = '***';<br>
+&nbsp;&nbsp;return sanitized;<br>
+};<br>
+<br>
+console.log('Testing connection:', sanitizeLog(credentials));
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🎯 End of Day Checklist</h2>
+            <ul style="list-style:none;padding-left:0;">
+                <li>☐ Retry logic added (max 3 retries with 2s delay)</li>
+                <li>☐ Telemetry events tracked for connection attempts</li>
+                <li>☐ Sensitive tokens never exposed in logs/console</li>
+                <li>☐ Code committed and pushed</li>
+            </ul>
+        </div>        <div class="nav-buttons"><a href="dev2-day08.html" class="nav-btn back">← Back to Day 8</a><a href="dev2-day10.html" class="nav-btn next">Next: Day 10 →</a></div>
     </div>
 </body>
 </html>

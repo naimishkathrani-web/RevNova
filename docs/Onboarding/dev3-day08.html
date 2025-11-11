@@ -20,11 +20,57 @@ git pull origin main
             </div>
             <p>This ensures you have the latest code from your teammates. Always pull before starting work!</p>
         </div>
-<div class="step-card"><h2>Objective</h2><p>Provide migration tooling and run initial migrations against local dev database.</p></div>
+        <div class="step-card">
+            <h2>📋 Objective</h2>
+            <p>Add database migration tooling (node-pg-migrate) and create initial migrations for schema setup.</p>
+        </div>
 
-        <div class="step-card"><h2>Tasks</h2><ol><li>Add migration tool (e.g., node-pg-migrate or knex)</li><li>Create seed migration to create catalog table</li><li>Document how to run migrations locally</li></ol></div>
+        <div class="step-card">
+            <h2>📦 Step 1: Install Migration Tool</h2>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+cd backend<br>
+npm install --save-dev node-pg-migrate
+            </div>
+            <p>Add to <code>package.json</code> scripts:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+"migrate": "node-pg-migrate up",<br>
+"migrate:create": "node-pg-migrate create"
+            </div>
+        </div>
 
-        <div class="nav-buttons"><a href="dev3-day07.html" class="nav-btn back">← Back to Day 7</a><a href="dev3-day09.html" class="nav-btn next">Next: Day 9 →</a></div>
+        <div class="step-card">
+            <h2>🗄️ Step 2: Run Existing Migrations</h2>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+npm run migrate
+            </div>
+            <p><strong>Expected:</strong> All tables created (projects, connections, schema_analysis, schema_catalog, object_relationships)</p>
+        </div>
+
+        <div class="step-card">
+            <h2>🌱 Step 3: Create Seed Data Script</h2>
+            <p><strong>File:</strong> <code>backend/scripts/seed.ts</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+import { Pool } from 'pg';<br>
+<br>
+const db = new Pool({ connectionString: process.env.DATABASE_URL });<br>
+<br>
+await db.query(`INSERT INTO projects (name, status) VALUES ('Demo Project', 'active')`);<br>
+await db.query(`INSERT INTO connections (project_id, provider, username) VALUES (1, 'salesforce', 'test@example.com')`);<br>
+<br>
+console.log('Seed data created');
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🎯 End of Day Checklist</h2>
+            <ul style="list-style:none;padding-left:0;">
+                <li>☐ node-pg-migrate installed and configured</li>
+                <li>☐ All migrations run successfully</li>
+                <li>☐ Seed data script created</li>
+                <li>☐ Migration process documented in README</li>
+                <li>☐ Code committed and pushed</li>
+            </ul>
+        </div>        <div class="nav-buttons"><a href="dev3-day07.html" class="nav-btn back">← Back to Day 7</a><a href="dev3-day09.html" class="nav-btn next">Next: Day 9 →</a></div>
     </div>
 </body>
 </html>

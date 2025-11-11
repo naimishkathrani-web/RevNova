@@ -15,17 +15,91 @@
         </div>
 
         <div class="step-card">
-            <h2>Objective</h2>
-            <p>Detect foreign key relationships, primary keys, and candidate joins to help mapping suggestions.</p>
+            <h2>📋 Objective</h2>
+            <p>Detect and store object relationships (lookups, master-detail) to enable automatic FK constraint creation during data migration.</p>
         </div>
 
         <div class="step-card">
-            <h2>Tasks</h2>
-            <ol>
-                <li>Scan catalog for FK constraints and inferred joins via naming conventions</li>
-                <li>Provide confidence score for detected relationships</li>
-                <li>Add results to the catalog and expose via API</li>
-            </ol>
+            <h2>🔗 Step 1: Create Relationships Table</h2>
+            <p><strong>File:</strong> <code>backend/src/database/migrations/009_create_relationships.sql</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+CREATE TABLE object_relationships (<br>
+&nbsp;&nbsp;id SERIAL PRIMARY KEY,<br>
+&nbsp;&nbsp;project_id INTEGER REFERENCES projects(id),<br>
+&nbsp;&nbsp;source_object VARCHAR(255),<br>
+&nbsp;&nbsp;source_field VARCHAR(255),<br>
+&nbsp;&nbsp;target_object VARCHAR(255),<br>
+&nbsp;&nbsp;relationship_type VARCHAR(50), -- 'lookup', 'master-detail'<br>
+&nbsp;&nbsp;cascade_delete BOOLEAN DEFAULT false,<br>
+&nbsp;&nbsp;discovered_at TIMESTAMP DEFAULT NOW()<br>
+);
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🤖 Step 2: Detect Relationships from Metadata</h2>
+            <p><strong>File:</strong> <code>backend/src/services/relationship.service.ts</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+export class RelationshipService {<br>
+&nbsp;&nbsp;async detectRelationships(projectId: number, metadata: any) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const relationships = [];<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;for (const field of metadata.fields) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (field.type === 'reference' && field.referenceTo) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for (const target of field.referenceTo) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;relationships.push({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;projectId,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sourceObject: metadata.name,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sourceField: field.name,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;targetObject: target,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;relationshipType: field.relationshipType || 'lookup',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cascadeDelete: field.cascadeDelete || false<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return relationships;<br>
+&nbsp;&nbsp;}<br>
+}
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>📊 Step 3: Create Relationship Graph Endpoint</h2>
+            <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+router.get('/projects/:id/relationships', async (req, res) => {<br>
+&nbsp;&nbsp;const { id } = req.params;<br>
+<br>
+&nbsp;&nbsp;const query = `<br>
+&nbsp;&nbsp;&nbsp;&nbsp;SELECT source_object, source_field, target_object, relationship_type<br>
+&nbsp;&nbsp;&nbsp;&nbsp;FROM object_relationships<br>
+&nbsp;&nbsp;&nbsp;&nbsp;WHERE project_id = $1<br>
+&nbsp;&nbsp;`;<br>
+<br>
+&nbsp;&nbsp;const result = await db.query(query, [id]);<br>
+&nbsp;&nbsp;res.json({ relationships: result.rows });<br>
+});
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>✅ Step 4: Test Relationship Detection</h2>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+curl http://localhost:3000/api/v1/projects/1/relationships
+            </div>
+            <p><strong>Expected:</strong> Returns detected relationships like Opportunity.AccountId → Account</p>
+        </div>
+
+        <div class="step-card">
+            <h2>🎯 End of Day Checklist</h2>
+            <ul style="list-style:none;padding-left:0;">
+                <li>☐ object_relationships table created</li>
+                <li>☐ RelationshipService detects lookup/master-detail fields</li>
+                <li>☐ GET /relationships endpoint returns FK graph</li>
+                <li>☐ Code committed and pushed</li>
+            </ul>
         </div>
 
         <div class="nav-buttons">

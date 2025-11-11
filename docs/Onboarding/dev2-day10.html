@@ -20,11 +20,61 @@ git pull origin main
             </div>
             <p>This ensures you have the latest code from your teammates. Always pull before starting work!</p>
         </div>
-<div class="step-card"><h2>Objective</h2><p>Test the connection UI, cross-browser checks, and create PR for week 2 work.</p></div>
+        <div class="step-card">
+            <h2>📋 Objective</h2>
+            <p>Write component tests for connection UI, perform cross-browser testing, and create Week 2 PR.</p>
+        </div>
 
-        <div class="step-card"><h2>Tasks</h2><ol><li>Run unit tests for new components</li><li>Manual test flows (create/test/save connection)</li><li>Document UI behavior and open PR</li></ol></div>
+        <div class="step-card">
+            <h2>🧪 Step 1: Write Component Tests with Vitest</h2>
+            <p><strong>File:</strong> <code>frontend/src/components/__tests__/ConnectionForm.test.tsx</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+import { render, screen, fireEvent } from '@testing-library/react';<br>
+import { ConnectionForm } from '../ConnectionForm';<br>
+<br>
+test('renders connection form', () => {<br>
+&nbsp;&nbsp;render(&lt;ConnectionForm /&gt;);<br>
+&nbsp;&nbsp;expect(screen.getByPlaceholderText('Connection Name')).toBeInTheDocument();<br>
+});<br>
+<br>
+test('validates required fields', async () => {<br>
+&nbsp;&nbsp;render(&lt;ConnectionForm /&gt;);<br>
+&nbsp;&nbsp;fireEvent.click(screen.getByText('Test Connection'));<br>
+&nbsp;&nbsp;expect(screen.getByText(/Please fill all required fields/)).toBeInTheDocument();<br>
+});
+            </div>
+        </div>
 
-        <div class="nav-buttons"><a href="dev2-day09.html" class="nav-btn back">← Back to Day 9</a><a href="dev2-week3.html" class="nav-btn next">Next: Week 3 →</a></div>
+        <div class="step-card">
+            <h2>🌐 Step 2: Cross-Browser Testing</h2>
+            <p>Test connection flow in:</p>
+            <ul>
+                <li>Chrome (latest)</li>
+                <li>Firefox (latest)</li>
+                <li>Safari (if available)</li>
+            </ul>
+            <p>Verify: Form validation, OAuth popup, error messages, success feedback</p>
+        </div>
+
+        <div class="step-card">
+            <h2>🔀 Step 3: Create Pull Request</h2>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+git add .<br>
+git commit -m "feat: connection wizard UI with OAuth and testing"<br>
+git push origin dev2-week2<br>
+gh pr create --title "Week 2: Connection Wizard UI" --body "Implements connection form, OAuth flow, error handling"
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🎯 End of Day Checklist</h2>
+            <ul style="list-style:none;padding-left:0;">
+                <li>☐ Component tests pass (Vitest)</li>
+                <li>☐ Cross-browser testing complete</li>
+                <li>☐ UI behavior documented</li>
+                <li>☐ PR opened with screenshots</li>
+            </ul>
+        </div>        <div class="nav-buttons"><a href="dev2-day09.html" class="nav-btn back">← Back to Day 9</a><a href="dev2-week3.html" class="nav-btn next">Next: Week 3 →</a></div>
     </div>
 </body>
 </html>

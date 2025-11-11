@@ -15,18 +15,106 @@
         </div>
 
         <div class="step-card">
-            <h2>Objective</h2>
-            <p>Persist schema metadata into a catalog table to support mapping UI and searches.</p>
+            <h2>📋 Objective</h2>
+            <p>Store discovered schema metadata in a searchable catalog table and build a search API for the frontend to query field names and properties.</p>
         </div>
 
         <div class="step-card">
-            <h2>Tasks</h2>
-            <ol>
-                <li>Create a catalog table (e.g., <code>schema_catalog</code>) with table/column metadata</li>
-                <li>Write an updater job that runs the schema API and writes results to the catalog</li>
-                <li>Add an index to speed up name lookups</li>
-                <li>Expose a simple search endpoint: <code>GET /api/catalog/search?q=account</code></li>
-            </ol>
+            <h2>🗄️ Step 1: Create Catalog Table</h2>
+            <p><strong>File:</strong> <code>backend/src/database/migrations/008_create_schema_catalog.sql</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+CREATE TABLE schema_catalog (<br>
+&nbsp;&nbsp;id SERIAL PRIMARY KEY,<br>
+&nbsp;&nbsp;project_id INTEGER REFERENCES projects(id),<br>
+&nbsp;&nbsp;object_name VARCHAR(255),<br>
+&nbsp;&nbsp;field_name VARCHAR(255),<br>
+&nbsp;&nbsp;field_label VARCHAR(255),<br>
+&nbsp;&nbsp;data_type VARCHAR(50),<br>
+&nbsp;&nbsp;is_custom BOOLEAN,<br>
+&nbsp;&nbsp;is_required BOOLEAN,<br>
+&nbsp;&nbsp;picklist_values JSONB,<br>
+&nbsp;&nbsp;indexed_at TIMESTAMP DEFAULT NOW()<br>
+);<br>
+<br>
+CREATE INDEX idx_catalog_search ON schema_catalog(project_id, field_name, field_label);
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>💾 Step 2: Create Catalog Updater Service</h2>
+            <p><strong>File:</strong> <code>backend/src/services/catalog.service.ts</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+import { Pool } from 'pg';<br>
+<br>
+export class CatalogService {<br>
+&nbsp;&nbsp;constructor(private db: Pool) {}<br>
+<br>
+&nbsp;&nbsp;async indexObject(projectId: number, metadata: any) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const values = [];<br>
+&nbsp;&nbsp;&nbsp;&nbsp;for (const field of metadata.fields) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;values.push([<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;projectId,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;metadata.name,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;field.name,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;field.label,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;field.type,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;field.custom,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;field.required,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;JSON.stringify(field.picklistValues || [])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const query = `INSERT INTO schema_catalog 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(project_id, object_name, field_name, field_label, data_type, is_custom, is_required, picklist_values)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VALUES ${values.map((_, i) => `($${i*8+1},$${i*8+2},$${i*8+3},$${i*8+4},$${i*8+5},$${i*8+6},$${i*8+7},$${i*8+8})`).join(',')}`;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;await this.db.query(query, values.flat());<br>
+&nbsp;&nbsp;}<br>
+}
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🔍 Step 3: Create Search Endpoint</h2>
+            <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+router.get('/projects/:id/catalog/search', async (req, res) => {<br>
+&nbsp;&nbsp;try {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const { id } = req.params;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const { q } = req.query;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const query = `<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SELECT * FROM schema_catalog<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WHERE project_id = $1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AND (field_name ILIKE $2 OR field_label ILIKE $2)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LIMIT 20<br>
+&nbsp;&nbsp;&nbsp;&nbsp;`;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const results = await db.query(query, [id, `%${q}%`]);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;res.json({ results: results.rows });<br>
+&nbsp;&nbsp;} catch (error) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;res.status(500).json({ error: error.message });<br>
+&nbsp;&nbsp;}<br>
+});
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>✅ Step 4: Test Catalog Indexing</h2>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+curl "http://localhost:3000/api/v1/projects/1/catalog/search?q=product"
+            </div>
+            <p><strong>Expected:</strong> Returns fields matching "product" (ProductCode, ProductName, etc.)</p>
+        </div>
+
+        <div class="step-card">
+            <h2>🎯 End of Day Checklist</h2>
+            <ul style="list-style:none;padding-left:0;">
+                <li>☐ schema_catalog table created with search index</li>
+                <li>☐ CatalogService indexes objects and fields</li>
+                <li>☐ Search endpoint returns matching fields</li>
+                <li>☐ Code committed and pushed</li>
+            </ul>
         </div>
 
         <div class="nav-buttons">

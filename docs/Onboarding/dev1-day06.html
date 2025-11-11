@@ -26,26 +26,150 @@ git pull origin main
         </div>
 
         <div class="step-card">
-            <h2>Objective</h2>
-            <p>Design and implement a basic schema analysis endpoint that accepts a connection and returns table/column metadata.</p>
+            <h2>📋 Objective</h2>
+            <p>Build the Schema Analysis API endpoint that discovers Salesforce objects and fields for migration planning. This API will query Salesforce using jsforce to return metadata about Product2, Pricebook2, and PricebookEntry objects.</p>
+            <p><strong>API Endpoint:</strong> <code>POST /api/v1/projects/{id}/analyze</code></p>
+            <p><strong>Expected Output:</strong> Job ID that triggers async schema discovery</p>
         </div>
 
         <div class="step-card">
-            <h2>Tasks</h2>
-            <ol>
-                <li>Create route: <code>GET /api/schema/:connectionId</code></li>
-                <li>Use existing DB client to query information_schema for tables and columns</li>
-                <li>Return JSON with tables, columns, types, and sample nullability</li>
-                <li>Add basic unit test for the route (mock DB client)</li>
-            </ol>
+            <h2>📦 Step 1: Install jsforce</h2>
+            <p>Install jsforce library for Salesforce API integration.</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+cd backend<br>
+npm install jsforce @types/jsforce
+            </div>
+            <p><strong>Verify:</strong> Check that jsforce appears in <code>backend/package.json</code> dependencies.</p>
         </div>
 
         <div class="step-card">
-            <h2>Resources</h2>
+            <h2>🔧 Step 2: Create Salesforce Service</h2>
+            <p>Create a service to handle Salesforce connections and API calls.</p>
+            <p><strong>File:</strong> <code>backend/src/services/salesforce.service.ts</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+import jsforce from 'jsforce';<br>
+<br>
+export interface SalesforceConnection {<br>
+&nbsp;&nbsp;instanceUrl: string;<br>
+&nbsp;&nbsp;accessToken: string;<br>
+&nbsp;&nbsp;apiVersion?: string;<br>
+}<br>
+<br>
+export class SalesforceService {<br>
+&nbsp;&nbsp;async connect(config: SalesforceConnection): Promise&lt;jsforce.Connection&gt; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const conn = new jsforce.Connection({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;instanceUrl: config.instanceUrl,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;accessToken: config.accessToken,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;version: config.apiVersion || '58.0'<br>
+&nbsp;&nbsp;&nbsp;&nbsp;});<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return conn;<br>
+&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;async describeObject(conn: jsforce.Connection, objectName: string) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return await conn.sobject(objectName).describe();<br>
+&nbsp;&nbsp;}<br>
+}
+            </div>
+            <p><strong>Test:</strong> Create the file and verify it compiles with <code>npm run build</code></p>
+        </div>
+
+        <div class="step-card">
+            <h2>🗄️ Step 3: Create Database Table for Schema Analysis</h2>
+            <p>Create migration for storing schema analysis results.</p>
+            <p><strong>File:</strong> <code>backend/src/database/migrations/007_create_schema_analysis.sql</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+CREATE TABLE schema_analysis (<br>
+&nbsp;&nbsp;id SERIAL PRIMARY KEY,<br>
+&nbsp;&nbsp;project_id INTEGER REFERENCES projects(id),<br>
+&nbsp;&nbsp;object_name VARCHAR(255) NOT NULL,<br>
+&nbsp;&nbsp;object_label VARCHAR(255),<br>
+&nbsp;&nbsp;is_custom BOOLEAN DEFAULT FALSE,<br>
+&nbsp;&nbsp;fields JSONB,<br>
+&nbsp;&nbsp;analyzed_at TIMESTAMP DEFAULT NOW()<br>
+);
+            </div>
+            <p><strong>Run Migration:</strong> Add script to run migrations and execute it.</p>
+        </div>
+
+        <div class="step-card">
+            <h2>🚀 Step 4: Create Analyze Route</h2>
+            <p>Create the POST endpoint for triggering schema analysis.</p>
+            <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+import { Router } from 'express';<br>
+import { SalesforceService } from '../services/salesforce.service';<br>
+<br>
+const router = Router();<br>
+const sfService = new SalesforceService();<br>
+<br>
+router.post('/projects/:id/analyze', async (req, res) => {<br>
+&nbsp;&nbsp;try {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const projectId = req.params.id;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const objects = req.body.objects || ['Product2', 'Pricebook2', 'PricebookEntry'];<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// TODO: Get connection from DB using projectId<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// For now, return job ID<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const jobId = `job_${Date.now()}`;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;res.json({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;job_id: jobId,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;status: 'queued',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;objects: objects<br>
+&nbsp;&nbsp;&nbsp;&nbsp;});<br>
+&nbsp;&nbsp;} catch (error) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;res.status(500).json({ error: error.message });<br>
+&nbsp;&nbsp;}<br>
+});<br>
+<br>
+export default router;
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🔗 Step 5: Register Route in Main App</h2>
+            <p>Wire up the analyze route in your Express app.</p>
+            <p><strong>File:</strong> <code>backend/src/index.ts</code></p>
+            <p>Add this import and route:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+import analyzeRoutes from './routes/analyze.routes';<br>
+app.use('/api/v1', analyzeRoutes);
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>✅ Step 6: Test the Endpoint</h2>
+            <p>Test your new endpoint using Thunder Client or curl.</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+curl -X POST http://localhost:3000/api/v1/projects/1/analyze \<br>
+&nbsp;&nbsp;-H "Content-Type: application/json" \<br>
+&nbsp;&nbsp;-d '{"objects": ["Product2"]}'
+            </div>
+            <p><strong>Expected Response:</strong></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+{"job_id":"job_1699632000000","status":"queued","objects":["Product2"]}
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🎯 End of Day Checklist</h2>
+            <ul style="list-style:none;padding-left:0;">
+                <li>☐ jsforce installed and types available</li>
+                <li>☐ SalesforceService class created with connect() and describeObject()</li>
+                <li>☐ schema_analysis table created in PostgreSQL</li>
+                <li>☐ POST /api/v1/projects/:id/analyze endpoint working</li>
+                <li>☐ Endpoint returns job_id and status</li>
+                <li>☐ Code committed and pushed to GitHub</li>
+            </ul>
+            <p><strong>Commit Message:</strong> <code>feat(backend): add schema analysis API endpoint with jsforce integration</code></p>
+        </div>
+
+        <div class="step-card">
+            <h2>📚 Resources</h2>
             <ul>
-                <li>Postgres information_schema docs</li>
-                <li>Existing DB client in <code>backend/src/lib/db</code> (if present)</li>
-                <li>Team Slack for questions</li>
+                <li><a href="https://jsforce.github.io/" target="_blank">jsforce Documentation</a></li>
+                <li><a href="https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/dome_describeGlobal.htm" target="_blank">Salesforce REST API - Describe</a></li>
+                <li>Requirements: <code>docs/RevNovaRequirements/requirements-phase1-analyze.html</code></li>
+                <li>Technical Spec: <code>docs/RevNovaRequirements/requirements-phase1-technical.html</code></li>
             </ul>
         </div>
 

@@ -11,9 +11,82 @@
     <div class="main-content">
         <div class="day-header"><h1>Day 6: Docker Compose Setup</h1><p>Developer 3 — DevOps & QA</p></div>
 
-        <div class="step-card"><h2>Objective</h2><p>Create a Docker Compose dev environment with backend, frontend, Postgres, and Redis.</p></div>
+        <div class="step-card">
+            <h2>📋 Objective</h2>
+            <p>Create Docker Compose configuration for local development with backend, frontend, PostgreSQL, and Redis services.</p>
+        </div>
 
-        <div class="step-card"><h2>Tasks</h2><ol><li>Add docker-compose.yml with services</li><li>Ensure volumes and ports are configured for dev usage</li><li>Document how to run compose up and access services</li></ol></div>
+        <div class="step-card">
+            <h2>🐳 Step 1: Create docker-compose.yml</h2>
+            <p><strong>File:</strong> <code>docker-compose.yml</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+version: '3.8'<br>
+<br>
+services:<br>
+&nbsp;&nbsp;postgres:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;image: postgres:16<br>
+&nbsp;&nbsp;&nbsp;&nbsp;environment:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;POSTGRES_USER: revnova<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;POSTGRES_PASSWORD: dev123<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;POSTGRES_DB: revnova_dev<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ports: ['5432:5432']<br>
+&nbsp;&nbsp;&nbsp;&nbsp;volumes: ['./data/postgres:/var/lib/postgresql/data']<br>
+<br>
+&nbsp;&nbsp;redis:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;image: redis:7<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ports: ['6379:6379']<br>
+<br>
+&nbsp;&nbsp;backend:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;build: ./backend<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ports: ['3000:3000']<br>
+&nbsp;&nbsp;&nbsp;&nbsp;depends_on: [postgres, redis]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;environment:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DATABASE_URL: postgres://revnova:dev123@postgres:5432/revnova_dev<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;REDIS_URL: redis://redis:6379<br>
+<br>
+&nbsp;&nbsp;frontend:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;build: ./frontend<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ports: ['5173:5173']
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>▶️ Step 2: Test Docker Compose</h2>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+docker-compose up -d<br>
+docker-compose ps
+            </div>
+            <p><strong>Expected:</strong> All services running (postgres, redis, backend, frontend)</p>
+        </div>
+
+        <div class="step-card">
+            <h2>📝 Step 3: Document Usage in README</h2>
+            <p>Add to <code>README.md</code>:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+## Local Development<br>
+<br>
+Start all services:<br>
+```<br>
+docker-compose up -d<br>
+```<br>
+<br>
+Access:<br>
+- Frontend: http://localhost:5173<br>
+- Backend API: http://localhost:3000<br>
+- PostgreSQL: localhost:5432
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🎯 End of Day Checklist</h2>
+            <ul style="list-style:none;padding-left:0;">
+                <li>☐ docker-compose.yml created with 4 services</li>
+                <li>☐ All services start successfully</li>
+                <li>☐ Volumes configured for data persistence</li>
+                <li>☐ README updated with usage instructions</li>
+                <li>☐ Code committed and pushed</li>
+            </ul>
+        </div>
 
         <div class="nav-buttons"><a href="dev3-day05.html" class="nav-btn back">← Back to Day 5</a><a href="dev3-day07.html" class="nav-btn next">Next: Day 7 →</a></div>
     </div>

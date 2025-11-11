@@ -20,11 +20,65 @@ git pull origin main
             </div>
             <p>This ensures you have the latest code from your teammates. Always pull before starting work!</p>
         </div>
-<div class="step-card"><h2>Objective</h2><p>Configure bull queue in dev, add simple worker, and prepare PR with environment documentation.</p></div>
+        <div class="step-card">
+            <h2>📋 Objective</h2>
+            <p>Configure Bull queue with Redis backend, create sample worker for async jobs, and open Week 2 PR.</p>
+        </div>
 
-        <div class="step-card"><h2>Tasks</h2><ol><li>Wire up Redis-backed queue and sample worker</li><li>Test job processing with sample tasks</li><li>Document runbook for local dev and open PR</li></ol></div>
+        <div class="step-card">
+            <h2>📦 Step 1: Install Bull and Setup Queue</h2>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+cd backend<br>
+npm install bull @types/bull
+            </div>
+            <p><strong>File:</strong> <code>backend/src/queues/schema-analysis.queue.ts</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+import Queue from 'bull';<br>
+<br>
+export const schemaQueue = new Queue('schema-analysis', process.env.REDIS_URL);<br>
+<br>
+schemaQueue.process(async (job) => {<br>
+&nbsp;&nbsp;console.log('Processing job:', job.data);<br>
+&nbsp;&nbsp;// Schema analysis logic here<br>
+&nbsp;&nbsp;return { status: 'completed' };<br>
+});
+            </div>
+        </div>
 
-        <div class="nav-buttons"><a href="dev3-day09.html" class="nav-btn back">← Back to Day 9</a><a href="dev3-week3.html" class="nav-btn next">Next: Week 3 →</a></div>
+        <div class="step-card">
+            <h2>🧪 Step 2: Test Job Processing</h2>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+// In API endpoint<br>
+const job = await schemaQueue.add({ projectId: 1, objects: ['Account'] });<br>
+console.log('Job queued:', job.id);
+            </div>
+            <p>Monitor queue with Bull Board (optional):</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+npm install bull-board<br>
+// Access at http://localhost:3000/admin/queues
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🔀 Step 3: Open Pull Request</h2>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+git add .<br>
+git commit -m "feat: Docker Compose, migrations, seed data, Bull queue"<br>
+git push origin dev3-week2<br>
+gh pr create --title "Week 2: Dev Environment Setup" --body "Implements Docker Compose, PostgreSQL/Redis, migrations, Bull queue"
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🎯 End of Day Checklist</h2>
+            <ul style="list-style:none;padding-left:0;">
+                <li>☐ Bull queue installed and configured</li>
+                <li>☐ Sample worker processes jobs</li>
+                <li>☐ Queue monitoring accessible (optional)</li>
+                <li>☐ Local dev runbook documented</li>
+                <li>☐ PR opened with full dev setup</li>
+            </ul>
+        </div>        <div class="nav-buttons"><a href="dev3-day09.html" class="nav-btn back">← Back to Day 9</a><a href="dev3-week3.html" class="nav-btn next">Next: Week 3 →</a></div>
     </div>
 </body>
 </html>
