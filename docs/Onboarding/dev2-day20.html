@@ -20,18 +20,227 @@ git pull origin main
             </div>
             <p>This ensures you have the latest code from your teammates. Always pull before starting work!</p>
         </div>
-<div class="step-card">
-            <h2>Objective</h2>
-            <p>Test transformation preview, validation UI, error handling, and open PR.</p>
+
+        <div class="step-card" style="background:#e0f2fe;border-left:4px solid #0284c7;">
+            <h2>🤖 Copy This Prompt for Your GitHub Copilot</h2>
+            <p><strong>Paste into Copilot Chat:</strong></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;max-height:400px;overflow-y:auto;">
+Day 20 - RevNova Frontend Developer<br><br>
+**PLATFORM:** Salesforce CPQ → Revenue Cloud migration SaaS. 7-step wizard with AI field mapping.<br>
+**TECH:** React 18, TypeScript, TailwindCSS, Vite, Vitest, @testing-library/react<br>
+**REQUIREMENTS:** docs/RevNovaRequirements/testing-plan.html, functional-requirements.html<br>
+**MVP:** Week 4/5 (Nov 30). ✅Weeks 1-3: Wizard complete. 🔄Week 4: Validation UI complete. Testing & PR today.<br><br>
+**CONTEXT:** Days 16-19 built transformation preview, DataTable, ValidationResults, ErrorDetailModal<br>
+**TODAY:** Write component tests, manual test wizard flow, document UI, open Week 4 PR<br><br>
+**TASKS:**<br>
+1. Write Vitest tests for ValidationResults component (mount, render summary cards, click "View Details")<br>
+2. Write tests for ErrorDetailModal (fetch details, display records, close button)<br>
+3. Write tests for DataTable (pagination, sorting, filtering)<br>
+4. Manual test wizard: Connection → Schema → Mapping → Validation → Preview<br>
+5. Document props/interfaces in JSDoc comments<br>
+6. Open PR: "feat(frontend): Week 4 - Validation UI and error handling"<br><br>
+**TEST PATTERN:** Mock fetch, fireEvent.click, expect toBeInTheDocument, waitFor async<br><br>
+**ACCEPTANCE:** 3 component test files pass. Wizard tested end-to-end. PR opened with description.<br><br>
+Guide me through writing Vitest component tests and opening Week 4 PR.
+            </div>
         </div>
+
         <div class="step-card">
-            <h2>Tasks</h2>
-            <ol>
-                <li>Write component tests for new UI components</li>
-                <li>Manual test full wizard flow (connection → mapping → validation → preview)</li>
-                <li>Test error scenarios and edge cases</li>
-                <li>Document UI components and open PR</li>
-            </ol>
+            <h2>📋 Objective</h2>
+            <p>Write component tests, manual test wizard, document UI, and open Week 4 PR.</p>
+        </div>
+
+        <div class="step-card">
+            <h2>🧪 Step 1: Write ValidationResults Component Tests</h2>
+            <p>Create <code>frontend/src/pages/__tests__/ValidationResults.test.tsx</code>:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';<br>
+import { vi } from 'vitest';<br>
+import ValidationResults from '../ValidationResults';<br><br>
+
+describe('ValidationResults', () => {<br>
+&nbsp;&nbsp;beforeEach(() => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;global.fetch = vi.fn();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sessionStorage.setItem('mappingId', 'test-mapping-123');<br>
+&nbsp;&nbsp;});<br><br>
+
+&nbsp;&nbsp;it('should display summary cards with correct counts', async () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(global.fetch as any).mockResolvedValue({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;json: async () => ({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;valid: false,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;issues: [<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ severity: 'critical', field: 'Price', message: 'Required field missing' },<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ severity: 'warning', field: 'Description', message: 'Exceeds 255 chars' }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;})<br>
+&nbsp;&nbsp;&nbsp;&nbsp;});<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;render(&lt;ValidationResults /&gt;);<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;await waitFor(() => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect(screen.getByText('1')).toBeInTheDocument(); // Critical count<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect(screen.getByText('1')).toBeInTheDocument(); // Warning count<br>
+&nbsp;&nbsp;&nbsp;&nbsp;});<br>
+&nbsp;&nbsp;});<br><br>
+
+&nbsp;&nbsp;it('should disable Start Migration button when critical errors exist', async () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(global.fetch as any).mockResolvedValue({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;json: async () => ({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;valid: false,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;issues: [{ severity: 'critical', field: 'Price', message: 'Required' }]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;})<br>
+&nbsp;&nbsp;&nbsp;&nbsp;});<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;render(&lt;ValidationResults /&gt;);<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;await waitFor(() => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const button = screen.getByText('Start Migration');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect(button).toBeDisabled();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;});<br>
+&nbsp;&nbsp;});<br><br>
+
+&nbsp;&nbsp;it('should open ErrorDetailModal when clicking View Details', async () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(global.fetch as any).mockResolvedValue({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;json: async () => ({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;valid: false,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;issues: [{ severity: 'error', field: 'Price', message: 'Invalid type' }]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;})<br>
+&nbsp;&nbsp;&nbsp;&nbsp;});<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;render(&lt;ValidationResults /&gt;);<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;await waitFor(() => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const button = screen.getByText('View Details');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fireEvent.click(button);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;});<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;expect(screen.getByText(/Error Details:/)).toBeInTheDocument();<br>
+&nbsp;&nbsp;});<br>
+});
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🧪 Step 2: Write ErrorDetailModal Tests</h2>
+            <p>Create <code>frontend/src/components/__tests__/ErrorDetailModal.test.tsx</code>:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';<br>
+import { vi } from 'vitest';<br>
+import ErrorDetailModal from '../ErrorDetailModal';<br><br>
+
+describe('ErrorDetailModal', () => {<br>
+&nbsp;&nbsp;it('should fetch and display affected records', async () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;global.fetch = vi.fn().mockResolvedValue({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;json: async () => ({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;field: 'Price',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;records: [<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ id: 'REC-001', value: 'invalid', error: 'Not a number' },<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ id: 'REC-002', value: 'abc', error: 'Not a number' }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;})<br>
+&nbsp;&nbsp;&nbsp;&nbsp;});<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;render(&lt;ErrorDetailModal field="Price" onClose={vi.fn()} /&gt;);<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;await waitFor(() => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect(screen.getByText('Error Details: Price')).toBeInTheDocument();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect(screen.getByText('REC-001')).toBeInTheDocument();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect(screen.getByText('Not a number')).toBeInTheDocument();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;});<br>
+&nbsp;&nbsp;});<br><br>
+
+&nbsp;&nbsp;it('should call onClose when clicking Close button', async () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const onClose = vi.fn();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;global.fetch = vi.fn().mockResolvedValue({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;json: async () => ({ field: 'Price', records: [] })<br>
+&nbsp;&nbsp;&nbsp;&nbsp;});<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;render(&lt;ErrorDetailModal field="Price" onClose={onClose} /&gt;);<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;await waitFor(() => screen.getByText('Close'));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;fireEvent.click(screen.getByText('Close'));<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;expect(onClose).toHaveBeenCalled();<br>
+&nbsp;&nbsp;});<br>
+});
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>📝 Step 3: Manual Test Wizard Flow</h2>
+            <p>Complete manual test checklist:</p>
+            <div style="background:#fffbea;border-left:4px solid #f59e0b;padding:1rem;border-radius:6px;margin:1rem 0;">
+<strong>Manual Test Checklist:</strong><br>
+□ Step 1: Connection - OAuth works, displays success message<br>
+□ Step 2: Schema Analysis - Shows CPQ objects (Product2, PricebookEntry)<br>
+□ Step 3: Mapping - Drag-drop works, AI suggestions appear<br>
+□ Step 4: Validation - Summary cards show counts, severity colors correct<br>
+□ Step 5: Error Details - Modal opens with affected records<br>
+□ Step 6: CSV Export - Downloads file with proper headers<br>
+□ Step 7: Preview - DataTable shows pagination (25/page), sorting works<br>
+□ Step 8: Migration Button - Disabled with critical errors, enabled without<br><br>
+
+<strong>Edge Cases:</strong><br>
+□ Test with empty validation (no errors)<br>
+□ Test with 100+ validation issues<br>
+□ Test modal with 50+ affected records<br>
+□ Test CSV export with special characters in messages
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>📄 Step 4: Open Week 4 Pull Request</h2>
+            <p>Create PR with comprehensive description:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+git add .<br>
+git commit -m "feat(frontend): Week 4 - Validation UI and error handling"<br>
+git push origin main<br><br>
+
+# Open PR on GitHub with title:<br>
+# "feat(frontend): Week 4 - Validation UI and error handling"<br><br>
+
+# PR Description:<br>
+## Week 4 Frontend Work (Days 16-20)<br><br>
+
+**Added Components:**<br>
+- ValidationResults: Display mapping validation issues grouped by severity<br>
+- ErrorDetailModal: Show affected records for specific fields<br>
+- DataTable: Pagination (25/page), sorting, column filtering<br>
+- TransformationPreview: Before/after comparison<br><br>
+
+**Features:**<br>
+- Summary cards with critical/error/warning/info counts<br>
+- Severity-based color coding (red/orange/yellow/blue)<br>
+- "View Details" modal with first 5 affected records<br>
+- CSV export functionality (Field, Severity, Message, Suggestion, Timestamp)<br>
+- Migration button disabled with critical errors<br><br>
+
+**Testing:**<br>
+- Vitest tests for ValidationResults, ErrorDetailModal, DataTable<br>
+- Manual wizard flow tested (connection → validation → preview)<br>
+- Edge cases tested (empty results, 100+ issues, special chars)<br><br>
+
+**API Integration:**<br>
+- GET /api/mappings/:id/validate<br>
+- GET /api/mappings/:id/issues/:field<br>
+- GET /api/transform/preview<br><br>
+
+**Closes:** #WEEK4-FRONTEND
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>✅ End of Day 20 & Week 4 Checklist</h2>
+            <ul>
+                <li>✅ ValidationResults.test.tsx: Tests summary cards, disabled button, modal trigger</li>
+                <li>✅ ErrorDetailModal.test.tsx: Tests record fetch, display, close handler</li>
+                <li>✅ DataTable.test.tsx: Tests pagination, sorting, filtering</li>
+                <li>✅ Manual wizard flow tested end-to-end (all 7 steps)</li>
+                <li>✅ Edge cases validated (empty, large datasets, special characters)</li>
+                <li>✅ UI components documented with JSDoc comments</li>
+                <li>✅ Week 4 PR opened: "feat(frontend): Week 4 - Validation UI and error handling"</li>
+                <li>✅ <strong>Week 4 Complete! 🎉</strong></li>
+            </ul>
         </div>
         <div class="nav-buttons"><a href="dev2-day19.html" class="nav-btn back">← Back to Day 19</a><a href="dev2-day21.html" class="nav-btn next">Next: Day 21 →</a></div>
     </div>

@@ -20,18 +20,210 @@ git pull origin main
             </div>
             <p>This ensures you have the latest code from your teammates. Always pull before starting work!</p>
         </div>
-<div class="step-card">
-            <h2>Objective</h2>
-            <p>Add health check endpoints and monitoring to verify deployment success.</p>
+
+        <div class="step-card" style="background:#e0f2fe;border-left:4px solid #0284c7;">
+            <h2>🤖 Copy This Prompt for Your GitHub Copilot</h2>
+            <p><strong>Paste into Copilot Chat:</strong></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;max-height:400px;overflow-y:auto;">
+Day 18 - RevNova DevOps & QA Developer<br><br>
+**PLATFORM:** Salesforce CPQ → Revenue Cloud migration SaaS. 7-step wizard with AI field mapping.<br>
+**TECH:** Node.js 20, Express, PostgreSQL 16, Redis 7, Docker, GitHub Actions<br>
+**REQUIREMENTS:** docs/RevNovaRequirements/deployment-guide.html, technical-specifications.html<br>
+**MVP:** Week 4/5 (Nov 30). ✅Weeks 1-3: Tests, CI/CD. 🔄Week 4 Days 16-17: Deploy workflow, secrets.<br><br>
+**CONTEXT:** Days 16-17 built deploy workflow (test→build→deploy) and secrets management<br>
+**TODAY:** Add health check endpoints to verify deployment success and system status<br><br>
+**TASKS:**<br>
+1. Add GET /health endpoint in Express backend (status, timestamp, uptime)<br>
+2. Add GET /health/db endpoint to check PostgreSQL connection<br>
+3. Add GET /health/redis endpoint to check Redis connection<br>
+4. Update deploy workflow to run health checks after deployment<br>
+5. Configure smoke tests to verify all endpoints return 200<br>
+6. Document health check URLs and expected responses<br><br>
+**RESPONSE FORMAT:** { status: 'ok'|'error', service: 'backend'|'db'|'redis', timestamp, details }<br><br>
+**ACCEPTANCE:** All 3 health endpoints return 200. Deploy workflow validates health after deployment.<br><br>
+Guide me through implementing health check endpoints and smoke tests.
+            </div>
         </div>
+
         <div class="step-card">
-            <h2>Tasks</h2>
-            <ol>
-                <li>Add GET /health endpoint to backend (check DB, Redis)</li>
-                <li>Configure health check in deployment workflow</li>
-                <li>Set up uptime monitoring (optional: UptimeRobot, Pingdom)</li>
-                <li>Add alerting for failed health checks</li>
-            </ol>
+            <h2>📋 Objective</h2>
+            <p>Add health check endpoints and deployment verification.</p>
+        </div>
+
+        <div class="step-card">
+            <h2>🏥 Step 1: Create Health Check Routes</h2>
+            <p>Create <code>backend/src/routes/health.ts</code>:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+import { Router } from 'express';<br>
+import { pool } from '../db/connection';<br>
+import { redisClient } from '../cache/redis';<br><br>
+
+const router = Router();<br><br>
+
+// Basic health check<br>
+router.get('/health', (req, res) => {<br>
+&nbsp;&nbsp;res.json({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;status: 'ok',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;service: 'backend',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;timestamp: new Date().toISOString(),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;uptime: process.uptime()<br>
+&nbsp;&nbsp;});<br>
+});<br><br>
+
+// Database health check<br>
+router.get('/health/db', async (req, res) => {<br>
+&nbsp;&nbsp;try {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const result = await pool.query('SELECT 1');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;res.json({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;status: 'ok',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;service: 'database',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;timestamp: new Date().toISOString(),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;details: { connected: true }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;});<br>
+&nbsp;&nbsp;} catch (error: any) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;res.status(503).json({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;status: 'error',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;service: 'database',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;timestamp: new Date().toISOString(),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;details: { error: error.message }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;});<br>
+&nbsp;&nbsp;}<br>
+});<br><br>
+
+// Redis health check<br>
+router.get('/health/redis', async (req, res) => {<br>
+&nbsp;&nbsp;try {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;await redisClient.ping();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;res.json({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;status: 'ok',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;service: 'redis',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;timestamp: new Date().toISOString(),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;details: { connected: true }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;});<br>
+&nbsp;&nbsp;} catch (error: any) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;res.status(503).json({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;status: 'error',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;service: 'redis',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;timestamp: new Date().toISOString(),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;details: { error: error.message }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;});<br>
+&nbsp;&nbsp;}<br>
+});<br><br>
+
+export default router;
+            </div>
+            <p>Register routes in <code>backend/src/server.ts</code>:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+import healthRoutes from './routes/health';<br>
+app.use('/', healthRoutes);
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🧪 Step 2: Add Health Check Tests</h2>
+            <p>Create <code>backend/src/routes/__tests__/health.test.ts</code>:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+import request from 'supertest';<br>
+import app from '../../server';<br><br>
+
+describe('Health Check Endpoints', () => {<br>
+&nbsp;&nbsp;it('GET /health should return ok status', async () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const res = await request(app).get('/health');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;expect(res.status).toBe(200);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;expect(res.body.status).toBe('ok');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;expect(res.body.service).toBe('backend');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;expect(res.body).toHaveProperty('uptime');<br>
+&nbsp;&nbsp;});<br><br>
+
+&nbsp;&nbsp;it('GET /health/db should check database connection', async () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const res = await request(app).get('/health/db');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;expect(res.status).toBe(200);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;expect(res.body.status).toBe('ok');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;expect(res.body.service).toBe('database');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;expect(res.body.details.connected).toBe(true);<br>
+&nbsp;&nbsp;});<br><br>
+
+&nbsp;&nbsp;it('GET /health/redis should check Redis connection', async () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const res = await request(app).get('/health/redis');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;expect(res.status).toBe(200);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;expect(res.body.status).toBe('ok');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;expect(res.body.service).toBe('redis');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;expect(res.body.details.connected).toBe(true);<br>
+&nbsp;&nbsp;});<br>
+});
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🚀 Step 3: Update Deploy Workflow with Health Checks</h2>
+            <p>Add smoke tests to <code>.github/workflows/deploy.yml</code>:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+&nbsp;&nbsp;deploy:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;needs: build<br>
+&nbsp;&nbsp;&nbsp;&nbsp;runs-on: ubuntu-latest<br>
+&nbsp;&nbsp;&nbsp;&nbsp;steps:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- name: Deploy to server<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;run: |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"cd /app && docker-compose pull && docker-compose up -d"<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- name: Wait for services to start<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;run: sleep 30<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- name: Run health checks<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;run: |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;curl -f http://${{ secrets.SSH_HOST }}/health || exit 1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;curl -f http://${{ secrets.SSH_HOST }}/health/db || exit 1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;curl -f http://${{ secrets.SSH_HOST }}/health/redis || exit 1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo "✅ All health checks passed"
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>📋 Step 4: Document Health Endpoints</h2>
+            <p>Create <code>docs/health-checks.md</code>:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+# Health Check Endpoints<br><br>
+
+## GET /health<br>
+Basic backend health check<br><br>
+
+**Response 200:**<br>
+```json<br>
+{<br>
+&nbsp;&nbsp;"status": "ok",<br>
+&nbsp;&nbsp;"service": "backend",<br>
+&nbsp;&nbsp;"timestamp": "2025-11-13T10:30:00Z",<br>
+&nbsp;&nbsp;"uptime": 3600<br>
+}<br>
+```<br><br>
+
+## GET /health/db<br>
+PostgreSQL connection check<br><br>
+
+**Response 200:** { "status": "ok", "service": "database" }<br>
+**Response 503:** { "status": "error", "details": { "error": "..." } }<br><br>
+
+## GET /health/redis<br>
+Redis connection check<br><br>
+
+**Response 200:** { "status": "ok", "service": "redis" }<br>
+**Response 503:** { "status": "error", "details": { "error": "..." } }
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>✅ End of Day 18 Checklist</h2>
+            <ul>
+                <li>✅ GET /health endpoint returns backend status with uptime</li>
+                <li>✅ GET /health/db endpoint validates PostgreSQL connection</li>
+                <li>✅ GET /health/redis endpoint validates Redis connection</li>
+                <li>✅ Health check tests pass (supertest integration tests)</li>
+                <li>✅ Deploy workflow runs health checks after deployment</li>
+                <li>✅ Workflow fails if any health check returns non-200</li>
+                <li>✅ Health endpoints documented with expected responses</li>
+                <li>✅ Committed: <code>feat(backend): add health check endpoints for deployment verification</code></li>
+            </ul>
         </div>
         <div class="nav-buttons"><a href="dev3-day17.html" class="nav-btn back">← Back to Day 17</a><a href="dev3-day19.html" class="nav-btn next">Next: Day 19 →</a></div>
     </div>
