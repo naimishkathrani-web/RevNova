@@ -20,18 +20,293 @@ git pull origin main
             </div>
             <p>This ensures you have the latest code from your teammates. Always pull before starting work!</p>
         </div>
-<div class="step-card">
-            <h2>Objective</h2>
-            <p>Test transformation API, queue processing, and ETL worker end-to-end.</p>
+
+        <div class="step-card" style="background:#e0f2fe;border-left:4px solid #0284c7;">
+            <h2>🤖 Copy This Prompt for Your GitHub Copilot</h2>
+            <p><strong>Click the code block below, copy all text, and paste into GitHub Copilot Chat to get step-by-step guidance:</strong></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;max-height:400px;overflow-y:auto;">
+I'm working on Day 20 of the RevNova migration platform - Backend Developer track.<br><br>
+
+**🎯 REVNOVA PLATFORM OVERVIEW:**<br>
+RevNova is a SaaS platform that automates Salesforce CPQ → Revenue Cloud migrations. It's a 7-step wizard that connects to Salesforce orgs, analyzes schemas, generates AI-powered field mappings (OpenAI GPT-4), and executes async ETL jobs to migrate data.<br><br>
+
+**Tech Stack:** Node.js 20, Express, TypeScript, PostgreSQL 16, Redis 7, Bull queue, jsforce, OpenAI GPT-4 API<br><br>
+
+**📚 DETAILED REQUIREMENTS:**<br>
+Review these docs before starting:<br>
+- docs/RevNovaRequirements/functional-requirements.html (API endpoints, user flows)<br>
+- docs/RevNovaRequirements/technical-specifications.html (architecture, database schema)<br>
+- docs/RevNovaRequirements/testing-strategy.html (unit/integration/E2E test patterns)<br><br>
+
+**🏗️ MVP MILESTONE STATUS:**<br>
+Week 4 completion day (target: Nov 30, 2025 - 19 days remaining). Testing and PR for transformation + ETL pipeline.<br>
+- ✅ Weeks 1-3: Backend API, frontend wizard, testing infrastructure complete<br>
+- 🔄 Week 4 (current): Transformation engine, Bull queue, ETL pipeline implemented - TESTING TODAY<br>
+- ⏳ Week 5 (next): Migration execution, reporting, production deployment<br><br>
+
+**Context from Previous Days:**<br>
+- Days 16-17: Built transformation engine with 6 types (Direct, ValueMap, Formula, Concatenate, Lookup, Date)<br>
+- Day 18: Set up Bull queue with Redis for async job processing<br>
+- Day 19: Implemented ETL pipeline (extract from Salesforce → transform → load to STG1)<br><br>
+
+**Today's Goal:** Write comprehensive tests for transformation engine and ETL pipeline, create Week 4 PR<br><br>
+
+**Tasks:**<br>
+1. Write Jest unit tests for TransformService (all 6 transform types)<br>
+2. Write integration tests for Bull queue job processing<br>
+3. Write end-to-end ETL test with mock Salesforce data<br>
+4. Create PR with detailed description of Week 4 work<br><br>
+
+**Test Coverage Requirements:**<br>
+- TransformService: Test each transform type with edge cases (null, empty, invalid)<br>
+- ETLService: Test extract/transform/load with mocked jsforce and database<br>
+- Migration Queue: Test job submission, status tracking, retry on failure<br>
+- End-to-end: Submit job → verify STG1 has transformed data<br><br>
+
+**Acceptance Criteria:**<br>
+- All tests pass: npm test (Jest shows 90%+ coverage)<br>
+- Mock Salesforce queries (don't hit real API in tests)<br>
+- Mock OpenAI API calls (use fixture responses)<br>
+- Tests run in &lt;30 seconds<br>
+- PR description includes: What changed, How to test, Test results screenshot<br><br>
+
+**Testing Commands:**<br>
+```bash<br>
+cd backend<br>
+npm test -- transformService.test.ts<br>
+npm test -- etlService.test.ts<br>
+npm test -- migrationQueue.test.ts<br>
+npm test -- --coverage<br>
+```<br><br>
+
+Please guide me step-by-step through writing these tests and creating the PR. Show me test patterns for mocking external services.
+            </div>
         </div>
+
+<div class="step-card">
+            <h2>📋 Objective</h2>
+            <p>Test transformation API, queue processing, and ETL worker end-to-end. Create Week 4 PR.</p>
+        </div>
+
         <div class="step-card">
-            <h2>Tasks</h2>
-            <ol>
-                <li>Write unit tests for transformation logic</li>
-                <li>Test queue job creation and worker execution</li>
-                <li>Run full ETL test with sample data</li>
-                <li>Document queue setup and open PR</li>
-            </ol>
+            <h2>🧪 Step 1: Write TransformService Unit Tests</h2>
+            <p>Create <code>backend/src/services/__tests__/transformService.test.ts</code>:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+import { TransformService } from '../transformService';<br>
+import { DirectTransform, ValueMapTransform, FormulaTransform, ConcatenateTransform, DateTransform } from '../../types/transform.types';<br><br>
+
+describe('TransformService', () => {<br>
+&nbsp;&nbsp;const service = new TransformService();<br><br>
+
+&nbsp;&nbsp;describe('Direct transform', () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;it('should copy source field to target', async () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const transform: DirectTransform = { type: 'Direct', sourceField: 'Name', targetField: 'AccountName' };<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const result = await service.applyTransform({ Name: 'Acme Corp' }, transform);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect(result).toBe('Acme Corp');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;});<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;it('should return null for missing field', async () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const transform: DirectTransform = { type: 'Direct', sourceField: 'Missing', targetField: 'Target' };<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const result = await service.applyTransform({}, transform);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect(result).toBeNull();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;});<br>
+&nbsp;&nbsp;});<br><br>
+
+&nbsp;&nbsp;describe('ValueMap transform', () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;it('should map value using mapping dictionary', async () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const transform: ValueMapTransform = {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type: 'ValueMap',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sourceField: 'Status',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;targetField: 'IsActive',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mapping: { 'Active': 'true', 'Inactive': 'false' },<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;defaultValue: 'unknown'<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;};<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect(await service.applyTransform({ Status: 'Active' }, transform)).toBe('true');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect(await service.applyTransform({ Status: 'Unknown' }, transform)).toBe('unknown');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;});<br>
+&nbsp;&nbsp;});<br><br>
+
+&nbsp;&nbsp;describe('Concatenate transform', () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;it('should join multiple fields', async () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const transform: ConcatenateTransform = {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type: 'Concatenate',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sourceField: '',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sourceFields: ['FirstName', 'LastName'],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;targetField: 'FullName',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;separator: ' '<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;};<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const result = await service.applyTransform({ FirstName: 'John', LastName: 'Doe' }, transform);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect(result).toBe('John Doe');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;});<br>
+&nbsp;&nbsp;});<br><br>
+
+&nbsp;&nbsp;describe('Date transform', () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;it('should format date', async () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const transform: DateTransform = {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type: 'Date',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sourceField: 'CreatedDate',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;targetField: 'FormattedDate',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;format: 'YYYY-MM-DD'<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;};<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const result = await service.applyTransform({ CreatedDate: '2024-11-01T14:30:00Z' }, transform);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect(result).toBe('2024-11-01');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;});<br>
+&nbsp;&nbsp;});<br>
+});
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🔧 Step 2: Write ETL Integration Tests</h2>
+            <p>Create <code>backend/src/services/__tests__/etlService.test.ts</code>:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+import { ETLService } from '../etlService';<br>
+import { Connection } from '@jsforce/jsforce-node';<br>
+import { pool } from '../../config/database';<br><br>
+
+jest.mock('@jsforce/jsforce-node');<br>
+jest.mock('../../config/redis');<br><br>
+
+describe('ETLService', () => {<br>
+&nbsp;&nbsp;const service = new ETLService();<br><br>
+
+&nbsp;&nbsp;beforeEach(async () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Clear test database<br>
+&nbsp;&nbsp;&nbsp;&nbsp;await pool.query('DELETE FROM stg1_records');<br>
+&nbsp;&nbsp;});<br><br>
+
+&nbsp;&nbsp;describe('extractFromSalesforce', () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;it('should query Salesforce and return records', async () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const mockQuery = jest.fn().mockResolvedValue({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;records: [{ Id: '001', Name: 'Test Account' }]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Connection as jest.Mock).mockImplementation(() => ({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;query: mockQuery<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}));<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const records = await service.extractFromSalesforce('conn-123', 'Account', 10);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect(records).toHaveLength(1);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect(mockQuery).toHaveBeenCalledWith('SELECT * FROM Account LIMIT 10');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;});<br>
+&nbsp;&nbsp;});<br><br>
+
+&nbsp;&nbsp;describe('loadToStaging', () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;it('should insert records into STG1', async () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const records = [<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ source_id: '001', AccountName: 'Acme Corp' },<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ source_id: '002', AccountName: 'Beta Inc' }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;];<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;await service.loadToStaging('migration_1', records);<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const result = await pool.query('SELECT COUNT(*) FROM stg1_records WHERE migration_id = $1', ['migration_1']);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect(parseInt(result.rows[0].count)).toBe(2);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;});<br>
+&nbsp;&nbsp;});<br>
+});
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>⚙️ Step 3: Test Bull Queue Processing</h2>
+            <p>Create <code>backend/src/__tests__/migrationQueue.test.ts</code>:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+import { migrationQueue } from '../queues/migrationQueue';<br><br>
+
+describe('Migration Queue', () => {<br>
+&nbsp;&nbsp;afterAll(async () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;await migrationQueue.close();<br>
+&nbsp;&nbsp;});<br><br>
+
+&nbsp;&nbsp;it('should add job to queue', async () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const job = await migrationQueue.add({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mappingId: 'test-mapping',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;connectionId: 'test-conn'<br>
+&nbsp;&nbsp;&nbsp;&nbsp;});<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;expect(job.id).toBeDefined();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;expect(job.data.mappingId).toBe('test-mapping');<br>
+&nbsp;&nbsp;});<br><br>
+
+&nbsp;&nbsp;it('should track job status', async () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const job = await migrationQueue.add({ mappingId: 'test', connectionId: 'test' });<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const state = await job.getState();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;expect(['waiting', 'active', 'completed']).toContain(state);<br>
+&nbsp;&nbsp;});<br>
+});
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🚀 Step 4: Run All Tests</h2>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+cd backend<br><br>
+
+# Run all tests<br>
+npm test<br><br>
+
+# Run with coverage<br>
+npm test -- --coverage<br><br>
+
+# Expected output:<br>
+# Test Suites: 3 passed, 3 total<br>
+# Tests: 10 passed, 10 total<br>
+# Coverage: 90%+
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>📝 Step 5: Create Week 4 Pull Request</h2>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+cd C:\Dev\RevNovaRepository<br><br>
+
+# Create branch for Week 4<br>
+git checkout -b feat/week4-transformation-etl<br><br>
+
+# Add all changes<br>
+git add .<br><br>
+
+# Commit<br>
+git commit -m "feat(backend): Week 4 - Transformation Engine + ETL Pipeline<br><br>
+
+Implemented:<br>
+- Transformation engine with 6 types (Direct, ValueMap, Formula, Concatenate, Lookup, Date)<br>
+- Bull queue for async job processing<br>
+- ETL pipeline (extract from Salesforce, transform, load to STG1)<br>
+- Comprehensive test coverage (90%+)<br><br>
+
+API Endpoints:<br>
+- POST /api/transform/preview - Preview transformations<br>
+- POST /api/jobs - Submit ETL job<br>
+- GET /api/jobs/:jobId - Get job status<br><br>
+
+Testing:<br>
+- Unit tests for all transform types<br>
+- Integration tests for ETL service<br>
+- Queue processing tests<br>
+"<br><br>
+
+# Push branch<br>
+git push origin feat/week4-transformation-etl<br><br>
+
+# Create PR on GitHub with description above
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>✅ End of Day 20 Checklist</h2>
+            <ul>
+                <li>✅ TransformService tests pass (all 6 transform types + edge cases)</li>
+                <li>✅ ETLService tests pass (extract, transform, load)</li>
+                <li>✅ Migration queue tests pass (job submission, status tracking)</li>
+                <li>✅ Test coverage ≥ 90% (<code>npm test -- --coverage</code>)</li>
+                <li>✅ All tests run in &lt;30 seconds</li>
+                <li>✅ External services mocked (jsforce, OpenAI, Redis)</li>
+                <li>✅ Pull request created with detailed description</li>
+                <li>✅ PR includes: What changed, How to test, Test results</li>
+                <li>✅ All Week 4 work committed: <code>feat(backend): Week 4 - Transformation Engine + ETL Pipeline</code></li>
+            </ul>
         </div>
         <div class="nav-buttons"><a href="dev1-day19.html" class="nav-btn back">← Back to Day 19</a><a href="dev1-day21.html" class="nav-btn next">Next: Day 21 →</a></div>
     </div>

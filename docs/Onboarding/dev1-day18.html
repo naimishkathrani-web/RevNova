@@ -25,7 +25,31 @@ git pull origin main
             <h2>🤖 Copy This Prompt for Your GitHub Copilot</h2>
             <p><strong>Click the code block below, copy all text, and paste into GitHub Copilot Chat to get step-by-step guidance:</strong></p>
             <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;max-height:400px;overflow-y:auto;">
-I'm working on Day 18 of the RevNova migration platform (Salesforce CPQ → Revenue Cloud).<br><br>
+I'm working on Day 18 of the RevNova migration platform - Backend Developer track.<br><br>
+
+**🎯 REVNOVA PLATFORM OVERVIEW:**<br>
+RevNova is a SaaS platform that automates Salesforce CPQ → Revenue Cloud migrations. It's a 7-step wizard that:<br>
+1. Connects to source/target Salesforce orgs (OAuth)<br>
+2. Analyzes CPQ schema and discovers field relationships<br>
+3. Generates AI-powered field mapping suggestions (OpenAI GPT-4)<br>
+4. Allows drag-drop mapping customization with confidence scores<br>
+5. Previews transformations before execution<br>
+6. Executes async ETL jobs (extract → transform → load)<br>
+7. Generates migration reports with success/failure metrics<br><br>
+
+**Tech Stack:** Node.js 20, Express, TypeScript, PostgreSQL 16, Redis 7, Bull queue, jsforce, OpenAI GPT-4 API<br><br>
+
+**📚 DETAILED REQUIREMENTS:**<br>
+Before starting, review these requirement docs in the repository:<br>
+- docs/RevNovaRequirements/functional-requirements.html (API endpoints, user flows)<br>
+- docs/RevNovaRequirements/technical-specifications.html (architecture, database schema)<br>
+- docs/RevNovaRequirements/data-model.html (STG1/STG2 staging tables, field mapping structure)<br><br>
+
+**🏗️ MVP MILESTONE STATUS:**<br>
+We're building the MVP (target: Nov 30, 2025 - 19 days remaining). Week 4 focus is ETL pipeline implementation.<br>
+- ✅ Weeks 1-3: Backend API, frontend wizard, testing infrastructure complete<br>
+- 🔄 Week 4 (current): Transformation engine, Bull queue, deployment automation<br>
+- ⏳ Week 5 (next): Migration execution, reporting, production deployment<br><br>
 
 **Context from Previous Days:**<br>
 - Days 1-5: Built Express + TypeScript backend with PostgreSQL + Redis<br>
