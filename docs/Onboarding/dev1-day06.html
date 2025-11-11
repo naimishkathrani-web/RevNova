@@ -25,6 +25,46 @@ git pull origin main
             <p>This ensures you have the latest code from your teammates. Always pull before starting work!</p>
         </div>
 
+        <div class="step-card" style="background:#e0f2fe;border-left:4px solid #0284c7;">
+            <h2>🤖 Copy This Prompt for Your GitHub Copilot</h2>
+            <p><strong>Click the code block below, copy all text, and paste into GitHub Copilot Chat:</strong></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;max-height:400px;overflow-y:auto;">
+I'm on Day 6 of RevNova platform development - Backend Developer track.<br><br>
+
+**🎯 REVNOVA OVERVIEW:**<br>
+RevNova automates Salesforce CPQ → Revenue Cloud migrations with a 7-step wizard: Connect to Salesforce orgs → Analyze schema → AI-powered field mapping (GPT-4) → Drag-drop customization → Preview transformations → Execute async ETL → Generate reports.<br>
+Tech: Node.js 20, Express, TypeScript, PostgreSQL 16, Redis 7, Bull queue, jsforce, OpenAI GPT-4<br><br>
+
+**📚 READ REQUIREMENTS:**<br>
+- docs/RevNovaRequirements/functional-requirements.html<br>
+- docs/RevNovaRequirements/technical-specifications.html<br>
+- docs/RevNovaRequirements/api-endpoints.html<br><br>
+
+**🏗️ MVP STATUS:**<br>
+Week 2 of 5 (target: Nov 30, 2025). Building Salesforce integration layer.<br>
+✅ Week 1: Express backend, PostgreSQL, health endpoints<br>
+🔄 Week 2: jsforce integration, schema discovery, Redis caching<br><br>
+
+**TODAY'S GOAL:** Build Schema Analysis API using jsforce to discover Salesforce CPQ objects (Product2, Pricebook2, PricebookEntry) and their fields/relationships.<br><br>
+
+**TASKS:**<br>
+1. Install jsforce package<br>
+2. Create SalesforceService for connections<br>
+3. Implement describeGlobal() to list all objects<br>
+4. Implement describeSObject() to get field metadata<br>
+5. Build POST /api/v1/projects/:id/analyze endpoint<br>
+6. Test with curl using real Salesforce credentials<br><br>
+
+**ACCEPTANCE CRITERIA:**<br>
+- jsforce connects using OAuth token<br>
+- API returns { objects: [...], fields: {...}, relationships: [...] }<br>
+- Metadata includes field types, labels, required flags<br>
+- Handles API errors gracefully<br><br>
+
+Guide me step-by-step through jsforce integration and schema discovery.
+            </div>
+        </div>
+
         <div class="step-card">
             <h2>📋 Objective</h2>
             <p>Build the Schema Analysis API endpoint that discovers Salesforce objects and fields for migration planning. This API will query Salesforce using jsforce to return metadata about Product2, Pricebook2, and PricebookEntry objects.</p>
