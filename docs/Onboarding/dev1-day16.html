@@ -21,17 +21,217 @@ git pull origin main
             <p>This ensures you have the latest code from your teammates. Always pull before starting work!</p>
         </div>
 <div class="step-card">
-            <h2>Objective</h2>
-            <p>Build API endpoint to preview data transformations before migration execution.</p>
+            <h2>📋 Objective</h2>
+            <p>Build the Transformation Engine to apply field mapping rules and transform Salesforce data according to defined transformation types (Direct, ValueMap, Formula, Concatenate, Lookup).</p>
         </div>
+
         <div class="step-card">
-            <h2>Tasks</h2>
-            <ol>
-                <li>Create POST /api/transform/preview endpoint</li>
-                <li>Accept mapping rules and sample data as input</li>
-                <li>Apply transformations (type conversion, field mapping)</li>
-                <li>Return transformed sample rows for UI preview</li>
-            </ol>
+            <h2>🎯 Step 1: Create Transformation Types</h2>
+            <p>Create <code>backend/src/types/transform.types.ts</code> to define transformation rules:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+export type TransformType = 'Direct' | 'ValueMap' | 'Formula' | 'Concatenate' | 'Lookup';<br><br>
+
+export interface BaseTransform {<br>
+&nbsp;&nbsp;type: TransformType;<br>
+&nbsp;&nbsp;sourceField: string;<br>
+&nbsp;&nbsp;targetField: string;<br>
+}<br><br>
+
+export interface DirectTransform extends BaseTransform {<br>
+&nbsp;&nbsp;type: 'Direct';<br>
+}<br><br>
+
+export interface ValueMapTransform extends BaseTransform {<br>
+&nbsp;&nbsp;type: 'ValueMap';<br>
+&nbsp;&nbsp;mapping: Record&lt;string, string&gt;; // { "Active": "true", "Inactive": "false" }<br>
+&nbsp;&nbsp;defaultValue?: string;<br>
+}<br><br>
+
+export interface FormulaTransform extends BaseTransform {<br>
+&nbsp;&nbsp;type: 'Formula';<br>
+&nbsp;&nbsp;expression: string; // e.g., "sourceField * 1.1"<br>
+}<br><br>
+
+export interface ConcatenateTransform extends BaseTransform {<br>
+&nbsp;&nbsp;type: 'Concatenate';<br>
+&nbsp;&nbsp;sourceFields: string[]; // ['FirstName', 'LastName']<br>
+&nbsp;&nbsp;separator: string; // ' '<br>
+}<br><br>
+
+export interface LookupTransform extends BaseTransform {<br>
+&nbsp;&nbsp;type: 'Lookup';<br>
+&nbsp;&nbsp;lookupObject: string; // 'Account'<br>
+&nbsp;&nbsp;lookupField: string; // 'AccountId'<br>
+&nbsp;&nbsp;returnField: string; // 'Name'<br>
+}<br><br>
+
+export type Transform = DirectTransform | ValueMapTransform | FormulaTransform | ConcatenateTransform | LookupTransform;
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🔧 Step 2: Create Transformation Service</h2>
+            <p>Create <code>backend/src/services/transformService.ts</code> with transformation logic:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+import { Transform } from '../types/transform.types';<br><br>
+
+export class TransformService {<br>
+&nbsp;&nbsp;async applyTransform(data: Record&lt;string, any&gt;, transform: Transform): Promise&lt;any&gt; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;switch (transform.type) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case 'Direct':<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return data[transform.sourceField];<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case 'ValueMap':<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const sourceValue = data[transform.sourceField];<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return transform.mapping[sourceValue] ?? transform.defaultValue ?? null;<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case 'Formula':<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return this.evaluateFormula(data, transform.expression);<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case 'Concatenate':<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const values = transform.sourceFields.map(f => data[f] || '');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return values.join(transform.separator);<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case 'Lookup':<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Lookup implementation in Day 17<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;throw new Error('Lookup not yet implemented');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;}<br><br>
+
+&nbsp;&nbsp;private evaluateFormula(data: Record&lt;string, any&gt;, expression: string): any {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Simple formula evaluation (expand later)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Example: "sourceField * 1.1"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const matches = expression.match(/(\w+)\s*\*\s*([\d.]+)/);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (matches) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const [, field, multiplier] = matches;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return (parseFloat(data[field]) || 0) * parseFloat(multiplier);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return null;<br>
+&nbsp;&nbsp;}<br>
+}
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🌐 Step 3: Create Transformation Preview Endpoint</h2>
+            <p>Create <code>backend/src/routes/transformRoutes.ts</code>:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+import { Router } from 'express';<br>
+import { TransformService } from '../services/transformService';<br>
+import { Transform } from '../types/transform.types';<br><br>
+
+const router = Router();<br>
+const transformService = new TransformService();<br><br>
+
+router.post('/preview', async (req, res) => {<br>
+&nbsp;&nbsp;try {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const { transforms, sampleData } = req.body;<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;if (!transforms || !Array.isArray(transforms)) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return res.status(400).json({ error: 'transforms array required' });<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;if (!sampleData || !Array.isArray(sampleData)) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return res.status(400).json({ error: 'sampleData array required' });<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;const results = [];<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;for (const row of sampleData) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const transformed: Record&lt;string, any&gt; = {};<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for (const transform of transforms as Transform[]) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;transformed[transform.targetField] = await transformService.applyTransform(row, transform);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} catch (err: any) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;transformed[transform.targetField] = { error: err.message };<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;results.push({ source: row, transformed });<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;res.json({ results });<br>
+&nbsp;&nbsp;} catch (error: any) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;console.error('Transform preview error:', error);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;res.status(500).json({ error: error.message });<br>
+&nbsp;&nbsp;}<br>
+});<br><br>
+
+export default router;
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🔗 Step 4: Register Transform Routes</h2>
+            <p>Update <code>backend/src/app.ts</code> to include transform routes:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+import transformRoutes from './routes/transformRoutes';<br><br>
+
+app.use('/api/transform', transformRoutes);
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🧪 Step 5: Test Transformation Endpoint</h2>
+            <p>Test the preview endpoint with curl:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+curl -X POST http://localhost:3000/api/transform/preview \<br>
+&nbsp;&nbsp;-H "Content-Type: application/json" \<br>
+&nbsp;&nbsp;-d '{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"transforms": [<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"type": "Direct",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"sourceField": "Name",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"targetField": "AccountName"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"type": "ValueMap",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"sourceField": "Status",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"targetField": "IsActive",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"mapping": { "Active": "true", "Inactive": "false" },<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"defaultValue": "false"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"type": "Concatenate",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"sourceField": "",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"sourceFields": ["FirstName", "LastName"],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"targetField": "FullName",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"separator": " "<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"sampleData": [<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ "Name": "Acme Corp", "Status": "Active", "FirstName": "John", "LastName": "Doe" },<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ "Name": "Beta Inc", "Status": "Inactive", "FirstName": "Jane", "LastName": "Smith" }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;]<br>
+&nbsp;&nbsp;}'
+            </div>
+            <p><strong>Expected Response:</strong></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+{<br>
+&nbsp;&nbsp;"results": [<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"source": { "Name": "Acme Corp", "Status": "Active", "FirstName": "John", "LastName": "Doe" },<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"transformed": { "AccountName": "Acme Corp", "IsActive": "true", "FullName": "John Doe" }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;},<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"source": { "Name": "Beta Inc", "Status": "Inactive", "FirstName": "Jane", "LastName": "Smith" },<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"transformed": { "AccountName": "Beta Inc", "IsActive": "false", "FullName": "Jane Smith" }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;]<br>
+}
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>✅ End of Day 16 Checklist</h2>
+            <ul>
+                <li>✅ <code>backend/src/types/transform.types.ts</code> created with 5 transform types</li>
+                <li>✅ <code>backend/src/services/transformService.ts</code> created with Direct, ValueMap, Formula, Concatenate logic</li>
+                <li>✅ <code>POST /api/transform/preview</code> endpoint working</li>
+                <li>✅ Curl test returns transformed sample data with correct mappings</li>
+                <li>✅ All changes committed with message: <code>feat(backend): add transformation engine with Direct, ValueMap, Formula, Concatenate types</code></li>
+            </ul>
         </div>
         <div class="nav-buttons"><a href="dev1-day15.html" class="nav-btn back">← Back to Day 15</a><a href="dev1-day17.html" class="nav-btn next">Next: Day 17 →</a></div>
     </div>

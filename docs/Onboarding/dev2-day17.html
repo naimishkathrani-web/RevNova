@@ -21,17 +21,239 @@ git pull origin main
             <p>This ensures you have the latest code from your teammates. Always pull before starting work!</p>
         </div>
 <div class="step-card">
-            <h2>Objective</h2>
-            <p>Enhance data tables with pagination, sorting, and filtering for large datasets.</p>
+            <h2>📋 Objective</h2>
+            <p>Enhance the Transformation Preview page with pagination, sorting, and filtering for handling large datasets (1000+ rows).</p>
         </div>
+
         <div class="step-card">
-            <h2>Tasks</h2>
-            <ol>
-                <li>Implement server-side pagination for preview data</li>
-                <li>Add column sorting (asc/desc)</li>
-                <li>Add basic filter/search by column value</li>
-                <li>Show row count and page navigation controls</li>
+            <h2>📊 Step 1: Create DataTable Component with Pagination</h2>
+            <p>Create <code>frontend/src/components/DataTable.tsx</code>:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+import { useState, useMemo } from 'react';<br><br>
+
+interface DataTableProps {<br>
+&nbsp;&nbsp;data: any[];<br>
+&nbsp;&nbsp;columns: string[];<br>
+&nbsp;&nbsp;pageSize?: number;<br>
+}<br><br>
+
+export default function DataTable({ data, columns, pageSize = 10 }: DataTableProps) {<br>
+&nbsp;&nbsp;const [currentPage, setCurrentPage] = useState(1);<br>
+&nbsp;&nbsp;const [sortColumn, setSortColumn] = useState&lt;string | null&gt;(null);<br>
+&nbsp;&nbsp;const [sortDirection, setSortDirection] = useState&lt;'asc' | 'desc'&gt;('asc');<br>
+&nbsp;&nbsp;const [searchTerm, setSearchTerm] = useState('');<br><br>
+
+&nbsp;&nbsp;// Filter data<br>
+&nbsp;&nbsp;const filteredData = useMemo(() => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (!searchTerm) return data;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return data.filter(row =><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Object.values(row).some(val =><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String(val).toLowerCase().includes(searchTerm.toLowerCase())<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;);<br>
+&nbsp;&nbsp;}, [data, searchTerm]);<br><br>
+
+&nbsp;&nbsp;// Sort data<br>
+&nbsp;&nbsp;const sortedData = useMemo(() => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (!sortColumn) return filteredData;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return [...filteredData].sort((a, b) => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const aVal = a[sortColumn];<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const bVal = b[sortColumn];<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (aVal &lt; bVal) return sortDirection === 'asc' ? -1 : 1;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (aVal &gt; bVal) return sortDirection === 'asc' ? 1 : -1;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 0;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;});<br>
+&nbsp;&nbsp;}, [filteredData, sortColumn, sortDirection]);<br><br>
+
+&nbsp;&nbsp;// Paginate data<br>
+&nbsp;&nbsp;const totalPages = Math.ceil(sortedData.length / pageSize);<br>
+&nbsp;&nbsp;const paginatedData = useMemo(() => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const start = (currentPage - 1) * pageSize;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return sortedData.slice(start, start + pageSize);<br>
+&nbsp;&nbsp;}, [sortedData, currentPage, pageSize]);<br><br>
+
+&nbsp;&nbsp;const handleSort = (column: string) => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (sortColumn === column) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;} else {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setSortColumn(column);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setSortDirection('asc');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;};<br><br>
+
+&nbsp;&nbsp;return (<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;div className="bg-white rounded-lg shadow"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{/* Search bar */}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div className="p-4 border-b"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;input<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type="text"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;placeholder="Search..."<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;value={searchTerm}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;onChange={(e) => setSearchTerm(e.target.value)}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;className="w-full px-4 py-2 border rounded"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{/* Table */}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div className="overflow-x-auto"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;table className="w-full"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;thead className="bg-gray-50"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;tr&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{columns.map(col => (<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;th<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;key={col}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;onClick={() => handleSort(col)}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{col}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{sortColumn === col && (<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;span className="ml-1"&gt;{sortDirection === 'asc' ? '↑' : '↓'}&lt;/span&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/th&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;))}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/tr&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/thead&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;tbody className="divide-y"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{paginatedData.map((row, idx) => (<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;tr key={idx} className="hover:bg-gray-50"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{columns.map(col => (<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;td key={col} className="px-6 py-4 text-sm"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{JSON.stringify(row[col])}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/td&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;))}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/tr&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;))}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/tbody&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/table&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{/* Pagination */}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div className="px-4 py-3 border-t flex items-center justify-between"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div className="text-sm text-gray-700"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Showing {((currentPage - 1) * pageSize) + 1} to {Math.min(currentPage * pageSize, sortedData.length)} of {sortedData.length} rows<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div className="flex gap-2"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;button<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;onClick={() => setCurrentPage(p => Math.max(1, p - 1))}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;disabled={currentPage === 1}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;className="px-4 py-2 border rounded hover:bg-gray-50 disabled:opacity-50"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Previous<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/button&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;span className="px-4 py-2"&gt;Page {currentPage} of {totalPages}&lt;/span&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;button<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;disabled={currentPage === totalPages}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;className="px-4 py-2 border rounded hover:bg-gray-50 disabled:opacity-50"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Next<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/button&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;);<br>
+}
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🔄 Step 2: Update TransformationPreview to Use DataTable</h2>
+            <p>Update <code>frontend/src/pages/TransformationPreview.tsx</code>:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+import DataTable from '../components/DataTable';<br><br>
+
+// Replace preview results rendering with:<br>
+{preview && (<br>
+&nbsp;&nbsp;&lt;div className="mt-6"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;h2 className="text-xl font-semibold mb-4"&gt;Transformed Data Preview&lt;/h2&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;DataTable<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data={preview.results.map(r => r.transformed)}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;columns={Object.keys(preview.results[0]?.transformed || {})}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pageSize={25}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;/&gt;<br>
+&nbsp;&nbsp;&lt;/div&gt;<br>
+)}
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🎨 Step 3: Add Column Filter by Type</h2>
+            <p>Add filter dropdown to <code>DataTable.tsx</code>:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+const [filterColumn, setFilterColumn] = useState&lt;string | null&gt;(null);<br><br>
+
+// Add to search bar section:<br>
+&lt;div className="flex gap-4"&gt;<br>
+&nbsp;&nbsp;&lt;input<br>
+&nbsp;&nbsp;&nbsp;&nbsp;type="text"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;placeholder="Search..."<br>
+&nbsp;&nbsp;&nbsp;&nbsp;value={searchTerm}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;onChange={(e) => setSearchTerm(e.target.value)}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;className="flex-1 px-4 py-2 border rounded"<br>
+&nbsp;&nbsp;/&gt;<br>
+&nbsp;&nbsp;&lt;select<br>
+&nbsp;&nbsp;&nbsp;&nbsp;value={filterColumn || ''}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;onChange={(e) => setFilterColumn(e.target.value || null)}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;className="px-4 py-2 border rounded"<br>
+&nbsp;&nbsp;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;option value=""&gt;All Columns&lt;/option&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{columns.map(col => (<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;option key={col} value={col}&gt;{col}&lt;/option&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;))}<br>
+&nbsp;&nbsp;&lt;/select&gt;<br>
+&lt;/div&gt;
+            </div>
+            <p>Update filteredData to filter by column:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+const filteredData = useMemo(() => {<br>
+&nbsp;&nbsp;if (!searchTerm) return data;<br>
+&nbsp;&nbsp;return data.filter(row => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (filterColumn) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return String(row[filterColumn]).toLowerCase().includes(searchTerm.toLowerCase());<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return Object.values(row).some(val =><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String(val).toLowerCase().includes(searchTerm.toLowerCase())<br>
+&nbsp;&nbsp;&nbsp;&nbsp;);<br>
+&nbsp;&nbsp;});<br>
+}, [data, searchTerm, filterColumn]);
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🧪 Step 4: Test Pagination & Sorting</h2>
+            <p>Create test data with 100+ rows:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+// In browser console:<br>
+const testData = Array.from({ length: 100 }, (_, i) => ({<br>
+&nbsp;&nbsp;id: i + 1,<br>
+&nbsp;&nbsp;name: `Account ${i + 1}`,<br>
+&nbsp;&nbsp;status: i % 2 === 0 ? 'Active' : 'Inactive',<br>
+&nbsp;&nbsp;revenue: Math.floor(Math.random() * 100000)<br>
+}));<br>
+sessionStorage.setItem('sampleData', JSON.stringify(testData));
+            </div>
+            <p>Manual testing checklist:</p>
+            <ol style="margin-left:1.5rem;">
+                <li>Verify pagination controls show correct page numbers (1-4 for 100 rows @ 25/page)</li>
+                <li>Click "Next" button → page 2 displays rows 26-50</li>
+                <li>Click column header (e.g., "Revenue") → rows sorted ascending</li>
+                <li>Click same header again → rows sorted descending (arrow flips)</li>
+                <li>Type in search box (e.g., "Active") → only matching rows shown</li>
+                <li>Select column filter → search only applies to that column</li>
             </ol>
+        </div>
+
+        <div class="step-card">
+            <h2>✅ End of Day 17 Checklist</h2>
+            <ul>
+                <li>✅ <code>frontend/src/components/DataTable.tsx</code> created with pagination, sorting, filtering</li>
+                <li>✅ TransformationPreview page updated to use DataTable component</li>
+                <li>✅ Column sorting works (asc/desc toggle) with arrow indicators</li>
+                <li>✅ Search bar filters rows by all columns or specific column</li>
+                <li>✅ Pagination controls show row count and page navigation (Previous/Next)</li>
+                <li>✅ Tested with 100+ rows, 25 rows per page</li>
+                <li>✅ All changes committed with message: <code>feat(frontend): add DataTable component with pagination, sorting, and filtering</code></li>
+            </ul>
         </div>
         <div class="nav-buttons"><a href="dev2-day16.html" class="nav-btn back">← Back to Day 16</a><a href="dev2-day18.html" class="nav-btn next">Next: Day 18 →</a></div>
     </div>

@@ -21,17 +21,263 @@ git pull origin main
             <p>This ensures you have the latest code from your teammates. Always pull before starting work!</p>
         </div>
 <div class="step-card">
-            <h2>Objective</h2>
-            <p>Add advanced transformation logic: custom expressions, null handling, date formatting.</p>
+            <h2>📋 Objective</h2>
+            <p>Complete the Transformation Engine by implementing Lookup transformations, null handling, date formatting, and comprehensive error tracking.</p>
         </div>
+
         <div class="step-card">
-            <h2>Tasks</h2>
-            <ol>
-                <li>Support custom transformation expressions (e.g., CONCAT, UPPERCASE)</li>
-                <li>Add null/default value handling rules</li>
-                <li>Implement date/time format conversions</li>
-                <li>Add transformation error tracking and logging</li>
-            </ol>
+            <h2>🔍 Step 1: Implement Lookup Transformation</h2>
+            <p>Update <code>backend/src/services/transformService.ts</code> to add Lookup logic:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+import { redisClient } from '../config/redis';<br>
+import { Connection } from '@jsforce/jsforce-node';<br><br>
+
+export class TransformService {<br>
+&nbsp;&nbsp;// ... existing code ...<br><br>
+
+&nbsp;&nbsp;async applyTransform(data: Record&lt;string, any&gt;, transform: Transform, connectionId?: string): Promise&lt;any&gt; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;switch (transform.type) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// ... existing cases ...<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case 'Lookup':<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (!connectionId) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;throw new Error('Connection ID required for Lookup transformations');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return await this.performLookup(data, transform, connectionId);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;}<br><br>
+
+&nbsp;&nbsp;private async performLookup(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;data: Record&lt;string, any&gt;,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;transform: LookupTransform,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;connectionId: string<br>
+&nbsp;&nbsp;): Promise&lt;any&gt; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const lookupValue = data[transform.lookupField];<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (!lookupValue) return null;<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;// Check cache first<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const cacheKey = `lookup:${connectionId}:${transform.lookupObject}:${lookupValue}`;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const cached = await redisClient.get(cacheKey);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (cached) return cached;<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;// Query Salesforce<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const connData = await redisClient.get(`connection:${connectionId}`);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (!connData) throw new Error('Connection not found');<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;const { accessToken, instanceUrl } = JSON.parse(connData);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const conn = new Connection({ accessToken, instanceUrl });<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;const result = await conn.query(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`SELECT ${transform.returnField} FROM ${transform.lookupObject} WHERE Id = '${lookupValue}' LIMIT 1`<br>
+&nbsp;&nbsp;&nbsp;&nbsp;);<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;const returnValue = result.records[0]?.[transform.returnField] || null;<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;// Cache for 1 hour<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (returnValue) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;await redisClient.setEx(cacheKey, 3600, returnValue);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;return returnValue;<br>
+&nbsp;&nbsp;}<br>
+}
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🛡️ Step 2: Add Null Handling and Default Values</h2>
+            <p>Update <code>backend/src/services/transformService.ts</code> to handle null values:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+export class TransformService {<br>
+&nbsp;&nbsp;async applyTransform(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;data: Record&lt;string, any&gt;,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;transform: Transform,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;connectionId?: string<br>
+&nbsp;&nbsp;): Promise&lt;any&gt; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;let result;<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;switch (transform.type) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case 'Direct':<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result = data[transform.sourceField];<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// ... other cases ...<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;// Apply null handling<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (result === null || result === undefined || result === '') {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return (transform as any).defaultValue ?? null;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;return result;<br>
+&nbsp;&nbsp;}<br>
+}
+            </div>
+            <p>Update <code>backend/src/types/transform.types.ts</code> to add <code>defaultValue</code> to all transform types:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+export interface BaseTransform {<br>
+&nbsp;&nbsp;type: TransformType;<br>
+&nbsp;&nbsp;sourceField: string;<br>
+&nbsp;&nbsp;targetField: string;<br>
+&nbsp;&nbsp;defaultValue?: string; // Add this line<br>
+}
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>📅 Step 3: Add Date Formatting Support</h2>
+            <p>Create <code>backend/src/utils/dateFormatter.ts</code>:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+export class DateFormatter {<br>
+&nbsp;&nbsp;static format(date: string | Date, targetFormat: string): string {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const d = new Date(date);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (isNaN(d.getTime())) return '';<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;switch (targetFormat) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case 'YYYY-MM-DD':<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return d.toISOString().split('T')[0];<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case 'MM/DD/YYYY':<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const month = String(d.getMonth() + 1).padStart(2, '0');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const day = String(d.getDate()).padStart(2, '0');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return `${month}/${day}/${d.getFullYear()}`;<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case 'ISO8601':<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return d.toISOString();<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;default:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return d.toISOString();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;}<br>
+}
+            </div>
+            <p>Add DateTransform to <code>backend/src/types/transform.types.ts</code>:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+export interface DateTransform extends BaseTransform {<br>
+&nbsp;&nbsp;type: 'Date';<br>
+&nbsp;&nbsp;format: 'YYYY-MM-DD' | 'MM/DD/YYYY' | 'ISO8601';<br>
+}<br><br>
+
+export type TransformType = 'Direct' | 'ValueMap' | 'Formula' | 'Concatenate' | 'Lookup' | 'Date';<br>
+export type Transform = DirectTransform | ValueMapTransform | FormulaTransform | ConcatenateTransform | LookupTransform | DateTransform;
+            </div>
+            <p>Update <code>transformService.ts</code> to handle Date transforms:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+import { DateFormatter } from '../utils/dateFormatter';<br><br>
+
+case 'Date':<br>
+&nbsp;&nbsp;const dateValue = data[transform.sourceField];<br>
+&nbsp;&nbsp;return dateValue ? DateFormatter.format(dateValue, transform.format) : null;
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>📊 Step 4: Add Error Tracking</h2>
+            <p>Update <code>backend/src/routes/transformRoutes.ts</code> to track errors:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+router.post('/preview', async (req, res) => {<br>
+&nbsp;&nbsp;try {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const { transforms, sampleData, connectionId } = req.body;<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;const results = [];<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const errors: any[] = [];<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;for (let i = 0; i &lt; sampleData.length; i++) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const row = sampleData[i];<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const transformed: Record&lt;string, any&gt; = {};<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const rowErrors: any[] = [];<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for (const transform of transforms as Transform[]) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;transformed[transform.targetField] = await transformService.applyTransform(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;row,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;transform,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;connectionId<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} catch (err: any) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rowErrors.push({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;row: i,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;field: transform.targetField,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;error: err.message,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;transform: transform.type<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;transformed[transform.targetField] = null;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (rowErrors.length > 0) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;errors.push(...rowErrors);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;results.push({ source: row, transformed });<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;res.json({ results, errors, errorCount: errors.length });<br>
+&nbsp;&nbsp;} catch (error: any) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;console.error('Transform preview error:', error);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;res.status(500).json({ error: error.message });<br>
+&nbsp;&nbsp;}<br>
+});
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🧪 Step 5: Test All Transform Types</h2>
+            <p>Test Lookup and Date transformations:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+curl -X POST http://localhost:3000/api/transform/preview \<br>
+&nbsp;&nbsp;-H "Content-Type: application/json" \<br>
+&nbsp;&nbsp;-d '{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"connectionId": "test-connection-id",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"transforms": [<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"type": "Date",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"sourceField": "CreatedDate",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"targetField": "FormattedDate",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"format": "MM/DD/YYYY"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"type": "Lookup",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"sourceField": "",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"targetField": "AccountName",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"lookupObject": "Account",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"lookupField": "AccountId",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"returnField": "Name"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"sampleData": [<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"CreatedDate": "2024-11-01T14:30:00Z",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"AccountId": "001xx000003DGb0AAG"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;]<br>
+&nbsp;&nbsp;}'
+            </div>
+            <p><strong>Expected Response:</strong></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+{<br>
+&nbsp;&nbsp;"results": [<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"source": { "CreatedDate": "2024-11-01T14:30:00Z", "AccountId": "001xx000003DGb0AAG" },<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"transformed": { "FormattedDate": "11/01/2024", "AccountName": "Acme Corp" }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;],<br>
+&nbsp;&nbsp;"errors": [],<br>
+&nbsp;&nbsp;"errorCount": 0<br>
+}
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>✅ End of Day 17 Checklist</h2>
+            <ul>
+                <li>✅ Lookup transformation implemented with Redis caching and jsforce queries</li>
+                <li>✅ Null handling added with <code>defaultValue</code> support in all transform types</li>
+                <li>✅ <code>DateTransform</code> type created with 3 format options (YYYY-MM-DD, MM/DD/YYYY, ISO8601)</li>
+                <li>✅ Error tracking added to preview endpoint with row/field error details</li>
+                <li>✅ Curl tests pass for Lookup and Date transformations</li>
+                <li>✅ All changes committed with message: <code>feat(backend): add Lookup, Date transforms, null handling, and error tracking</code></li>
+            </ul>
         </div>
         <div class="nav-buttons"><a href="dev1-day16.html" class="nav-btn back">← Back to Day 16</a><a href="dev1-day18.html" class="nav-btn next">Next: Day 18 →</a></div>
     </div>
