@@ -20,18 +20,71 @@ git pull origin main
             </div>
             <p>This ensures you have the latest code from your teammates. Always pull before starting work!</p>
         </div>
-<div class="step-card">
-            <h2>Objective</h2>
-            <p>Enhance mapping API with bulk operations, update/delete, and mapping history.</p>
-        </div>
         <div class="step-card">
-            <h2>Tasks</h2>
-            <ol>
-                <li>Add PUT /api/mappings/:id and DELETE endpoints</li>
-                <li>Implement bulk import (POST /api/mappings/bulk)</li>
-                <li>Track mapping versions/history in audit table</li>
-                <li>Add unit tests for CRUD operations</li>
-            </ol>
+            <h2>📋 Objective</h2>
+            <p>Add update/delete endpoints for individual mappings and validation rules for data type compatibility.</p>
+        </div>
+
+        <div class="step-card">
+            <h2>✏️ Step 1: Create Update Endpoint</h2>
+            <p><strong>File:</strong> <code>backend/src/routes/mapping.routes.ts</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+router.put('/projects/:projectId/mappings/:mappingId', async (req, res) => {<br>
+&nbsp;&nbsp;const { mappingId } = req.params;<br>
+&nbsp;&nbsp;const { targetField, mappingType, transformLogic } = req.body;<br>
+<br>
+&nbsp;&nbsp;await db.query(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;`UPDATE field_mappings SET target_field = $1, mapping_type = $2, transform_logic = $3 WHERE id = $4`,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[targetField, mappingType, JSON.stringify(transformLogic), mappingId]<br>
+&nbsp;&nbsp;);<br>
+<br>
+&nbsp;&nbsp;res.json({ success: true });<br>
+});
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🔍 Step 2: Add Validation Rules</h2>
+            <p><strong>File:</strong> <code>backend/src/services/mapping-validator.service.ts</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+const TYPE_COMPATIBILITY = {<br>
+&nbsp;&nbsp;string: ['string', 'text', 'textarea', 'url', 'email'],<br>
+&nbsp;&nbsp;number: ['double', 'int', 'currency', 'percent'],<br>
+&nbsp;&nbsp;boolean: ['boolean', 'checkbox'],<br>
+&nbsp;&nbsp;date: ['date', 'datetime']<br>
+};<br>
+<br>
+export function validateMapping(sourceField: any, targetField: any) {<br>
+&nbsp;&nbsp;const warnings = [];<br>
+<br>
+&nbsp;&nbsp;if (!isTypeCompatible(sourceField.type, targetField.type)) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;warnings.push(`Type mismatch: ${sourceField.type} → ${targetField.type}`);<br>
+&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;if (targetField.required && !sourceField.value) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;warnings.push(`Required field ${targetField.name} has no mapping`);<br>
+&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;return warnings;<br>
+}
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>✅ Step 3: Test Update Endpoint</h2>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+curl -X PUT http://localhost:3000/api/v1/projects/1/mappings/5 -H "Content-Type: application/json" -d '{"targetField":"NewProductCode__c","mappingType":"direct"}'
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🎯 End of Day Checklist</h2>
+            <ul style="list-style:none;padding-left:0;">
+                <li>☐ PUT /mappings/:id update endpoint works</li>
+                <li>☐ Type compatibility validator implemented</li>
+                <li>☐ Required field checks added</li>
+                <li>☐ Code committed and pushed</li>
+            </ul>
         </div>
         <div class="nav-buttons"><a href="dev1-day11.html" class="nav-btn back">← Back to Day 11</a><a href="dev1-day13.html" class="nav-btn next">Next: Day 13 →</a></div>
     </div>

@@ -20,18 +20,69 @@ git pull origin main
             </div>
             <p>This ensures you have the latest code from your teammates. Always pull before starting work!</p>
         </div>
-<div class="step-card">
-            <h2>Objective</h2>
-            <p>Integrate AI service (OpenAI/Azure OpenAI) to suggest field mappings based on schema metadata.</p>
-        </div>
         <div class="step-card">
-            <h2>Tasks</h2>
-            <ol>
-                <li>Create AI service wrapper for OpenAI API</li>
-                <li>Build prompt template with source/target schema context</li>
-                <li>Implement POST /api/mappings/suggest endpoint</li>
-                <li>Parse AI response and return structured mapping suggestions</li>
-            </ol>
+            <h2>📋 Objective</h2>
+            <p>Integrate OpenAI GPT-4 to suggest field mappings using semantic similarity detection with confidence scores.</p>
+        </div>
+
+        <div class="step-card">
+            <h2>🤖 Step 1: Install OpenAI SDK</h2>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+cd backend<br>
+npm install openai
+            </div>
+            <p>Add to <code>.env</code>:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+OPENAI_API_KEY=sk-your-key-here
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>💡 Step 2: Create AI Service</h2>
+            <p><strong>File:</strong> <code>backend/src/services/ai-mapping.service.ts</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+import OpenAI from 'openai';<br>
+<br>
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });<br>
+<br>
+export async function suggestMappings(sourceFields: any[], targetFields: any[]) {<br>
+&nbsp;&nbsp;const prompt = `Given these source fields from SFDC CPQ: ${JSON.stringify(sourceFields)}<br>
+And target fields from Revenue Cloud: ${JSON.stringify(targetFields)}<br>
+Suggest the best field mappings with confidence scores (0.0-1.0). Return JSON array.`;<br>
+<br>
+&nbsp;&nbsp;const response = await openai.chat.completions.create({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;model: 'gpt-4',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;messages: [{ role: 'user', content: prompt }],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;response_format: { type: 'json_object' }<br>
+&nbsp;&nbsp;});<br>
+<br>
+&nbsp;&nbsp;return JSON.parse(response.choices[0].message.content);<br>
+}
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🌐 Step 3: Create AI Suggestions Endpoint</h2>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+router.post('/projects/:id/mappings/suggest', async (req, res) => {<br>
+&nbsp;&nbsp;const sourceFields = await getSourceFields(req.params.id);<br>
+&nbsp;&nbsp;const targetFields = await getTargetFields(req.params.id);<br>
+<br>
+&nbsp;&nbsp;const suggestions = await suggestMappings(sourceFields, targetFields);<br>
+&nbsp;&nbsp;res.json({ suggestions });<br>
+});
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🎯 End of Day Checklist</h2>
+            <ul style="list-style:none;padding-left:0;">
+                <li>☐ OpenAI SDK installed and configured</li>
+                <li>☐ AI service returns mapping suggestions</li>
+                <li>☐ POST /mappings/suggest endpoint works</li>
+                <li>☐ Confidence scores included (0.0-1.0)</li>
+                <li>☐ Code committed and pushed</li>
+            </ul>
         </div>
         <div class="nav-buttons"><a href="dev1-day12.html" class="nav-btn back">← Back to Day 12</a><a href="dev1-day14.html" class="nav-btn next">Next: Day 14 →</a></div>
     </div>

@@ -20,18 +20,57 @@ git pull origin main
             </div>
             <p>This ensures you have the latest code from your teammates. Always pull before starting work!</p>
         </div>
-<div class="step-card">
-            <h2>Objective</h2>
-            <p>Add validation logic to ensure mappings are compatible (type checks, required fields).</p>
-        </div>
         <div class="step-card">
-            <h2>Tasks</h2>
-            <ol>
-                <li>Implement type compatibility validator (e.g., string → number warnings)</li>
-                <li>Check for unmapped required fields</li>
-                <li>Create POST /api/mappings/validate endpoint</li>
-                <li>Return validation warnings/errors to frontend</li>
-            </ol>
+            <h2>📋 Objective</h2>
+            <p>Build validation endpoint to check all required fields are mapped and data types are compatible.</p>
+        </div>
+
+        <div class="step-card">
+            <h2>✅ Step 1: Create Validation Endpoint</h2>
+            <p><strong>File:</strong> <code>backend/src/routes/mapping.routes.ts</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+router.post('/projects/:id/mappings/validate', async (req, res) => {<br>
+&nbsp;&nbsp;const mappings = await db.query('SELECT * FROM field_mappings WHERE project_id = $1', [req.params.id]);<br>
+&nbsp;&nbsp;const targetFields = await getTargetFields(req.params.id);<br>
+<br>
+&nbsp;&nbsp;const errors = [];<br>
+&nbsp;&nbsp;const warnings = [];<br>
+<br>
+&nbsp;&nbsp;// Check required fields<br>
+&nbsp;&nbsp;for (const field of targetFields.filter(f => f.required)) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const mapped = mappings.rows.find(m => m.target_field === field.name);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (!mapped) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;errors.push(`Required field ${field.name} is not mapped`);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;// Check type compatibility<br>
+&nbsp;&nbsp;for (const mapping of mappings.rows) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const validation = validateMapping(mapping.source_field, mapping.target_field);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;warnings.push(...validation);<br>
+&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;res.json({ valid: errors.length === 0, errors, warnings });<br>
+});
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🧪 Step 2: Test Validation Rules</h2>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+curl -X POST http://localhost:3000/api/v1/projects/1/mappings/validate
+            </div>
+            <p><strong>Expected:</strong> Returns errors for unmapped required fields, warnings for type mismatches</p>
+        </div>
+
+        <div class="step-card">
+            <h2>🎯 End of Day Checklist</h2>
+            <ul style="list-style:none;padding-left:0;">
+                <li>☐ Validation endpoint checks required fields</li>
+                <li>☐ Type compatibility warnings returned</li>
+                <li>☐ Tested with 70+ field mappings</li>
+                <li>☐ Code committed and pushed</li>
+            </ul>
         </div>
         <div class="nav-buttons"><a href="dev1-day13.html" class="nav-btn back">← Back to Day 13</a><a href="dev1-day15.html" class="nav-btn next">Next: Day 15 →</a></div>
     </div>
