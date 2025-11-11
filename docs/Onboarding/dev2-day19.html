@@ -20,19 +20,186 @@ git pull origin main
             </div>
             <p>This ensures you have the latest code from your teammates. Always pull before starting work!</p>
         </div>
-<div class="step-card">
-            <h2>Objective</h2>
-            <p>Improve error handling and display user-friendly error messages across the app.</p>
+
+        <div class="step-card" style="background:#e0f2fe;border-left:4px solid #0284c7;">
+            <h2>🤖 Copy This Prompt for Your GitHub Copilot</h2>
+            <p><strong>Paste into Copilot Chat:</strong></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;max-height:400px;overflow-y:auto;">
+Day 19 - RevNova Frontend Developer<br><br>
+**PLATFORM:** Salesforce CPQ → Revenue Cloud migration SaaS. 7-step wizard with AI field mapping.<br>
+**TECH:** React 18, TypeScript, TailwindCSS, Vite<br>
+**REQUIREMENTS:** docs/RevNovaRequirements/ui-wireframes.html, functional-requirements.html<br>
+**MVP:** Week 4/5 (Nov 30). ✅Weeks 1-3: Wizard, mapping UI. 🔄Week 4: Validation display.<br><br>
+**CONTEXT:** Day 18 built ValidationResults with severity grouping (critical/error/warning/info)<br>
+**TODAY:** Add error detail modal for field-level issues and export functionality<br><br>
+**TASKS:**<br>
+1. Create ErrorDetailModal component with field name, error type, affected records, suggestion<br>
+2. Add "View Details" button to each validation issue<br>
+3. Display sample affected records (first 5 rows) in modal<br>
+4. Add "Export Errors CSV" button to download all validation issues<br>
+5. Format CSV: Field, Severity, Message, Suggestion, Timestamp<br><br>
+**API:** GET /api/mappings/:id/issues/:field returns { field, records: [{id, value, error}] }<br><br>
+**ACCEPTANCE:** Clicking "View Details" opens modal with affected records. CSV exports all issues with headers.<br><br>
+Guide me through building error detail modal with CSV export.
+            </div>
         </div>
+
         <div class="step-card">
-            <h2>Tasks</h2>
-            <ol>
-                <li>Create reusable error banner/toast component</li>
-                <li>Map API error codes to user messages</li>
-                <li>Add inline field validation errors</li>
-                <li>Implement error boundary for React crashes</li>
-            </ol>
+            <h2>📋 Objective</h2>
+            <p>Add error detail modal for field-level issues and export functionality.</p>
         </div>
+
+        <div class="step-card">
+            <h2>🔍 Step 1: Create ErrorDetailModal Component</h2>
+            <p>Create <code>frontend/src/components/ErrorDetailModal.tsx</code>:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+import { useState, useEffect } from 'react';<br><br>
+
+interface ErrorDetail {<br>
+&nbsp;&nbsp;field: string;<br>
+&nbsp;&nbsp;records: { id: string; value: string; error: string }[];<br>
+}<br><br>
+
+export default function ErrorDetailModal({ field, onClose }: { field: string; onClose: () => void }) {<br>
+&nbsp;&nbsp;const [details, setDetails] = useState&lt;ErrorDetail | null&gt;(null);<br><br>
+
+&nbsp;&nbsp;useEffect(() => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;fetchDetails();<br>
+&nbsp;&nbsp;}, [field]);<br><br>
+
+&nbsp;&nbsp;const fetchDetails = async () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const mappingId = sessionStorage.getItem('mappingId');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const response = await fetch(`/api/mappings/${mappingId}/issues/${field}`);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const data = await response.json();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;setDetails(data);<br>
+&nbsp;&nbsp;};<br><br>
+
+&nbsp;&nbsp;return (<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div className="bg-white rounded-lg p-6 max-w-2xl w-full max-h-96 overflow-y-auto"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h2 className="text-2xl font-bold mb-4"&gt;Error Details: {details?.field}&lt;/h2&gt;<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div className="mb-4"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div className="text-sm text-gray-600 mb-2"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Affected Records: {details?.records.length || 0}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;table className="w-full border-collapse"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;thead&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;tr className="bg-gray-100"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;th className="border p-2 text-left"&gt;Record ID&lt;/th&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;th className="border p-2 text-left"&gt;Value&lt;/th&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;th className="border p-2 text-left"&gt;Error&lt;/th&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/tr&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/thead&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;tbody&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{details?.records.slice(0, 5).map(record => (<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;tr key={record.id}&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;td className="border p-2"&gt;{record.id}&lt;/td&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;td className="border p-2"&gt;{record.value}&lt;/td&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;td className="border p-2 text-red-600"&gt;{record.error}&lt;/td&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/tr&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;))}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/tbody&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/table&gt;<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;button onClick={onClose} className="mt-4 px-4 py-2 bg-blue-600 text-white rounded"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Close<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/button&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;);<br>
+}
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>📊 Step 2: Update ValidationResults with Modal</h2>
+            <p>Add modal state and trigger to <code>ValidationResults.tsx</code>:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+const [selectedField, setSelectedField] = useState&lt;string | null&gt;(null);<br><br>
+
+// In IssueSection component:<br>
+&lt;button<br>
+&nbsp;&nbsp;onClick={() => setSelectedField(issue.field)}<br>
+&nbsp;&nbsp;className="text-blue-600 text-sm underline mt-2"<br>
+&gt;<br>
+&nbsp;&nbsp;View Details<br>
+&lt;/button&gt;<br><br>
+
+// At end of return statement:<br>
+{selectedField && (<br>
+&nbsp;&nbsp;&lt;ErrorDetailModal<br>
+&nbsp;&nbsp;&nbsp;&nbsp;field={selectedField}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;onClose={() => setSelectedField(null)}<br>
+&nbsp;&nbsp;/&gt;<br>
+)}
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>📥 Step 3: Add CSV Export Functionality</h2>
+            <p>Add export button to <code>ValidationResults.tsx</code>:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+const exportCSV = () => {<br>
+&nbsp;&nbsp;if (!results) return;<br><br>
+
+&nbsp;&nbsp;const headers = 'Field,Severity,Message,Suggestion,Timestamp\n';<br>
+&nbsp;&nbsp;const rows = results.issues.map(issue => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const timestamp = new Date().toISOString();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return `"${issue.field}","${issue.severity}","${issue.message}","${issue.suggestion || ''}","${timestamp}"`;<br>
+&nbsp;&nbsp;}).join('\n');<br><br>
+
+&nbsp;&nbsp;const csv = headers + rows;<br>
+&nbsp;&nbsp;const blob = new Blob([csv], { type: 'text/csv' });<br>
+&nbsp;&nbsp;const url = URL.createObjectURL(blob);<br>
+&nbsp;&nbsp;const a = document.createElement('a');<br>
+&nbsp;&nbsp;a.href = url;<br>
+&nbsp;&nbsp;a.download = `validation-errors-${new Date().toISOString().split('T')[0]}.csv`;<br>
+&nbsp;&nbsp;a.click();<br>
+};<br><br>
+
+// Add button after summary cards:<br>
+&lt;button<br>
+&nbsp;&nbsp;onClick={exportCSV}<br>
+&nbsp;&nbsp;className="px-4 py-2 bg-green-600 text-white rounded mb-6"<br>
+&gt;<br>
+&nbsp;&nbsp;📥 Export Errors CSV<br>
+&lt;/button&gt;
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🧪 Step 4: Test Error Display</h2>
+            <p>Test validation UI manually:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+# Start dev server<br>
+cd frontend<br>
+npm run dev<br><br>
+
+# Navigate to http://localhost:5173/validation<br>
+# Verify:<br>
+# - Summary cards show correct counts<br>
+# - Click "View Details" opens modal with affected records<br>
+# - Click "Export CSV" downloads file with proper headers<br>
+# - "Start Migration" button disabled with critical errors
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>✅ End of Day 19 Checklist</h2>
+            <ul>
+                <li>✅ ErrorDetailModal shows affected records with IDs, values, errors</li>
+                <li>✅ "View Details" button opens modal for each validation issue</li>
+                <li>✅ Modal displays first 5 affected records</li>
+                <li>✅ "Export CSV" button downloads all validation issues</li>
+                <li>✅ CSV format includes Field, Severity, Message, Suggestion, Timestamp</li>
+                <li>✅ Manual testing confirmed modal and export work correctly</li>
+                <li>✅ Committed: <code>feat(frontend): add error detail modal and CSV export</code></li>
+            </ul>
+        </div>
+
         <div class="nav-buttons"><a href="dev2-day18.html" class="nav-btn back">← Back to Day 18</a><a href="dev2-day20.html" class="nav-btn next">Next: Day 20 →</a></div>
     </div>
 </body>
