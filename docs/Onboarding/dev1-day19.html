@@ -20,18 +20,289 @@ git pull origin main
             </div>
             <p>This ensures you have the latest code from your teammates. Always pull before starting work!</p>
         </div>
-<div class="step-card">
-            <h2>Objective</h2>
-            <p>Implement worker logic to extract source data, transform via mappings, and stage for load.</p>
+
+        <div class="step-card" style="background:#e0f2fe;border-left:4px solid #0284c7;">
+            <h2>🤖 Copy This Prompt for Your GitHub Copilot</h2>
+            <p><strong>Click the code block below, copy all text, and paste into GitHub Copilot Chat to get step-by-step guidance:</strong></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;max-height:400px;overflow-y:auto;">
+I'm working on Day 19 of the RevNova migration platform (Salesforce CPQ → Revenue Cloud).<br><br>
+
+**Context from Previous Days:**<br>
+- Days 1-15: Built Express + TypeScript backend, PostgreSQL with STG1/STG2 staging tables, jsforce Salesforce integration, field mapping API with OpenAI suggestions<br>
+- Days 16-17: Built transformation engine with 6 types (Direct, ValueMap, Formula, Concatenate, Lookup, Date), supports null handling and error tracking<br>
+- Day 18: Set up Bull queue with Redis, job submission API (POST /api/jobs), status tracking (GET /api/jobs/:jobId)<br><br>
+
+**Today's Goal:** Implement ETL worker that extracts data from Salesforce, applies transformations, and loads to staging tables (STG1)<br><br>
+
+**Tasks:**<br>
+1. Update migration worker to extract data from Salesforce using jsforce SOQL queries<br>
+2. Apply transformation rules from field mappings (use TransformService from Day 17)<br>
+3. Write transformed records to STG1 staging table in PostgreSQL<br>
+4. Update job progress every 10% (0%, 10%, 20%...100%) with record counts<br>
+5. Handle errors gracefully (log failed records, continue processing)<br><br>
+
+**Database Schema (STG1):**<br>
+```sql<br>
+CREATE TABLE stg1_records (<br>
+&nbsp;&nbsp;id SERIAL PRIMARY KEY,<br>
+&nbsp;&nbsp;migration_id VARCHAR(255),<br>
+&nbsp;&nbsp;source_id VARCHAR(255),<br>
+&nbsp;&nbsp;data JSONB,<br>
+&nbsp;&nbsp;created_at TIMESTAMP DEFAULT NOW()<br>
+);  <br>
+```<br><br>
+
+**Acceptance Criteria:**<br>
+- Worker extracts records using SOQL: SELECT * FROM &lt;sourceObject&gt; LIMIT 1000<br>
+- Each record transformed using TransformService.applyTransform() for each field mapping<br>
+- Transformed records inserted to stg1_records table in batches of 100<br>
+- Job progress updated every 100 records: { status: 'active', progress: X%, recordsProcessed: N }<br>
+- Errors logged but don't stop processing: { failedRecords: [{id, error}] }<br>
+- Final result: { success: true, recordsProcessed: 1000, recordsFailed: 2 }<br><br>
+
+**Testing:**<br>
+- Submit job with real Salesforce connection and mapping<br>
+- Monitor logs for "Extracting 1000 records...", "Transforming batch 1/10...", "Loaded 100 records to STG1"<br>
+- Verify stg1_records table has transformed data<br>
+- Check job result shows recordsProcessed count<br><br>
+
+Please guide me step-by-step through implementing this ETL pipeline. Show me the code for extracting, transforming, and loading data.
+            </div>
         </div>
+
+<div class="step-card">
+            <h2>📋 Objective</h2>
+            <p>Implement worker logic to extract source data from Salesforce, transform via mappings, and stage for load.</p>
+        </div>
+
         <div class="step-card">
-            <h2>Tasks</h2>
-            <ol>
-                <li>Build ETL worker that reads from source connection</li>
-                <li>Apply transformation rules to each row</li>
-                <li>Write transformed data to staging tables (STG1/STG2)</li>
-                <li>Update job progress and emit status events</li>
-            </ol>
+            <h2>📥 Step 1: Create ETL Service for Data Extraction</h2>
+            <p>Create <code>backend/src/services/etlService.ts</code>:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+import { Connection } from '@jsforce/jsforce-node';<br>
+import { redisClient } from '../config/redis';<br>
+import { pool } from '../config/database';<br>
+import { TransformService } from './transformService';<br>
+import { Transform } from '../types/transform.types';<br><br>
+
+export class ETLService {<br>
+&nbsp;&nbsp;private transformService = new TransformService();<br><br>
+
+&nbsp;&nbsp;async extractFromSalesforce(connectionId: string, objectName: string, limit = 1000) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Get connection from Redis<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const connData = await redisClient.get(`connection:${connectionId}`);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (!connData) throw new Error('Connection not found');<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;const { accessToken, instanceUrl } = JSON.parse(connData);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const conn = new Connection({ accessToken, instanceUrl });<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;// Query records<br>
+&nbsp;&nbsp;&nbsp;&nbsp;console.log(`Extracting from ${objectName} (limit: ${limit})...`);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const result = await conn.query(`SELECT * FROM ${objectName} LIMIT ${limit}`);<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;console.log(`Extracted ${result.records.length} records`);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return result.records;<br>
+&nbsp;&nbsp;}<br><br>
+
+&nbsp;&nbsp;async transformRecords(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;records: any[],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;transforms: Transform[],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;connectionId: string<br>
+&nbsp;&nbsp;) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const transformed = [];<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const errors = [];<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;for (let i = 0; i &lt; records.length; i++) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const record = records[i];<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const transformedRecord: Record&lt;string, any&gt; = { source_id: record.Id };<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for (const transform of transforms) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const value = await this.transformService.applyTransform(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;record,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;transform,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;connectionId<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;transformedRecord[transform.targetField] = value;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;transformed.push(transformedRecord);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} catch (error: any) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;errors.push({ id: record.Id, error: error.message });<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;return { transformed, errors };<br>
+&nbsp;&nbsp;}<br><br>
+
+&nbsp;&nbsp;async loadToStaging(migrationId: string, records: any[]) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const client = await pool.connect();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;try {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;await client.query('BEGIN');<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for (const record of records) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;await client.query(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'INSERT INTO stg1_records (migration_id, source_id, data) VALUES ($1, $2, $3)',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[migrationId, record.source_id, JSON.stringify(record)]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;await client.query('COMMIT');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log(`Loaded ${records.length} records to STG1`);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;} catch (error) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;await client.query('ROLLBACK');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;throw error;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;} finally {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;client.release();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;}<br>
+}
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>⚙️ Step 2: Update Migration Worker with ETL Logic</h2>
+            <p>Update <code>backend/src/workers/migrationWorker.ts</code>:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+import { migrationQueue } from '../queues/migrationQueue';<br>
+import { ETLService } from '../services/etlService';<br>
+import { pool } from '../config/database';<br><br>
+
+const etlService = new ETLService();<br><br>
+
+migrationQueue.process(async (job) => {<br>
+&nbsp;&nbsp;const { mappingId, connectionId } = job.data;<br>
+&nbsp;&nbsp;const migrationId = `migration_${job.id}`;<br><br>
+
+&nbsp;&nbsp;console.log(`Starting ETL job ${job.id}`);<br><br>
+
+&nbsp;&nbsp;try {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Get mapping configuration<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const mappingResult = await pool.query(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'SELECT source_object, transforms FROM field_mappings WHERE id = $1',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[mappingId]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;);<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;if (mappingResult.rows.length === 0) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;throw new Error('Mapping not found');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;const { source_object, transforms } = mappingResult.rows[0];<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;// EXTRACT<br>
+&nbsp;&nbsp;&nbsp;&nbsp;await job.progress(10);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const records = await etlService.extractFromSalesforce(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;connectionId,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;source_object,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1000<br>
+&nbsp;&nbsp;&nbsp;&nbsp;);<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;// TRANSFORM<br>
+&nbsp;&nbsp;&nbsp;&nbsp;await job.progress(40);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const { transformed, errors } = await etlService.transformRecords(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;records,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;transforms,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;connectionId<br>
+&nbsp;&nbsp;&nbsp;&nbsp;);<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;console.log(`Transformed ${transformed.length} records, ${errors.length} errors`);<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;// LOAD (in batches)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const batchSize = 100;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;for (let i = 0; i &lt; transformed.length; i += batchSize) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const batch = transformed.slice(i, i + batchSize);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;await etlService.loadToStaging(migrationId, batch);<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const progress = 40 + Math.floor((i / transformed.length) * 50);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;await job.progress(progress);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;await job.progress(100);<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;return {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;success: true,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;recordsProcessed: transformed.length,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;recordsFailed: errors.length,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;errors: errors.slice(0, 10) // First 10 errors only<br>
+&nbsp;&nbsp;&nbsp;&nbsp;};<br>
+&nbsp;&nbsp;} catch (error: any) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;console.error(`Job ${job.id} failed:`, error);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;throw error;<br>
+&nbsp;&nbsp;}<br>
+});<br><br>
+
+migrationQueue.on('completed', (job, result) => {<br>
+&nbsp;&nbsp;console.log(`Job ${job.id} completed:`, result);<br>
+});<br><br>
+
+migrationQueue.on('failed', (job, err) => {<br>
+&nbsp;&nbsp;console.error(`Job ${job?.id} failed after ${job?.attemptsMade} attempts:`, err.message);<br>
+});<br><br>
+
+console.log('Migration worker started with ETL pipeline');
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🗄️ Step 3: Create STG1 Migration Table</h2>
+            <p>Create <code>backend/src/migrations/005_create_stg1_table.sql</code>:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+CREATE TABLE IF NOT EXISTS stg1_records (<br>
+&nbsp;&nbsp;id SERIAL PRIMARY KEY,<br>
+&nbsp;&nbsp;migration_id VARCHAR(255) NOT NULL,<br>
+&nbsp;&nbsp;source_id VARCHAR(255),<br>
+&nbsp;&nbsp;data JSONB NOT NULL,<br>
+&nbsp;&nbsp;created_at TIMESTAMP DEFAULT NOW(),<br>
+&nbsp;&nbsp;INDEX idx_migration_id (migration_id),<br>
+&nbsp;&nbsp;INDEX idx_source_id (source_id)<br>
+);
+            </div>
+            <p>Run migration:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+cd backend<br>
+psql -U revnova -d revnova -f src/migrations/005_create_stg1_table.sql
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🧪 Step 4: Test ETL Pipeline</h2>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+# Submit ETL job with real mapping<br>
+curl -X POST http://localhost:3000/api/jobs \<br>
+&nbsp;&nbsp;-H "Content-Type: application/json" \<br>
+&nbsp;&nbsp;-d '{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"mappingId": "real-mapping-id",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"connectionId": "real-connection-id"<br>
+&nbsp;&nbsp;}'<br><br>
+
+# Monitor job status<br>
+curl http://localhost:3000/api/jobs/1<br><br>
+
+# Check backend logs for:<br>
+# "Extracting from Account (limit: 1000)..."<br>
+# "Extracted 1000 records"<br>
+# "Transformed 998 records, 2 errors"<br>
+# "Loaded 100 records to STG1"<br>
+# "Job 1 completed: { success: true, recordsProcessed: 998, recordsFailed: 2 }"<br><br>
+
+# Verify staging table<br>
+psql -U revnova -d revnova -c "SELECT COUNT(*), migration_id FROM stg1_records GROUP BY migration_id;"
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>✅ End of Day 19 Checklist</h2>
+            <ul>
+                <li>✅ <code>backend/src/services/etlService.ts</code> created with extract, transform, load methods</li>
+                <li>✅ <code>backend/src/workers/migrationWorker.ts</code> updated with full ETL pipeline</li>
+                <li>✅ <code>stg1_records</code> table created in PostgreSQL with indexes</li>
+                <li>✅ Worker extracts data from Salesforce via jsforce SOQL</li>
+                <li>✅ Transformations applied using TransformService from Day 17</li>
+                <li>✅ Records loaded to STG1 in batches of 100</li>
+                <li>✅ Job progress updates every batch: 10% → 40% → 90% → 100%</li>
+                <li>✅ Errors logged but processing continues (failedRecords in result)</li>
+                <li>✅ Test job completes successfully with recordsProcessed count</li>
+                <li>✅ All changes committed: <code>feat(backend): implement ETL pipeline with extract, transform, load to STG1</code></li>
+            </ul>
         </div>
         <div class="nav-buttons"><a href="dev1-day18.html" class="nav-btn back">← Back to Day 18</a><a href="dev1-day20.html" class="nav-btn next">Next: Day 20 →</a></div>
     </div>
