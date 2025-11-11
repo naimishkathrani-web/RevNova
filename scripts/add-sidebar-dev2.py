@@ -1,13 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Dev2 Day 10: Week 2 Testing & PR - RevNova Onboarding</title>
-    <link rel="stylesheet" href="../styles.css">
-    <style>body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Ubuntu,sans-serif}.main-content{margin-left:280px;padding:2.5rem}.day-header{background:linear-gradient(135deg,#43e97b 0%,#38f9d7 100%);color:#fff;padding:1.5rem;border-radius:10px;margin-bottom:1rem}.step-card{background:#fff;border:1px solid #e0e0e0;padding:1rem;border-radius:8px;margin-bottom:1rem}.nav-buttons{display:flex;justify-content:space-between;margin-top:1.5rem}</style>
-</head>
-<body>
+#!/usr/bin/env python3
+"""
+Add header and sidebar to all Dev2 onboarding day pages.
+"""
+
+import re
+import os
+from pathlib import Path
+
+# Header HTML template
+HEADER_HTML = '''<body>
     <header>
         <div class="container header-container">
             <div class="nav-left">
@@ -99,75 +100,63 @@
         </aside>
 
         <!-- Main Content -->
-        <main class="main-content">
-        <div class="day-header"><h1>Day 10: Week 2 Testing & Pull Request</h1><p>Developer 2 — Frontend</p></div>
+        <main class="main-content">'''
 
-        <div class="step-card" style="background:#fffbea;border-left:4px solid #f59e0b;">
-            <h2>⚠️ IMPORTANT: Start of Day Checklist</h2>
-            <p><strong>Before starting today's work, run these commands:</strong></p>
-            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
-cd C:\Dev\RevNovaRepository<br>
-git pull origin main
-            </div>
-            <p>This ensures you have the latest code from your teammates. Always pull before starting work!</p>
-        </div>
-        <div class="step-card">
-            <h2>📋 Objective</h2>
-            <p>Write component tests for connection UI, perform cross-browser testing, and create Week 2 PR.</p>
-        </div>
-
-        <div class="step-card">
-            <h2>🧪 Step 1: Write Component Tests with Vitest</h2>
-            <p><strong>File:</strong> <code>frontend/src/components/__tests__/ConnectionForm.test.tsx</code></p>
-            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
-import { render, screen, fireEvent } from '@testing-library/react';<br>
-import { ConnectionForm } from '../ConnectionForm';<br>
-<br>
-test('renders connection form', () => {<br>
-&nbsp;&nbsp;render(&lt;ConnectionForm /&gt;);<br>
-&nbsp;&nbsp;expect(screen.getByPlaceholderText('Connection Name')).toBeInTheDocument();<br>
-});<br>
-<br>
-test('validates required fields', async () => {<br>
-&nbsp;&nbsp;render(&lt;ConnectionForm /&gt;);<br>
-&nbsp;&nbsp;fireEvent.click(screen.getByText('Test Connection'));<br>
-&nbsp;&nbsp;expect(screen.getByText(/Please fill all required fields/)).toBeInTheDocument();<br>
-});
-            </div>
-        </div>
-
-        <div class="step-card">
-            <h2>🌐 Step 2: Cross-Browser Testing</h2>
-            <p>Test connection flow in:</p>
-            <ul>
-                <li>Chrome (latest)</li>
-                <li>Firefox (latest)</li>
-                <li>Safari (if available)</li>
-            </ul>
-            <p>Verify: Form validation, OAuth popup, error messages, success feedback</p>
-        </div>
-
-        <div class="step-card">
-            <h2>🔀 Step 3: Create Pull Request</h2>
-            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
-git add .<br>
-git commit -m "feat: connection wizard UI with OAuth and testing"<br>
-git push origin dev2-week2<br>
-gh pr create --title "Week 2: Connection Wizard UI" --body "Implements connection form, OAuth flow, error handling"
-            </div>
-        </div>
-
-        <div class="step-card">
-            <h2>🎯 End of Day Checklist</h2>
-            <ul style="list-style:none;padding-left:0;">
-                <li>☐ Component tests pass (Vitest)</li>
-                <li>☐ Cross-browser testing complete</li>
-                <li>☐ UI behavior documented</li>
-                <li>☐ PR opened with screenshots</li>
-            </ul>
-        </div>        <div class="nav-buttons"><a href="dev2-day09.html" class="nav-btn back">← Back to Day 9</a><a href="dev2-week3.html" class="nav-btn next">Next: Week 3 →</a></div>
-            </main>
+CLOSING_HTML = '''        </main>
     </div>
     <script src="../script.js"></script>
-</body>
-</html>
+</body>'''
+
+def add_sidebar_to_file(filepath):
+    """Add header and sidebar to a single Dev2 day file."""
+    with open(filepath, 'r', encoding='utf-8') as f:
+        content = f.read()
+    
+    # Check if sidebar already exists
+    if '<aside class="sidebar">' in content:
+        print(f"  ⏭️  {filepath.name} - Already has sidebar, skipping")
+        return False
+    
+    # Replace <body> with header + sidebar
+    content = re.sub(
+        r'<body>\s*<div class="main-content">',
+        HEADER_HTML,
+        content,
+        count=1
+    )
+    
+    # Replace closing </div></body> with closing structure
+    content = re.sub(
+        r'</div>\s*</body>',
+        CLOSING_HTML,
+        content,
+        count=1
+    )
+    
+    with open(filepath, 'w', encoding='utf-8') as f:
+        f.write(content)
+    
+    print(f"  ✅ {filepath.name} - Added sidebar")
+    return True
+
+def main():
+    docs_dir = Path(__file__).parent.parent / 'docs' / 'Onboarding'
+    
+    # Get all dev2-day*.html files
+    dev2_files = sorted(docs_dir.glob('dev2-day*.html'))
+    
+    print(f"Found {len(dev2_files)} Dev2 day files")
+    print("\nAdding header and sidebar to all files...")
+    print("=" * 60)
+    
+    updated_count = 0
+    for filepath in dev2_files:
+        if add_sidebar_to_file(filepath):
+            updated_count += 1
+    
+    print("=" * 60)
+    print(f"\n✨ Complete! Updated {updated_count} files")
+    print(f"Skipped {len(dev2_files) - updated_count} files (already had sidebars)")
+
+if __name__ == '__main__':
+    main()
