@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connect Source System - RevNova</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icons/6.6.4/css/flag-icons.min.css">
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="nav-left">
+                <a href="../index.html" class="logo">
+                    <div class="logo-box">RevNova</div>
+                </a>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="system-monitor.html"><i class="fas fa-chart-pie"></i> System Monitor</a></li>
+                        <li><a href="data-backup.html"><i class="fas fa-database"></i> Data Backup</a></li>
+                        <li><a href="audit-logs.html"><i class="fas fa-clipboard-list"></i> Audit Logs</a></li>
+                        <li><a href="settings.html"><i class="fas fa-cogs"></i> Settings</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header-right">
+                <div class="country-selector">
+                    <span class="fi fi-us"></span>
+                </div>
+                <a href="dashboard.html" class="btn btn-login">Back to Dashboard</a>
+            </div>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <section class="platform-overview">
+        <div class="container">
+            <div class="migration-progress">
+                <div class="progress-steps">
+                    <div class="progress-step active">
+                        <div class="step-number">1</div>
+                        <div class="step-label">Connect</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-number">2</div>
+                        <div class="step-label">Analyze</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-number">3</div>
+                        <div class="step-label">Map</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-number">4</div>
+                        <div class="step-label">Transform</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-number">5</div>
+                        <div class="step-label">Validate</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-number">6</div>
+                        <div class="step-label">Execute</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-number">7</div>
+                        <div class="step-label">Test</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="wizard-header">
+                <h2>Connect Source System</h2>
+                <p>Configure your SFDC CPQ source environment for migration analysis</p>
+            </div>
+
+            <div class="migration-wizard-container">
+                <div class="wizard-content">
+                    <div class="connection-form">
+                        <form id="connectionForm">
+                            <div class="form-section">
+                                <h4><i class="fas fa-server"></i> Environment Configuration</h4>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="source-environment">Environment Type *</label>
+                                        <select id="source-environment" name="source-environment" required>
+                                            <option value="production">Production</option>
+                                            <option value="sandbox" selected>Sandbox</option>
+                                            <option value="developer">Developer Edition</option>
+                                            <option value="scratch">Scratch Org</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="api-version">Salesforce API Version *</label>
+                                        <select id="api-version" name="api-version" required>
+                                            <option value="58.0" selected>Winter '24 (58.0)</option>
+                                            <option value="57.0">Summer '23 (57.0)</option>
+                                            <option value="56.0">Spring '23 (56.0)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-section">
+                                <h4><i class="fas fa-plug"></i> Connection Details</h4>
+                                <div class="form-group">
+                                    <label for="source-url">Instance URL *</label>
+                                    <input type="url" id="source-url" name="source-url" 
+                                           value="https://techcorp--dev.sandbox.my.salesforce.com" required>
+                                    <div class="form-note">Your Salesforce instance URL</div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="source-username">Username *</label>
+                                        <input type="text" id="source-username" name="source-username" 
+                                               value="integration.user@techcorp.com" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="source-password">Password *</label>
+                                        <input type="password" id="source-password" name="source-password" 
+                                               value="••••••••" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="security-token">Security Token</label>
+                                    <input type="text" id="security-token" name="security-token" 
+                                           value="ABC123XYZ789" placeholder="Required for username/password auth">
+                                </div>
+                            </div>
+
+                            <div class="form-section">
+                                <h4><i class="fas fa-cogs"></i> Advanced Settings</h4>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="batch-size">Batch Size</label>
+                                        <select id="batch-size" name="batch-size">
+                                            <option value="100">100 records</option>
+                                            <option value="200" selected>200 records</option>
+                                            <option value="500">500 records</option>
+                                            <option value="1000">1000 records</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="timeout">API Timeout (seconds)</label>
+                                        <input type="number" id="timeout" name="timeout" value="120" min="30" max="300">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group checkbox-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="include-metadata" checked>
+                                        <span class="checkmark"></span>
+                                        Include metadata (layouts, profiles, permissions)
+                                    </label>
+                                </div>
+                                
+                                <div class="form-group checkbox-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="backup-data" checked>
+                                        <span class="checkmark"></span>
+                                        Create data backup before migration
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="connection-test">
+                                <button type="button" id="testConnection" class="btn btn-secondary btn-sm">
+                                    <i class="fas fa-plug"></i>
+                                    Test Connection
+                                </button>
+                                <div id="connectionStatus" class="connection-status"></div>
+                            </div>
+
+                            <div class="wizard-actions">
+                                <button type="submit" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-arrow-right"></i>
+                                    Continue to Analysis
+                                </button>
+                                <a href="dashboard.html" class="btn btn-secondary btn-sm">Cancel</a>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="connection-help">
+                        <h4><i class="fas fa-info-circle"></i> Connection Guide</h4>
+                        <div class="help-content">
+                            <div class="help-item">
+                                <strong>Production Environment</strong>
+                                <p>Use for final migration. Requires system admin credentials.</p>
+                            </div>
+                            <div class="help-item">
+                                <strong>Sandbox Environment</strong>
+                                <p>Recommended for testing migration process first.</p>
+                            </div>
+                            <div class="help-item">
+                                <strong>Security Best Practices</strong>
+                                <p>Create a dedicated integration user with minimum required permissions.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo-box">RevNova</div>
+                    <p class="footer-description">System Transformation as a Service</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="about-revnova.html">About RevNova</a></li>
+                            <li><a href="careers.html">Careers</a></li>
+                            <li><a href="contact.html">Contact</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="documentation.html">Documentation</a></li>
+                            <li><a href="blog.html">Blog</a></li>
+                            <li><a href="case-studies.html">Case Studies</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Legal</h4>
+                        <ul>
+                            <li><a href="privacy.html">Privacy Policy</a></li>
+                            <li><a href="terms.html">Terms of Service</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="footer-legal">
+                    <span>&copy; 2024 RevNova. All rights reserved.</span>
+                    <div class="legal-links">
+                        <a href="privacy.html">Privacy Policy</a>
+                        <a href="terms.html">Terms of Service</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('connectionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const projectId = new URLSearchParams(window.location.search).get('projectId') || 'pricing-rules-migration';
+            const connectionData = {
+                environment: document.getElementById('source-environment').value,
+                url: document.getElementById('source-url').value,
+                username: document.getElementById('source-username').value,
+                apiVersion: document.getElementById('api-version').value,
+                batchSize: document.getElementById('batch-size').value,
+                timeout: document.getElementById('timeout').value,
+                timestamp: new Date().toISOString()
+            };
+            
+            localStorage.setItem(`migration_${projectId}_connection`, JSON.stringify(connectionData));
+            localStorage.setItem(`migration_${projectId}_currentStep`, 'analyze');
+            
+            window.location.href = `migration-analyze.html?projectId=${projectId}`;
+        });
+
+        document.getElementById('testConnection').addEventListener('click', function() {
+            const statusDiv = document.getElementById('connectionStatus');
+            statusDiv.innerHTML = '<i class="fas fa-sync fa-spin"></i> Testing connection...';
+            statusDiv.className = 'connection-status testing';
+            
+            setTimeout(() => {
+                statusDiv.innerHTML = '<i class="fas fa-check-circle"></i> Connection successful!';
+                statusDiv.className = 'connection-status success';
+            }, 2000);
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const projectId = new URLSearchParams(window.location.search).get('projectId');
+            if (projectId) {
+                const savedData = localStorage.getItem(`migration_${projectId}_connection`);
+                if (savedData) {
+                    const connectionData = JSON.parse(savedData);
+                    document.getElementById('source-environment').value = connectionData.environment;
+                    document.getElementById('source-url').value = connectionData.url;
+                    document.getElementById('source-username').value = connectionData.username;
+                    document.getElementById('api-version').value = connectionData.apiVersion;
+                    document.getElementById('batch-size').value = connectionData.batchSize;
+                    document.getElementById('timeout').value = connectionData.timeout;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+[file content end]
