@@ -89,7 +89,7 @@
         </aside>
 
         <main class="main-content">
-        <div class="day-header"><h1>Day 24: Integration Testing</h1><p>Developer 1 — Backend & Database</p></div>
+        <div class="day-header"><h1>Day 24: Integration Testing</h1><p>Developer 1 — Backend & Database | Week 5/5</p></div>
 
         <div class="step-card" style="background:#fffbea;border-left:4px solid #f59e0b;">
             <h2>⚠️ IMPORTANT: Start of Day Checklist</h2>
@@ -100,18 +100,264 @@ git pull origin main
             </div>
             <p>This ensures you have the latest code from your teammates. Always pull before starting work!</p>
         </div>
-<div class="step-card">
-            <h2>Objective</h2>
-            <p>Run comprehensive integration tests for full migration pipeline end-to-end.</p>
+
+        <div class="step-card" style="background:#e8f5e9;border-left:4px solid #4caf50;">
+            <h2>🤖 Enhanced Copilot Prompt</h2>
+            <div style="background:#f5f5f5;padding:1.5rem;border-radius:6px;margin:1rem 0;border-left:3px solid #4caf50;">
+<pre style="white-space:pre-wrap;font-family:monospace;font-size:0.9em;line-height:1.6;margin:0;">
+<strong>Day 24 - RevNova Backend - E2E Integration Testing</strong>
+
+<strong>🎯 REVNOVA:</strong> Full migration pipeline test: connect → analyze → map → transform → execute
+<strong>📚 REQUIREMENTS:</strong> <a href="../RevNovaRequirements/testing-strategy.html" target="_blank">docs/RevNovaRequirements/testing-strategy.html</a>
+<strong>🏗️ MVP STATUS:</strong> Week 5/5 (Nov 30 deadline - 18 days remaining)
+<strong>TECH:</strong> supertest (API testing) + Jest + PostgreSQL test DB (port 5433)
+
+<strong>TODAY'S GOAL:</strong> Create comprehensive E2E integration tests covering full migration workflow. Test success scenarios, error handling, rollback, data integrity. Achieve 90%+ code coverage.
+
+<strong>TASKS:</strong>
+1. <strong>E2E Test Suite</strong> (backend/tests/integration/migration-e2e.test.ts)
+   - Test: POST /api/connections → POST /api/schema → POST /api/mappings → POST /api/transform → POST /api/migrations/:id/execute
+   - Verify: Each step updates migration status correctly
+   - Assert: Final data in target Salesforce matches source (STG1)
+   - Use real Salesforce Sandbox OR mock jsforce responses
+
+2. <strong>Error scenario tests</strong>
+   - Test: Invalid OAuth token → expect 401 error
+   - Test: Transformation failure → expect ROLLBACK transaction
+   - Test: Execution errors → expect migration status = 'FAILED'
+   - Test: Rollback endpoint → verify POST /api/migrations/:id/rollback deletes records
+
+3. <strong>Data integrity tests</strong>
+   - After execution: Query staging tables (STG1_PRODUCTS)
+   - Query target Salesforce: conn.sobject('Product2').find()
+   - Assert: Record counts match, field values identical
+   - Check: Foreign keys preserved (PricebookEntry → Product2)
+
+4. <strong>Performance tests (optional)</strong>
+   - Test with 1000 records
+   - Measure: execution time, memory usage
+   - Assert: Completes within 60 seconds
+   - Verify: Bull queue processes jobs concurrently
+
+Guide me step-by-step through creating comprehensive E2E integration tests for the migration pipeline.
+</pre>
+            </div>
         </div>
+
         <div class="step-card">
-            <h2>Tasks</h2>
-            <ol>
-                <li>Test full flow: connect → analyze → map → transform → execute</li>
-                <li>Verify data integrity after migration</li>
-                <li>Test error scenarios and rollback procedures</li>
-                <li>Run performance tests with larger datasets</li>
-            </ol>
+            <h2>Step 1: Create E2E Test Suite</h2>
+            <p><strong>File:</strong> <code>backend/tests/integration/migration-e2e.test.ts</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+<pre style="margin:0;white-space:pre-wrap;">
+import request from 'supertest';
+import app from '../../src/app';
+import { db } from '../../src/config/database';
+
+describe('Migration E2E Flow', () =&gt; {
+  let migrationId: string;
+  let connectionId: string;
+  
+  beforeAll(async () =&gt; {
+    // Clean test database
+    await db.query('TRUNCATE migrations, connections CASCADE');
+  });
+  
+  afterAll(async () =&gt; {
+    await db.end();
+  });
+  
+  test('Step 1: Create Salesforce connection', async () =&gt; {
+    const response = await request(app)
+      .post('/api/connections')
+      .send({
+        instanceUrl: 'https://test.salesforce.com',
+        clientId: 'test_client_id',
+        clientSecret: 'test_secret'
+      })
+      .expect(201);
+    
+    connectionId = response.body.id;
+    expect(connectionId).toBeDefined();
+  });
+  
+  test('Step 2: Analyze schema', async () =&gt; {
+    const response = await request(app)
+      .post(`/api/connections/${connectionId}/analyze`)
+      .expect(200);
+    
+    expect(response.body.objects).toContainEqual(
+      expect.objectContaining({ name: 'Product2' })
+    );
+  });
+  
+  test('Step 3: Create migration with field mappings', async () =&gt; {
+    const response = await request(app)
+      .post('/api/migrations')
+      .send({
+        connectionId,
+        name: 'Test Migration',
+        mappings: [
+          { sourceField: 'ProductCode', targetField: 'ProductCode', confidence: 1.0 }
+        ]
+      })
+      .expect(201);
+    
+    migrationId = response.body.id;
+    expect(migrationId).toBeDefined();
+  });
+  
+  test('Step 4: Run transformation', async () =&gt; {
+    const response = await request(app)
+      .post(`/api/migrations/${migrationId}/transform`)
+      .expect(200);
+    
+    expect(response.body.status).toBe('TRANSFORMED');
+    
+    // Verify staging tables populated
+    const stg1Result = await db.query(
+      'SELECT COUNT(*) FROM STG1_PRODUCTS WHERE migration_id = $1',
+      [migrationId]
+    );
+    expect(parseInt(stg1Result.rows[0].count)).toBeGreaterThan(0);
+  });
+  
+  test('Step 5: Execute migration', async () =&gt; {
+    const response = await request(app)
+      .post(`/api/migrations/${migrationId}/execute`)
+      .expect(200);
+    
+    expect(response.body.status).toBe('EXECUTING');
+    
+    // Wait for Bull queue to process
+    await new Promise(resolve =&gt; setTimeout(resolve, 5000));
+    
+    // Check final status
+    const migration = await db.query(
+      'SELECT status FROM migrations WHERE id = $1',
+      [migrationId]
+    );
+    expect(migration.rows[0].status).toBe('COMPLETED');
+  });
+  
+  test('Step 6: Verify data integrity', async () =&gt; {
+    // Compare STG1 vs execution logs
+    const stg1Count = await db.query(
+      'SELECT COUNT(*) FROM STG1_PRODUCTS WHERE migration_id = $1',
+      [migrationId]
+    );
+    
+    const logsResult = await db.query(
+      'SELECT success_count FROM migration_execution_logs WHERE migration_id = $1',
+      [migrationId]
+    );
+    
+    expect(logsResult.rows[0].success_count).toBe(parseInt(stg1Count.rows[0].count));
+  });
+});
+</pre>
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>Step 2: Error Scenario Tests</h2>
+            <p><strong>File:</strong> <code>backend/tests/integration/error-handling.test.ts</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+<pre style="margin:0;white-space:pre-wrap;">
+describe('Error Handling Tests', () =&gt; {
+  test('Should rollback on transformation failure', async () =&gt; {
+    // Create migration with invalid mappings
+    const migration = await request(app)
+      .post('/api/migrations')
+      .send({ connectionId: 'test-conn', mappings: [] })
+      .expect(201);
+    
+    // Trigger transformation (should fail)
+    await request(app)
+      .post(`/api/migrations/${migration.body.id}/transform`)
+      .expect(500);
+    
+    // Verify staging tables are empty (transaction rolled back)
+    const stg1Result = await db.query(
+      'SELECT COUNT(*) FROM STG1_PRODUCTS WHERE migration_id = $1',
+      [migration.body.id]
+    );
+    expect(parseInt(stg1Result.rows[0].count)).toBe(0);
+  });
+  
+  test('Should handle execution errors gracefully', async () =&gt; {
+    // Setup migration with data that will fail Salesforce validation
+    // ... (create migration with invalid data)
+    
+    const response = await request(app)
+      .post(`/api/migrations/${migrationId}/execute`)
+      .expect(200);
+    
+    // Wait for processing
+    await new Promise(resolve =&gt; setTimeout(resolve, 3000));
+    
+    // Check migration marked as FAILED
+    const migration = await db.query(
+      'SELECT status FROM migrations WHERE id = $1',
+      [migrationId]
+    );
+    expect(migration.rows[0].status).toBe('FAILED');
+  });
+  
+  test('Should rollback successfully', async () =&gt; {
+    // Execute migration first (assume it completes with errors)
+    // ... (setup migration)
+    
+    // Trigger rollback
+    const response = await request(app)
+      .post(`/api/migrations/${migrationId}/rollback`)
+      .expect(200);
+    
+    expect(response.body.status).toBe('ROLLING_BACK');
+    
+    // Wait for rollback
+    await new Promise(resolve =&gt; setTimeout(resolve, 3000));
+    
+    // Verify rollback logs
+    const rollbackLogs = await db.query(
+      'SELECT deleted_records FROM migration_rollback_logs WHERE migration_id = $1',
+      [migrationId]
+    );
+    expect(rollbackLogs.rows[0].deleted_records).toBeGreaterThan(0);
+  });
+});
+</pre>
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>Step 3: Run All Tests & Check Coverage</h2>
+            <p>Run the complete test suite with coverage reporting:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+<pre style="margin:0;white-space:pre-wrap;">
+# Run all tests with coverage
+npm run test:coverage
+
+# Expected output:
+# ------------------------|---------|----------|---------|---------|
+# File                    | % Stmts | % Branch | % Funcs | % Lines |
+# ------------------------|---------|----------|---------|---------|
+# All files               |   92.15 |    88.42 |   94.73 |   92.15 |
+#  services/              |   95.12 |    91.23 |   96.45 |   95.12 |
+#  routes/                |   89.45 |    85.67 |   92.34 |   89.45 |
+# ------------------------|---------|----------|---------|---------|
+</pre>
+            </div>
+        </div>
+
+        <div class="step-card" style="background:#e3f2fd;border-left:4px solid #2196f3;">
+            <h2>✅ Acceptance Criteria</h2>
+            <ul style="line-height:1.8;">
+                <li>✅ E2E test covers full migration pipeline (6 steps)</li>
+                <li>✅ Error scenario tests: invalid auth, transformation failures, rollback</li>
+                <li>✅ Data integrity verified: STG1 record count = target record count</li>
+                <li>✅ Test suite achieves 90%+ code coverage</li>
+                <li>✅ All tests pass on CI/CD pipeline (GitHub Actions)</li>
+            </ul>
         </div>
         <div class="nav-buttons"><a href="dev1-day23.html" class="nav-btn back">← Back to Day 23</a><a href="dev1-day25.html" class="nav-btn next">Next: Day 25 →</a></div>
             </main>

@@ -89,7 +89,7 @@
         </aside>
 
         <main class="main-content">
-        <div class="day-header"><h1>Day 25: Final Testing & Documentation</h1><p>Developer 1 — Backend & Database</p></div>
+        <div class="day-header"><h1>Day 25: Final Testing & Documentation</h1><p>Developer 1 — Backend & Database | Week 5/5 FINAL DAY 🎉</p></div>
 
         <div class="step-card" style="background:#fffbea;border-left:4px solid #f59e0b;">
             <h2>⚠️ IMPORTANT: Start of Day Checklist</h2>
@@ -100,22 +100,412 @@ git pull origin main
             </div>
             <p>This ensures you have the latest code from your teammates. Always pull before starting work!</p>
         </div>
-<div class="step-card">
-            <h2>Objective</h2>
-            <p>Complete final testing, update documentation, and prepare backend for MVP launch.</p>
+
+        <div class="step-card" style="background:#e8f5e9;border-left:4px solid #4caf50;">
+            <h2>🤖 Enhanced Copilot Prompt</h2>
+            <div style="background:#f5f5f5;padding:1.5rem;border-radius:6px;margin:1rem 0;border-left:3px solid #4caf50;">
+<pre style="white-space:pre-wrap;font-family:monospace;font-size:0.9em;line-height:1.6;margin:0;">
+<strong>Day 25 - RevNova Backend - Final Testing & Documentation</strong>
+
+<strong>🎯 REVNOVA:</strong> Finalize MVP backend: fix bugs, complete API docs, write deployment guide
+<strong>📚 REQUIREMENTS:</strong> <a href="../RevNovaRequirements/documentation.html" target="_blank">docs/RevNovaRequirements/documentation.html</a>
+<strong>🏗️ MVP STATUS:</strong> Week 5/5 FINAL DAY (Nov 30 deadline - 18 days remaining)
+<strong>TECH:</strong> Swagger/OpenAPI 3.0 + README.md + Deployment runbook
+
+<strong>TODAY'S GOAL:</strong> Complete API documentation with Swagger, write deployment guide, create demo data scripts, fix final bugs, prepare MVP for launch.
+
+<strong>TASKS:</strong>
+1. <strong>API Documentation (Swagger/OpenAPI 3.0)</strong>
+   - Install: npm install swagger-jsdoc swagger-ui-express
+   - Create: backend/src/config/swagger.ts with OpenAPI 3.0 spec
+   - Document ALL endpoints: /api/connections, /api/schema, /api/mappings, /api/transform, /api/migrations/:id/execute, /api/migrations/:id/rollback, /api/migrations/:id/report
+   - Include: request/response schemas, authentication, error codes
+   - Serve Swagger UI: GET /api-docs
+
+2. <strong>Deployment Guide</strong> (backend/DEPLOYMENT.md)
+   - Prerequisites: Node.js 20, PostgreSQL 16, Redis 7, Salesforce account
+   - Environment variables: DATABASE_URL, REDIS_URL, SALESFORCE_CLIENT_ID/SECRET, OPENAI_API_KEY
+   - Docker deployment: docker-compose up -d
+   - Database migrations: npm run migrate
+   - Health checks: GET /api/health (returns { status: 'ok', version: '1.0.0' })
+
+3. <strong>Demo Data Scripts</strong> (backend/scripts/seed-demo-data.ts)
+   - Create sample migration with 50 CPQ products
+   - Pre-populate connections, mappings, staging tables
+   - Script: npm run seed:demo
+   - Purpose: Quick demo for stakeholders without Salesforce connection
+
+4. <strong>Final Bug Fixes & Code Review</strong>
+   - Run: npm run lint (ESLint checks)
+   - Fix: Any TypeScript errors, unused imports
+   - Review: All error handling has try-catch blocks
+   - Verify: All environment variables documented in .env.example
+
+5. <strong>Create Final PR for Week 5</strong>
+   - PR title: "feat: Week 5 - Migration Execution, Rollback, Testing & Documentation"
+   - Description: Summary of Days 21-25 work
+   - Include: Screenshots of Swagger UI, test coverage report
+   - Assign: Reviewers (Dev2, Dev3)
+
+Guide me step-by-step through finalizing the backend MVP with comprehensive documentation and deployment readiness.
+</pre>
+            </div>
         </div>
+
         <div class="step-card">
-            <h2>Tasks</h2>
-            <ol>
-                <li>Fix any remaining bugs from testing</li>
-                <li>Update API documentation (Swagger/OpenAPI)</li>
-                <li>Write deployment guide for backend services</li>
-                <li>Prepare demo data and scripts for MVP presentation</li>
-            </ol>
+            <h2>Step 1: Setup Swagger API Documentation</h2>
+            <p>Install dependencies and create Swagger configuration:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+<pre style="margin:0;white-space:pre-wrap;">
+# Install Swagger packages
+npm install swagger-jsdoc swagger-ui-express
+npm install --save-dev @types/swagger-jsdoc @types/swagger-ui-express
+</pre>
+            </div>
+            
+            <p><strong>File:</strong> <code>backend/src/config/swagger.ts</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+<pre style="margin:0;white-space:pre-wrap;">
+import swaggerJsdoc from 'swagger-jsdoc';
+
+const options = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'RevNova Migration API',
+      version: '1.0.0',
+      description: 'REST API for Salesforce CPQ to Revenue Cloud migrations',
+      contact: {
+        name: 'RevNova Team',
+        email: 'support@revnova.com'
+      }
+    },
+    servers: [
+      {
+        url: 'http://localhost:3000',
+        description: 'Development server'
+      }
+    ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT'
+        }
+      }
+    }
+  },
+  apis: ['./src/routes/*.ts'] // Path to API route files
+};
+
+export const swaggerSpec = swaggerJsdoc(options);
+</pre>
+            </div>
+            
+            <p><strong>Register Swagger UI in app.ts:</strong></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+<pre style="margin:0;white-space:pre-wrap;">
+import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec } from './config/swagger';
+
+// Serve Swagger UI
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+</pre>
+            </div>
+            
+            <p><strong>Add JSDoc comments to endpoints (example):</strong></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+<pre style="margin:0;white-space:pre-wrap;">
+/**
+ * @swagger
+ * /api/migrations/{id}/execute:
+ *   post:
+ *     summary: Execute a migration
+ *     description: Starts the migration execution process by submitting a Bull queue job
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Migration ID
+ *     responses:
+ *       200:
+ *         description: Execution started successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 jobId:
+ *                   type: string
+ *                 status:
+ *                   type: string
+ *                   enum: [EXECUTING]
+ *                 estimatedRecords:
+ *                   type: integer
+ *       400:
+ *         description: Invalid migration status
+ *       404:
+ *         description: Migration not found
+ */
+router.post('/:id/execute', async (req, res) =&gt; { ... });
+</pre>
+            </div>
         </div>
+
         <div class="step-card">
+            <h2>Step 2: Create Deployment Guide</h2>
+            <p><strong>File:</strong> <code>backend/DEPLOYMENT.md</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+<pre style="margin:0;white-space:pre-wrap;">
+# RevNova Backend Deployment Guide
+
+## Prerequisites
+- Node.js 20.x
+- PostgreSQL 16.x
+- Redis 7.x
+- Salesforce Connected App (Client ID + Secret)
+- OpenAI API Key
+
+## Environment Variables
+Create a `.env` file:
+```
+DATABASE_URL=postgresql://user:password@localhost:5432/revnova
+REDIS_URL=redis://localhost:6379
+SALESFORCE_CLIENT_ID=your_client_id
+SALESFORCE_CLIENT_SECRET=your_client_secret
+OPENAI_API_KEY=sk-...
+PORT=3000
+NODE_ENV=production
+```
+
+## Docker Deployment (Recommended)
+```bash
+# Build and start all services
+docker-compose up -d
+
+# Check service health
+docker-compose ps
+
+# View logs
+docker-compose logs -f backend
+```
+
+## Manual Deployment
+```bash
+# Install dependencies
+npm install
+
+# Run database migrations
+npm run migrate
+
+# Build TypeScript
+npm run build
+
+# Start production server
+npm start
+```
+
+## Database Migrations
+```bash
+# Run all pending migrations
+npm run migrate
+
+# Rollback last migration
+npm run migrate:rollback
+```
+
+## Health Checks
+- GET /api/health - Backend health status
+- GET /api/health/db - Database connection check
+- GET /api/health/redis - Redis connection check
+
+## Troubleshooting
+- Check logs: `docker-compose logs backend`
+- Verify environment variables: `docker-compose config`
+- Database connection: `psql $DATABASE_URL`
+- Redis connection: `redis-cli ping`
+
+## Monitoring
+- Bull queue dashboard: http://localhost:3000/admin/queues
+- Swagger API docs: http://localhost:3000/api-docs
+- Logs location: ./logs/combined.log
+</pre>
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>Step 3: Create Demo Data Script</h2>
+            <p><strong>File:</strong> <code>backend/scripts/seed-demo-data.ts</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+<pre style="margin:0;white-space:pre-wrap;">
+import { db } from '../src/config/database';
+import { v4 as uuidv4 } from 'uuid';
+
+async function seedDemoData() {
+  console.log('Seeding demo data...');
+  
+  // Create demo connection
+  const connectionId = uuidv4();
+  await db.query(`
+    INSERT INTO connections (id, name, instance_url, status, created_at)
+    VALUES ($1, 'Demo Salesforce Sandbox', 'https://demo.salesforce.com', 'CONNECTED', NOW())
+  `, [connectionId]);
+  
+  console.log(`✅ Created demo connection: ${connectionId}`);
+  
+  // Create demo migration
+  const migrationId = uuidv4();
+  await db.query(`
+    INSERT INTO migrations (id, connection_id, name, status, created_at)
+    VALUES ($1, $2, 'Demo CPQ Migration', 'TRANSFORMED', NOW())
+  `, [migrationId, connectionId]);
+  
+  console.log(`✅ Created demo migration: ${migrationId}`);
+  
+  // Seed STG1_PRODUCTS with 50 demo products
+  for (let i = 1; i &lt;= 50; i++) {
+    await db.query(`
+      INSERT INTO STG1_PRODUCTS 
+      (migration_id, product_code, product_name, description, is_active, created_at)
+      VALUES ($1, $2, $3, $4, $5, NOW())
+    `, [
+      migrationId,
+      `PROD-${String(i).padStart(3, '0')}`,
+      `Demo Product ${i}`,
+      `Sample product for demonstration purposes`,
+      true
+    ]);
+  }
+  
+  console.log('✅ Seeded 50 demo products to STG1_PRODUCTS');
+  
+  console.log('\n🎉 Demo data seeding complete!');
+  console.log(`Migration ID: ${migrationId}`);
+  console.log('You can now test the execution API with this migration.');
+  
+  process.exit(0);
+}
+
+seedDemoData().catch(error =&gt; {
+  console.error('Error seeding demo data:', error);
+  process.exit(1);
+});
+</pre>
+            </div>
+            
+            <p><strong>Add script to package.json:</strong></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+<pre style="margin:0;white-space:pre-wrap;">
+"scripts": {
+  "seed:demo": "ts-node scripts/seed-demo-data.ts"
+}
+</pre>
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>Step 4: Final Code Review Checklist</h2>
+            <ul style="line-height:1.8;">
+                <li>✅ Run ESLint: <code>npm run lint</code> (fix all warnings)</li>
+                <li>✅ Run TypeScript compiler: <code>npm run build</code> (no errors)</li>
+                <li>✅ Run all tests: <code>npm test</code> (100% pass rate)</li>
+                <li>✅ Check test coverage: <code>npm run test:coverage</code> (90%+ target)</li>
+                <li>✅ Review all environment variables in <code>.env.example</code></li>
+                <li>✅ Verify all API endpoints have error handling (try-catch blocks)</li>
+                <li>✅ Check all console.log replaced with proper logger calls</li>
+                <li>✅ Verify sensitive data not logged (passwords, API keys)</li>
+                <li>✅ Test Swagger UI accessible at <code>http://localhost:3000/api-docs</code></li>
+                <li>✅ Verify Bull queue dashboard accessible at <code>/admin/queues</code></li>
+            </ul>
+        </div>
+
+        <div class="step-card">
+            <h2>Step 5: Create Final Week 5 Pull Request</h2>
+            <p>Create comprehensive PR summarizing all Week 5 work:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+<pre style="margin:0;white-space:pre-wrap;">
+# Commit and push all changes
+git add .
+git commit -m "feat: Complete Week 5 - Migration Execution, Rollback, Testing & Documentation
+
+- Day 21: Migration execution API with jsforce Bulk API
+- Day 22: Error handling, rollback service, PostgreSQL transactions
+- Day 23: Testing reports API with source/target comparison
+- Day 24: E2E integration tests with 90%+ coverage
+- Day 25: Swagger API docs, deployment guide, demo data scripts
+
+✅ All tests passing
+✅ API documentation complete
+✅ Deployment guide ready
+✅ MVP backend ready for launch"
+
+git push origin dev1-week5
+
+# Create PR on GitHub
+gh pr create --title "feat: Week 5 - Migration Execution, Testing & Documentation" \
+  --body "## Summary
+  Complete migration execution pipeline with comprehensive testing and documentation.
+  
+  ## Changes
+  - ✅ Migration execution API (jsforce Bulk API integration)
+  - ✅ Error handling & rollback service
+  - ✅ Testing reports API (source vs target comparison)
+  - ✅ E2E integration tests (90%+ coverage)
+  - ✅ Swagger API documentation
+  - ✅ Deployment guide & demo data scripts
+  
+  ## Testing
+  - All unit tests passing
+  - E2E tests cover full migration pipeline
+  - Test coverage: 92.15%
+  
+  ## Documentation
+  - Swagger UI: http://localhost:3000/api-docs
+  - Deployment guide: backend/DEPLOYMENT.md
+  
+  Ready for review! 🚀" \
+  --assignee dev2-username,dev3-username
+</pre>
+            </div>
+        </div>
+
+        <div class="step-card" style="background:#e3f2fd;border-left:4px solid #2196f3;">
+            <h2>✅ Acceptance Criteria</h2>
+            <ul style="line-height:1.8;">
+                <li>✅ Swagger API documentation complete for all endpoints</li>
+                <li>✅ Deployment guide (DEPLOYMENT.md) with Docker + manual instructions</li>
+                <li>✅ Demo data seed script creates 50 sample products</li>
+                <li>✅ All ESLint warnings fixed, TypeScript compiles without errors</li>
+                <li>✅ Test suite passes with 90%+ coverage</li>
+                <li>✅ Week 5 PR created with comprehensive summary</li>
+                <li>✅ Backend MVP ready for production deployment</li>
+            </ul>
+        </div>
+
+        <div class="step-card" style="background:#fff3cd;border-left:4px solid #ffc107;">
             <h2>🎉 Congratulations!</h2>
-            <p>You've completed the RevNova backend development! The MVP is ready for launch.</p>
+            <p><strong>You've completed the RevNova backend development!</strong></p>
+            <p>The MVP backend is now production-ready with:</p>
+            <ul style="line-height:1.8;">
+                <li>🔗 Salesforce OAuth integration (jsforce)</li>
+                <li>📊 Schema analysis & AI-powered field mapping (OpenAI GPT-4)</li>
+                <li>🔄 Transformation engine with Bull queue async processing</li>
+                <li>⚡ Migration execution with jsforce Bulk API</li>
+                <li>🔙 Rollback & error handling mechanisms</li>
+                <li>📈 Testing reports & data comparison</li>
+                <li>✅ 90%+ test coverage</li>
+                <li>📚 Complete API documentation (Swagger)</li>
+                <li>🚀 Production deployment guide</li>
+            </ul>
+            <p><strong>Next Steps:</strong></p>
+            <ul style="line-height:1.8;">
+                <li>Coordinate with Dev2 (Frontend) for UI integration testing</li>
+                <li>Work with Dev3 (DevOps) on production deployment</li>
+                <li>Prepare for MVP demo presentation (November 30 deadline)</li>
+            </ul>
         </div>
         <div class="nav-buttons"><a href="dev1-day24.html" class="nav-btn back">← Back to Day 24</a></div>
             </main>
