@@ -89,7 +89,7 @@
         </aside>
 
         <main class="main-content">
-        <div class="day-header"><h1>Day 21: Migration Execution API</h1><p>Developer 1 — Backend & Database</p></div>
+        <div class="day-header"><h1>Day 21: Migration Execution API</h1><p>Developer 1 — Backend & Database | Week 5/5</p></div>
 
         <div class="step-card" style="background:#fffbea;border-left:4px solid #f59e0b;">
             <h2>⚠️ IMPORTANT: Start of Day Checklist</h2>
@@ -100,18 +100,451 @@ git pull origin main
             </div>
             <p>This ensures you have the latest code from your teammates. Always pull before starting work!</p>
         </div>
-<div class="step-card">
-            <h2>Objective</h2>
-            <p>Build the final migration execution API to load transformed data from staging to target.</p>
+
+        <div class="step-card" style="background:#e8f5e9;border-left:4px solid #4caf50;">
+            <h2>🤖 Copy This Prompt for Your GitHub Copilot</h2>
+            <p><strong>Use this enhanced prompt to get step-by-step implementation guidance:</strong></p>
+            <div style="background:#f5f5f5;padding:1.5rem;border-radius:6px;margin:1rem 0;border-left:3px solid #4caf50;">
+<pre style="white-space:pre-wrap;font-family:monospace;font-size:0.9em;line-height:1.6;margin:0;">
+<strong>Day 21 - RevNova Backend Developer - Migration Execution API</strong>
+
+<strong>🎯 REVNOVA OVERVIEW:</strong> SaaS platform automating Salesforce CPQ → Revenue Cloud migrations. 7-step wizard: (1) OAuth connection, (2) Schema analysis with jsforce, (3) AI field mapping with GPT-4, (4) Drag-drop customization, (5) Preview transformations, (6) Async ETL with Bull queue, (7) Migration execution & reports.
+
+<strong>📚 DETAILED REQUIREMENTS:</strong>
+- Migration Workflow: <a href="../RevNovaRequirements/migration-workflow.html" style="color:#1976d2;text-decoration:underline;" target="_blank">docs/RevNovaRequirements/migration-workflow.html</a>
+- API Endpoints: <a href="../RevNovaRequirements/api-specification.html" style="color:#1976d2;text-decoration:underline;" target="_blank">docs/RevNovaRequirements/api-specification.html</a>
+- Database Schema: <a href="../RevNovaRequirements/database-design.html" style="color:#1976d2;text-decoration:underline;" target="_blank">docs/RevNovaRequirements/database-design.html</a>
+
+<strong>🏗️ MVP MILESTONE STATUS:</strong> Week 5/5 (target: November 30, 2025 - 18 days remaining)
+
+<strong>TECH STACK:</strong> Node.js 20 + Express + TypeScript + PostgreSQL 16 (Hybrid Vanilla/EAV) + Redis 7 + Bull queue + jsforce + OpenAI GPT-4
+
+<strong>Context from Previous Days:</strong>
+- Days 1-5: Backend foundation (Express, TypeScript, PostgreSQL, REST API structure)
+- Days 6-10: Salesforce integration (jsforce OAuth, describeGlobal/describeSObject, Redis caching, schema catalog)
+- Days 11-15: Field mapping API (OpenAI GPT-4 suggestions, validation engine, confidence scoring)
+- Days 16-20: Transformation engine + Bull queue (ETL pipeline, async jobs, staging table population STG1/STG2)
+
+<strong>TODAY'S GOAL:</strong> Build the final migration execution API that reads transformed data from staging tables (STG1, STG2) and loads it into the target Salesforce Revenue Cloud instance using jsforce Bulk API. Implement progress tracking with Bull queue job events for real-time status updates to frontend.
+
+<strong>TASKS:</strong>
+1. <strong>Create MigrationExecutionService class</strong> (backend/src/services/migration-execution.service.ts)
+   - executeMigration(migrationId: string): Promise&lt;ExecutionResult&gt;
+   - Read transformed data from STG1_PRODUCTS, STG1_PRICEBOOKS, STG2_PRODUCTS, STG2_PRICEBOOKS
+   - Batch records into chunks of 200 (jsforce Bulk API limit is 10K, but 200 is optimal)
+   - Track total records vs. processed records
+   - Return: { totalRecords, successCount, failureCount, errors: Array&lt;{recordId, error}&gt; }
+
+2. <strong>Implement jsforce Bulk API integration</strong>
+   - Use connection.bulk.load() for batch inserts: conn.bulk.load('Product2', 'insert', records)
+   - Handle both Product2 (from STG1/STG2_PRODUCTS) and PricebookEntry (from STG1/STG2_PRICEBOOKS)
+   - Map staging columns to Salesforce fields using stored field mappings from mapping_fields table
+   - Extract external IDs for record matching (important for upsert scenarios)
+   - Implement retry logic: 3 attempts with exponential backoff (1s, 2s, 4s delays)
+
+3. <strong>Create POST /api/migrations/:id/execute endpoint</strong> (backend/src/routes/migrations.routes.ts)
+   - Validate migration exists and has status='TRANSFORMED' (don't execute unless transformation complete)
+   - Submit Bull queue job: migrationQueue.add('execute-migration', { migrationId })
+   - Update migration status to 'EXECUTING' in migrations table
+   - Return: { jobId, status: 'EXECUTING', estimatedRecords: number }
+
+4. <strong>Implement Bull queue processor for execute-migration</strong> (backend/src/jobs/migration-execution.processor.ts)
+   - job.progress(percentage) updates for real-time progress tracking (emit every 5% or 100 records)
+   - Log detailed execution steps: "Loading batch 1/10 (200 records)", "Batch 3 complete: 198 success, 2 errors"
+   - Store results in migration_execution_logs table: (id, migration_id, batch_number, records_processed, success_count, error_count, errors_json, created_at)
+   - On completion: Update migration status to 'COMPLETED' or 'FAILED'
+   - Emit job events: job.finished(), job.failed()
+
+<strong>ACCEPTANCE CRITERIA:</strong>
+✅ POST /api/migrations/:id/execute validates migration status and submits Bull job
+✅ MigrationExecutionService reads ALL transformed data from STG1/STG2 tables
+✅ jsforce Bulk API successfully inserts records into target Salesforce (Product2, PricebookEntry)
+✅ Progress updates emitted via Bull queue job.progress() every 5% or 100 records
+✅ Execution results logged to migration_execution_logs table with batch-level details
+✅ Migration status updated to 'COMPLETED' on success or 'FAILED' on critical errors
+✅ Comprehensive error handling: record-level errors logged but don't stop execution
+✅ Unit tests: MigrationExecutionService (mock jsforce), POST endpoint (mock Bull queue)
+
+Guide me step-by-step through implementing the migration execution API with jsforce Bulk API integration and Bull queue progress tracking.
+</pre>
+            </div>
         </div>
+
         <div class="step-card">
-            <h2>Tasks</h2>
-            <ol>
-                <li>Create POST /api/migrations/:id/execute endpoint</li>
-                <li>Read transformed data from staging tables</li>
-                <li>Load data to target system via API or direct DB insert</li>
-                <li>Track execution progress and emit real-time status updates</li>
-            </ol>
+            <h2>📋 Objective</h2>
+            <p>Build the final migration execution API to load transformed data from staging tables (STG1, STG2) to the target Salesforce Revenue Cloud instance using jsforce Bulk API. Implement real-time progress tracking via Bull queue job events.</p>
+        </div>
+
+        <div class="step-card">
+            <h2>Step 1: Create MigrationExecutionService Class</h2>
+            <p><strong>File:</strong> <code>backend/src/services/migration-execution.service.ts</code></p>
+            <h3>Implementation:</h3>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+<pre style="margin:0;white-space:pre-wrap;">
+import { Pool } from 'pg';
+import jsforce from 'jsforce';
+import { logger } from '../utils/logger';
+
+export interface ExecutionResult {
+  totalRecords: number;
+  successCount: number;
+  failureCount: number;
+  errors: Array&lt;{ recordId: string; error: string }&gt;;
+}
+
+export class MigrationExecutionService {
+  constructor(
+    private db: Pool,
+    private connection: jsforce.Connection
+  ) {}
+
+  async executeMigration(migrationId: string, onProgress?: (pct: number) =&gt; void): Promise&lt;ExecutionResult&gt; {
+    logger.info(`Starting migration execution for ${migrationId}`);
+    
+    // Read transformed data from staging tables
+    const products = await this.readStagingData(migrationId, 'PRODUCTS');
+    const pricebooks = await this.readStagingData(migrationId, 'PRICEBOOKS');
+    
+    const totalRecords = products.length + pricebooks.length;
+    let processedRecords = 0;
+    const errors: Array&lt;{ recordId: string; error: string }&gt; = [];
+    
+    // Load products first (PricebookEntry requires Product2 Ids)
+    const productResults = await this.loadBatch('Product2', products, (count) =&gt; {
+      processedRecords += count;
+      if (onProgress) onProgress(Math.floor((processedRecords / totalRecords) * 100));
+    });
+    errors.push(...productResults.errors);
+    
+    // Load pricebook entries
+    const pricebookResults = await this.loadBatch('PricebookEntry', pricebooks, (count) =&gt; {
+      processedRecords += count;
+      if (onProgress) onProgress(Math.floor((processedRecords / totalRecords) * 100));
+    });
+    errors.push(...pricebookResults.errors);
+    
+    return {
+      totalRecords,
+      successCount: productResults.successCount + pricebookResults.successCount,
+      failureCount: errors.length,
+      errors
+    };
+  }
+
+  private async readStagingData(migrationId: string, objectType: string): Promise&lt;any[]&gt; {
+    // Read from both STG1 and STG2 tables
+    const stg1Query = `SELECT * FROM STG1_${objectType} WHERE migration_id = $1`;
+    const stg2Query = `SELECT * FROM STG2_${objectType} WHERE migration_id = $1`;
+    
+    const [stg1Result, stg2Result] = await Promise.all([
+      this.db.query(stg1Query, [migrationId]),
+      this.db.query(stg2Query, [migrationId])
+    ]);
+    
+    return [...stg1Result.rows, ...stg2Result.rows];
+  }
+
+  private async loadBatch(
+    sobjectType: string,
+    records: any[],
+    onBatchComplete: (count: number) =&gt; void
+  ): Promise&lt;{ successCount: number; errors: Array&lt;{ recordId: string; error: string }&gt; }&gt; {
+    const BATCH_SIZE = 200;
+    let successCount = 0;
+    const errors: Array&lt;{ recordId: string; error: string }&gt; = [];
+    
+    for (let i = 0; i &lt; records.length; i += BATCH_SIZE) {
+      const batch = records.slice(i, i + BATCH_SIZE);
+      const batchNum = Math.floor(i / BATCH_SIZE) + 1;
+      
+      try {
+        logger.info(`Loading batch ${batchNum} (${batch.length} ${sobjectType} records)`);
+        const results = await this.connection.bulk.load(sobjectType, 'insert', batch);
+        
+        results.forEach((result: any, idx: number) =&gt; {
+          if (result.success) {
+            successCount++;
+          } else {
+            errors.push({
+              recordId: batch[idx].Id || `batch-${batchNum}-record-${idx}`,
+              error: result.errors.join(', ')
+            });
+          }
+        });
+        
+        onBatchComplete(batch.length);
+      } catch (error) {
+        logger.error(`Batch ${batchNum} failed:`, error);
+        batch.forEach((record, idx) =&gt; {
+          errors.push({
+            recordId: record.Id || `batch-${batchNum}-record-${idx}`,
+            error: error.message
+          });
+        });
+      }
+    }
+    
+    return { successCount, errors };
+  }
+}
+</pre>
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>Step 2: Create POST /api/migrations/:id/execute Endpoint</h2>
+            <p><strong>File:</strong> <code>backend/src/routes/migrations.routes.ts</code></p>
+            <h3>Implementation:</h3>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+<pre style="margin:0;white-space:pre-wrap;">
+router.post('/:id/execute', async (req: Request, res: Response) =&gt; {
+  const { id } = req.params;
+  
+  try {
+    // Validate migration exists and is ready for execution
+    const result = await db.query(
+      'SELECT status FROM migrations WHERE id = $1',
+      [id]
+    );
+    
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Migration not found' });
+    }
+    
+    const migration = result.rows[0];
+    if (migration.status !== 'TRANSFORMED') {
+      return res.status(400).json({ 
+        error: `Cannot execute migration with status ${migration.status}. Must be TRANSFORMED.` 
+      });
+    }
+    
+    // Get estimated record count from staging tables
+    const countResult = await db.query(`
+      SELECT 
+        (SELECT COUNT(*) FROM STG1_PRODUCTS WHERE migration_id = $1) +
+        (SELECT COUNT(*) FROM STG2_PRODUCTS WHERE migration_id = $1) +
+        (SELECT COUNT(*) FROM STG1_PRICEBOOKS WHERE migration_id = $1) +
+        (SELECT COUNT(*) FROM STG2_PRICEBOOKS WHERE migration_id = $1) AS total
+    `, [id]);
+    const estimatedRecords = parseInt(countResult.rows[0].total);
+    
+    // Submit Bull queue job
+    const job = await migrationQueue.add('execute-migration', {
+      migrationId: id,
+      estimatedRecords
+    });
+    
+    // Update migration status
+    await db.query(
+      'UPDATE migrations SET status = $1, updated_at = NOW() WHERE id = $2',
+      ['EXECUTING', id]
+    );
+    
+    logger.info(`Migration execution started: ${id} (Job ID: ${job.id})`);
+    
+    res.json({
+      jobId: job.id,
+      status: 'EXECUTING',
+      estimatedRecords,
+      message: 'Migration execution started'
+    });
+  } catch (error) {
+    logger.error('Execute migration error:', error);
+    res.status(500).json({ error: 'Failed to start migration execution' });
+  }
+});
+</pre>
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>Step 3: Implement Bull Queue Processor</h2>
+            <p><strong>File:</strong> <code>backend/src/jobs/migration-execution.processor.ts</code></p>
+            <h3>Implementation:</h3>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+<pre style="margin:0;white-space:pre-wrap;">
+import { Job } from 'bull';
+import { db } from '../config/database';
+import { getSalesforceConnection } from '../services/salesforce.service';
+import { MigrationExecutionService } from '../services/migration-execution.service';
+import { logger } from '../utils/logger';
+
+export async function processMigrationExecution(job: Job) {
+  const { migrationId, estimatedRecords } = job.data;
+  
+  logger.info(`Processing migration execution job ${job.id} for migration ${migrationId}`);
+  
+  try {
+    // Get Salesforce connection for this migration
+    const connection = await getSalesforceConnection(migrationId);
+    
+    // Create execution service
+    const executionService = new MigrationExecutionService(db, connection);
+    
+    // Execute migration with progress tracking
+    const result = await executionService.executeMigration(migrationId, (percentage) =&gt; {
+      job.progress(percentage);
+      logger.info(`Migration ${migrationId} progress: ${percentage}%`);
+    });
+    
+    // Log execution results to database
+    await db.query(`
+      INSERT INTO migration_execution_logs 
+      (migration_id, total_records, success_count, failure_count, errors_json, created_at)
+      VALUES ($1, $2, $3, $4, $5, NOW())
+    `, [
+      migrationId,
+      result.totalRecords,
+      result.successCount,
+      result.failureCount,
+      JSON.stringify(result.errors)
+    ]);
+    
+    // Update migration status
+    const finalStatus = result.failureCount === 0 ? 'COMPLETED' : 'COMPLETED_WITH_ERRORS';
+    await db.query(
+      'UPDATE migrations SET status = $1, completed_at = NOW(), updated_at = NOW() WHERE id = $2',
+      [finalStatus, migrationId]
+    );
+    
+    logger.info(`Migration ${migrationId} completed: ${result.successCount}/${result.totalRecords} success`);
+    
+    return result;
+  } catch (error) {
+    logger.error(`Migration execution failed for ${migrationId}:`, error);
+    
+    // Update migration status to failed
+    await db.query(
+      'UPDATE migrations SET status = $1, error_message = $2, updated_at = NOW() WHERE id = $3',
+      ['FAILED', error.message, migrationId]
+    );
+    
+    throw error;
+  }
+}
+</pre>
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>Step 4: Register Queue Processor</h2>
+            <p><strong>File:</strong> <code>backend/src/jobs/index.ts</code></p>
+            <h3>Add processor registration:</h3>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+<pre style="margin:0;white-space:pre-wrap;">
+import { migrationQueue } from '../config/queue';
+import { processMigrationExecution } from './migration-execution.processor';
+
+// Register execution processor
+migrationQueue.process('execute-migration', 5, processMigrationExecution); // 5 concurrent jobs
+</pre>
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>Step 5: Create Database Migration for Execution Logs</h2>
+            <p><strong>File:</strong> <code>backend/migrations/007_create_execution_logs.sql</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+<pre style="margin:0;white-space:pre-wrap;">
+CREATE TABLE migration_execution_logs (
+  id SERIAL PRIMARY KEY,
+  migration_id VARCHAR(255) NOT NULL,
+  total_records INTEGER NOT NULL,
+  success_count INTEGER NOT NULL,
+  failure_count INTEGER NOT NULL,
+  errors_json JSONB,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (migration_id) REFERENCES migrations(id) ON DELETE CASCADE
+);
+
+CREATE INDEX idx_execution_logs_migration ON migration_execution_logs(migration_id);
+</pre>
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>Step 6: Write Unit Tests</h2>
+            <p><strong>File:</strong> <code>backend/tests/migration-execution.test.ts</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+<pre style="margin:0;white-space:pre-wrap;">
+import { MigrationExecutionService } from '../src/services/migration-execution.service';
+
+describe('MigrationExecutionService', () =&gt; {
+  let service: MigrationExecutionService;
+  let mockDb: any;
+  let mockConnection: any;
+  
+  beforeEach(() =&gt; {
+    mockDb = {
+      query: jest.fn()
+    };
+    
+    mockConnection = {
+      bulk: {
+        load: jest.fn()
+      }
+    };
+    
+    service = new MigrationExecutionService(mockDb, mockConnection);
+  });
+  
+  test('should execute migration successfully', async () =&gt; {
+    mockDb.query
+      .mockResolvedValueOnce({ rows: [{ id: '1' }] }) // STG1_PRODUCTS
+      .mockResolvedValueOnce({ rows: [] }); // STG2_PRODUCTS
+    
+    mockConnection.bulk.load.mockResolvedValue([
+      { success: true, id: 'prod-1' }
+    ]);
+    
+    const result = await service.executeMigration('mig-123');
+    
+    expect(result.successCount).toBe(1);
+    expect(result.failureCount).toBe(0);
+    expect(mockConnection.bulk.load).toHaveBeenCalled();
+  });
+  
+  test('should handle batch errors gracefully', async () =&gt; {
+    mockDb.query.mockResolvedValue({ rows: [{ id: '1' }] });
+    
+    mockConnection.bulk.load.mockResolvedValue([
+      { success: false, errors: ['Field validation failed'] }
+    ]);
+    
+    const result = await service.executeMigration('mig-123');
+    
+    expect(result.failureCount).toBe(1);
+    expect(result.errors[0].error).toContain('Field validation failed');
+  });
+});
+</pre>
+            </div>
+        </div>
+
+        <div class="step-card" style="background:#e3f2fd;border-left:4px solid #2196f3;">
+            <h2>✅ Acceptance Criteria</h2>
+            <ul style="line-height:1.8;">
+                <li>✅ POST /api/migrations/:id/execute validates migration status (must be 'TRANSFORMED')</li>
+                <li>✅ Bull queue job submitted with estimated record count</li>
+                <li>✅ MigrationExecutionService reads data from STG1/STG2 tables (PRODUCTS, PRICEBOOKS)</li>
+                <li>✅ jsforce Bulk API loads records in batches of 200</li>
+                <li>✅ Progress tracking: job.progress() updated every batch (percentage calculation)</li>
+                <li>✅ Execution logs stored in migration_execution_logs table</li>
+                <li>✅ Migration status updated to 'COMPLETED' or 'FAILED' based on results</li>
+                <li>✅ Record-level errors logged but don't stop entire execution</li>
+                <li>✅ Unit tests cover success and error scenarios</li>
+            </ul>
+        </div>
+
+        <div class="step-card" style="background:#fff3cd;border-left:4px solid #ffc107;">
+            <h2>💡 Testing Tips</h2>
+            <ul style="line-height:1.8;">
+                <li>Test with a small dataset first (10-20 records) to verify the flow</li>
+                <li>Use Salesforce Sandbox for testing (never test against production)</li>
+                <li>Monitor Bull queue dashboard to watch job progress in real-time</li>
+                <li>Check migration_execution_logs table for detailed batch results</li>
+                <li>Test rollback scenarios (Day 22) for failed executions</li>
+            </ul>
         </div>
         <div class="nav-buttons"><a href="dev1-day20.html" class="nav-btn back">← Back to Day 20</a><a href="dev1-day22.html" class="nav-btn next">Next: Day 22 →</a></div>
             </main>
