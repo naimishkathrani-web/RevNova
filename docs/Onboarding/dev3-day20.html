@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Dev3 Day 20: Week 4 Testing & PR - RevNova Onboarding</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Ubuntu,sans-serif}.main-content{margin-left:280px;padding:2.5rem}.day-header{background:linear-gradient(135deg,#fa709a 0%,#fee140 100%);color:#fff;padding:1.5rem;border-radius:10px;margin-bottom:1rem}.step-card{background:#fff;border:1px solid #e0e0e0;padding:1rem;border-radius:8px;margin-bottom:1rem}.nav-buttons{display:flex;justify-content:space-between;margin-top:1.5rem}</style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="nav-left">
+                <a href="../index.html" class="logo"><div class="logo-box">RevNova</div></a>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="onboarding-home.html" class="active">Onboarding</a></li>
+                        <li><a href="../about-revnova.html">About RevNova</a></li>
+                        <li><a href="../features.html">Features</a></li>
+                        <li><a href="../pricing.html">Pricing</a></li>
+                        <li><a href="../RevNovaRequirements/requirements-home.html">RevNova Requirements</a></li>
+                        <li><a href="../contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header-right">
+                <div class="country-selector"><span class="fi fi-us"></span></div>
+                <a href="../login.html" class="btn btn-login">Login</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="onboarding-layout">
+        <aside class="sidebar">
+            <h3>Getting Started</h3>
+            <ul>
+                <li><a href="onboarding-home.html">Onboarding Home</a></li>
+                <li><a href="onboarding-overview.html">Project Overview</a></li>
+            </ul>
+            
+            <h3>Developer 3: Daily Tasks</h3>
+            <ul>
+                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 1-2</span>
+                    <ul>
+                        <li><a href="dev3-day01.html">Day 1</a></li>
+                        <li><a href="dev3-day02.html">Day 2</a></li>
+                        <li><a href="dev3-day03.html">Day 3</a></li>
+                        <li><a href="dev3-day04.html">Day 4</a></li>
+                        <li><a href="dev3-day05.html">Day 5</a></li>
+                        <li><a href="dev3-day06.html">Day 6</a></li>
+                        <li><a href="dev3-day07.html">Day 7</a></li>
+                        <li><a href="dev3-day08.html">Day 8</a></li>
+                        <li><a href="dev3-day09.html">Day 9</a></li>
+                        <li><a href="dev3-day10.html">Day 10</a></li>
+                    </ul>
+                </li>
+                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 3-4</span>
+                    <ul>
+                        <li><a href="dev3-day11.html">Day 11</a></li>
+                        <li><a href="dev3-day12.html">Day 12</a></li>
+                        <li><a href="dev3-day13.html">Day 13</a></li>
+                        <li><a href="dev3-day14.html">Day 14</a></li>
+                        <li><a href="dev3-day15.html">Day 15</a></li>
+                        <li><a href="dev3-day16.html">Day 16</a></li>
+                        <li><a href="dev3-day17.html">Day 17</a></li>
+                        <li><a href="dev3-day18.html">Day 18</a></li>
+                        <li><a href="dev3-day19.html">Day 19</a></li>
+                        <li><a href="dev3-day20.html">Day 20</a></li>
+                    </ul>
+                </li>
+                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 5</span>
+                    <ul>
+                        <li><a href="dev3-day21.html">Day 21</a></li>
+                        <li><a href="dev3-day22.html">Day 22</a></li>
+                        <li><a href="dev3-day23.html">Day 23</a></li>
+                        <li><a href="dev3-day24.html">Day 24</a></li>
+                        <li><a href="dev3-day25.html">Day 25</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+        <div class="day-header"><h1>Day 20: Week 4 Testing & PR</h1><p>Developer 3 — DevOps & QA</p></div>
+
+        <div class="step-card" style="background:#fffbea;border-left:4px solid #f59e0b;">
+            <h2>⚠️ IMPORTANT: Start of Day Checklist</h2>
+            <p><strong>Before starting today's work, run these commands:</strong></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+cd C:\Dev\RevNovaRepository<br>
+git pull origin main
+            </div>
+            <p>This ensures you have the latest code from your teammates. Always pull before starting work!</p>
+        </div>
+
+        <div class="step-card" style="background:#e0f2fe;border-left:4px solid #0284c7;">
+            <h2>🤖 Copy This Prompt for Your GitHub Copilot</h2>
+            <p><strong>Paste into Copilot Chat:</strong></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;max-height:400px;overflow-y:auto;">
+Day 20 - RevNova DevOps & QA Developer<br><br>
+**PLATFORM:** Salesforce CPQ → Revenue Cloud migration SaaS. 7-step wizard with AI field mapping.<br>
+**TECH:** Docker, GitHub Actions, Playwright, Node.js 20, PostgreSQL 16, Redis 7<br>
+**REQUIREMENTS:** docs/RevNovaRequirements/deployment-guide.html, testing-plan.html<br>
+**MVP:** Week 4/5 (Nov 30). ✅Weeks 1-3: Tests, CI/CD. 🔄Week 4: Complete deployment automation. Testing & PR today.<br><br>
+**CONTEXT:** Days 16-19 built deploy workflows (dev/test), secrets management, health checks, E2E tests<br>
+**TODAY:** Test deployment workflows end-to-end, verify monitoring, document procedures, open Week 4 PR<br><br>
+**TASKS:**<br>
+1. Manually trigger deploy-test workflow via GitHub UI, verify deployment success<br>
+2. Test health check endpoints (GET /health, /health/db, /health/redis) return 200<br>
+3. Verify E2E tests run against test environment and pass all wizard steps<br>
+4. Create deployment runbook: pre-deployment checklist, rollback procedure, troubleshooting<br>
+5. Document secrets rotation procedures (90/180/365 day schedules)<br>
+6. Open PR: "feat(devops): Week 4 - Deployment automation and health monitoring"<br><br>
+**RUNBOOK SECTIONS:** Prerequisites, Deployment steps, Health verification, Rollback, Common issues<br><br>
+**ACCEPTANCE:** Test deployment verified. Runbook complete. PR opened with workflow docs.<br><br>
+Guide me through testing deployments, creating runbook, and opening Week 4 PR.
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>📋 Objective</h2>
+            <p>Test deployment workflows, verify monitoring, document procedures, open Week 4 PR.</p>
+        </div>
+
+        <div class="step-card">
+            <h2>🧪 Step 1: Test Deployment Workflows</h2>
+            <p>Manual testing checklist:</p>
+            <div style="background:#fffbea;border-left:4px solid #f59e0b;padding:1rem;border-radius:6px;margin:1rem 0;">
+<strong>Deploy to Test Workflow:</strong><br>
+1. Go to GitHub → Actions → "Deploy to Test Environment"<br>
+2. Click "Run workflow", select version "latest"<br>
+3. Monitor workflow execution:<br>
+&nbsp;&nbsp;&nbsp;□ Deploy job completes (ssh, docker-compose pull/up)<br>
+&nbsp;&nbsp;&nbsp;□ Health checks pass (all 3 endpoints return 200)<br>
+&nbsp;&nbsp;&nbsp;□ E2E tests job runs Playwright suite<br>
+&nbsp;&nbsp;&nbsp;□ All 7 wizard steps tested (connection → execution)<br>
+&nbsp;&nbsp;&nbsp;□ Deployment report generated<br><br>
+
+<strong>Health Check Verification:</strong><br>
+□ curl http://test.revnova.example.com/health → {"status":"ok","service":"backend"}<br>
+□ curl http://test.revnova.example.com/health/db → {"status":"ok","service":"database"}<br>
+□ curl http://test.revnova.example.com/health/redis → {"status":"ok","service":"redis"}<br><br>
+
+<strong>E2E Test Results:</strong><br>
+□ Connection flow test passes<br>
+□ Schema analysis test passes<br>
+□ Mapping wizard test passes<br>
+□ Validation display test passes<br>
+□ Transformation preview test passes<br>
+□ Playwright report artifact uploaded
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>📖 Step 2: Create Deployment Runbook</h2>
+            <p>Create <code>docs/deployment-runbook.md</code>:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;max-height:300px;overflow-y:auto;">
+# RevNova Deployment Runbook<br><br>
+
+## Pre-Deployment Checklist<br>
+- [ ] All tests passing on main branch<br>
+- [ ] PR reviewed and approved by 2 developers<br>
+- [ ] Database migrations prepared (if any)<br>
+- [ ] Secrets rotated if expired (check schedule)<br>
+- [ ] Backup of production database taken<br>
+- [ ] Stakeholders notified of deployment window<br><br>
+
+## Deployment Steps<br><br>
+
+### Test Environment<br>
+1. Go to GitHub Actions → "Deploy to Test Environment"<br>
+2. Click "Run workflow", select version<br>
+3. Wait for deployment (2-3 minutes)<br>
+4. Verify health checks: curl http://test.revnova.example.com/health<br>
+5. Monitor E2E test results<br>
+6. If tests fail, review Playwright report artifact<br><br>
+
+### Production Environment<br>
+1. Merge to main branch<br>
+2. Tag release: git tag v1.0.0 && git push origin v1.0.0<br>
+3. GitHub Actions auto-deploys (deploy.yml workflow)<br>
+4. Verify health checks: curl http://revnova.example.com/health<br>
+5. Smoke test: Manual login and schema analysis<br><br>
+
+## Health Check Verification<br>
+GET /health → {"status":"ok","service":"backend","uptime":3600}<br>
+GET /health/db → {"status":"ok","service":"database","details":{"connected":true}}<br>
+GET /health/redis → {"status":"ok","service":"redis","details":{"connected":true}}<br><br>
+
+If any return 503, check logs: docker-compose logs backend/postgres/redis<br><br>
+
+## Rollback Procedure<br>
+1. Identify last working commit: git log --oneline<br>
+2. Revert to previous version: git revert HEAD<br>
+3. Push revert: git push origin main<br>
+4. Monitor auto-deploy workflow<br>
+5. Verify health checks after rollback<br>
+6. Alternative: docker-compose down && docker-compose up -d [previous-image]<br><br>
+
+## Common Issues<br><br>
+
+**Issue:** Health check returns 503<br>
+**Solution:** Check service logs, verify database/Redis connection strings<br><br>
+
+**Issue:** E2E tests timeout<br>
+**Solution:** Increase Playwright timeout, check BASE_URL environment variable<br><br>
+
+**Issue:** Docker container fails to start<br>
+**Solution:** Check docker-compose logs, verify secrets are set, restart services<br><br>
+
+**Issue:** Database migration fails<br>
+**Solution:** Rollback migration, fix SQL, re-apply: npm run migrate:rollback && npm run migrate<br><br>
+
+## Secrets Rotation Schedule<br>
+- Database passwords: Every 90 days<br>
+- Redis passwords: Every 90 days<br>
+- SSH keys: Every 180 days<br>
+- OAuth client secrets: Every 365 days<br>
+- GitHub tokens: Every 365 days<br><br>
+
+**Rotation Steps:**<br>
+1. Generate new secret value<br>
+2. Update GitHub Secrets (Settings → Secrets → Actions)<br>
+3. Update .env.example with new format (if applicable)<br>
+4. Test with new secret in test environment<br>
+5. Deploy to production with new secret<br>
+6. Archive old secret securely for 30 days
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>📄 Step 3: Open Week 4 Pull Request</h2>
+            <p>Create PR with comprehensive description:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+git add .<br>
+git commit -m "feat(devops): Week 4 - Deployment automation and health monitoring"<br>
+git push origin main<br><br>
+
+# Open PR on GitHub with title:<br>
+# "feat(devops): Week 4 - Deployment automation and health monitoring"<br><br>
+
+# PR Description:<br>
+## Week 4 DevOps Work (Days 16-20)<br><br>
+
+**Deployment Workflows:**<br>
+- deploy.yml: Auto-deploy to production on main branch push<br>
+- deploy-test.yml: Manual deploy to test environment with version selection<br>
+- Both workflows include health checks and smoke tests<br><br>
+
+**Health Check Endpoints:**<br>
+- GET /health: Backend status and uptime<br>
+- GET /health/db: PostgreSQL connection verification<br>
+- GET /health/redis: Redis connection verification<br>
+- All return JSON with status, service, timestamp, details<br><br>
+
+**Secrets Management:**<br>
+- GitHub Secrets configured for DATABASE_URL, REDIS_URL, SSH credentials<br>
+- Rotation procedures documented (90/180/365 day schedules)<br>
+- .env.example updated with all required variables<br><br>
+
+**E2E Testing:**<br>
+- Playwright tests run against test environment post-deployment<br>
+- Full wizard flow tested (7 steps: connection → execution)<br>
+- Test results uploaded as artifacts<br>
+- Deployment report generated with status and timestamp<br><br>
+
+**Documentation:**<br>
+- docs/deployment-runbook.md: Complete deployment procedures<br>
+- docs/health-checks.md: Endpoint documentation<br>
+- Pre-deployment checklist and rollback procedures<br>
+- Common issues troubleshooting guide<br><br>
+
+**Testing:**<br>
+- Manual test deployment verified (deploy-test workflow)<br>
+- All health checks pass (200 responses)<br>
+- E2E tests pass on test environment<br>
+- Rollback procedure validated<br><br>
+
+**Closes:** #WEEK4-DEVOPS
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>✅ End of Day 20 & Week 4 Checklist</h2>
+            <ul>
+                <li>✅ deploy-test workflow manually triggered and successful</li>
+                <li>✅ All health check endpoints verified (200 responses)</li>
+                <li>✅ E2E tests passed against test environment (all 7 wizard steps)</li>
+                <li>✅ Deployment runbook created with pre-deployment checklist</li>
+                <li>✅ Rollback procedure documented and tested</li>
+                <li>✅ Common issues troubleshooting guide complete</li>
+                <li>✅ Secrets rotation schedule documented (90/180/365 days)</li>
+                <li>✅ Week 4 PR opened: "feat(devops): Week 4 - Deployment automation and health monitoring"</li>
+                <li>✅ <strong>Week 4 Complete for All Developers! 🎉</strong></li>
+            </ul>
+        </div>
+        <div class="nav-buttons"><a href="dev3-day19.html" class="nav-btn back">← Back to Day 19</a><a href="dev3-day21.html" class="nav-btn next">Next: Day 21 →</a></div>
+            </main>
+    </div>
+    <script src="../script.js"></script>
+</body>
+</html>

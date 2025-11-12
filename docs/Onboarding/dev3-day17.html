@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Dev3 Day 17: Secrets Management - RevNova Onboarding</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Ubuntu,sans-serif}.main-content{margin-left:280px;padding:2.5rem}.day-header{background:linear-gradient(135deg,#fa709a 0%,#fee140 100%);color:#fff;padding:1.5rem;border-radius:10px;margin-bottom:1rem}.step-card{background:#fff;border:1px solid #e0e0e0;padding:1rem;border-radius:8px;margin-bottom:1rem}.nav-buttons{display:flex;justify-content:space-between;margin-top:1.5rem}</style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="nav-left">
+                <a href="../index.html" class="logo"><div class="logo-box">RevNova</div></a>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="onboarding-home.html" class="active">Onboarding</a></li>
+                        <li><a href="../about-revnova.html">About RevNova</a></li>
+                        <li><a href="../features.html">Features</a></li>
+                        <li><a href="../pricing.html">Pricing</a></li>
+                        <li><a href="../RevNovaRequirements/requirements-home.html">RevNova Requirements</a></li>
+                        <li><a href="../contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header-right">
+                <div class="country-selector"><span class="fi fi-us"></span></div>
+                <a href="../login.html" class="btn btn-login">Login</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="onboarding-layout">
+        <aside class="sidebar">
+            <h3>Getting Started</h3>
+            <ul>
+                <li><a href="onboarding-home.html">Onboarding Home</a></li>
+                <li><a href="onboarding-overview.html">Project Overview</a></li>
+            </ul>
+            
+            <h3>Developer 3: Daily Tasks</h3>
+            <ul>
+                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 1-2</span>
+                    <ul>
+                        <li><a href="dev3-day01.html">Day 1</a></li>
+                        <li><a href="dev3-day02.html">Day 2</a></li>
+                        <li><a href="dev3-day03.html">Day 3</a></li>
+                        <li><a href="dev3-day04.html">Day 4</a></li>
+                        <li><a href="dev3-day05.html">Day 5</a></li>
+                        <li><a href="dev3-day06.html">Day 6</a></li>
+                        <li><a href="dev3-day07.html">Day 7</a></li>
+                        <li><a href="dev3-day08.html">Day 8</a></li>
+                        <li><a href="dev3-day09.html">Day 9</a></li>
+                        <li><a href="dev3-day10.html">Day 10</a></li>
+                    </ul>
+                </li>
+                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 3-4</span>
+                    <ul>
+                        <li><a href="dev3-day11.html">Day 11</a></li>
+                        <li><a href="dev3-day12.html">Day 12</a></li>
+                        <li><a href="dev3-day13.html">Day 13</a></li>
+                        <li><a href="dev3-day14.html">Day 14</a></li>
+                        <li><a href="dev3-day15.html">Day 15</a></li>
+                        <li><a href="dev3-day16.html">Day 16</a></li>
+                        <li><a href="dev3-day17.html">Day 17</a></li>
+                        <li><a href="dev3-day18.html">Day 18</a></li>
+                        <li><a href="dev3-day19.html">Day 19</a></li>
+                        <li><a href="dev3-day20.html">Day 20</a></li>
+                    </ul>
+                </li>
+                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 5</span>
+                    <ul>
+                        <li><a href="dev3-day21.html">Day 21</a></li>
+                        <li><a href="dev3-day22.html">Day 22</a></li>
+                        <li><a href="dev3-day23.html">Day 23</a></li>
+                        <li><a href="dev3-day24.html">Day 24</a></li>
+                        <li><a href="dev3-day25.html">Day 25</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+        <div class="day-header"><h1>Day 17: Secrets Management</h1><p>Developer 3 — DevOps & QA</p></div>
+
+        <div class="step-card" style="background:#fffbea;border-left:4px solid #f59e0b;">
+            <h2>⚠️ IMPORTANT: Start of Day Checklist</h2>
+            <p><strong>Before starting today's work, run these commands:</strong></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+cd C:\Dev\RevNovaRepository<br>
+git pull origin main
+            </div>
+            <p>This ensures you have the latest code from your teammates. Always pull before starting work!</p>
+        </div>
+<div class="step-card">
+            <h2>📋 Objective</h2>
+            <p>Implement secure secrets management for database credentials, API keys, and deployment tokens using GitHub Secrets and environment variables with documented rotation procedures.</p>
+        </div>
+
+        <div class="step-card">
+            <h2>🔐 Step 1: Configure GitHub Repository Secrets</h2>
+            <p>Add secrets to GitHub repository:</p>
+            <ol style="margin-left:1.5rem;">
+                <li>Go to GitHub repo → Settings → Secrets and variables → Actions</li>
+                <li>Click "New repository secret" and add each of the following:</li>
+            </ol>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+<strong>Docker Registry Secrets:</strong><br>
+- DOCKER_USERNAME: &lt;your-dockerhub-username&gt;<br>
+- DOCKER_TOKEN: &lt;generate-from-dockerhub-account-settings&gt;<br><br>
+
+<strong>Dev Server Secrets:</strong><br>
+- DEV_SERVER_HOST: &lt;dev-server-ip-or-domain&gt;<br>
+- DEV_SERVER_USER: ubuntu (or your SSH user)<br>
+- DEV_SERVER_SSH_KEY: &lt;paste-private-key-content&gt;<br><br>
+
+<strong>Database Secrets:</strong><br>
+- POSTGRES_PASSWORD_DEV: &lt;generate-with-openssl-rand-base64-32&gt;<br>
+- POSTGRES_PASSWORD_TEST: &lt;different-password-for-test-env&gt;<br><br>
+
+<strong>API Keys:</strong><br>
+- OPENAI_API_KEY: sk-...&lt;your-openai-key&gt;<br>
+- SALESFORCE_CLIENT_ID: &lt;connected-app-consumer-key&gt;<br>
+- SALESFORCE_CLIENT_SECRET: &lt;connected-app-consumer-secret&gt;
+            </div>
+            <p><strong>Generate strong passwords:</strong></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+# PowerShell command to generate random password:<br>
+-join ((48..57) + (65..90) + (97..122) | Get-Random -Count 32 | ForEach-Object {[char]$_})
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🔗 Step 2: Update Workflow to Use Secrets</h2>
+            <p>Update <code>.github/workflows/deploy-dev.yml</code> to inject secrets as environment variables:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+&nbsp;&nbsp;deploy:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;needs: build<br>
+&nbsp;&nbsp;&nbsp;&nbsp;runs-on: ubuntu-latest<br>
+&nbsp;&nbsp;&nbsp;&nbsp;environment: development # Optional: use GitHub Environments for approval<br>
+&nbsp;&nbsp;&nbsp;&nbsp;steps:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- name: Deploy to Dev Server<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;uses: appleboy/ssh-action@v1.0.0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;with:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;host: ${{ secrets.DEV_SERVER_HOST }}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;username: ${{ secrets.DEV_SERVER_USER }}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;key: ${{ secrets.DEV_SERVER_SSH_KEY }}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;envs: POSTGRES_PASSWORD,OPENAI_API_KEY,SALESFORCE_CLIENT_ID,SALESFORCE_CLIENT_SECRET<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;script: |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cd /opt/revnova<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD_DEV }}" > .env<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> .env<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo "SALESFORCE_CLIENT_ID=${{ secrets.SALESFORCE_CLIENT_ID }}" >> .env<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo "SALESFORCE_CLIENT_SECRET=${{ secrets.SALESFORCE_CLIENT_SECRET }}" >> .env<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;docker-compose -f docker-compose.dev.yml pull<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;docker-compose -f docker-compose.dev.yml up -d<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;docker-compose ps
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🛡️ Step 3: Create .env.example File</h2>
+            <p>Create <code>.env.example</code> in repository root (no actual secrets):</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+# Database Configuration<br>
+POSTGRES_DB=revnova<br>
+POSTGRES_USER=revnova<br>
+POSTGRES_PASSWORD=&lt;generate-strong-password&gt;<br>
+DATABASE_URL=postgresql://revnova:password@localhost:5432/revnova<br><br>
+
+# Redis Configuration<br>
+REDIS_URL=redis://localhost:6379<br><br>
+
+# API Keys<br>
+OPENAI_API_KEY=sk-...&lt;your-key&gt;<br>
+SALESFORCE_CLIENT_ID=&lt;connected-app-consumer-key&gt;<br>
+SALESFORCE_CLIENT_SECRET=&lt;connected-app-consumer-secret&gt;<br><br>
+
+# Application Configuration<br>
+NODE_ENV=development<br>
+PORT=3000<br>
+JWT_SECRET=&lt;generate-with-openssl-rand-hex-64&gt;<br><br>
+
+# Docker Registry<br>
+DOCKER_USERNAME=&lt;your-dockerhub-username&gt;
+            </div>
+            <p>Update <code>.gitignore</code> to exclude real secrets:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+# Environment files<br>
+.env<br>
+.env.local<br>
+.env.*.local<br>
+.env.development<br>
+.env.production<br><br>
+
+# SSH Keys<br>
+*.pem<br>
+*.key<br>
+id_rsa*
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>📝 Step 4: Document Secret Rotation Procedures</h2>
+            <p>Create <code>docs/security/secret-rotation.md</code>:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+# Secret Rotation Procedures<br><br>
+
+## Rotation Schedule<br>
+- **Database Passwords**: Every 90 days<br>
+- **API Keys (OpenAI, Salesforce)**: Every 180 days or on compromise<br>
+- **Docker Hub Tokens**: Every 180 days<br>
+- **SSH Keys**: Every 365 days<br>
+- **JWT Secrets**: Never (rotate on suspected compromise only)<br><br>
+
+## How to Rotate Database Password<br><br>
+
+1. **Generate New Password**<br>
+```powershell<br>
+# PowerShell<br>
+-join ((48..57) + (65..90) + (97..122) | Get-Random -Count 32 | ForEach-Object {[char]$_})<br>
+```<br><br>
+
+2. **Update in Database**<br>
+```sql<br>
+-- Connect to PostgreSQL as admin<br>
+ALTER USER revnova WITH PASSWORD 'new-password-here';<br>
+```<br><br>
+
+3. **Update GitHub Secret**<br>
+- Go to repo Settings → Secrets → POSTGRES_PASSWORD_DEV<br>
+- Click "Update" and paste new password<br><br>
+
+4. **Restart Services**<br>
+```bash<br>
+ssh user@dev-server<br>
+cd /opt/revnova<br>
+# Update .env file<br>
+docker-compose restart backend<br>
+```<br><br>
+
+## How to Rotate OpenAI API Key<br><br>
+
+1. Generate new key at https://platform.openai.com/api-keys<br>
+2. Update GitHub Secret: OPENAI_API_KEY<br>
+3. Re-run deploy workflow or manually update on servers<br>
+4. Delete old key from OpenAI dashboard after 24h grace period<br><br>
+
+## Emergency Rotation (Compromised Secret)<br><br>
+
+1. **Immediately**: Rotate the compromised secret (new password/key)<br>
+2. Update GitHub Secret<br>
+3. Re-deploy all environments<br>
+4. Check logs for suspicious activity (timestamps around compromise)<br>
+5. Document incident in security log<br><br>
+
+## Rotation Checklist<br><br>
+
+- [ ] Generate new strong secret (32+ chars, random)<br>
+- [ ] Test new secret locally first<br>
+- [ ] Update GitHub Secret in repo settings<br>
+- [ ] Re-run CI/CD workflow to propagate changes<br>
+- [ ] Verify services restart successfully<br>
+- [ ] Delete old secret from source (API dashboard, etc.)<br>
+- [ ] Update internal password manager/vault<br>
+- [ ] Document rotation date in security log
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🔍 Step 5: Audit Secrets in Codebase</h2>
+            <p>Run security scan to ensure no secrets committed to git:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+# PowerShell: Search for common secret patterns<br>
+cd C:\Dev\RevNovaRepository<br><br>
+
+# Check for API keys<br>
+git grep -E "(api[_-]?key|apikey)\s*[:=]\s*['\"][A-Za-z0-9_-]{20,}" .<br><br>
+
+# Check for passwords<br>
+git grep -E "(password|passwd)\s*[:=]\s*['\"][^'\"]{8,}" .<br><br>
+
+# Check for private keys<br>
+git grep "BEGIN.*PRIVATE KEY" .<br><br>
+
+# If any secrets found, remove from git history:<br>
+# git filter-branch --force --index-filter \<br>
+#   "git rm --cached --ignore-unmatch path/to/file" \<br>
+#   --prune-empty --tag-name-filter cat -- --all
+            </div>
+            <p><strong>Optional: Install TruffleHog for automated scanning:</strong></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+# Install via Docker<br>
+docker run --rm -v C:\Dev\RevNovaRepository:/scan trufflesecurity/trufflehog:latest filesystem /scan
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>✅ End of Day 17 Checklist</h2>
+            <ul>
+                <li>✅ All 9+ secrets added to GitHub repository secrets (DOCKER_USERNAME, DOCKER_TOKEN, DEV_SERVER_*, POSTGRES_PASSWORD_*, OPENAI_API_KEY, SALESFORCE_CLIENT_*)</li>
+                <li>✅ <code>.github/workflows/deploy-dev.yml</code> updated to inject secrets into deployment</li>
+                <li>✅ <code>.env.example</code> created with placeholder values (no real secrets)</li>
+                <li>✅ <code>.gitignore</code> updated to exclude .env files and SSH keys</li>
+                <li>✅ <code>docs/security/secret-rotation.md</code> created with rotation procedures and schedules</li>
+                <li>✅ Codebase scanned for hardcoded secrets (git grep commands run)</li>
+                <li>✅ No secrets found in git history</li>
+                <li>✅ All changes committed with message: <code>feat(security): add secrets management with GitHub Secrets and rotation procedures</code></li>
+            </ul>
+        </div>
+        <div class="nav-buttons"><a href="dev3-day16.html" class="nav-btn back">← Back to Day 16</a><a href="dev3-day18.html" class="nav-btn next">Next: Day 18 →</a></div>
+            </main>
+    </div>
+    <script src="../script.js"></script>
+</body>
+</html>

@@ -21,6 +21,7 @@
                         <li><a href="features.html">Features</a></li>
                         <li><a href="pricing.html">Pricing</a></li>
                         <li><a href="contact.html">Contact</a></li>
+                        <li><a href="login.html" style="color:#6366f1;font-weight:600;">View Mockups</a></li>
                     </ul>
                 </nav>
             </div>
@@ -185,27 +186,13 @@
             const loginType = document.querySelector('input[name="login-type"]:checked').value;
             
             if (loginType === 'employee') {
-                // Remove header and footer for web application pages
-                document.querySelector('header').style.display = 'none';
-                document.querySelector('footer').style.display = 'none';
-                
-                // Redirect to client accounts (web application)
-                window.location.href = 'client-accounts.html';
+                // Redirect to dashboard (web application mockup)
+                window.location.href = 'app/dashboard.html';
             } else {
-                alert('Client login functionality will be implemented separately.');
+                // Redirect to client dashboard
+                window.location.href = 'app/dashboard.html';
             }
         });
-
-        // Function to restore header/footer (for when user logs out)
-        function restoreHeaderFooter() {
-            document.querySelector('header').style.display = 'block';
-            document.querySelector('footer').style.display = 'block';
-        }
-
-        // Check if we're coming from a logout
-        if (window.location.search.includes('logout=true')) {
-            restoreHeaderFooter();
-        }
     </script>
 </body>
 </html>

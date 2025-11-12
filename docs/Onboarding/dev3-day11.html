@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Dev3 Day 11: API Integration Tests (Part 1) - RevNova Onboarding</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Ubuntu,sans-serif}.main-content{margin-left:280px;padding:2.5rem}.day-header{background:linear-gradient(135deg,#fa709a 0%,#fee140 100%);color:#fff;padding:1.5rem;border-radius:10px;margin-bottom:1rem}.step-card{background:#fff;border:1px solid #e0e0e0;padding:1rem;border-radius:8px;margin-bottom:1rem}.nav-buttons{display:flex;justify-content:space-between;margin-top:1.5rem}</style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="nav-left">
+                <a href="../index.html" class="logo"><div class="logo-box">RevNova</div></a>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="onboarding-home.html" class="active">Onboarding</a></li>
+                        <li><a href="../about-revnova.html">About RevNova</a></li>
+                        <li><a href="../features.html">Features</a></li>
+                        <li><a href="../pricing.html">Pricing</a></li>
+                        <li><a href="../RevNovaRequirements/requirements-home.html">RevNova Requirements</a></li>
+                        <li><a href="../contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header-right">
+                <div class="country-selector"><span class="fi fi-us"></span></div>
+                <a href="../login.html" class="btn btn-login">Login</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="onboarding-layout">
+        <aside class="sidebar">
+            <h3>Getting Started</h3>
+            <ul>
+                <li><a href="onboarding-home.html">Onboarding Home</a></li>
+                <li><a href="onboarding-overview.html">Project Overview</a></li>
+            </ul>
+            
+            <h3>Developer 3: Daily Tasks</h3>
+            <ul>
+                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 1-2</span>
+                    <ul>
+                        <li><a href="dev3-day01.html">Day 1</a></li>
+                        <li><a href="dev3-day02.html">Day 2</a></li>
+                        <li><a href="dev3-day03.html">Day 3</a></li>
+                        <li><a href="dev3-day04.html">Day 4</a></li>
+                        <li><a href="dev3-day05.html">Day 5</a></li>
+                        <li><a href="dev3-day06.html">Day 6</a></li>
+                        <li><a href="dev3-day07.html">Day 7</a></li>
+                        <li><a href="dev3-day08.html">Day 8</a></li>
+                        <li><a href="dev3-day09.html">Day 9</a></li>
+                        <li><a href="dev3-day10.html">Day 10</a></li>
+                    </ul>
+                </li>
+                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 3-4</span>
+                    <ul>
+                        <li><a href="dev3-day11.html">Day 11</a></li>
+                        <li><a href="dev3-day12.html">Day 12</a></li>
+                        <li><a href="dev3-day13.html">Day 13</a></li>
+                        <li><a href="dev3-day14.html">Day 14</a></li>
+                        <li><a href="dev3-day15.html">Day 15</a></li>
+                        <li><a href="dev3-day16.html">Day 16</a></li>
+                        <li><a href="dev3-day17.html">Day 17</a></li>
+                        <li><a href="dev3-day18.html">Day 18</a></li>
+                        <li><a href="dev3-day19.html">Day 19</a></li>
+                        <li><a href="dev3-day20.html">Day 20</a></li>
+                    </ul>
+                </li>
+                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 5</span>
+                    <ul>
+                        <li><a href="dev3-day21.html">Day 21</a></li>
+                        <li><a href="dev3-day22.html">Day 22</a></li>
+                        <li><a href="dev3-day23.html">Day 23</a></li>
+                        <li><a href="dev3-day24.html">Day 24</a></li>
+                        <li><a href="dev3-day25.html">Day 25</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+        <div class="day-header"><h1>Day 11: API Integration Tests (Part 1)</h1><p>Developer 3 — DevOps & QA</p></div>
+
+        <div class="step-card" style="background:#fffbea;border-left:4px solid #f59e0b;">
+            <h2>⚠️ IMPORTANT: Start of Day Checklist</h2>
+            <p><strong>Before starting today's work, run these commands:</strong></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+cd C:\Dev\RevNovaRepository<br>
+git pull origin main
+            </div>
+            <p>This ensures you have the latest code from your teammates. Always pull before starting work!</p>
+        </div>
+        <div class="step-card">
+            <h2>📋 Objective</h2>
+            <p>Set up integration test suite with supertest for schema and connection API endpoints.</p>
+        </div>
+
+        <div class="step-card">
+            <h2>📦 Step 1: Configure Test Environment</h2>
+            <p><strong>File:</strong> <code>backend/jest.config.js</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+module.exports = {<br>
+&nbsp;&nbsp;preset: 'ts-jest',<br>
+&nbsp;&nbsp;testEnvironment: 'node',<br>
+&nbsp;&nbsp;testMatch: ['**/__tests__/**/*.test.ts'],<br>
+&nbsp;&nbsp;collectCoverageFrom: ['src/**/*.ts']<br>
+};
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🧪 Step 2: Write Connection Tests</h2>
+            <p><strong>File:</strong> <code>backend/src/routes/__tests__/connection.test.ts</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+import request from 'supertest';<br>
+import app from '../../app';<br>
+<br>
+describe('Connection API', () => {<br>
+&nbsp;&nbsp;test('POST /connections creates connection', async () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const res = await request(app)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.post('/api/v1/connections')<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.send({ provider: 'salesforce', username: 'test@example.com' });<br>
+&nbsp;&nbsp;&nbsp;&nbsp;expect(res.status).toBe(201);<br>
+&nbsp;&nbsp;});<br>
+<br>
+&nbsp;&nbsp;test('POST /connections/test validates credentials', async () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const res = await request(app).post('/api/v1/connections/test').send({ username: 'test', password: 'pass' });<br>
+&nbsp;&nbsp;&nbsp;&nbsp;expect(res.body).toHaveProperty('success');<br>
+&nbsp;&nbsp;});<br>
+});
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🔬 Step 3: Write Schema Analysis Tests</h2>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+describe('Schema Analysis API', () => {<br>
+&nbsp;&nbsp;test('POST /projects/:id/analyze queues job', async () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const res = await request(app).post('/api/v1/projects/1/analyze').send({ objects: ['Account'] });<br>
+&nbsp;&nbsp;&nbsp;&nbsp;expect(res.body.jobId).toBeDefined();<br>
+&nbsp;&nbsp;});<br>
+<br>
+&nbsp;&nbsp;test('GET /catalog/search returns matching fields', async () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const res = await request(app).get('/api/v1/projects/1/catalog/search?q=product');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;expect(res.body.results.length).toBeGreaterThan(0);<br>
+&nbsp;&nbsp;});<br>
+});
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🎯 End of Day Checklist</h2>
+            <ul style="list-style:none;padding-left:0;">
+                <li>☐ Jest configured with supertest</li>
+                <li>☐ Connection API tests pass</li>
+                <li>☐ Schema analysis tests pass</li>
+                <li>☐ Code committed and pushed</li>
+            </ul>
+        </div>
+        <div class="nav-buttons"><a href="dev3-day10.html" class="nav-btn back">← Back to Day 10</a><a href="dev3-day12.html" class="nav-btn next">Next: Day 12 →</a></div>
+            </main>
+    </div>
+    <script src="../script.js"></script>
+</body>
+</html>

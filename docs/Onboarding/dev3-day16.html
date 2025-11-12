@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Dev3 Day 16: Deploy to Dev Workflow - RevNova Onboarding</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Ubuntu,sans-serif}.main-content{margin-left:280px;padding:2.5rem}.day-header{background:linear-gradient(135deg,#fa709a 0%,#fee140 100%);color:#fff;padding:1.5rem;border-radius:10px;margin-bottom:1rem}.step-card{background:#fff;border:1px solid #e0e0e0;padding:1rem;border-radius:8px;margin-bottom:1rem}.nav-buttons{display:flex;justify-content:space-between;margin-top:1.5rem}</style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="nav-left">
+                <a href="../index.html" class="logo"><div class="logo-box">RevNova</div></a>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="onboarding-home.html" class="active">Onboarding</a></li>
+                        <li><a href="../about-revnova.html">About RevNova</a></li>
+                        <li><a href="../features.html">Features</a></li>
+                        <li><a href="../pricing.html">Pricing</a></li>
+                        <li><a href="../RevNovaRequirements/requirements-home.html">RevNova Requirements</a></li>
+                        <li><a href="../contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header-right">
+                <div class="country-selector"><span class="fi fi-us"></span></div>
+                <a href="../login.html" class="btn btn-login">Login</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="onboarding-layout">
+        <aside class="sidebar">
+            <h3>Getting Started</h3>
+            <ul>
+                <li><a href="onboarding-home.html">Onboarding Home</a></li>
+                <li><a href="onboarding-overview.html">Project Overview</a></li>
+            </ul>
+            
+            <h3>Developer 3: Daily Tasks</h3>
+            <ul>
+                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 1-2</span>
+                    <ul>
+                        <li><a href="dev3-day01.html">Day 1</a></li>
+                        <li><a href="dev3-day02.html">Day 2</a></li>
+                        <li><a href="dev3-day03.html">Day 3</a></li>
+                        <li><a href="dev3-day04.html">Day 4</a></li>
+                        <li><a href="dev3-day05.html">Day 5</a></li>
+                        <li><a href="dev3-day06.html">Day 6</a></li>
+                        <li><a href="dev3-day07.html">Day 7</a></li>
+                        <li><a href="dev3-day08.html">Day 8</a></li>
+                        <li><a href="dev3-day09.html">Day 9</a></li>
+                        <li><a href="dev3-day10.html">Day 10</a></li>
+                    </ul>
+                </li>
+                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 3-4</span>
+                    <ul>
+                        <li><a href="dev3-day11.html">Day 11</a></li>
+                        <li><a href="dev3-day12.html">Day 12</a></li>
+                        <li><a href="dev3-day13.html">Day 13</a></li>
+                        <li><a href="dev3-day14.html">Day 14</a></li>
+                        <li><a href="dev3-day15.html">Day 15</a></li>
+                        <li><a href="dev3-day16.html">Day 16</a></li>
+                        <li><a href="dev3-day17.html">Day 17</a></li>
+                        <li><a href="dev3-day18.html">Day 18</a></li>
+                        <li><a href="dev3-day19.html">Day 19</a></li>
+                        <li><a href="dev3-day20.html">Day 20</a></li>
+                    </ul>
+                </li>
+                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 5</span>
+                    <ul>
+                        <li><a href="dev3-day21.html">Day 21</a></li>
+                        <li><a href="dev3-day22.html">Day 22</a></li>
+                        <li><a href="dev3-day23.html">Day 23</a></li>
+                        <li><a href="dev3-day24.html">Day 24</a></li>
+                        <li><a href="dev3-day25.html">Day 25</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+        <div class="day-header"><h1>Day 16: Deploy to Dev Workflow</h1><p>Developer 3 — DevOps & QA</p></div>
+
+        <div class="step-card" style="background:#fffbea;border-left:4px solid #f59e0b;">
+            <h2>⚠️ IMPORTANT: Start of Day Checklist</h2>
+            <p><strong>Before starting today's work, run these commands:</strong></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+cd C:\Dev\RevNovaRepository<br>
+git pull origin main
+            </div>
+            <p>This ensures you have the latest code from your teammates. Always pull before starting work!</p>
+        </div>
+<div class="step-card">
+            <h2>📋 Objective</h2>
+            <p>Create GitHub Actions workflow to automatically build, test, and deploy the RevNova application to a development environment on every push to the main branch.</p>
+        </div>
+
+        <div class="step-card">
+            <h2>🔧 Step 1: Create Deploy Workflow File</h2>
+            <p>Create <code>.github/workflows/deploy-dev.yml</code>:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+name: Deploy to Development<br><br>
+
+on:<br>
+&nbsp;&nbsp;push:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;branches:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- main<br>
+&nbsp;&nbsp;workflow_dispatch: # Allow manual triggers<br><br>
+
+jobs:<br>
+&nbsp;&nbsp;test:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;runs-on: ubuntu-latest<br>
+&nbsp;&nbsp;&nbsp;&nbsp;steps:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- uses: actions/checkout@v4<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- name: Set up Node.js<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;uses: actions/setup-node@v4<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;with:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;node-version: '20'<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- name: Install backend dependencies<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;working-directory: ./backend<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;run: npm ci<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- name: Run backend tests<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;working-directory: ./backend<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;run: npm test<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- name: Install frontend dependencies<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;working-directory: ./frontend<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;run: npm ci<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- name: Run frontend tests<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;working-directory: ./frontend<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;run: npm test<br><br>
+
+&nbsp;&nbsp;build:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;needs: test<br>
+&nbsp;&nbsp;&nbsp;&nbsp;runs-on: ubuntu-latest<br>
+&nbsp;&nbsp;&nbsp;&nbsp;steps:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- uses: actions/checkout@v4<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- name: Log in to Docker Hub<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;uses: docker/login-action@v3<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;with:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;username: ${{ secrets.DOCKER_USERNAME }}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;password: ${{ secrets.DOCKER_TOKEN }}<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- name: Build and push backend image<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;run: |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;docker build -t ${{ secrets.DOCKER_USERNAME }}/revnova-backend:dev ./backend<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;docker push ${{ secrets.DOCKER_USERNAME }}/revnova-backend:dev<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- name: Build and push frontend image<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;run: |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;docker build -t ${{ secrets.DOCKER_USERNAME }}/revnova-frontend:dev ./frontend<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;docker push ${{ secrets.DOCKER_USERNAME }}/revnova-frontend:dev
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🚀 Step 2: Add Deployment Job</h2>
+            <p>Add deployment job to <code>deploy-dev.yml</code> (continues from Step 1):</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+&nbsp;&nbsp;deploy:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;needs: build<br>
+&nbsp;&nbsp;&nbsp;&nbsp;runs-on: ubuntu-latest<br>
+&nbsp;&nbsp;&nbsp;&nbsp;steps:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- name: Deploy to Dev Server<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;uses: appleboy/ssh-action@v1.0.0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;with:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;host: ${{ secrets.DEV_SERVER_HOST }}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;username: ${{ secrets.DEV_SERVER_USER }}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;key: ${{ secrets.DEV_SERVER_SSH_KEY }}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;script: |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cd /opt/revnova<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;docker-compose pull<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;docker-compose up -d<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;docker-compose ps<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- name: Wait for services<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;run: sleep 15<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- name: Run smoke tests<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;run: |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;curl -f http://${{ secrets.DEV_SERVER_HOST }}:3000/health || exit 1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;curl -f http://${{ secrets.DEV_SERVER_HOST }}:5173 || exit 1<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- name: Notify deployment status<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if: always()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;run: |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo "Deployment status: ${{ job.status }}"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Add Slack/email notification here
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🐳 Step 3: Update docker-compose for Dev Environment</h2>
+            <p>Create <code>docker-compose.dev.yml</code> for dev deployment:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+version: '3.8'<br><br>
+
+services:<br>
+&nbsp;&nbsp;postgres:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;image: postgres:16<br>
+&nbsp;&nbsp;&nbsp;&nbsp;environment:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;POSTGRES_DB: ${POSTGRES_DB}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;POSTGRES_USER: ${POSTGRES_USER}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;volumes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- postgres_data:/var/lib/postgresql/data<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ports:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- "5432:5432"<br><br>
+
+&nbsp;&nbsp;redis:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;image: redis:7-alpine<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ports:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- "6379:6379"<br><br>
+
+&nbsp;&nbsp;backend:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;image: ${DOCKER_USERNAME}/revnova-backend:dev<br>
+&nbsp;&nbsp;&nbsp;&nbsp;environment:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;REDIS_URL: redis://redis:6379<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OPENAI_API_KEY: ${OPENAI_API_KEY}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NODE_ENV: development<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ports:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- "3000:3000"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;depends_on:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- postgres<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- redis<br><br>
+
+&nbsp;&nbsp;frontend:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;image: ${DOCKER_USERNAME}/revnova-frontend:dev<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ports:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- "5173:5173"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;depends_on:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- backend<br><br>
+
+volumes:<br>
+&nbsp;&nbsp;postgres_data:
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>📝 Step 4: Document Dev Server Setup</h2>
+            <p>Create <code>docs/deployment/dev-server-setup.md</code>:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+# Dev Server Setup<br><br>
+
+## Prerequisites<br>
+- Ubuntu 22.04 LTS<br>
+- Docker & Docker Compose installed<br>
+- SSH access configured<br><br>
+
+## Initial Setup<br>
+```bash<br>
+# Install Docker<br>
+curl -fsSL https://get.docker.com -o get-docker.sh<br>
+sudo sh get-docker.sh<br><br>
+
+# Install Docker Compose<br>
+sudo apt-get update<br>
+sudo apt-get install docker-compose-plugin<br><br>
+
+# Create deployment directory<br>
+sudo mkdir -p /opt/revnova<br>
+sudo chown $USER:$USER /opt/revnova<br>
+cd /opt/revnova<br><br>
+
+# Create .env file<br>
+cat > .env << EOF<br>
+POSTGRES_DB=revnova_dev<br>
+POSTGRES_USER=revnova<br>
+POSTGRES_PASSWORD=&lt;generate-strong-password&gt;<br>
+OPENAI_API_KEY=&lt;your-key&gt;<br>
+DOCKER_USERNAME=&lt;your-dockerhub-username&gt;<br>
+EOF<br><br>
+
+# Copy docker-compose.dev.yml<br>
+# Download from repository<br>
+```<br><br>
+
+## GitHub Secrets Required<br>
+- `DOCKER_USERNAME`: Docker Hub username<br>
+- `DOCKER_TOKEN`: Docker Hub access token<br>
+- `DEV_SERVER_HOST`: IP address of dev server<br>
+- `DEV_SERVER_USER`: SSH username<br>
+- `DEV_SERVER_SSH_KEY`: SSH private key for authentication
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🧪 Step 5: Test Deployment Workflow</h2>
+            <p>Test the workflow manually before pushing to main:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+# From VS Code terminal:<br>
+cd C:\Dev\RevNovaRepository<br><br>
+
+# Commit workflow file<br>
+git add .github/workflows/deploy-dev.yml<br>
+git add docker-compose.dev.yml<br>
+git add docs/deployment/dev-server-setup.md<br>
+git commit -m "feat(devops): add GitHub Actions deploy workflow for dev environment"<br><br>
+
+# Push to trigger workflow<br>
+git push origin main
+            </div>
+            <p><strong>Monitor workflow execution:</strong></p>
+            <ol style="margin-left:1.5rem;">
+                <li>Go to GitHub repository → Actions tab</li>
+                <li>Click on latest "Deploy to Development" workflow run</li>
+                <li>Verify all jobs pass: test → build → deploy</li>
+                <li>Check smoke tests pass (health endpoints respond)</li>
+                <li>If failures occur, click into failed step for logs</li>
+            </ol>
+        </div>
+
+        <div class="step-card">
+            <h2>✅ End of Day 16 Checklist</h2>
+            <ul>
+                <li>✅ <code>.github/workflows/deploy-dev.yml</code> created with test → build → deploy jobs</li>
+                <li>✅ Docker Hub login and image push configured with secrets</li>
+                <li>✅ <code>docker-compose.dev.yml</code> created for dev environment deployment</li>
+                <li>✅ SSH deployment step added with docker-compose pull/up commands</li>
+                <li>✅ Smoke tests verify backend health endpoint and frontend availability</li>
+                <li>✅ <code>docs/deployment/dev-server-setup.md</code> created with server setup instructions</li>
+                <li>✅ GitHub Actions workflow tested successfully (or errors documented)</li>
+                <li>✅ All changes committed with message: <code>feat(devops): add GitHub Actions deploy workflow for dev environment</code></li>
+            </ul>
+        </div>
+        <div class="nav-buttons"><a href="dev3-day15.html" class="nav-btn back">← Back to Day 15</a><a href="dev3-day17.html" class="nav-btn next">Next: Day 17 →</a></div>
+            </main>
+    </div>
+    <script src="../script.js"></script>
+</body>
+</html>

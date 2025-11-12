@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Dev3 Day 7: PostgreSQL & Redis - RevNova Onboarding</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Ubuntu,sans-serif}.main-content{margin-left:280px;padding:2.5rem}.day-header{background:linear-gradient(135deg,#fa709a 0%,#fee140 100%);color:#fff;padding:1.5rem;border-radius:10px;margin-bottom:1rem}.step-card{background:#fff;border:1px solid #e0e0e0;padding:1rem;border-radius:8px;margin-bottom:1rem}.nav-buttons{display:flex;justify-content:space-between;margin-top:1.5rem}</style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="nav-left">
+                <a href="../index.html" class="logo"><div class="logo-box">RevNova</div></a>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="onboarding-home.html" class="active">Onboarding</a></li>
+                        <li><a href="../about-revnova.html">About RevNova</a></li>
+                        <li><a href="../features.html">Features</a></li>
+                        <li><a href="../pricing.html">Pricing</a></li>
+                        <li><a href="../RevNovaRequirements/requirements-home.html">RevNova Requirements</a></li>
+                        <li><a href="../contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header-right">
+                <div class="country-selector"><span class="fi fi-us"></span></div>
+                <a href="../login.html" class="btn btn-login">Login</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="onboarding-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h3>Getting Started</h3>
+            <ul>
+                <li><a href="onboarding-home.html">Onboarding Home</a></li>
+                <li><a href="onboarding-overview.html">Project Overview</a></li>
+                <li><a href="manual-repo-setup.html">Manual Repository Setup</a></li>
+                <li><a href="repo-setup-guide.html">Automated Setup Guide</a></li>
+            </ul>
+            
+            <h3>Developer Guides</h3>
+            <ul>
+                <li><a href="onboarding-dev1-phase1.html">Developer 1: Backend & Database</a></li>
+                <li><a href="onboarding-dev2-phase1.html">Developer 2: Frontend & React</a></li>
+                <li><a href="onboarding-dev3-phase1.html">Developer 3: DevOps & QA</a></li>
+            </ul>
+            
+            <h3>Developer 3: Daily Tasks</h3>
+            <ul>
+                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 1: CI/CD & Docker</span>
+                    <ul>
+                        <li><a href="dev3-day01.html">Day 1: GitHub Actions Setup</a></li>
+                        <li><a href="dev3-day02.html">Day 2: CI Pipeline (Lint & Test)</a></li>
+                        <li><a href="dev3-day03.html">Day 3: Docker for Backend</a></li>
+                        <li><a href="dev3-day04.html">Day 4: Docker for Frontend</a></li>
+                        <li><a href="dev3-day05.html">Day 5: Code Coverage & Week 1 PR</a></li>
+                    </ul>
+                </li>
+                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 2: Local Dev Environment</span>
+                    <ul>
+                        <li><a href="dev3-day06.html">Day 6: Docker Compose Setup</a></li>
+                        <li><a href="dev3-day07.html">Day 7: PostgreSQL & Redis</a></li>
+                        <li><a href="dev3-day08.html">Day 8: Database Migrations</a></li>
+                        <li><a href="dev3-day09.html">Day 9: Seed Data Scripts</a></li>
+                        <li><a href="dev3-day10.html">Day 10: Bull Queue & Week 2 PR</a></li>
+                    </ul>
+                </li>
+                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 3: Integration & E2E Testing</span>
+                    <ul>
+                        <li><a href="dev3-day11.html">Day 11: API Integration Tests (Part 1)</a></li>
+                        <li><a href="dev3-day12.html">Day 12: API Integration Tests (Part 2)</a></li>
+                        <li><a href="dev3-day13.html">Day 13: Test Database Setup</a></li>
+                        <li><a href="dev3-day14.html">Day 14: Playwright Setup</a></li>
+                        <li><a href="dev3-day15.html">Day 15: E2E Tests & Week 3 PR</a></li>
+                    </ul>
+                </li>
+                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 4: Deployment Automation</span>
+                    <ul>
+                        <li><a href="dev3-day16.html">Day 16: GitHub Actions Deploy (Part 1)</a></li>
+                        <li><a href="dev3-day17.html">Day 17: GitHub Actions Deploy (Part 2)</a></li>
+                        <li><a href="dev3-day18.html">Day 18: Health Checks</a></li>
+                        <li><a href="dev3-day19.html">Day 19: Deploy to Test Workflow</a></li>
+                        <li><a href="dev3-day20.html">Day 20: Week 4 Testing & PR</a></li>
+                    </ul>
+                </li>
+                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 5: Production & Monitoring</span>
+                    <ul>
+                        <li><a href="dev3-day21.html">Day 21: Production Deployment</a></li>
+                        <li><a href="dev3-day22.html">Day 22: Monitoring Setup</a></li>
+                        <li><a href="dev3-day23.html">Day 23: Backup & Restore</a></li>
+                        <li><a href="dev3-day24.html">Day 24: Load Testing</a></li>
+                        <li><a href="dev3-day25.html">Day 25: Documentation & Runbooks</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+        <div class="day-header"><h1>Day 7: PostgreSQL & Redis</h1><p>Developer 3 — DevOps & QA</p></div>
+
+        <div class="step-card" style="background:#fffbea;border-left:4px solid #f59e0b;">
+            <h2>⚠️ IMPORTANT: Start of Day Checklist</h2>
+            <p><strong>Before starting today's work, run these commands:</strong></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+cd C:\Dev\RevNovaRepository<br>
+git pull origin main
+            </div>
+            <p>This ensures you have the latest code from your teammates. Always pull before starting work!</p>
+        </div>
+        <div class="step-card">
+            <h2>📋 Objective</h2>
+            <p>Configure PostgreSQL and Redis containers with persistent volumes, credentials, and environment variables for local development.</p>
+        </div>
+
+        <div class="step-card">
+            <h2>🗄️ Step 1: Configure PostgreSQL User & Database</h2>
+            <p>Already configured in docker-compose.yml, verify with:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+docker exec -it revnovarepository-postgres-1 psql -U revnova -d revnova_dev<br>
+\dt
+            </div>
+            <p><strong>Expected:</strong> PostgreSQL client connects successfully</p>
+        </div>
+
+        <div class="step-card">
+            <h2>🔴 Step 2: Test Redis Connectivity</h2>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+docker exec -it revnovarepository-redis-1 redis-cli<br>
+PING
+            </div>
+            <p><strong>Expected:</strong> PONG response</p>
+        </div>
+
+        <div class="step-card">
+            <h2>🔐 Step 3: Create .env.example File</h2>
+            <p><strong>File:</strong> <code>backend/.env.example</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+DATABASE_URL=postgres://revnova:dev123@localhost:5432/revnova_dev<br>
+REDIS_URL=redis://localhost:6379<br>
+PORT=3000<br>
+NODE_ENV=development<br>
+SALESFORCE_CLIENT_ID=your_client_id<br>
+SALESFORCE_CLIENT_SECRET=your_client_secret
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🎯 End of Day Checklist</h2>
+            <ul style="list-style:none;padding-left:0;">
+                <li>☐ PostgreSQL user and database verified</li>
+                <li>☐ Redis connectivity tested with PING</li>
+                <li>☐ .env.example file created and documented</li>
+                <li>☐ Backend connects to both services</li>
+                <li>☐ Code committed and pushed</li>
+            </ul>
+        </div>        <div class="nav-buttons"><a href="dev3-day06.html" class="nav-btn back">← Back to Day 6</a><a href="dev3-day08.html" class="nav-btn next">Next: Day 8 →</a></div>
+            </main>
+    </div>
+    <script src="../script.js"></script>
+</body>
+</html>

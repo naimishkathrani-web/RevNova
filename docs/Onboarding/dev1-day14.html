@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Dev1 Day 14: Mapping Validation - RevNova Onboarding</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Ubuntu,sans-serif}.main-content{margin-left:280px;padding:2.5rem}.day-header{background:linear-gradient(135deg,#4facfe 0%,#00f2fe 100%);color:#fff;padding:1.5rem;border-radius:10px;margin-bottom:1rem}.step-card{background:#fff;border:1px solid #e0e0e0;padding:1rem;border-radius:8px;margin-bottom:1rem}.nav-buttons{display:flex;justify-content:space-between;margin-top:1.5rem}</style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="nav-left">
+                <a href="../index.html" class="logo"><div class="logo-box">RevNova</div></a>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="onboarding-home.html" class="active">Onboarding</a></li>
+                        <li><a href="../about-revnova.html">About RevNova</a></li>
+                        <li><a href="../features.html">Features</a></li>
+                        <li><a href="../pricing.html">Pricing</a></li>
+                        <li><a href="../RevNovaRequirements/requirements-home.html">RevNova Requirements</a></li>
+                        <li><a href="../contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header-right">
+                <div class="country-selector"><span class="fi fi-us"></span></div>
+                <a href="../login.html" class="btn btn-login">Login</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="onboarding-layout">
+        <aside class="sidebar">
+            <h3>Getting Started</h3>
+            <ul>
+                <li><a href="onboarding-home.html">Onboarding Home</a></li>
+                <li><a href="onboarding-overview.html">Project Overview</a></li>
+            </ul>
+            
+            <h3>Developer 1: Daily Tasks</h3>
+            <ul>
+                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 1: Backend Setup</span>
+                    <ul>
+                        <li><a href="dev1-day01.html">Day 1</a></li>
+                        <li><a href="dev1-day02.html">Day 2</a></li>
+                        <li><a href="dev1-day03.html">Day 3</a></li>
+                        <li><a href="dev1-day04.html">Day 4</a></li>
+                        <li><a href="dev1-day05.html">Day 5</a></li>
+                    </ul>
+                </li>
+                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 2: Salesforce Integration</span>
+                    <ul>
+                        <li><a href="dev1-day06.html">Day 6</a></li>
+                        <li><a href="dev1-day07.html">Day 7</a></li>
+                        <li><a href="dev1-day08.html">Day 8</a></li>
+                        <li><a href="dev1-day09.html">Day 9</a></li>
+                        <li><a href="dev1-day10.html">Day 10</a></li>
+                    </ul>
+                </li>
+                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 3: Field Mapping API</span>
+                    <ul>
+                        <li><a href="dev1-day11.html">Day 11</a></li>
+                        <li><a href="dev1-day12.html">Day 12</a></li>
+                        <li><a href="dev1-day13.html">Day 13</a></li>
+                        <li><a href="dev1-day14.html">Day 14</a></li>
+                        <li><a href="dev1-day15.html">Day 15</a></li>
+                    </ul>
+                </li>
+                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 4: Transformation & Queue</span>
+                    <ul>
+                        <li><a href="dev1-day16.html">Day 16</a></li>
+                        <li><a href="dev1-day17.html">Day 17</a></li>
+                        <li><a href="dev1-day18.html">Day 18</a></li>
+                        <li><a href="dev1-day19.html">Day 19</a></li>
+                        <li><a href="dev1-day20.html">Day 20</a></li>
+                    </ul>
+                </li>
+                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 5: Execution & Testing</span>
+                    <ul>
+                        <li><a href="dev1-day21.html">Day 21</a></li>
+                        <li><a href="dev1-day22.html">Day 22</a></li>
+                        <li><a href="dev1-day23.html">Day 23</a></li>
+                        <li><a href="dev1-day24.html">Day 24</a></li>
+                        <li><a href="dev1-day25.html">Day 25</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+        <div class="day-header"><h1>Day 14: Mapping Validation</h1><p>Developer 1 — Backend & Database</p></div>
+
+        <div class="step-card" style="background:#fffbea;border-left:4px solid #f59e0b;">
+            <h2>⚠️ IMPORTANT: Start of Day Checklist</h2>
+            <p><strong>Before starting today's work, run these commands:</strong></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+cd C:\Dev\RevNovaRepository<br>
+git pull origin main
+            </div>
+            <p>This ensures you have the latest code from your teammates. Always pull before starting work!</p>
+        </div>
+        <div class="step-card">
+            <h2>📋 Objective</h2>
+            <p>Build validation endpoint to check all required fields are mapped and data types are compatible.</p>
+        </div>
+
+        <div class="step-card">
+            <h2>✅ Step 1: Create Validation Endpoint</h2>
+            <p><strong>File:</strong> <code>backend/src/routes/mapping.routes.ts</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+router.post('/projects/:id/mappings/validate', async (req, res) => {<br>
+&nbsp;&nbsp;const mappings = await db.query('SELECT * FROM field_mappings WHERE project_id = $1', [req.params.id]);<br>
+&nbsp;&nbsp;const targetFields = await getTargetFields(req.params.id);<br>
+<br>
+&nbsp;&nbsp;const errors = [];<br>
+&nbsp;&nbsp;const warnings = [];<br>
+<br>
+&nbsp;&nbsp;// Check required fields<br>
+&nbsp;&nbsp;for (const field of targetFields.filter(f => f.required)) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const mapped = mappings.rows.find(m => m.target_field === field.name);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (!mapped) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;errors.push(`Required field ${field.name} is not mapped`);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;// Check type compatibility<br>
+&nbsp;&nbsp;for (const mapping of mappings.rows) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const validation = validateMapping(mapping.source_field, mapping.target_field);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;warnings.push(...validation);<br>
+&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;res.json({ valid: errors.length === 0, errors, warnings });<br>
+});
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🧪 Step 2: Test Validation Rules</h2>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+curl -X POST http://localhost:3000/api/v1/projects/1/mappings/validate
+            </div>
+            <p><strong>Expected:</strong> Returns errors for unmapped required fields, warnings for type mismatches</p>
+        </div>
+
+        <div class="step-card">
+            <h2>🎯 End of Day Checklist</h2>
+            <ul style="list-style:none;padding-left:0;">
+                <li>☐ Validation endpoint checks required fields</li>
+                <li>☐ Type compatibility warnings returned</li>
+                <li>☐ Tested with 70+ field mappings</li>
+                <li>☐ Code committed and pushed</li>
+            </ul>
+        </div>
+        <div class="nav-buttons"><a href="dev1-day13.html" class="nav-btn back">← Back to Day 13</a><a href="dev1-day15.html" class="nav-btn next">Next: Day 15 →</a></div>
+            </main>
+    </div>
+    <script src="../script.js"></script>
+</body>
+</html>

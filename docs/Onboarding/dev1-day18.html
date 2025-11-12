@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Dev1 Day 18: Bull Queue Setup - RevNova Onboarding</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Ubuntu,sans-serif}.main-content{margin-left:280px;padding:2.5rem}.day-header{background:linear-gradient(135deg,#4facfe 0%,#00f2fe 100%);color:#fff;padding:1.5rem;border-radius:10px;margin-bottom:1rem}.step-card{background:#fff;border:1px solid #e0e0e0;padding:1rem;border-radius:8px;margin-bottom:1rem}.nav-buttons{display:flex;justify-content:space-between;margin-top:1.5rem}</style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="nav-left">
+                <a href="../index.html" class="logo"><div class="logo-box">RevNova</div></a>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="onboarding-home.html" class="active">Onboarding</a></li>
+                        <li><a href="../about-revnova.html">About RevNova</a></li>
+                        <li><a href="../features.html">Features</a></li>
+                        <li><a href="../pricing.html">Pricing</a></li>
+                        <li><a href="../RevNovaRequirements/requirements-home.html">RevNova Requirements</a></li>
+                        <li><a href="../contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header-right">
+                <div class="country-selector"><span class="fi fi-us"></span></div>
+                <a href="../login.html" class="btn btn-login">Login</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="onboarding-layout">
+        <aside class="sidebar">
+            <h3>Getting Started</h3>
+            <ul>
+                <li><a href="onboarding-home.html">Onboarding Home</a></li>
+                <li><a href="onboarding-overview.html">Project Overview</a></li>
+            </ul>
+            
+            <h3>Developer 1: Daily Tasks</h3>
+            <ul>
+                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 1: Backend Setup</span>
+                    <ul>
+                        <li><a href="dev1-day01.html">Day 1</a></li>
+                        <li><a href="dev1-day02.html">Day 2</a></li>
+                        <li><a href="dev1-day03.html">Day 3</a></li>
+                        <li><a href="dev1-day04.html">Day 4</a></li>
+                        <li><a href="dev1-day05.html">Day 5</a></li>
+                    </ul>
+                </li>
+                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 2: Salesforce Integration</span>
+                    <ul>
+                        <li><a href="dev1-day06.html">Day 6</a></li>
+                        <li><a href="dev1-day07.html">Day 7</a></li>
+                        <li><a href="dev1-day08.html">Day 8</a></li>
+                        <li><a href="dev1-day09.html">Day 9</a></li>
+                        <li><a href="dev1-day10.html">Day 10</a></li>
+                    </ul>
+                </li>
+                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 3: Field Mapping API</span>
+                    <ul>
+                        <li><a href="dev1-day11.html">Day 11</a></li>
+                        <li><a href="dev1-day12.html">Day 12</a></li>
+                        <li><a href="dev1-day13.html">Day 13</a></li>
+                        <li><a href="dev1-day14.html">Day 14</a></li>
+                        <li><a href="dev1-day15.html">Day 15</a></li>
+                    </ul>
+                </li>
+                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 4: Transformation & Queue</span>
+                    <ul>
+                        <li><a href="dev1-day16.html">Day 16</a></li>
+                        <li><a href="dev1-day17.html">Day 17</a></li>
+                        <li><a href="dev1-day18.html">Day 18</a></li>
+                        <li><a href="dev1-day19.html">Day 19</a></li>
+                        <li><a href="dev1-day20.html">Day 20</a></li>
+                    </ul>
+                </li>
+                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 5: Execution & Testing</span>
+                    <ul>
+                        <li><a href="dev1-day21.html">Day 21</a></li>
+                        <li><a href="dev1-day22.html">Day 22</a></li>
+                        <li><a href="dev1-day23.html">Day 23</a></li>
+                        <li><a href="dev1-day24.html">Day 24</a></li>
+                        <li><a href="dev1-day25.html">Day 25</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+        <div class="day-header"><h1>Day 18: Bull Queue Setup</h1><p>Developer 1 — Backend & Database</p></div>
+
+        <div class="step-card" style="background:#fffbea;border-left:4px solid #f59e0b;">
+            <h2>⚠️ IMPORTANT: Start of Day Checklist</h2>
+            <p><strong>Before starting today's work, run these commands:</strong></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+cd C:\Dev\RevNovaRepository<br>
+git pull origin main
+            </div>
+            <p>This ensures you have the latest code from your teammates. Always pull before starting work!</p>
+        </div>
+
+        <div class="step-card" style="background:#e0f2fe;border-left:4px solid #0284c7;">
+            <h2>🤖 Copy This Prompt for Your GitHub Copilot</h2>
+            <p><strong>Click the code block below, copy all text, and paste into GitHub Copilot Chat to get step-by-step guidance:</strong></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;max-height:400px;overflow-y:auto;">
+I'm working on Day 18 of the RevNova migration platform - Backend Developer track.<br><br>
+
+**🎯 REVNOVA PLATFORM OVERVIEW:**<br>
+RevNova is a SaaS platform that automates Salesforce CPQ → Revenue Cloud migrations. It's a 7-step wizard that:<br>
+1. Connects to source/target Salesforce orgs (OAuth)<br>
+2. Analyzes CPQ schema and discovers field relationships<br>
+3. Generates AI-powered field mapping suggestions (OpenAI GPT-4)<br>
+4. Allows drag-drop mapping customization with confidence scores<br>
+5. Previews transformations before execution<br>
+6. Executes async ETL jobs (extract → transform → load)<br>
+7. Generates migration reports with success/failure metrics<br><br>
+
+**Tech Stack:** Node.js 20, Express, TypeScript, PostgreSQL 16, Redis 7, Bull queue, jsforce, OpenAI GPT-4 API<br><br>
+
+**📚 DETAILED REQUIREMENTS:**<br>
+Before starting, review these requirement docs in the repository:<br>
+- docs/RevNovaRequirements/functional-requirements.html (API endpoints, user flows)<br>
+- docs/RevNovaRequirements/technical-specifications.html (architecture, database schema)<br>
+- docs/RevNovaRequirements/data-model.html (STG1/STG2 staging tables, field mapping structure)<br><br>
+
+**🏗️ MVP MILESTONE STATUS:**<br>
+We're building the MVP (target: Nov 30, 2025 - 19 days remaining). Week 4 focus is ETL pipeline implementation.<br>
+- ✅ Weeks 1-3: Backend API, frontend wizard, testing infrastructure complete<br>
+- 🔄 Week 4 (current): Transformation engine, Bull queue, deployment automation<br>
+- ⏳ Week 5 (next): Migration execution, reporting, production deployment<br><br>
+
+**Context from Previous Days:**<br>
+- Days 1-5: Built Express + TypeScript backend with PostgreSQL + Redis<br>
+- Days 6-10: Integrated jsforce for Salesforce connections, built schema catalog with Redis caching<br>
+- Days 11-15: Built field mapping API with OpenAI GPT-4 suggestions, validation engine<br>
+- Days 16-17: Built transformation engine with 6 types (Direct, ValueMap, Formula, Concatenate, Lookup, Date), null handling, error tracking<br><br>
+
+**Today's Goal:** Set up Bull queue with Redis for async ETL job processing<br><br>
+
+**Tasks:**<br>
+1. Install bull package and configure Redis connection for job queue<br>
+2. Create migration job queue with priority levels and retry settings<br>
+3. Implement worker process to consume jobs from queue<br>
+4. Add job status tracking (queued, processing, completed, failed) with progress updates<br><br>
+
+**File Structure:**<br>
+- backend/src/queues/migrationQueue.ts - Bull queue configuration<br>
+- backend/src/workers/migrationWorker.ts - Job processor<br>
+- backend/src/routes/jobRoutes.ts - API endpoints for job submission and status<br><br>
+
+**Acceptance Criteria:**<br>
+- Bull queue configured with Redis connection from existing redisClient<br>
+- Queue has priority settings (1=low, 5=high) and retry (3 attempts, exponential backoff)<br>
+- POST /api/jobs endpoint accepts { mappingId, connectionId } and adds job to queue<br>
+- GET /api/jobs/:jobId endpoint returns { id, status, progress, result, error }<br>
+- Worker processes jobs and updates status every 10%<br>
+- Failed jobs retry 3 times before marking as "failed"<br><br>
+
+**Testing:**<br>
+- Curl POST to create job returns jobId immediately (async)<br>
+- Curl GET shows job progressing through: queued → processing → completed<br>
+- Worker logs show job pickup and processing steps<br><br>
+
+Please guide me step-by-step through implementing this Bull queue integration. Show me the code for each file, explain the configuration options, and help me test it.
+            </div>
+        </div>
+
+<div class="step-card">
+            <h2>📋 Objective</h2>
+            <p>Set up Bull job queue with Redis for async background processing of migrations.</p>
+        </div>
+
+        <div class="step-card">
+            <h2>📦 Step 1: Install Bull Package</h2>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+cd backend<br>
+npm install bull @types/bull
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🔧 Step 2: Create Migration Queue</h2>
+            <p>Create <code>backend/src/queues/migrationQueue.ts</code>:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+import Queue from 'bull';<br>
+import { redisClient } from '../config/redis';<br><br>
+
+interface MigrationJobData {<br>
+&nbsp;&nbsp;mappingId: string;<br>
+&nbsp;&nbsp;connectionId: string;<br>
+&nbsp;&nbsp;userId?: string;<br>
+}<br><br>
+
+export const migrationQueue = new Queue&lt;MigrationJobData&gt;('migration', {<br>
+&nbsp;&nbsp;redis: {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;host: process.env.REDIS_HOST || 'localhost',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;port: parseInt(process.env.REDIS_PORT || '6379'),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;password: process.env.REDIS_PASSWORD<br>
+&nbsp;&nbsp;},<br>
+&nbsp;&nbsp;defaultJobOptions: {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;attempts: 3,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;backoff: {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type: 'exponential',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;delay: 2000 // Start with 2s, then 4s, then 8s<br>
+&nbsp;&nbsp;&nbsp;&nbsp;},<br>
+&nbsp;&nbsp;&nbsp;&nbsp;removeOnComplete: false, // Keep completed jobs for status checks<br>
+&nbsp;&nbsp;&nbsp;&nbsp;removeOnFail: false<br>
+&nbsp;&nbsp;}<br>
+});<br><br>
+
+// Graceful shutdown<br>
+process.on('SIGTERM', async () => {<br>
+&nbsp;&nbsp;await migrationQueue.close();<br>
+});
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🛤️ Step 3: Create Job API Endpoints</h2>
+            <p>Create <code>backend/src/routes/jobRoutes.ts</code>:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+import { Router } from 'express';<br>
+import { migrationQueue } from '../queues/migrationQueue';<br><br>
+
+const router = Router();<br><br>
+
+// Submit new migration job<br>
+router.post('/', async (req, res) => {<br>
+&nbsp;&nbsp;try {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const { mappingId, connectionId } = req.body;<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;if (!mappingId || !connectionId) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return res.status(400).json({ error: 'mappingId and connectionId required' });<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;const job = await migrationQueue.add({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mappingId,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;connectionId,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;userId: (req as any).user?.id<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}, {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;priority: 5 // Default priority<br>
+&nbsp;&nbsp;&nbsp;&nbsp;});<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;res.json({ jobId: job.id, status: 'queued' });<br>
+&nbsp;&nbsp;} catch (error: any) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;res.status(500).json({ error: error.message });<br>
+&nbsp;&nbsp;}<br>
+});<br><br>
+
+// Get job status<br>
+router.get('/:jobId', async (req, res) => {<br>
+&nbsp;&nbsp;try {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const job = await migrationQueue.getJob(req.params.jobId);<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;if (!job) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return res.status(404).json({ error: 'Job not found' });<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;const state = await job.getState();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const progress = job.progress();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const result = job.returnvalue;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const error = job.failedReason;<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;res.json({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;id: job.id,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;status: state,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;progress,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;error,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;attempts: job.attemptsMade,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;createdAt: job.timestamp<br>
+&nbsp;&nbsp;&nbsp;&nbsp;});<br>
+&nbsp;&nbsp;} catch (error: any) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;res.status(500).json({ error: error.message });<br>
+&nbsp;&nbsp;}<br>
+});<br><br>
+
+export default router;
+            </div>
+            <p>Register routes in <code>backend/src/app.ts</code>:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+import jobRoutes from './routes/jobRoutes';<br><br>
+
+app.use('/api/jobs', jobRoutes);
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>👷 Step 4: Create Basic Worker</h2>
+            <p>Create <code>backend/src/workers/migrationWorker.ts</code>:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+import { migrationQueue } from '../queues/migrationQueue';<br><br>
+
+migrationQueue.process(async (job) => {<br>
+&nbsp;&nbsp;const { mappingId, connectionId } = job.data;<br><br>
+
+&nbsp;&nbsp;console.log(`Processing job ${job.id}: mapping=${mappingId}, connection=${connectionId}`);<br><br>
+
+&nbsp;&nbsp;try {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Simulate ETL phases<br>
+&nbsp;&nbsp;&nbsp;&nbsp;await job.progress(10);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;console.log('Extracting data...');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;await new Promise(resolve => setTimeout(resolve, 1000));<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;await job.progress(50);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;console.log('Transforming data...');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;await new Promise(resolve => setTimeout(resolve, 1000));<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;await job.progress(90);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;console.log('Loading to staging...');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;await new Promise(resolve => setTimeout(resolve, 1000));<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;await job.progress(100);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return { success: true, recordsProcessed: 0 };<br>
+&nbsp;&nbsp;} catch (error: any) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;console.error(`Job ${job.id} failed:`, error);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;throw error;<br>
+&nbsp;&nbsp;}<br>
+});<br><br>
+
+migrationQueue.on('completed', (job, result) => {<br>
+&nbsp;&nbsp;console.log(`Job ${job.id} completed:`, result);<br>
+});<br><br>
+
+migrationQueue.on('failed', (job, err) => {<br>
+&nbsp;&nbsp;console.error(`Job ${job?.id} failed:`, err.message);<br>
+});<br><br>
+
+console.log('Migration worker started');
+            </div>
+            <p>Update <code>backend/src/server.ts</code> to start worker:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+import './workers/migrationWorker'; // Add this line<br><br>
+
+const PORT = process.env.PORT || 3000;<br>
+app.listen(PORT, () => {<br>
+&nbsp;&nbsp;console.log(`Server running on port ${PORT}`);<br>
+});
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🧪 Step 5: Test Job Queue</h2>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+# Submit a job<br>
+curl -X POST http://localhost:3000/api/jobs \<br>
+&nbsp;&nbsp;-H "Content-Type: application/json" \<br>
+&nbsp;&nbsp;-d '{"mappingId": "test-mapping-1", "connectionId": "test-conn-1"}'<br><br>
+
+# Response: {"jobId": "1", "status": "queued"}<br><br>
+
+# Check job status (replace 1 with your jobId)<br>
+curl http://localhost:3000/api/jobs/1<br><br>
+
+# Response should progress through:<br>
+# {"status": "waiting", "progress": 0}<br>
+# {"status": "active", "progress": 10}<br>
+# {"status": "active", "progress": 50}<br>
+# {"status": "completed", "progress": 100, "result": {"success": true, "recordsProcessed": 0}}
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>✅ End of Day 18 Checklist</h2>
+            <ul>
+                <li>✅ Bull package installed (<code>npm list bull</code> shows version)</li>
+                <li>✅ <code>backend/src/queues/migrationQueue.ts</code> created with retry config (3 attempts, exponential backoff)</li>
+                <li>✅ <code>backend/src/routes/jobRoutes.ts</code> created with POST and GET endpoints</li>
+                <li>✅ <code>backend/src/workers/migrationWorker.ts</code> created with progress tracking</li>
+                <li>✅ Worker logs show job pickup: "Processing job X"</li>
+                <li>✅ POST /api/jobs returns jobId immediately (async)</li>
+                <li>✅ GET /api/jobs/:jobId shows progress 0 → 10 → 50 → 90 → 100</li>
+                <li>✅ Completed jobs return <code>{"status": "completed", "result": {...}}</code></li>
+                <li>✅ All changes committed: <code>feat(backend): add Bull queue for async ETL job processing</code></li>
+            </ul>
+        </div>
+        <div class="nav-buttons"><a href="dev1-day17.html" class="nav-btn back">← Back to Day 17</a><a href="dev1-day19.html" class="nav-btn next">Next: Day 19 →</a></div>
+            </main>
+    </div>
+    <script src="../script.js"></script>
+</body>
+</html>

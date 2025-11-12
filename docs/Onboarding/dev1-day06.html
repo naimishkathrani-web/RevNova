@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Dev1 Day 6: Schema Analysis API (Part 1) - RevNova Onboarding</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Ubuntu,sans-serif}.main-content{margin-left:280px;padding:2.5rem}.day-header{background:linear-gradient(135deg,#4facfe 0%,#00f2fe 100%);color:#fff;padding:1.5rem;border-radius:10px;margin-bottom:1rem}.step-card{background:#fff;border:1px solid #e0e0e0;padding:1rem;border-radius:8px;margin-bottom:1rem}.nav-buttons{display:flex;justify-content:space-between;margin-top:1.5rem}</style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="nav-left">
+                <a href="../index.html" class="logo"><div class="logo-box">RevNova</div></a>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="onboarding-home.html" class="active">Onboarding</a></li>
+                        <li><a href="../about-revnova.html">About RevNova</a></li>
+                        <li><a href="../features.html">Features</a></li>
+                        <li><a href="../pricing.html">Pricing</a></li>
+                        <li><a href="../RevNovaRequirements/requirements-home.html">RevNova Requirements</a></li>
+                        <li><a href="../contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header-right">
+                <div class="country-selector"><span class="fi fi-us"></span></div>
+                <a href="../login.html" class="btn btn-login">Login</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="onboarding-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h3>Getting Started</h3>
+            <ul>
+                <li><a href="onboarding-home.html">Onboarding Home</a></li>
+                <li><a href="onboarding-overview.html">Project Overview</a></li>
+                <li><a href="manual-repo-setup.html">Manual Repository Setup</a></li>
+                <li><a href="repo-setup-guide.html">Automated Setup Guide</a></li>
+            </ul>
+            
+            <h3>Developer Guides</h3>
+            <ul>
+                <li><a href="onboarding-dev1-phase1.html">Developer 1: Backend & Database</a></li>
+                <li><a href="onboarding-dev2-phase1.html">Developer 2: Frontend & React</a></li>
+                <li><a href="onboarding-dev3-phase1.html">Developer 3: DevOps & QA</a></li>
+            </ul>
+            
+            <h3>Developer 1: Daily Tasks</h3>
+            <ul>
+                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 1: Backend Setup</span>
+                    <ul>
+                        <li><a href="dev1-day01.html">Day 1: Workstation Setup</a></li>
+                        <li><a href="dev1-day02.html">Day 2: Express & TypeScript</a></li>
+                        <li><a href="dev1-day03.html">Day 3: PostgreSQL Setup</a></li>
+                        <li><a href="dev1-day04.html">Day 4: Database Schema</a></li>
+                        <li><a href="dev1-day05.html">Day 5: API Endpoints & Week 1 PR</a></li>
+                    </ul>
+                </li>
+                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 2: Salesforce Integration</span>
+                    <ul>
+                        <li><a href="dev1-day06.html">Day 6: Schema Analysis API (Part 1)</a></li>
+                        <li><a href="dev1-day07.html">Day 7: Schema Analysis API (Part 2)</a></li>
+                        <li><a href="dev1-day08.html">Day 8: Redis Caching</a></li>
+                        <li><a href="dev1-day09.html">Day 9: Catalog & Relationships</a></li>
+                        <li><a href="dev1-day10.html">Day 10: Week 2 Testing & PR</a></li>
+                    </ul>
+                </li>
+                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 3: Field Mapping API</span>
+                    <ul>
+                        <li><a href="dev1-day11.html">Day 11: Field Mapping API (Part 1)</a></li>
+                        <li><a href="dev1-day12.html">Day 12: Field Mapping API (Part 2)</a></li>
+                        <li><a href="dev1-day13.html">Day 13: OpenAI Integration</a></li>
+                        <li><a href="dev1-day14.html">Day 14: Validation Engine</a></li>
+                        <li><a href="dev1-day15.html">Day 15: Week 3 Testing & PR</a></li>
+                    </ul>
+                </li>
+                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 4: Transformation & Queue</span>
+                    <ul>
+                        <li><a href="dev1-day16.html">Day 16: Transformation API (Part 1)</a></li>
+                        <li><a href="dev1-day17.html">Day 17: Transformation API (Part 2)</a></li>
+                        <li><a href="dev1-day18.html">Day 18: Bull Queue Setup</a></li>
+                        <li><a href="dev1-day19.html">Day 19: ETL Job Processing</a></li>
+                        <li><a href="dev1-day20.html">Day 20: Week 4 Testing & PR</a></li>
+                    </ul>
+                </li>
+                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 5: Migration Execution</span>
+                    <ul>
+                        <li><a href="dev1-day21.html">Day 21: Migration Execution API</a></li>
+                        <li><a href="dev1-day22.html">Day 22: Error Handling & Rollback</a></li>
+                        <li><a href="dev1-day23.html">Day 23: Testing Reports API</a></li>
+                        <li><a href="dev1-day24.html">Day 24: Integration Testing</a></li>
+                        <li><a href="dev1-day25.html">Day 25: Final Testing & Documentation</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+        <div class="day-header">
+            <h1>Day 6: Schema Analysis API (Part 1)</h1>
+            <p>Developer 1 — Backend & Database</p>
+        </div>
+
+        <div class="step-card" style="background:#fffbea;border-left:4px solid #f59e0b;">
+            <h2>⚠️ IMPORTANT: Start of Day Checklist</h2>
+            <p><strong>Before starting today's work, run these commands:</strong></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+cd C:\Dev\RevNovaRepository<br>
+git pull origin main
+            </div>
+            <p>This ensures you have the latest code from your teammates. Always pull before starting work!</p>
+        </div>
+
+        <div class="step-card" style="background:#e0f2fe;border-left:4px solid #0284c7;">
+            <h2>🤖 Copy This Prompt for Your GitHub Copilot</h2>
+            <p><strong>Click the code block below, copy all text, and paste into GitHub Copilot Chat:</strong></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;max-height:400px;overflow-y:auto;">
+I'm on Day 6 of RevNova platform development - Backend Developer track.<br><br>
+
+**🎯 REVNOVA OVERVIEW:**<br>
+RevNova automates Salesforce CPQ → Revenue Cloud migrations with a 7-step wizard: Connect to Salesforce orgs → Analyze schema → AI-powered field mapping (GPT-4) → Drag-drop customization → Preview transformations → Execute async ETL → Generate reports.<br>
+Tech: Node.js 20, Express, TypeScript, PostgreSQL 16, Redis 7, Bull queue, jsforce, OpenAI GPT-4<br><br>
+
+**📚 READ REQUIREMENTS:**<br>
+- docs/RevNovaRequirements/functional-requirements.html<br>
+- docs/RevNovaRequirements/technical-specifications.html<br>
+- docs/RevNovaRequirements/api-endpoints.html<br><br>
+
+**🏗️ MVP STATUS:**<br>
+Week 2 of 5 (target: Nov 30, 2025). Building Salesforce integration layer.<br>
+✅ Week 1: Express backend, PostgreSQL, health endpoints<br>
+🔄 Week 2: jsforce integration, schema discovery, Redis caching<br><br>
+
+**TODAY'S GOAL:** Build Schema Analysis API using jsforce to discover Salesforce CPQ objects (Product2, Pricebook2, PricebookEntry) and their fields/relationships.<br><br>
+
+**TASKS:**<br>
+1. Install jsforce package<br>
+2. Create SalesforceService for connections<br>
+3. Implement describeGlobal() to list all objects<br>
+4. Implement describeSObject() to get field metadata<br>
+5. Build POST /api/v1/projects/:id/analyze endpoint<br>
+6. Test with curl using real Salesforce credentials<br><br>
+
+**ACCEPTANCE CRITERIA:**<br>
+- jsforce connects using OAuth token<br>
+- API returns { objects: [...], fields: {...}, relationships: [...] }<br>
+- Metadata includes field types, labels, required flags<br>
+- Handles API errors gracefully<br><br>
+
+Guide me step-by-step through jsforce integration and schema discovery.
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>📋 Objective</h2>
+            <p>Build the Schema Analysis API endpoint that discovers Salesforce objects and fields for migration planning. This API will query Salesforce using jsforce to return metadata about Product2, Pricebook2, and PricebookEntry objects.</p>
+            <p><strong>API Endpoint:</strong> <code>POST /api/v1/projects/{id}/analyze</code></p>
+            <p><strong>Expected Output:</strong> Job ID that triggers async schema discovery</p>
+        </div>
+
+        <div class="step-card">
+            <h2>📦 Step 1: Install jsforce</h2>
+            <p>Install jsforce library for Salesforce API integration.</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+cd backend<br>
+npm install jsforce @types/jsforce
+            </div>
+            <p><strong>Verify:</strong> Check that jsforce appears in <code>backend/package.json</code> dependencies.</p>
+        </div>
+
+        <div class="step-card">
+            <h2>🔧 Step 2: Create Salesforce Service</h2>
+            <p>Create a service to handle Salesforce connections and API calls.</p>
+            <p><strong>File:</strong> <code>backend/src/services/salesforce.service.ts</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+import jsforce from 'jsforce';<br>
+<br>
+export interface SalesforceConnection {<br>
+&nbsp;&nbsp;instanceUrl: string;<br>
+&nbsp;&nbsp;accessToken: string;<br>
+&nbsp;&nbsp;apiVersion?: string;<br>
+}<br>
+<br>
+export class SalesforceService {<br>
+&nbsp;&nbsp;async connect(config: SalesforceConnection): Promise&lt;jsforce.Connection&gt; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const conn = new jsforce.Connection({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;instanceUrl: config.instanceUrl,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;accessToken: config.accessToken,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;version: config.apiVersion || '58.0'<br>
+&nbsp;&nbsp;&nbsp;&nbsp;});<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return conn;<br>
+&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;async describeObject(conn: jsforce.Connection, objectName: string) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return await conn.sobject(objectName).describe();<br>
+&nbsp;&nbsp;}<br>
+}
+            </div>
+            <p><strong>Test:</strong> Create the file and verify it compiles with <code>npm run build</code></p>
+        </div>
+
+        <div class="step-card">
+            <h2>🗄️ Step 3: Create Database Table for Schema Analysis</h2>
+            <p>Create migration for storing schema analysis results.</p>
+            <p><strong>File:</strong> <code>backend/src/database/migrations/007_create_schema_analysis.sql</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+CREATE TABLE schema_analysis (<br>
+&nbsp;&nbsp;id SERIAL PRIMARY KEY,<br>
+&nbsp;&nbsp;project_id INTEGER REFERENCES projects(id),<br>
+&nbsp;&nbsp;object_name VARCHAR(255) NOT NULL,<br>
+&nbsp;&nbsp;object_label VARCHAR(255),<br>
+&nbsp;&nbsp;is_custom BOOLEAN DEFAULT FALSE,<br>
+&nbsp;&nbsp;fields JSONB,<br>
+&nbsp;&nbsp;analyzed_at TIMESTAMP DEFAULT NOW()<br>
+);
+            </div>
+            <p><strong>Run Migration:</strong> Add script to run migrations and execute it.</p>
+        </div>
+
+        <div class="step-card">
+            <h2>🚀 Step 4: Create Analyze Route</h2>
+            <p>Create the POST endpoint for triggering schema analysis.</p>
+            <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;overflow-x:auto;">
+import { Router } from 'express';<br>
+import { SalesforceService } from '../services/salesforce.service';<br>
+<br>
+const router = Router();<br>
+const sfService = new SalesforceService();<br>
+<br>
+router.post('/projects/:id/analyze', async (req, res) => {<br>
+&nbsp;&nbsp;try {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const projectId = req.params.id;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const objects = req.body.objects || ['Product2', 'Pricebook2', 'PricebookEntry'];<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// TODO: Get connection from DB using projectId<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// For now, return job ID<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const jobId = `job_${Date.now()}`;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;res.json({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;job_id: jobId,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;status: 'queued',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;objects: objects<br>
+&nbsp;&nbsp;&nbsp;&nbsp;});<br>
+&nbsp;&nbsp;} catch (error) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;res.status(500).json({ error: error.message });<br>
+&nbsp;&nbsp;}<br>
+});<br>
+<br>
+export default router;
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🔗 Step 5: Register Route in Main App</h2>
+            <p>Wire up the analyze route in your Express app.</p>
+            <p><strong>File:</strong> <code>backend/src/index.ts</code></p>
+            <p>Add this import and route:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+import analyzeRoutes from './routes/analyze.routes';<br>
+app.use('/api/v1', analyzeRoutes);
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>✅ Step 6: Test the Endpoint</h2>
+            <p>Test your new endpoint using Thunder Client or curl.</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+curl -X POST http://localhost:3000/api/v1/projects/1/analyze \<br>
+&nbsp;&nbsp;-H "Content-Type: application/json" \<br>
+&nbsp;&nbsp;-d '{"objects": ["Product2"]}'
+            </div>
+            <p><strong>Expected Response:</strong></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+{"job_id":"job_1699632000000","status":"queued","objects":["Product2"]}
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🎯 End of Day Checklist</h2>
+            <ul style="list-style:none;padding-left:0;">
+                <li>☐ jsforce installed and types available</li>
+                <li>☐ SalesforceService class created with connect() and describeObject()</li>
+                <li>☐ schema_analysis table created in PostgreSQL</li>
+                <li>☐ POST /api/v1/projects/:id/analyze endpoint working</li>
+                <li>☐ Endpoint returns job_id and status</li>
+                <li>☐ Code committed and pushed to GitHub</li>
+            </ul>
+            <p><strong>Commit Message:</strong> <code>feat(backend): add schema analysis API endpoint with jsforce integration</code></p>
+        </div>
+
+        <div class="step-card">
+            <h2>📚 Resources</h2>
+            <ul>
+                <li><a href="https://jsforce.github.io/" target="_blank">jsforce Documentation</a></li>
+                <li><a href="https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/dome_describeGlobal.htm" target="_blank">Salesforce REST API - Describe</a></li>
+                <li>Requirements: <code>docs/RevNovaRequirements/requirements-phase1-analyze.html</code></li>
+                <li>Technical Spec: <code>docs/RevNovaRequirements/requirements-phase1-technical.html</code></li>
+            </ul>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="dev1-day05.html" class="nav-btn back">← Back to Day 5</a>
+            <a href="dev1-day07.html" class="nav-btn next">Next: Day 7 →</a>
+        </div>
+            </main>
+    </div>
+    <script src="../script.js"></script>
+</body>
+</html>

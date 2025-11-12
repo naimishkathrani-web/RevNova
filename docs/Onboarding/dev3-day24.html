@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Dev3 Day 24: Full System Testing - RevNova Onboarding</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Ubuntu,sans-serif}.main-content{margin-left:280px;padding:2.5rem}.day-header{background:linear-gradient(135deg,#fa709a 0%,#fee140 100%);color:#fff;padding:1.5rem;border-radius:10px;margin-bottom:1rem}.step-card{background:#fff;border:1px solid #e0e0e0;padding:1rem;border-radius:8px;margin-bottom:1rem}.nav-buttons{display:flex;justify-content:space-between;margin-top:1.5rem}</style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="nav-left">
+                <a href="../index.html" class="logo"><div class="logo-box">RevNova</div></a>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="onboarding-home.html" class="active">Onboarding</a></li>
+                        <li><a href="../about-revnova.html">About RevNova</a></li>
+                        <li><a href="../features.html">Features</a></li>
+                        <li><a href="../pricing.html">Pricing</a></li>
+                        <li><a href="../RevNovaRequirements/requirements-home.html">RevNova Requirements</a></li>
+                        <li><a href="../contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header-right">
+                <div class="country-selector"><span class="fi fi-us"></span></div>
+                <a href="../login.html" class="btn btn-login">Login</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="onboarding-layout">
+        <aside class="sidebar">
+            <h3>Getting Started</h3>
+            <ul>
+                <li><a href="onboarding-home.html">Onboarding Home</a></li>
+                <li><a href="onboarding-overview.html">Project Overview</a></li>
+            </ul>
+            
+            <h3>Developer 3: Daily Tasks</h3>
+            <ul>
+                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 1-2</span>
+                    <ul>
+                        <li><a href="dev3-day01.html">Day 1</a></li>
+                        <li><a href="dev3-day02.html">Day 2</a></li>
+                        <li><a href="dev3-day03.html">Day 3</a></li>
+                        <li><a href="dev3-day04.html">Day 4</a></li>
+                        <li><a href="dev3-day05.html">Day 5</a></li>
+                        <li><a href="dev3-day06.html">Day 6</a></li>
+                        <li><a href="dev3-day07.html">Day 7</a></li>
+                        <li><a href="dev3-day08.html">Day 8</a></li>
+                        <li><a href="dev3-day09.html">Day 9</a></li>
+                        <li><a href="dev3-day10.html">Day 10</a></li>
+                    </ul>
+                </li>
+                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 3-4</span>
+                    <ul>
+                        <li><a href="dev3-day11.html">Day 11</a></li>
+                        <li><a href="dev3-day12.html">Day 12</a></li>
+                        <li><a href="dev3-day13.html">Day 13</a></li>
+                        <li><a href="dev3-day14.html">Day 14</a></li>
+                        <li><a href="dev3-day15.html">Day 15</a></li>
+                        <li><a href="dev3-day16.html">Day 16</a></li>
+                        <li><a href="dev3-day17.html">Day 17</a></li>
+                        <li><a href="dev3-day18.html">Day 18</a></li>
+                        <li><a href="dev3-day19.html">Day 19</a></li>
+                        <li><a href="dev3-day20.html">Day 20</a></li>
+                    </ul>
+                </li>
+                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 5</span>
+                    <ul>
+                        <li><a href="dev3-day21.html">Day 21</a></li>
+                        <li><a href="dev3-day22.html">Day 22</a></li>
+                        <li><a href="dev3-day23.html">Day 23</a></li>
+                        <li><a href="dev3-day24.html">Day 24</a></li>
+                        <li><a href="dev3-day25.html">Day 25</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+        <div class="day-header"><h1>Day 24: Full System Testing</h1><p>Developer 3 — DevOps & QA | Week 5/5</p></div>
+
+        <div class="step-card" style="background:#fffbea;border-left:4px solid #f59e0b;">
+            <h2>⚠️ IMPORTANT: Start of Day Checklist</h2>
+            <p><strong>Before starting today's work, run these commands:</strong></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+cd C:\Dev\RevNovaRepository<br>
+git pull origin main
+            </div>
+            <p>This ensures you have the latest code from your teammates. Always pull before starting work!</p>
+        </div>
+
+        <div class="step-card" style="background:#e8f5e9;border-left:4px solid #4caf50;">
+            <h2>🤖 Enhanced Copilot Prompt</h2>
+            <div style="background:#f5f5f5;padding:1.5rem;border-radius:6px;margin:1rem 0;border-left:3px solid #4caf50;">
+<pre style="white-space:pre-wrap;font-family:monospace;font-size:0.9em;line-height:1.6;margin:0;">
+<strong>Day 24 - RevNova DevOps - Load Testing</strong>
+
+<strong>GOAL:</strong> k6 load tests, test migration with 10K+ records, identify bottlenecks, performance tuning.
+
+<strong>TASKS:</strong>
+1. k6 load test scripts
+2. Test full migration pipeline with 10K records
+3. Identify bottlenecks (database queries, API response times)
+4. Performance tuning recommendations
+</pre>
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>📋 Implementation Steps</h2>
+            <h3>Step 1: k6 Load Test</h3>
+            <p><strong>File:</strong> <code>tests/load/migration.js</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+<pre style="margin:0;white-space:pre-wrap;">import http from 'k6/http';
+import { check } from 'k6';
+
+export let options = {
+  vus: 50, // 50 virtual users
+  duration: '5m'
+};
+
+export default function() {
+  let res = http.post('http://localhost:3000/api/migrations', JSON.stringify({
+    connectionId: 'test-conn',
+    name: 'Load Test Migration'
+  }), { headers: { 'Content-Type': 'application/json' } });
+  
+  check(res, {
+    'status is 201': (r) => r.status === 201,
+    'response time < 500ms': (r) => r.timings.duration < 500
+  });
+}</pre>
+            </div>
+        </div>
+
+        <div class="step-card" style="background:#e3f2fd;border-left:4px solid #2196f3;">
+            <h2>✅ Acceptance Criteria</h2>
+            <ul style="line-height:1.8;">
+                <li>✅ Implementation complete with working code</li>
+                <li>✅ All tests passing</li>
+                <li>✅ Documentation updated</li>
+            </ul>
+        </div>
+        <div class="nav-buttons"><a href="dev3-day23.html" class="nav-btn back">← Back to Day 23</a><a href="dev3-day25.html" class="nav-btn next">Next: Day 25 →</a></div>
+            </main>
+    </div>
+    <script src="../script.js"></script>
+</body>
+</html>

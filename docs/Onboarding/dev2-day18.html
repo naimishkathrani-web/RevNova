@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Dev2 Day 18: Validation Results Display - RevNova Onboarding</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Ubuntu,sans-serif}.main-content{margin-left:280px;padding:2.5rem}.day-header{background:linear-gradient(135deg,#43e97b 0%,#38f9d7 100%);color:#fff;padding:1.5rem;border-radius:10px;margin-bottom:1rem}.step-card{background:#fff;border:1px solid #e0e0e0;padding:1rem;border-radius:8px;margin-bottom:1rem}.nav-buttons{display:flex;justify-content:space-between;margin-top:1.5rem}</style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="nav-left">
+                <a href="../index.html" class="logo"><div class="logo-box">RevNova</div></a>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="onboarding-home.html" class="active">Onboarding</a></li>
+                        <li><a href="../about-revnova.html">About RevNova</a></li>
+                        <li><a href="../features.html">Features</a></li>
+                        <li><a href="../pricing.html">Pricing</a></li>
+                        <li><a href="../RevNovaRequirements/requirements-home.html">RevNova Requirements</a></li>
+                        <li><a href="../contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header-right">
+                <div class="country-selector"><span class="fi fi-us"></span></div>
+                <a href="../login.html" class="btn btn-login">Login</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="onboarding-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h3>Getting Started</h3>
+            <ul>
+                <li><a href="onboarding-home.html">Onboarding Home</a></li>
+                <li><a href="onboarding-overview.html">Project Overview</a></li>
+                <li><a href="manual-repo-setup.html">Manual Repository Setup</a></li>
+                <li><a href="repo-setup-guide.html">Automated Setup Guide</a></li>
+            </ul>
+            
+            <h3>Developer Guides</h3>
+            <ul>
+                <li><a href="onboarding-dev1-phase1.html">Developer 1: Backend & Database</a></li>
+                <li><a href="onboarding-dev2-phase1.html">Developer 2: Frontend & React</a></li>
+                <li><a href="onboarding-dev3-phase1.html">Developer 3: DevOps & QA</a></li>
+            </ul>
+            
+            <h3>Developer 2: Daily Tasks</h3>
+            <ul>
+                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 1: React Setup</span>
+                    <ul>
+                        <li><a href="dev2-day01.html">Day 1: React Setup</a></li>
+                        <li><a href="dev2-day02.html">Day 2: Component Library</a></li>
+                        <li><a href="dev2-day03.html">Day 3: Wizard Layout & Routing</a></li>
+                        <li><a href="dev2-day04.html">Day 4: State Management</a></li>
+                        <li><a href="dev2-day05.html">Day 5: API Client & Week 1 PR</a></li>
+                    </ul>
+                </li>
+                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 2: Connection Wizard</span>
+                    <ul>
+                        <li><a href="dev2-day06.html">Day 6: Connection Form UI</a></li>
+                        <li><a href="dev2-day07.html">Day 7: OAuth Integration</a></li>
+                        <li><a href="dev2-day08.html">Day 8: Connection Testing</a></li>
+                        <li><a href="dev2-day09.html">Day 9: Error Handling</a></li>
+                        <li><a href="dev2-day10.html">Day 10: Week 2 Testing & PR</a></li>
+                    </ul>
+                </li>
+                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 3: Field Mapping UI</span>
+                    <ul>
+                        <li><a href="dev2-day11.html">Day 11: Mapping Table UI</a></li>
+                        <li><a href="dev2-day12.html">Day 12: AI Suggestions Display</a></li>
+                        <li><a href="dev2-day13.html">Day 13: Drag & Drop Mapping</a></li>
+                        <li><a href="dev2-day14.html">Day 14: Bulk Operations</a></li>
+                        <li><a href="dev2-day15.html">Day 15: Week 3 Testing & PR</a></li>
+                    </ul>
+                </li>
+                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 4: Transformation & Validation</span>
+                    <ul>
+                        <li><a href="dev2-day16.html">Day 16: Transformation Preview UI</a></li>
+                        <li><a href="dev2-day17.html">Day 17: Data Tables & Pagination</a></li>
+                        <li><a href="dev2-day18.html">Day 18: Validation Results Display</a></li>
+                        <li><a href="dev2-day19.html">Day 19: Error Display</a></li>
+                        <li><a href="dev2-day20.html">Day 20: Week 4 Testing & PR</a></li>
+                    </ul>
+                </li>
+                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 5: Execution & Reports</span>
+                    <ul>
+                        <li><a href="dev2-day21.html">Day 21: Execution Progress UI</a></li>
+                        <li><a href="dev2-day22.html">Day 22: Real-time Updates</a></li>
+                        <li><a href="dev2-day23.html">Day 23: Test Reports & Comparison</a></li>
+                        <li><a href="dev2-day24.html">Day 24: Export & UI Testing</a></li>
+                        <li><a href="dev2-day25.html">Day 25: Final Polish & Documentation</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+        <div class="day-header"><h1>Day 18: Validation Results Display</h1><p>Developer 2 — Frontend</p></div>
+
+        <div class="step-card" style="background:#fffbea;border-left:4px solid #f59e0b;">
+            <h2>⚠️ IMPORTANT: Start of Day Checklist</h2>
+            <p><strong>Before starting today's work, run these commands:</strong></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+cd C:\Dev\RevNovaRepository<br>
+git pull origin main
+            </div>
+            <p>This ensures you have the latest code from your teammates. Always pull before starting work!</p>
+        </div>
+
+        <div class="step-card" style="background:#e0f2fe;border-left:4px solid #0284c7;">
+            <h2>🤖 Copy This Prompt for Your GitHub Copilot</h2>
+            <p><strong>Paste into Copilot Chat:</strong></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;max-height:400px;overflow-y:auto;">
+Day 18 - RevNova Frontend Developer<br><br>
+**PLATFORM:** Salesforce CPQ → Revenue Cloud migration SaaS. 7-step wizard with AI field mapping.<br>
+**TECH:** React 18, TypeScript, TailwindCSS, Vite<br>
+**REQUIREMENTS:** docs/RevNovaRequirements/ui-wireframes.html, functional-requirements.html<br>
+**MVP:** Week 4/5 (Nov 30). ✅Weeks 1-3: Wizard, mapping UI, drag-drop. 🔄Week 4: Validation display.<br><br>
+**CONTEXT:** Days 16-17 built transformation preview with DataTable (pagination, sorting, filtering)<br>
+**TODAY:** Build validation results page showing mapping errors/warnings before migration execution<br><br>
+**TASKS:**<br>
+1. Create ValidationResults component with summary cards (error count, warning count, info count)<br>
+2. Display validation issues grouped by severity: Critical → Error → Warning → Info<br>
+3. Each issue shows: field name, rule violated, suggested fix<br>
+4. Add "View Details" modal for full error context<br>
+5. Disable "Start Migration" button if critical errors exist<br><br>
+**API:** GET /api/mappings/:id/validate returns { valid: boolean, issues: [{severity, field, message, suggestion}] }<br><br>
+**ACCEPTANCE:** Page shows red badge for errors, yellow for warnings. Critical errors block migration button. Modal shows field details.<br><br>
+Guide me through building validation results UI with severity-based grouping.
+            </div>
+        </div>
+
+<div class="step-card">
+            <h2>📋 Objective</h2>
+            <p>Display mapping validation results with warnings and errors before migration execution.</p>
+        </div>
+
+        <div class="step-card">
+            <h2>📊 Step 1: Create ValidationResults Component</h2>
+            <p>Create <code>frontend/src/pages/ValidationResults.tsx</code>:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+import { useState, useEffect } from 'react';<br><br>
+
+interface ValidationIssue {<br>
+&nbsp;&nbsp;severity: 'critical' | 'error' | 'warning' | 'info';<br>
+&nbsp;&nbsp;field: string;<br>
+&nbsp;&nbsp;message: string;<br>
+&nbsp;&nbsp;suggestion?: string;<br>
+}<br><br>
+
+export default function ValidationResults() {<br>
+&nbsp;&nbsp;const [results, setResults] = useState&lt;{ valid: boolean; issues: ValidationIssue[] } | null&gt;(null);<br>
+&nbsp;&nbsp;const [loading, setLoading] = useState(true);<br><br>
+
+&nbsp;&nbsp;useEffect(() => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;fetchValidation();<br>
+&nbsp;&nbsp;}, []);<br><br>
+
+&nbsp;&nbsp;const fetchValidation = async () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const mappingId = sessionStorage.getItem('mappingId');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const response = await fetch(`/api/mappings/${mappingId}/validate`);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const data = await response.json();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;setResults(data);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;setLoading(false);<br>
+&nbsp;&nbsp;};<br><br>
+
+&nbsp;&nbsp;const groupedIssues = {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;critical: results?.issues.filter(i => i.severity === 'critical') || [],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;error: results?.issues.filter(i => i.severity === 'error') || [],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;warning: results?.issues.filter(i => i.severity === 'warning') || [],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;info: results?.issues.filter(i => i.severity === 'info') || []<br>
+&nbsp;&nbsp;};<br><br>
+
+&nbsp;&nbsp;return (<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;div className="min-h-screen bg-gray-50 p-8"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h1 className="text-3xl font-bold mb-6"&gt;Validation Results&lt;/h1&gt;<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{/* Summary Cards */}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div className="grid grid-cols-4 gap-4 mb-8"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;SummaryCard title="Critical" count={groupedIssues.critical.length} color="red" /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;SummaryCard title="Errors" count={groupedIssues.error.length} color="orange" /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;SummaryCard title="Warnings" count={groupedIssues.warning.length} color="yellow" /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;SummaryCard title="Info" count={groupedIssues.info.length} color="blue" /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{/* Issue Lists */}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{groupedIssues.critical.length > 0 && (<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;IssueSection title="Critical Issues" issues={groupedIssues.critical} color="red" /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{groupedIssues.error.length > 0 && (<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;IssueSection title="Errors" issues={groupedIssues.error} color="orange" /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)}<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;button<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;disabled={groupedIssues.critical.length > 0}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;className="mt-8 px-6 py-3 bg-blue-600 text-white rounded disabled:bg-gray-400"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Start Migration<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/button&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;);<br>
+}
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>🎨 Step 2: Create Summary and Issue Components</h2>
+            <p>Add helper components in same file:</p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
+function SummaryCard({ title, count, color }: { title: string; count: number; color: string }) {<br>
+&nbsp;&nbsp;const colors = {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;red: 'bg-red-100 text-red-800 border-red-300',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;orange: 'bg-orange-100 text-orange-800 border-orange-300',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;yellow: 'bg-yellow-100 text-yellow-800 border-yellow-300',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;blue: 'bg-blue-100 text-blue-800 border-blue-300'<br>
+&nbsp;&nbsp;};<br><br>
+
+&nbsp;&nbsp;return (<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;div className={`border-2 rounded-lg p-4 ${colors[color as keyof typeof colors]}`}&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div className="text-3xl font-bold"&gt;{count}&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div className="text-sm font-medium"&gt;{title}&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;);<br>
+}<br><br>
+
+function IssueSection({ title, issues, color }: any) {<br>
+&nbsp;&nbsp;return (<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;div className="mb-6"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h2 className="text-xl font-semibold mb-3"&gt;{title}&lt;/h2&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div className="space-y-2"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{issues.map((issue: ValidationIssue, idx: number) => (<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div key={idx} className="bg-white border-l-4 border-red-500 p-4 rounded"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div className="font-semibold"&gt;{issue.field}&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div className="text-sm text-gray-700"&gt;{issue.message}&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{issue.suggestion && (<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div className="text-sm text-blue-600 mt-1"&gt;💡 {issue.suggestion}&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;))}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;);<br>
+}
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>✅ End of Day 18 Checklist</h2>
+            <ul>
+                <li>✅ ValidationResults component fetches and displays validation issues</li>
+                <li>✅ Summary cards show counts for critical/error/warning/info</li>
+                <li>✅ Issues grouped by severity with color-coded borders</li>
+                <li>✅ Each issue shows field name, message, and suggestion</li>
+                <li>✅ "Start Migration" button disabled when critical errors exist</li>
+                <li>✅ Committed: <code>feat(frontend): add validation results display with severity grouping</code></li>
+            </ul>
+        </div>
+        <div class="nav-buttons"><a href="dev2-day17.html" class="nav-btn back">← Back to Day 17</a><a href="dev2-day19.html" class="nav-btn next">Next: Day 19 →</a></div>
+            </main>
+    </div>
+    <script src="../script.js"></script>
+</body>
+</html>
