@@ -81,7 +81,7 @@
         </aside>
 
         <main class="main-content">
-        <div class="day-header"><h1>Day 22: Environment Promotion</h1><p>Developer 3 — DevOps & QA</p></div>
+        <div class="day-header"><h1>Day 22: Environment Promotion</h1><p>Developer 3 — DevOps & QA | Week 5/5</p></div>
 
         <div class="step-card" style="background:#fffbea;border-left:4px solid #f59e0b;">
             <h2>⚠️ IMPORTANT: Start of Day Checklist</h2>
@@ -92,18 +92,55 @@ git pull origin main
             </div>
             <p>This ensures you have the latest code from your teammates. Always pull before starting work!</p>
         </div>
-<div class="step-card">
-            <h2>Objective</h2>
-            <p>Set up workflow for promoting tested code from dev → test → production.</p>
+
+        <div class="step-card" style="background:#e8f5e9;border-left:4px solid #4caf50;">
+            <h2>🤖 Enhanced Copilot Prompt</h2>
+            <div style="background:#f5f5f5;padding:1.5rem;border-radius:6px;margin:1rem 0;border-left:3px solid #4caf50;">
+<pre style="white-space:pre-wrap;font-family:monospace;font-size:0.9em;line-height:1.6;margin:0;">
+<strong>Day 22 - RevNova DevOps - Monitoring Setup</strong>
+
+<strong>GOAL:</strong> Grafana dashboards, Prometheus metrics, log aggregation with ELK stack, alerting rules.
+
+<strong>TASKS:</strong>
+1. Prometheus metrics endpoint (/metrics)
+2. Grafana dashboards for backend, database, queue
+3. ELK stack for log aggregation
+4. Alerting rules (PagerDuty, Slack)
+</pre>
+            </div>
         </div>
+
         <div class="step-card">
-            <h2>Tasks</h2>
-            <ol>
-                <li>Create deploy-prod.yml workflow (manual approval required)</li>
-                <li>Add environment protection rules in GitHub</li>
-                <li>Document promotion process and approval steps</li>
-                <li>Test promotion workflow in non-prod environment</li>
-            </ol>
+            <h2>📋 Implementation Steps</h2>
+            <h3>Step 1: Prometheus Metrics</h3>
+            <p><strong>File:</strong> <code>backend/src/metrics.ts</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+<pre style="margin:0;white-space:pre-wrap;">import promClient from 'prom-client';
+
+const register = new promClient.Registry();
+promClient.collectDefaultMetrics({ register });
+
+const migrationCounter = new promClient.Counter({
+  name: 'revnova_migrations_total',
+  help: 'Total number of migrations'
+});
+
+register.registerMetric(migrationCounter);
+
+app.get('/metrics', (req, res) => {
+  res.set('Content-Type', register.contentType);
+  res.end(register.metrics());
+});</pre>
+            </div>
+        </div>
+
+        <div class="step-card" style="background:#e3f2fd;border-left:4px solid #2196f3;">
+            <h2>✅ Acceptance Criteria</h2>
+            <ul style="line-height:1.8;">
+                <li>✅ Implementation complete with working code</li>
+                <li>✅ All tests passing</li>
+                <li>✅ Documentation updated</li>
+            </ul>
         </div>
         <div class="nav-buttons"><a href="dev3-day21.html" class="nav-btn back">← Back to Day 21</a><a href="dev3-day23.html" class="nav-btn next">Next: Day 23 →</a></div>
             </main>

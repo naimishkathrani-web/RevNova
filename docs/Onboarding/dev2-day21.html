@@ -100,7 +100,7 @@
 
         <!-- Main Content -->
         <main class="main-content">
-        <div class="day-header"><h1>Day 21: Execution Progress UI</h1><p>Developer 2 — Frontend</p></div>
+        <div class="day-header"><h1>Day 21: Execution Progress UI</h1><p>Developer 2 — Frontend | Week 5/5</p></div>
 
         <div class="step-card" style="background:#fffbea;border-left:4px solid #f59e0b;">
             <h2>⚠️ IMPORTANT: Start of Day Checklist</h2>
@@ -111,18 +111,231 @@ git pull origin main
             </div>
             <p>This ensures you have the latest code from your teammates. Always pull before starting work!</p>
         </div>
-<div class="step-card">
-            <h2>Objective</h2>
-            <p>Build UI to display migration execution progress with visual indicators.</p>
+
+        <div class="step-card" style="background:#e8f5e9;border-left:4px solid #4caf50;">
+            <h2>🤖 Enhanced Copilot Prompt</h2>
+            <div style="background:#f5f5f5;padding:1.5rem;border-radius:6px;margin:1rem 0;border-left:3px solid #4caf50;">
+<pre style="white-space:pre-wrap;font-family:monospace;font-size:0.9em;line-height:1.6;margin:0;">
+<strong>Day 21 - RevNova Frontend - Execution Progress UI</strong>
+
+<strong>🎯 REVNOVA:</strong> Real-time migration execution UI with progress tracking, phase indicators, record counts
+<strong>📚 REQUIREMENTS:</strong> <a href="../RevNovaRequirements/ui-components.html" target="_blank">docs/RevNovaRequirements/ui-components.html</a>
+<strong>🏗️ MVP STATUS:</strong> Week 5/5 (Nov 30 deadline - 18 days remaining)
+<strong>TECH:</strong> React 18 + TypeScript + TailwindCSS + polling/WebSocket for real-time updates
+
+<strong>TODAY'S GOAL:</strong> Build ExecutionProgress component that polls backend API for job status, displays animated progress bar, shows current phase (EXTRACTING/TRANSFORMING/LOADING), record counts, and pause/cancel controls.
+
+<strong>TASKS:</strong>
+1. <strong>ExecutionProgress Component</strong> (frontend/src/components/ExecutionProgress.tsx)
+   - Props: migrationId, onComplete, onError
+   - Poll GET /api/migrations/:id/status every 2 seconds
+   - Display: Linear progress bar (0-100%), current phase, records processed/total
+   - Status states: EXECUTING, PAUSED, COMPLETED, FAILED
+   - Animate progress bar with smooth transitions (CSS transition: width 0.5s ease)
+
+2. <strong>Progress Bar with Phases</strong>
+   - Three phases: Extracting (0-33%), Transforming (33-66%), Loading (66-100%)
+   - Color-coded: blue (extracting), purple (transforming), green (loading)
+   - Show phase icon: 🔍 Extracting, ⚙️ Transforming, 📤 Loading
+   - Display: "Processing 1,234 of 5,000 records (24.68%)"
+
+3. <strong>Pause/Cancel Controls</strong>
+   - Pause button: POST /api/migrations/:id/pause (if supported by backend)
+   - Cancel button: POST /api/migrations/:id/cancel with confirmation modal
+   - Disable controls when status = COMPLETED or FAILED
+   - Show "Are you sure?" modal before canceling
+
+4. <strong>Error Handling & Completion</strong>
+   - On COMPLETED: Show success message, confetti animation, redirect to report page
+   - On FAILED: Show error details from API response, offer "View Logs" and "Rollback" buttons
+   - Network errors: Retry polling with exponential backoff (2s, 4s, 8s)
+
+Guide me step-by-step through building the execution progress UI with real-time polling and phase indicators.
+</pre>
+            </div>
         </div>
+
         <div class="step-card">
-            <h2>Tasks</h2>
-            <ol>
-                <li>Create execution status page with progress bar</li>
-                <li>Display current phase (extracting, transforming, loading)</li>
-                <li>Show records processed count and percentage</li>
-                <li>Add cancel/pause migration controls</li>
-            </ol>
+            <h2>Step 1: Create ExecutionProgress Component</h2>
+            <p><strong>File:</strong> <code>frontend/src/components/ExecutionProgress.tsx</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+<pre style="margin:0;white-space:pre-wrap;">
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { api } from '../utils/api';
+
+interface ExecutionStatus {
+  status: 'EXECUTING' | 'PAUSED' | 'COMPLETED' | 'FAILED';
+  progress: number;
+  phase: 'EXTRACTING' | 'TRANSFORMING' | 'LOADING';
+  recordsProcessed: number;
+  totalRecords: number;
+  errorMessage?: string;
+}
+
+export function ExecutionProgress({ migrationId }: { migrationId: string }) {
+  const [status, setStatus] = useState&lt;ExecutionStatus | null&gt;(null);
+  const [polling, setPolling] = useState(true);
+  const navigate = useNavigate();
+
+  useEffect(() =&gt; {
+    if (!polling) return;
+
+    const pollStatus = async () =&gt; {
+      try {
+        const response = await api.get(`/migrations/${migrationId}/status`);
+        setStatus(response.data);
+
+        if (response.data.status === 'COMPLETED') {
+          setPolling(false);
+          setTimeout(() =&gt; navigate(`/migrations/${migrationId}/report`), 2000);
+        } else if (response.data.status === 'FAILED') {
+          setPolling(false);
+        }
+      } catch (error) {
+        console.error('Failed to fetch status:', error);
+      }
+    };
+
+    const interval = setInterval(pollStatus, 2000);
+    pollStatus(); // Initial call
+
+    return () =&gt; clearInterval(interval);
+  }, [migrationId, polling, navigate]);
+
+  if (!status) return &lt;div&gt;Loading...&lt;/div&gt;;
+
+  const phaseIcon = {
+    EXTRACTING: '🔍',
+    TRANSFORMING: '⚙️',
+    LOADING: '📤'
+  }[status.phase];
+
+  const phaseColor = {
+    EXTRACTING: 'bg-blue-500',
+    TRANSFORMING: 'bg-purple-500',
+    LOADING: 'bg-green-500'
+  }[status.phase];
+
+  return (
+    &lt;div className="max-w-4xl mx-auto p-6"&gt;
+      &lt;h1 className="text-3xl font-bold mb-6"&gt;Migration in Progress&lt;/h1&gt;
+
+      &lt;div className="bg-white rounded-lg shadow-lg p-8"&gt;
+        {/* Progress Bar */}
+        &lt;div className="mb-8"&gt;
+          &lt;div className="flex justify-between mb-2"&gt;
+            &lt;span className="text-lg font-semibold"&gt;
+              {phaseIcon} {status.phase}
+            &lt;/span&gt;
+            &lt;span className="text-lg font-semibold"&gt;{status.progress}%&lt;/span&gt;
+          &lt;/div&gt;
+          
+          &lt;div className="w-full bg-gray-200 rounded-full h-4"&gt;
+            &lt;div
+              className={`${phaseColor} h-4 rounded-full transition-all duration-500 ease-out`}
+              style={{ width: `${status.progress}%` }}
+            /&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+
+        {/* Records Count */}
+        &lt;div className="mb-6"&gt;
+          &lt;p className="text-gray-700 text-lg"&gt;
+            Processing &lt;strong&gt;{status.recordsProcessed.toLocaleString()}&lt;/strong&gt; of{' '}
+            &lt;strong&gt;{status.totalRecords.toLocaleString()}&lt;/strong&gt; records
+          &lt;/p&gt;
+        &lt;/div&gt;
+
+        {/* Status Messages */}
+        {status.status === 'COMPLETED' &amp;&amp; (
+          &lt;div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded"&gt;
+            ✅ Migration completed successfully!
+          &lt;/div&gt;
+        )}
+
+        {status.status === 'FAILED' &amp;&amp; (
+          &lt;div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded"&gt;
+            ❌ Migration failed: {status.errorMessage}
+          &lt;/div&gt;
+        )}
+
+        {/* Controls */}
+        {status.status === 'EXECUTING' &amp;&amp; (
+          &lt;div className="flex gap-4"&gt;
+            &lt;button
+              onClick={() =&gt; handleCancel()}
+              className="px-6 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+            &gt;
+              Cancel Migration
+            &lt;/button&gt;
+          &lt;/div&gt;
+        )}
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}
+</pre>
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2>Step 2: Add Cancel Confirmation Modal</h2>
+            <p><strong>File:</strong> <code>frontend/src/components/CancelConfirmModal.tsx</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+<pre style="margin:0;white-space:pre-wrap;">
+export function CancelConfirmModal({ 
+  isOpen, 
+  onClose, 
+  onConfirm 
+}: { 
+  isOpen: boolean;
+  onClose: () =&gt; void;
+  onConfirm: () =&gt; void;
+}) {
+  if (!isOpen) return null;
+
+  return (
+    &lt;div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"&gt;
+      &lt;div className="bg-white rounded-lg p-6 max-w-md"&gt;
+        &lt;h3 className="text-xl font-bold mb-4"&gt;Cancel Migration?&lt;/h3&gt;
+        &lt;p className="text-gray-700 mb-6"&gt;
+          Are you sure you want to cancel this migration? This action cannot be undone.
+          Any records already migrated will remain in the target system.
+        &lt;/p&gt;
+        &lt;div className="flex gap-4 justify-end"&gt;
+          &lt;button
+            onClick={onClose}
+            className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-100"
+          &gt;
+            No, Continue
+          &lt;/button&gt;
+          &lt;button
+            onClick={onConfirm}
+            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+          &gt;
+            Yes, Cancel Migration
+          &lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}
+</pre>
+            </div>
+        </div>
+
+        <div class="step-card" style="background:#e3f2fd;border-left:4px solid #2196f3;">
+            <h2>✅ Acceptance Criteria</h2>
+            <ul style="line-height:1.8;">
+                <li>✅ ExecutionProgress component polls API every 2 seconds</li>
+                <li>✅ Animated progress bar with smooth transitions (0-100%)</li>
+                <li>✅ Phase indicators: 🔍 Extracting, ⚙️ Transforming, 📤 Loading</li>
+                <li>✅ Records count display: "Processing 1,234 of 5,000 records"</li>
+                <li>✅ Cancel button with confirmation modal</li>
+                <li>✅ Auto-redirect to report page on completion</li>
+                <li>✅ Error handling with retry logic</li>
+            </ul>
         </div>
         <div class="nav-buttons"><a href="dev2-day20.html" class="nav-btn back">← Back to Day 20</a><a href="dev2-day22.html" class="nav-btn next">Next: Day 22 →</a></div>
             </main>

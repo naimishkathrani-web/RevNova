@@ -100,7 +100,7 @@
 
         <!-- Main Content -->
         <main class="main-content">
-        <div class="day-header"><h1>Day 22: Real-time Updates</h1><p>Developer 2 — Frontend</p></div>
+        <div class="day-header"><h1>Day 22: Real-time Updates</h1><p>Developer 2 — Frontend | Week 5/5</p></div>
 
         <div class="step-card" style="background:#fffbea;border-left:4px solid #f59e0b;">
             <h2>⚠️ IMPORTANT: Start of Day Checklist</h2>
@@ -111,18 +111,75 @@ git pull origin main
             </div>
             <p>This ensures you have the latest code from your teammates. Always pull before starting work!</p>
         </div>
-<div class="step-card">
-            <h2>Objective</h2>
-            <p>Implement real-time progress updates using WebSockets or polling.</p>
+
+        <div class="step-card" style="background:#e8f5e9;border-left:4px solid #4caf50;">
+            <h2>🤖 Enhanced Copilot Prompt</h2>
+            <div style="background:#f5f5f5;padding:1.5rem;border-radius:6px;margin:1rem 0;border-left:3px solid #4caf50;">
+<pre style="white-space:pre-wrap;font-family:monospace;font-size:0.9em;line-height:1.6;margin:0;">
+<strong>Day 22 - RevNova Frontend - Real-time Updates</strong>
+
+<strong>🎯 REVNOVA:</strong> WebSocket/Server-Sent Events for live migration progress updates
+<strong>📚 REQUIREMENTS:</strong> <a href="../RevNovaRequirements/real-time-updates.html" target="_blank">docs/RevNovaRequirements/real-time-updates.html</a>
+<strong>🏗️ MVP:</strong> Week 5/5 (Nov 30 deadline)
+<strong>TECH:</strong> Server-Sent Events (SSE) or WebSocket + React hooks
+
+<strong>GOAL:</strong> Implement real-time progress updates using Server-Sent Events. Replace polling with event stream for live record counts, error notifications, status changes.
+
+<strong>TASKS:</strong>
+1. Server-Sent Events hook (useSSE custom hook)
+2. Subscribe to /api/migrations/:id/stream endpoint
+3. Update UI instantly on progress events
+4. Handle connection failures with reconnection logic
+</pre>
+            </div>
         </div>
+
         <div class="step-card">
-            <h2>Tasks</h2>
-            <ol>
-                <li>Set up WebSocket connection or implement polling mechanism</li>
-                <li>Subscribe to migration job updates from backend</li>
-                <li>Update progress UI in real-time without page refresh</li>
-                <li>Show live error messages and warnings as they occur</li>
-            </ol>
+            <h2>📋 Implementation Steps</h2>
+            <h3>Step 1: Create useSSE Custom Hook</h3>
+            <p><strong>File:</strong> <code>frontend/src/hooks/useSSE.ts</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+<pre style="margin:0;white-space:pre-wrap;">export function useSSE(url: string) {
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const eventSource = new EventSource(url);
+    
+    eventSource.onmessage = (event) => {
+      setData(JSON.parse(event.data));
+    };
+    
+    eventSource.onerror = (err) => {
+      setError(err);
+      eventSource.close();
+    };
+    
+    return () => eventSource.close();
+  }, [url]);
+
+  return { data, error };
+}</pre>
+            </div>
+            <h3>Step 2: Update ExecutionProgress Component</h3>
+            <p><strong>File:</strong> <code>Replace polling with SSE</code></p>
+            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
+<pre style="margin:0;white-space:pre-wrap;">const { data: status } = useSSE(`/api/migrations/${migrationId}/stream`);
+
+// Real-time updates - no polling needed!
+if (status) {
+  // Update progress bar, record counts automatically
+}</pre>
+            </div>
+        </div>
+
+        <div class="step-card" style="background:#e3f2fd;border-left:4px solid #2196f3;">
+            <h2>✅ Acceptance Criteria</h2>
+            <ul style="line-height:1.8;">
+                <li>✅ Implementation complete with working code</li>
+                <li>✅ All tests passing</li>
+                <li>✅ Documentation updated</li>
+            </ul>
         </div>
         <div class="nav-buttons"><a href="dev2-day21.html" class="nav-btn back">← Back to Day 21</a><a href="dev2-day23.html" class="nav-btn next">Next: Day 23 →</a></div>
             </main>
