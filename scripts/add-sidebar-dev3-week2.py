@@ -1,13 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Dev3 Day 7: PostgreSQL & Redis - RevNova Onboarding</title>
-    <link rel="stylesheet" href="../styles.css">
-    <style>body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Ubuntu,sans-serif}.main-content{margin-left:280px;padding:2.5rem}.day-header{background:linear-gradient(135deg,#fa709a 0%,#fee140 100%);color:#fff;padding:1.5rem;border-radius:10px;margin-bottom:1rem}.step-card{background:#fff;border:1px solid #e0e0e0;padding:1rem;border-radius:8px;margin-bottom:1rem}.nav-buttons{display:flex;justify-content:space-between;margin-top:1.5rem}</style>
-</head>
-<body>
+#!/usr/bin/env python3
+"""
+Add header and sidebar to Dev3 Week 2 day pages (Days 6-10).
+"""
+
+import re
+import os
+from pathlib import Path
+
+# Header HTML template for Dev3
+HEADER_HTML = '''<body>
     <header>
         <div class="container header-container">
             <div class="nav-left">
@@ -99,67 +100,67 @@
         </aside>
 
         <!-- Main Content -->
-        <main class="main-content">
-        <div class="day-header"><h1>Day 7: PostgreSQL & Redis</h1><p>Developer 3 — DevOps & QA</p></div>
+        <main class="main-content">'''
 
-        <div class="step-card" style="background:#fffbea;border-left:4px solid #f59e0b;">
-            <h2>⚠️ IMPORTANT: Start of Day Checklist</h2>
-            <p><strong>Before starting today's work, run these commands:</strong></p>
-            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
-cd C:\Dev\RevNovaRepository<br>
-git pull origin main
-            </div>
-            <p>This ensures you have the latest code from your teammates. Always pull before starting work!</p>
-        </div>
-        <div class="step-card">
-            <h2>📋 Objective</h2>
-            <p>Configure PostgreSQL and Redis containers with persistent volumes, credentials, and environment variables for local development.</p>
-        </div>
-
-        <div class="step-card">
-            <h2>🗄️ Step 1: Configure PostgreSQL User & Database</h2>
-            <p>Already configured in docker-compose.yml, verify with:</p>
-            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
-docker exec -it revnovarepository-postgres-1 psql -U revnova -d revnova_dev<br>
-\dt
-            </div>
-            <p><strong>Expected:</strong> PostgreSQL client connects successfully</p>
-        </div>
-
-        <div class="step-card">
-            <h2>🔴 Step 2: Test Redis Connectivity</h2>
-            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
-docker exec -it revnovarepository-redis-1 redis-cli<br>
-PING
-            </div>
-            <p><strong>Expected:</strong> PONG response</p>
-        </div>
-
-        <div class="step-card">
-            <h2>🔐 Step 3: Create .env.example File</h2>
-            <p><strong>File:</strong> <code>backend/.env.example</code></p>
-            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
-DATABASE_URL=postgres://revnova:dev123@localhost:5432/revnova_dev<br>
-REDIS_URL=redis://localhost:6379<br>
-PORT=3000<br>
-NODE_ENV=development<br>
-SALESFORCE_CLIENT_ID=your_client_id<br>
-SALESFORCE_CLIENT_SECRET=your_client_secret
-            </div>
-        </div>
-
-        <div class="step-card">
-            <h2>🎯 End of Day Checklist</h2>
-            <ul style="list-style:none;padding-left:0;">
-                <li>☐ PostgreSQL user and database verified</li>
-                <li>☐ Redis connectivity tested with PING</li>
-                <li>☐ .env.example file created and documented</li>
-                <li>☐ Backend connects to both services</li>
-                <li>☐ Code committed and pushed</li>
-            </ul>
-        </div>        <div class="nav-buttons"><a href="dev3-day06.html" class="nav-btn back">← Back to Day 6</a><a href="dev3-day08.html" class="nav-btn next">Next: Day 8 →</a></div>
-            </main>
+CLOSING_HTML = '''        </main>
     </div>
     <script src="../script.js"></script>
-</body>
-</html>
+</body>'''
+
+def add_sidebar_to_file(filepath):
+    """Add header and sidebar to a Dev3 day file."""
+    with open(filepath, 'r', encoding='utf-8') as f:
+        content = f.read()
+    
+    # Check if sidebar already exists
+    if '<aside class="sidebar">' in content:
+        print(f"  ⏭️  {filepath.name} - Already has sidebar, skipping")
+        return False
+    
+    # Replace <body> with header + sidebar
+    content = re.sub(
+        r'<body>\s*<div class="main-content">',
+        HEADER_HTML,
+        content,
+        count=1
+    )
+    
+    # Replace closing </div></body> with closing structure
+    content = re.sub(
+        r'</div>\s*</body>',
+        CLOSING_HTML,
+        content,
+        count=1
+    )
+    
+    with open(filepath, 'w', encoding='utf-8') as f:
+        f.write(content)
+    
+    print(f"  ✅ {filepath.name} - Added sidebar")
+    return True
+
+def main():
+    docs_dir = Path(__file__).parent.parent / 'docs' / 'Onboarding'
+    
+    # Get Dev3 Week 2 files (Days 6-10)
+    files_to_update = [
+        docs_dir / f'dev3-day{day:02d}.html'
+        for day in range(6, 11)
+    ]
+    
+    files_to_update = [f for f in files_to_update if f.exists()]
+    
+    print(f"Found {len(files_to_update)} Dev3 Week 2 files")
+    print("\nAdding header and sidebar...")
+    print("=" * 60)
+    
+    updated_count = 0
+    for filepath in files_to_update:
+        if add_sidebar_to_file(filepath):
+            updated_count += 1
+    
+    print("=" * 60)
+    print(f"\n✨ Complete! Updated {updated_count} files")
+
+if __name__ == '__main__':
+    main()
