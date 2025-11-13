@@ -115,7 +115,6 @@ router.get('/projects/:id/analyze/summary', async (req: Request, res: Response) 
 
 /**
  * @route GET /projects/:id/catalog/search
- * ⭐ Placed ABOVE /:jobId route
  */
 router.get('/projects/:id/catalog/search', async (req: Request, res: Response) => {
   try {
@@ -142,6 +141,41 @@ router.get('/projects/:id/catalog/search', async (req: Request, res: Response) =
 
   } catch (error: any) {
     console.error("❌ Error performing metadata search:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * ⭐ NEW ENDPOINT ⭐
+ * @route GET /projects/:id/relationships
+ * @desc Fetch object-to-object schema relationships
+ */
+router.get('/projects/:id/relationships', async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const db = req.app.locals.db;
+
+    const query = `
+      SELECT 
+        source_object,
+        source_field,
+        target_object,
+        relationship_type,
+        cascade_delete
+      FROM object_relationships
+      WHERE project_id = $1
+      ORDER BY source_object, source_field
+    `;
+
+    const result = await db.query(query, [id]);
+
+    return res.json({
+      project_id: id,
+      relationships: result.rows
+    });
+
+  } catch (error: any) {
+    console.error("❌ Error fetching relationships:", error);
     res.status(500).json({ error: error.message });
   }
 });
