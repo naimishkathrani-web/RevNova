@@ -85,12 +85,6 @@ router.post('/projects/:id/analyze', async (req: Request, res: Response) => {
 });
 
 /**
- * ⭐ IMPORTANT ⭐
- * Summary route MUST BE ABOVE the /:jobId route
- * Otherwise Express treats 'summary' as a jobId.
- */
-
-/**
  * @route GET /projects/:id/analyze/summary
  */
 router.get('/projects/:id/analyze/summary', async (req: Request, res: Response) => {
@@ -120,6 +114,39 @@ router.get('/projects/:id/analyze/summary', async (req: Request, res: Response) 
 });
 
 /**
+ * @route GET /projects/:id/catalog/search
+ * ⭐ Placed ABOVE /:jobId route
+ */
+router.get('/projects/:id/catalog/search', async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const q = req.query.q as string;
+
+    if (!q) {
+      return res.status(400).json({ error: "Missing query parameter q" });
+    }
+
+    const db = req.app.locals.db;
+
+    const query = `
+      SELECT * FROM schema_catalog
+      WHERE project_id = $1
+      AND (field_name ILIKE $2 OR field_label ILIKE $2)
+      ORDER BY field_name
+      LIMIT 20
+    `;
+
+    const result = await db.query(query, [id, `%${q}%`]);
+
+    return res.json({ results: result.rows });
+
+  } catch (error: any) {
+    console.error("❌ Error performing metadata search:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
  * @route GET /projects/:id/analyze/:jobId
  */
 router.get('/projects/:id/analyze/:jobId', async (req: Request, res: Response) => {
@@ -129,9 +156,7 @@ router.get('/projects/:id/analyze/:jobId', async (req: Request, res: Response) =
     const job = await redis.get<AnalysisJob>(`job:${jobId}`);
 
     if (!job) {
-      return res.status(404).json({
-        error: `Job ${jobId} not found`,
-      });
+      return res.status(404).json({ error: `Job ${jobId} not found` });
     }
 
     return res.json(job);
@@ -147,7 +172,6 @@ router.get('/projects/:id/analyze/:jobId', async (req: Request, res: Response) =
 router.get('/projects/:id/analyze/jobs', async (req: Request, res: Response) => {
   try {
     const projectId = req.params.id;
-
     const keys = await redis.getKeys('job:');
     const jobs: any[] = [];
 

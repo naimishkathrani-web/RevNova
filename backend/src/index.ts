@@ -2,6 +2,7 @@
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import analyzeRoutes from './routes/analyze.routes.js';
+import db from './database/db.js'; // ✅ FIXED: must include .js extension
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -11,6 +12,9 @@ const PORT = process.env.PORT || 3000;
 // -----------------------------------------------
 app.use(cors());
 app.use(express.json());
+
+// 📌 Make DB available in all routes
+app.locals.db = db;
 
 // 📌 Request Logger
 app.use((req: Request, res: Response, next: NextFunction) => {
