@@ -43,6 +43,21 @@ jobs:
         working-directory: ./backend
         run: npm test
 
+      - name: Test backend with coverage
+        working-directory: ./backend
+        run: |
+          npm run test:coverage
+
+      - name: Upload backend coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./backend/coverage/lcov.info
+          flags: backend
+          name: backend-coverage
+        # uncomment the next 2 lines if private repo
+        # env:
+        #   CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
       - name: Test frontend
         working-directory: ./frontend
         run: npm test
