@@ -1,0 +1,19 @@
+### 🧪 1. Start Analysis Job
+POST http://localhost:3000/api/v1/projects/1/analyze
+Content-Type: application/json
+
+{
+  "objects": ["Product2", "Pricebook2", "PricebookEntry"]
+}
+
+###
+
+### 🧾 2. Check Job Status
+GET http://localhost:3000/api/v1/projects/1/analyze/job_1763022004771
+
+
+
+###
+
+### 📊 3. Get Summary
+GET http://localhost:3000/api/v1/projects/1/analyze/summary

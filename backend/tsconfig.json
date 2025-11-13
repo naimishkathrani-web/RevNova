@@ -1,12 +1,13 @@
 {
   "compilerOptions": {
+    /* File Layout */
     "rootDir": "./src",
     "outDir": "./dist",
 
     /* Module System */
+    "target": "ES2020",
     "module": "ESNext",
     "moduleResolution": "node",
-    "target": "ES2020",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
@@ -14,21 +15,19 @@
 
     /* Node Environment */
     "lib": ["ES2020"],
-    "types": ["node", "jest"],
+    "types": ["node"],
 
-    /* Output */
+    /* Output Options */
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
 
-    /* Strictness */
+    /* Strict Mode */
     "strict": true,
     "skipLibCheck": true,
-
-    /* Misc */
     "forceConsistentCasingInFileNames": true
   },
+
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
-  
 }

@@ -19,11 +19,13 @@
   "description": "",
   "dependencies": {
     "@types/jsforce": "^1.11.6",
+    "@types/redis": "^4.0.10",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "jsforce": "^3.10.8",
-    "pg": "^8.16.3"
+    "pg": "^8.16.3",
+    "redis": "^5.9.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
