@@ -2,11 +2,10 @@
 import pg from 'pg';
 import dotenv from 'dotenv';
 
-dotenv.config(); // Load .env environment variables
+dotenv.config();
 
 const { Pool } = pg;
 
-// Connect using DATABASE_URL from your .env
 const db = new Pool({
   connectionString: process.env.DATABASE_URL,
 });
