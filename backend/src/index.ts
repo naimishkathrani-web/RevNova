@@ -1,4 +1,19 @@
 // backend/src/index.ts
+
+// ---------------------------------------------------------
+// 🔒 Prevent dotenv from overriding NODE_ENV during tests
+// ---------------------------------------------------------
+const isTest =
+  process.env.NODE_ENV === "test" ||
+  process.env.JEST_WORKER_ID !== undefined ||
+  process.env.JEST_TEST_MODE === "true";
+
+// Load .env ONLY if not running tests
+import dotenv from "dotenv";
+if (!isTest) {
+  dotenv.config();
+}
+
 import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 
@@ -46,7 +61,7 @@ app.get("/api/v1/health", (_req: Request, res: Response) => {
 // 📊 Mount API Routes
 // ----------------------------------------------------
 app.use("/api/v1", analyzeRoutes);
-app.use("/api/v1", mappingRoutes);   // <-- Added your new mapping endpoints
+app.use("/api/v1", mappingRoutes);
 
 // ----------------------------------------------------
 // ❌ NOT FOUND Handler
@@ -70,20 +85,19 @@ app.use((err: any, _req: Request, res: Response) => {
 });
 
 // ----------------------------------------------------
-// 🚀 START SERVER ONLY OUTSIDE JEST
+// 🚀 START SERVER (NEVER DURING TEST)
 // ----------------------------------------------------
 let server: any = null;
 
-if (process.env.NODE_ENV !== "test") {
+const isTestEnv =
+  process.env.NODE_ENV === "test" ||
+  process.env.JEST_WORKER_ID !== undefined ||
+  process.env.JEST_TEST_MODE === "true";
+
+if (!isTestEnv) {
   server = app.listen(PORT, () => {
     console.log(`🚀 Server running on http://localhost:${PORT}`);
     console.log(`📋 Health Check: http://localhost:${PORT}/api/v1/health`);
-    console.log(
-      `📊 Analyze Endpoint: POST http://localhost:${PORT}/api/v1/projects/:id/analyze`
-    );
-    console.log(
-      `🔁 Mapping Endpoint: POST/GET http://localhost:${PORT}/api/v1/projects/:id/mappings`
-    );
   });
 }
 

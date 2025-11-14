@@ -1,11 +1,8 @@
 // backend/src/services/ai-mapping.service.ts
 import { openai } from "../utils/openai";
 
-
 /**
  * AI-based Mapping Suggestions
- * @param sourceFields - CPQ fields [{ name, label, type }]
- * @param targetFields - Revenue Cloud fields [{ name, label, type }]
  */
 export async function suggestMappings(sourceFields: any[], targetFields: any[]) {
   const prompt = `
@@ -16,25 +13,15 @@ Given:
 - Target fields (from Revenue Cloud): ${JSON.stringify(targetFields, null, 2)}
 
 Task:
-Suggest the best possible field mappings in this JSON format:
-
-[
-  {
-    "sourceField": "ProductCode",
-    "targetField": "ProductCode__c",
-    "confidence": 0.92,
-    "reason": "Field name + type + label similarity"
-  }
-]
-
-Rules:
-- Confidence is between 0.0 and 1.0
-- Only return valid JSON
-- No text outside JSON
+Return JSON array of mappings with:
+- sourceField
+- targetField
+- confidence (0.0–1.0)
+- reason
 `;
 
   const response = await openai.chat.completions.create({
-    model: "gpt-4o-mini",         // fast + cheap + accurate
+    model: "gpt-4o-mini",
     messages: [
       { role: "system", content: "You generate accurate CPQ → Revenue Cloud field mappings with confidence scoring." },
       { role: "user", content: prompt }
