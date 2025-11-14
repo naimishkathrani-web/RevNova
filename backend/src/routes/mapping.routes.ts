@@ -1,6 +1,10 @@
 import { Router } from 'express';
 import db from '../database/db';
 
+import { suggestMappings } from '../services/ai-mapping.service';
+import { getSourceFields, getTargetFields } from '../services/schema.service';
+import { validateMapping } from "../services/mapping-validator.service";
+
 const router = Router();
 
 /* ============================================================
@@ -15,7 +19,7 @@ router.post('/projects/:id/mappings', async (req, res) => {
   }
 
   try {
-    // Remove existing mappings for project
+    // Remove existing mappings
     await db.query('DELETE FROM field_mappings WHERE project_id = $1', [
       projectId,
     ]);
@@ -114,6 +118,92 @@ router.put('/projects/:projectId/mappings/:mappingId', async (req, res) => {
   } catch (error: any) {
     console.error('Error updating mapping:', error);
     res.status(500).json({ error: error.message });
+  }
+});
+
+/* ============================================================
+   STEP 5: AI FIELD MAPPING SUGGESTIONS
+   ============================================================ */
+router.post('/projects/:id/mappings/suggest', async (req, res) => {
+  const { id: projectId } = req.params;
+
+  try {
+    // Load CPQ & Revenue Cloud schema
+    const sourceFields = await getSourceFields(projectId);
+    const targetFields = await getTargetFields(projectId);
+
+    // AI-generated suggestions
+    const suggestions = await suggestMappings(sourceFields, targetFields);
+
+    res.json({
+      success: true,
+      projectId,
+      suggestions,
+    });
+  } catch (error: any) {
+    console.error('AI Suggestion Error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message || 'AI suggestion failed',
+    });
+  }
+});
+
+/* ============================================================
+   STEP 6: VALIDATE MAPPINGS
+   ============================================================ */
+router.post('/projects/:id/mappings/validate', async (req, res) => {
+  const { id: projectId } = req.params;
+
+  try {
+    // Load all mappings
+    const mappingResult = await db.query(
+      'SELECT * FROM field_mappings WHERE project_id = $1',
+      [projectId]
+    );
+
+    const savedMappings = mappingResult.rows;
+
+    // Load schema
+    const sourceFields = await getSourceFields(projectId);
+    const targetFields = await getTargetFields(projectId);
+
+    const errors: string[] = [];
+    const warnings: string[] = [];
+
+    /* Required Field Check */
+    for (const target of targetFields.filter(f => f.required)) {
+      const exists = savedMappings.find(m => m.target_field === target.name);
+
+      if (!exists) {
+        errors.push(`Required field "${target.name}" is NOT mapped.`);
+      }
+    }
+
+    /* Type Compatibility Check */
+    for (const mapping of savedMappings) {
+      const sourceMeta = sourceFields.find(f => f.name === mapping.source_field);
+      const targetMeta = targetFields.find(f => f.name === mapping.target_field);
+
+      if (!sourceMeta || !targetMeta) {
+        warnings.push(`Missing metadata for mapping ${mapping.source_field} → ${mapping.target_field}`);
+        continue;
+      }
+
+      const validationResult = validateMapping(sourceMeta, targetMeta);
+      warnings.push(...validationResult);
+    }
+
+    res.json({
+      success: true,
+      valid: errors.length === 0,
+      errors,
+      warnings
+    });
+
+  } catch (error: any) {
+    console.error("Validation error:", error);
+    res.status(500).json({ success: false, error: error.message });
   }
 });
 
