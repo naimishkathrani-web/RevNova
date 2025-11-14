@@ -3,6 +3,7 @@ import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 
 import analyzeRoutes from "./routes/analyze.routes";
+import mappingRoutes from "./routes/mapping.routes";
 import db from "./database/db";
 
 const app = express();
@@ -22,7 +23,9 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   const start = Date.now();
   res.on("finish", () => {
     const duration = Date.now() - start;
-    console.log(`${req.method} ${req.originalUrl} [${res.statusCode}] ${duration}ms`);
+    console.log(
+      `${req.method} ${req.originalUrl} [${res.statusCode}] ${duration}ms`
+    );
   });
   next();
 });
@@ -43,6 +46,7 @@ app.get("/api/v1/health", (_req: Request, res: Response) => {
 // 📊 Mount API Routes
 // ----------------------------------------------------
 app.use("/api/v1", analyzeRoutes);
+app.use("/api/v1", mappingRoutes);   // <-- Added your new mapping endpoints
 
 // ----------------------------------------------------
 // ❌ NOT FOUND Handler
@@ -54,12 +58,14 @@ app.use((req: Request, res: Response) => {
   });
 });
 
-// Global Error Handler (no ESLint unused-variable warnings)
+// ----------------------------------------------------
+// 🛑 Global Error Handler
+// ----------------------------------------------------
 app.use((err: any, _req: Request, res: Response) => {
-  console.error('❌ Global error handler:', err);
+  console.error("❌ Global error handler:", err);
   res.status(500).json({
-    status: 'error',
-    message: err.message || 'Internal Server Error'
+    status: "error",
+    message: err.message || "Internal Server Error",
   });
 });
 
@@ -72,7 +78,12 @@ if (process.env.NODE_ENV !== "test") {
   server = app.listen(PORT, () => {
     console.log(`🚀 Server running on http://localhost:${PORT}`);
     console.log(`📋 Health Check: http://localhost:${PORT}/api/v1/health`);
-    console.log(`📊 Analyze Endpoint: POST http://localhost:${PORT}/api/v1/projects/:id/analyze`);
+    console.log(
+      `📊 Analyze Endpoint: POST http://localhost:${PORT}/api/v1/projects/:id/analyze`
+    );
+    console.log(
+      `🔁 Mapping Endpoint: POST/GET http://localhost:${PORT}/api/v1/projects/:id/mappings`
+    );
   });
 }
 
