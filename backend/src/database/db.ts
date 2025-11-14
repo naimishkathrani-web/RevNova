@@ -1,12 +1,15 @@
 // backend/src/database/db.ts
-import pg from 'pg';
-import dotenv from 'dotenv';
-
-dotenv.config(); // Load .env environment variables
+import pg from "pg";
 
 const { Pool } = pg;
 
-// Connect using DATABASE_URL from your .env
+/**
+ * IMPORTANT:
+ * We do NOT load dotenv here.
+ * dotenv is loaded only once in index.ts BEFORE importing db.ts.
+ * This avoids duplicate env injection & prevents Jest warnings.
+ */
+
 const db = new Pool({
   connectionString: process.env.DATABASE_URL,
 });

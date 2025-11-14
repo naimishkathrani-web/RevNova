@@ -1,4 +1,5 @@
-import { Connection } from 'jsforce';
+// backend/src/services/salesforce.service.ts
+import { Connection } from "jsforce";
 
 export interface SalesforceConnection {
   instanceUrl: string;
@@ -7,20 +8,14 @@ export interface SalesforceConnection {
 }
 
 export class SalesforceService {
-  /**
-   * Establish Salesforce connection using access token + instance URL.
-   */
   async connect(config: SalesforceConnection): Promise<Connection> {
     return new Connection({
       instanceUrl: config.instanceUrl,
       accessToken: config.accessToken,
-      version: config.apiVersion || '58.0'
+      version: config.apiVersion || "58.0"
     });
   }
 
-  /**
-   * Describe a Salesforce object (standard or custom).
-   */
   async describeObject(conn: Connection, objectName: string) {
     try {
       return await conn.sobject(objectName).describe();
@@ -30,10 +25,6 @@ export class SalesforceService {
     }
   }
 
-  /**
-   * Step 4: Enhanced schema discovery metadata:
-   * Picklists, lookups, formulas, required, unique, custom, length, help text...
-   */
   async getDetailedMetadata(conn: Connection, objectName: string) {
     const metadata = await this.describeObject(conn, objectName);
 
@@ -56,13 +47,10 @@ export class SalesforceService {
         inlineHelpText: field.inlineHelpText || null
       })),
 
-      recordCount: 0 // optional — updated later
+      recordCount: 0
     };
   }
 
-  /**
-   * Count total records for an object in Salesforce.
-   */
   async getRecordCount(conn: Connection, objectName: string): Promise<number> {
     try {
       const res = await conn.query(`SELECT COUNT() FROM ${objectName}`);
@@ -73,9 +61,6 @@ export class SalesforceService {
     }
   }
 
-  /**
-   * Analyze multiple Salesforce objects with enhanced metadata.
-   */
   async analyzeObjects(conn: Connection, objects: string[]) {
     const results: any[] = [];
 
@@ -88,7 +73,6 @@ export class SalesforceService {
           ...metadata,
           recordCount
         });
-
       } catch (error: any) {
         console.error(`❌ Failed to analyze ${objectName}:`, error.message);
 
