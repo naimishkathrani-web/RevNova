@@ -6,9 +6,11 @@ const ConnectionForm: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [securityToken, setSecurityToken] = useState("");
+
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+  const [metadataCount, setMetadataCount] = useState<number | null>(null);
 
   const validateForm = () => {
     if (!connectionName || !username || !password) {
@@ -25,13 +27,33 @@ const ConnectionForm: React.FC = () => {
     setLoading(true);
     setSuccess(false);
     setError("");
+    setMetadataCount(null);
 
-    // Mock API delay
-    setTimeout(() => {
+    try {
+      const response = await fetch("/api/v1/connections/test", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          connectionName,
+          username,
+          password,
+          securityToken,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setSuccess(true);
+        setMetadataCount(data.metadata?.objectCount || 0);
+      } else {
+        setError(data.message || "Connection failed");
+      }
+    } catch (err: any) {
+      setError(err.message || "Something went wrong");
+    } finally {
       setLoading(false);
-      setSuccess(true);
-      setError("");
-    }, 1000);
+    }
   };
 
   const handleSave = () => {
@@ -71,14 +93,29 @@ const ConnectionForm: React.FC = () => {
         />
       </div>
 
+      {/* Error message */}
       {error && <p className="text-red-600 mt-2">{error}</p>}
-      {success && <p className="text-green-600 mt-2">✅ Connection successful!</p>}
+
+      {/* Success message */}
+      {success && (
+        <p className="text-green-600 mt-2">
+          ✅ Connection successful! {metadataCount} objects found.
+        </p>
+      )}
+
+      {/* Loading state */}
+      {loading && <p className="text-gray-600 mt-2">Testing connection...</p>}
 
       <div className="mt-4 flex flex-col gap-2">
         <Button onClick={handleTest} variant="primary" disabled={loading}>
           {loading ? "Testing..." : "Test Connection"}
         </Button>
-        <Button onClick={handleSave} variant="success" disabled={!success}>
+
+        <Button
+          onClick={handleSave}
+          variant="success"
+          disabled={!success}
+        >
           Save Connection
         </Button>
       </div>
