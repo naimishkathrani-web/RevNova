@@ -1,4 +1,5 @@
-import React from 'react';
+// frontend/src/components/ui/Card.tsx
+import React from "react";
 
 interface CardProps {
   title?: string;
@@ -7,12 +8,7 @@ interface CardProps {
   className?: string;
 }
 
-export const Card: React.FC<CardProps> = ({
-  title,
-  children,
-  footer,
-  className = ''
-}) => {
+const Card: React.FC<CardProps> = ({ title, children, footer, className = "" }) => {
   return (
     <div className={`bg-white rounded-lg shadow-md overflow-hidden ${className}`}>
       {title && (
@@ -27,3 +23,5 @@ export const Card: React.FC<CardProps> = ({
     </div>
   );
 };
+
+export default Card;

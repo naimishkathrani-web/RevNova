@@ -1,25 +1,26 @@
-import React from 'react';
+// frontend/src/components/ui/Button.tsx
+import React from "react";
 
 interface ButtonProps {
   children: React.ReactNode;
   onClick?: () => void;
-  variant?: 'primary' | 'secondary' | 'danger';
+  variant?: "primary" | "secondary" | "danger";
   disabled?: boolean;
-  type?: 'button' | 'submit' | 'reset';
+  type?: "button" | "submit" | "reset";
 }
 
-export const Button: React.FC<ButtonProps> = ({
+const Button: React.FC<ButtonProps> = ({
   children,
   onClick,
-  variant = 'primary',
+  variant = "primary",
   disabled = false,
-  type = 'button'
+  type = "button",
 }) => {
-  const baseStyles = 'px-4 py-2 rounded-lg font-medium transition-all';
+  const baseStyles = "px-4 py-2 rounded-lg font-medium transition-all";
   const variantStyles = {
-    primary: 'bg-blue-600 text-white hover:bg-blue-700',
-    secondary: 'bg-gray-200 text-gray-800 hover:bg-gray-300',
-    danger: 'bg-red-600 text-white hover:bg-red-700'
+    primary: "bg-blue-600 text-white hover:bg-blue-700",
+    secondary: "bg-gray-200 text-gray-800 hover:bg-gray-300",
+    danger: "bg-red-600 text-white hover:bg-red-700",
   };
 
   return (
@@ -28,10 +29,12 @@ export const Button: React.FC<ButtonProps> = ({
       onClick={onClick}
       disabled={disabled}
       className={`${baseStyles} ${variantStyles[variant]} ${
-        disabled ? 'opacity-50 cursor-not-allowed' : ''
+        disabled ? "opacity-50 cursor-not-allowed" : ""
       }`}
     >
       {children}
     </button>
   );
 };
+
+export default Button;

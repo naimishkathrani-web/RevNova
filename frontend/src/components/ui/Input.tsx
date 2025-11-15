@@ -1,8 +1,9 @@
-import React from 'react';
+// frontend/src/components/ui/Input.tsx
+import React from "react";
 
 interface InputProps {
   label: string;
-  type?: 'text' | 'email' | 'password' | 'number';
+  type?: "text" | "email" | "password" | "number";
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
@@ -10,14 +11,14 @@ interface InputProps {
   error?: string;
 }
 
-export const Input: React.FC<InputProps> = ({
+const Input: React.FC<InputProps> = ({
   label,
-  type = 'text',
+  type = "text",
   value,
   onChange,
   placeholder,
   required = false,
-  error
+  error,
 }) => {
   return (
     <div className="flex flex-col gap-1">
@@ -32,10 +33,12 @@ export const Input: React.FC<InputProps> = ({
         placeholder={placeholder}
         required={required}
         className={`px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
-          error ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
+          error ? "border-red-500 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"
         }`}
       />
       {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
     </div>
   );
 };
+
+export default Input;

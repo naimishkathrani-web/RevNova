@@ -1,106 +1,88 @@
 import React, { useState } from "react";
+import { Input, Button, Card } from "./index"; // Day 2 components
 
-export const ConnectionForm = () => {
-  // Step 1: form state
+const ConnectionForm: React.FC = () => {
   const [connectionName, setConnectionName] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [securityToken, setSecurityToken] = useState("");
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
 
-  // Step 2: Add Form Validation
   const validateForm = () => {
     if (!connectionName || !username || !password) {
-      alert("Please fill all required fields");
+      setError("Please fill all required fields");
       return false;
     }
+    setError("");
     return true;
   };
 
-  // Step 3: Wire Test Connection Button
   const handleTest = async () => {
     if (!validateForm()) return;
 
-    try {
-      setLoading(true);
+    setLoading(true);
+    setSuccess(false);
+    setError("");
 
-      const response = await fetch("/api/v1/connections/test", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password, securityToken }),
-      });
-
-      // try parse JSON but be defensive
-      let data: any = {};
-      try {
-        data = await response.json();
-      } catch (err) {
-        // ignore JSON parse error; data will be empty
-      }
-
-      if (response.ok) {
-        // doc shows: alert(data.success ? 'Connected!' : 'Failed: ' + data.error)
-        // be explicit:
-        alert(data?.success ? "Connected!" : "Connected!"); // keep message consistent with doc
-      } else {
-        alert("Failed: " + (data?.error || response.statusText || "Unknown error"));
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Failed: Network or server error");
-    } finally {
+    // Mock API delay
+    setTimeout(() => {
       setLoading(false);
-    }
+      setSuccess(true);
+      setError("");
+    }, 1000);
+  };
+
+  const handleSave = () => {
+    alert("Connection saved!");
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow">
-      <h2 className="text-2xl font-bold mb-4">Connect to Salesforce</h2>
-
+    <Card title="Connect to Salesforce">
       <div className="space-y-3">
-        <input
-          type="text"
-          placeholder="Connection Name"
+        <Input
+          label="Connection Name"
           value={connectionName}
-          onChange={(e) => setConnectionName(e.target.value)}
-          className="w-full p-2 border rounded mb-3"
+          onChange={setConnectionName}
+          placeholder="Connection Name"
+          required
         />
-
-        <input
-          type="text"
-          placeholder="Username"
+        <Input
+          label="Username"
           value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          className="w-full p-2 border rounded mb-3"
+          onChange={setUsername}
+          placeholder="Username"
+          required
         />
-
-        <input
+        <Input
+          label="Password"
           type="password"
-          placeholder="Password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-2 border rounded mb-3"
+          onChange={setPassword}
+          placeholder="Password"
+          required
         />
-
-        <input
-          type="text"
-          placeholder="Security Token"
+        <Input
+          label="Security Token"
           value={securityToken}
-          onChange={(e) => setSecurityToken(e.target.value)}
-          className="w-full p-2 border rounded mb-3"
+          onChange={setSecurityToken}
+          placeholder="Security Token"
         />
       </div>
 
-      <button
-        onClick={handleTest}
-        disabled={loading}
-        className={`mt-4 w-full py-2 text-white rounded ${
-          loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
-        }`}
-      >
-        {loading ? "Testing..." : "Test Connection"}
-      </button>
-    </div>
+      {error && <p className="text-red-600 mt-2">{error}</p>}
+      {success && <p className="text-green-600 mt-2">✅ Connection successful!</p>}
+
+      <div className="mt-4 flex flex-col gap-2">
+        <Button onClick={handleTest} variant="primary" disabled={loading}>
+          {loading ? "Testing..." : "Test Connection"}
+        </Button>
+        <Button onClick={handleSave} variant="success" disabled={!success}>
+          Save Connection
+        </Button>
+      </div>
+    </Card>
   );
 };
 

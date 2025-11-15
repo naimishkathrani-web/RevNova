@@ -1,3 +1,4 @@
-export { Button } from './ui/Button';
-export { Input } from './ui/Input';
-export { Card } from './ui/Card';
+// frontend/src/components/index.ts
+export { default as Button } from "./ui/Button";
+export { default as Input } from "./ui/Input";
+export { default as Card } from "./ui/Card";

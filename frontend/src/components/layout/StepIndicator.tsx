@@ -24,7 +24,11 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({ currentStep, steps
               <div className="flex items-center">
                 <div
                   className={`w-8 h-8 rounded-full flex items-center justify-center font-medium text-sm ${
-                    completed ? 'bg-blue-600 text-white' : active ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'
+                    completed
+                      ? 'bg-blue-600 text-white'
+                      : active
+                      ? 'bg-blue-500 text-white'
+                      : 'bg-gray-200 text-gray-700'
                   }`}
                 >
                   {step.number}
