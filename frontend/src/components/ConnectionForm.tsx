@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Input, Button, Card } from "./index"; // Day 2 components
+import { Input, Button, Card } from "./index"; // Day 2 reusable components
 
 const ConnectionForm: React.FC = () => {
   const [connectionName, setConnectionName] = useState("");
@@ -12,26 +12,32 @@ const ConnectionForm: React.FC = () => {
   const [error, setError] = useState("");
   const [metadataCount, setMetadataCount] = useState<number | null>(null);
 
-  // Day 9: retry state
   const [retryCount, setRetryCount] = useState(0);
 
-  // Day 9: sanitize logs (no password/token leakage)
+  // --------------------------
+  // Day 9: Secure Logging
+  // --------------------------
   const sanitizeLog = (data: any) => {
-    const sanitized = { ...data };
-    if (sanitized.password) sanitized.password = "***";
-    if (sanitized.securityToken) sanitized.securityToken = "***";
-    return sanitized;
+    const clean = { ...data };
+    if (clean.password) clean.password = "***";
+    if (clean.securityToken) clean.securityToken = "***";
+    return clean;
   };
 
-  // Day 9: telemetry tracking
-  const trackEvent = (eventName: string, metadata: any) => {
+  // --------------------------
+  // Day 9: Telemetry
+  // --------------------------
+  const trackEvent = (event: string, meta: any) => {
     fetch("/api/v1/telemetry", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ event: eventName, ...metadata }),
+      body: JSON.stringify({ event, ...meta }),
     }).catch(() => {});
   };
 
+  // --------------------------
+  // Form Validation
+  // --------------------------
   const validateForm = () => {
     if (!connectionName || !username || !password) {
       setError("Please fill all required fields");
@@ -41,8 +47,10 @@ const ConnectionForm: React.FC = () => {
     return true;
   };
 
-  // Day 9: retry logic
-  const testWithRetry = async () => {
+  // --------------------------
+  // Day 9: Retry Logic (max 3 attempts)
+  // --------------------------
+  const testWithRetry = async (): Promise<Response> => {
     try {
       const response = await fetch("/api/v1/connections/test", {
         method: "POST",
@@ -55,17 +63,32 @@ const ConnectionForm: React.FC = () => {
         }),
       });
 
-      if (!response.ok && retryCount < 3) {
+      // If successful → return immediately
+      if (response.ok) return response;
+
+      // Retry if < 3 attempts
+      if (retryCount < 3) {
         console.warn(`Retry attempt ${retryCount + 1}...`);
-        setRetryCount(retryCount + 1);
-        setTimeout(testWithRetry, 2000);
-        return;
+        setRetryCount((prev) => prev + 1);
+
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        return testWithRetry();
       }
-    } catch (err: any) {
-      console.error("Retry connection failed:", err?.message);
+
+      return response;
+    } catch {
+      if (retryCount < 3) {
+        setRetryCount((prev) => prev + 1);
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        return testWithRetry();
+      }
+      throw new Error("Network error");
     }
   };
 
+  // --------------------------
+  // Test Connection
+  // --------------------------
   const handleTest = async () => {
     if (!validateForm()) return;
 
@@ -75,43 +98,22 @@ const ConnectionForm: React.FC = () => {
     setMetadataCount(null);
     setRetryCount(0);
 
-    // Day 9: secure logging
     console.log(
       "Testing connection:",
-      sanitizeLog({
-        connectionName,
-        username,
-        password,
-        securityToken,
-      })
+      sanitizeLog({ connectionName, username, password, securityToken })
     );
 
-    // Day 9: telemetry event
     trackEvent("connection_test_started", { provider: "salesforce" });
 
-    // Begin retry cycle
-    testWithRetry();
-
     try {
-      const response = await fetch("/api/v1/connections/test", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          connectionName,
-          username,
-          password,
-          securityToken,
-        }),
-      });
-
+      const response = await testWithRetry();
       const data = await response.json();
 
       if (data.success) {
         setSuccess(true);
         setMetadataCount(data.metadata?.objectCount || 0);
 
-        // Day 9: telemetry success event
-        trackEvent("connection_test_success", { duration: 1200 });
+        trackEvent("connection_test_success", { attempts: retryCount + 1 });
       } else {
         setError(data.message || "Connection failed");
       }
@@ -122,6 +124,9 @@ const ConnectionForm: React.FC = () => {
     }
   };
 
+  // --------------------------
+  // Save Connection
+  // --------------------------
   const handleSave = () => {
     alert("Connection saved!");
   };
@@ -136,6 +141,7 @@ const ConnectionForm: React.FC = () => {
           placeholder="Connection Name"
           required
         />
+
         <Input
           label="Username"
           value={username}
@@ -143,6 +149,7 @@ const ConnectionForm: React.FC = () => {
           placeholder="Username"
           required
         />
+
         <Input
           label="Password"
           type="password"
@@ -151,6 +158,7 @@ const ConnectionForm: React.FC = () => {
           placeholder="Password"
           required
         />
+
         <Input
           label="Security Token"
           value={securityToken}
