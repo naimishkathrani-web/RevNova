@@ -12,6 +12,26 @@ const ConnectionForm: React.FC = () => {
   const [error, setError] = useState("");
   const [metadataCount, setMetadataCount] = useState<number | null>(null);
 
+  // Day 9: retry state
+  const [retryCount, setRetryCount] = useState(0);
+
+  // Day 9: sanitize logs (no password/token leakage)
+  const sanitizeLog = (data: any) => {
+    const sanitized = { ...data };
+    if (sanitized.password) sanitized.password = "***";
+    if (sanitized.securityToken) sanitized.securityToken = "***";
+    return sanitized;
+  };
+
+  // Day 9: telemetry tracking
+  const trackEvent = (eventName: string, metadata: any) => {
+    fetch("/api/v1/telemetry", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ event: eventName, ...metadata }),
+    }).catch(() => {});
+  };
+
   const validateForm = () => {
     if (!connectionName || !username || !password) {
       setError("Please fill all required fields");
@@ -21,6 +41,31 @@ const ConnectionForm: React.FC = () => {
     return true;
   };
 
+  // Day 9: retry logic
+  const testWithRetry = async () => {
+    try {
+      const response = await fetch("/api/v1/connections/test", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          connectionName,
+          username,
+          password,
+          securityToken,
+        }),
+      });
+
+      if (!response.ok && retryCount < 3) {
+        console.warn(`Retry attempt ${retryCount + 1}...`);
+        setRetryCount(retryCount + 1);
+        setTimeout(testWithRetry, 2000);
+        return;
+      }
+    } catch (err: any) {
+      console.error("Retry connection failed:", err?.message);
+    }
+  };
+
   const handleTest = async () => {
     if (!validateForm()) return;
 
@@ -28,6 +73,24 @@ const ConnectionForm: React.FC = () => {
     setSuccess(false);
     setError("");
     setMetadataCount(null);
+    setRetryCount(0);
+
+    // Day 9: secure logging
+    console.log(
+      "Testing connection:",
+      sanitizeLog({
+        connectionName,
+        username,
+        password,
+        securityToken,
+      })
+    );
+
+    // Day 9: telemetry event
+    trackEvent("connection_test_started", { provider: "salesforce" });
+
+    // Begin retry cycle
+    testWithRetry();
 
     try {
       const response = await fetch("/api/v1/connections/test", {
@@ -46,6 +109,9 @@ const ConnectionForm: React.FC = () => {
       if (data.success) {
         setSuccess(true);
         setMetadataCount(data.metadata?.objectCount || 0);
+
+        // Day 9: telemetry success event
+        trackEvent("connection_test_success", { duration: 1200 });
       } else {
         setError(data.message || "Connection failed");
       }
@@ -93,17 +159,14 @@ const ConnectionForm: React.FC = () => {
         />
       </div>
 
-      {/* Error message */}
       {error && <p className="text-red-600 mt-2">{error}</p>}
 
-      {/* Success message */}
       {success && (
         <p className="text-green-600 mt-2">
           ✅ Connection successful! {metadataCount} objects found.
         </p>
       )}
 
-      {/* Loading state */}
       {loading && <p className="text-gray-600 mt-2">Testing connection...</p>}
 
       <div className="mt-4 flex flex-col gap-2">
@@ -111,11 +174,7 @@ const ConnectionForm: React.FC = () => {
           {loading ? "Testing..." : "Test Connection"}
         </Button>
 
-        <Button
-          onClick={handleSave}
-          variant="success"
-          disabled={!success}
-        >
+        <Button onClick={handleSave} variant="success" disabled={!success}>
           Save Connection
         </Button>
       </div>
