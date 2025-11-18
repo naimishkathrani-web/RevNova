@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initMigrationWizard();
     initDataTables();
     initCollapsibleSidebar();
+    highlightActivePage();
 });
 
 // Mobile Menu Toggle
@@ -336,6 +337,22 @@ function generateMockData(count = 5) {
         progress: Math.floor(Math.random() * 100),
         lastUpdated: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toLocaleDateString()
     }));
+}
+
+// Highlight Active Sidebar Link
+function highlightActivePage() {
+    const sidebar = document.querySelector('.sidebar');
+    if (!sidebar) return;
+
+    const currentFile = window.location.pathname.split('/').pop();
+    
+    sidebar.querySelectorAll('a').forEach(link => {
+        const href = link.getAttribute('href');
+        if (href && href === currentFile) {
+            link.classList.add('active');
+            link.style.cssText = 'background: #667eea; color: #fff; font-weight: 500;';
+        }
+    });
 }
 
 // Export functions for global use
