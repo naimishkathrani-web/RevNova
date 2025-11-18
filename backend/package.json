@@ -13,7 +13,8 @@
     "test:coverage": "jest --coverage",
     "migrate": "node-pg-migrate up -m src/database/migrations",
     "migrate:create": "node-pg-migrate create",
-    "migrate:ts": "node --loader ts-node/esm src/database/runMigrations.ts"
+    "migrate:ts": "node --loader ts-node/esm src/database/runMigrations.ts",
+    "seed": "tsx scripts/seed.ts"
   },
   "keywords": [],
   "author": "",

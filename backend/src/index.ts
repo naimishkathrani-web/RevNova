@@ -1,22 +1,33 @@
-// backend/src/index.ts
-import express, { Request, Response, NextFunction } from 'express';
+//import fs from 'fs';
+//console.log("Routes folder content:", fs.readdirSync('./src/routes'));
+
+import express from 'express';
+import type { Request, Response, NextFunction } from 'express';
+
 import cors from 'cors';
+
 import analyzeRoutes from './routes/analyze.routes.js';
-import db from './database/db.js'; // ✅ FIXED: must include .js extension
+import projectsRouter from './routes/projects.routes.js';
+
+import db from './database/db.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // -----------------------------------------------
-// 🧩 Global Middleware
+// Middleware
 // -----------------------------------------------
 app.use(cors());
 app.use(express.json());
-
-// 📌 Make DB available in all routes
 app.locals.db = db;
 
-// 📌 Request Logger
+// Debug incoming path
+app.use((req, res, next) => {
+  console.log(">>> Incoming request path:", req.path, "url:", req.originalUrl);
+  next();
+});
+
+// Request logger
 app.use((req: Request, res: Response, next: NextFunction) => {
   const start = Date.now();
   res.on('finish', () => {
@@ -27,7 +38,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 });
 
 // -----------------------------------------------
-// 🧠 Health Check
+// Health Check
 // -----------------------------------------------
 app.get('/api/v1/health', (req: Request, res: Response) => {
   res.status(200).json({
@@ -39,15 +50,31 @@ app.get('/api/v1/health', (req: Request, res: Response) => {
 });
 
 // -----------------------------------------------
-// 📊 Mount Main API Routes
+// API ROUTES
 // -----------------------------------------------
+console.log(">>> Mounting Projects Router...");
+app.use('/api/v1', projectsRouter);
+
+console.log(">>> Mounting Analyze Router...");
 app.use('/api/v1', analyzeRoutes);
 
 // -----------------------------------------------
-// ⚠️ Global Error Handler
+// TEST ROUTE MATCH (simulated request)
 // -----------------------------------------------
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-app.use((err: any, req: Request, res: Response, _next: NextFunction) => {
+console.log(">>> TEST ROUTE MATCH:");
+console.log(
+  "  GET /api/v1/projects =>",
+  app._router?.handle(
+    { method: 'GET', url: '/api/v1/projects' },
+    { end: (msg: any) => console.log("  MATCH RESULT:", msg) },
+    () => console.log("  NEXT() CALLED (no match)")
+  )
+);
+
+// -----------------------------------------------
+// Error Handler
+// -----------------------------------------------
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   console.error('❌ Global error handler:', err);
   res.status(500).json({
     status: 'error',
@@ -56,7 +83,7 @@ app.use((err: any, req: Request, res: Response, _next: NextFunction) => {
 });
 
 // -----------------------------------------------
-// ❌ Handle Unknown Routes
+// 404 Handler
 // -----------------------------------------------
 app.use((req: Request, res: Response) => {
   res.status(404).json({
@@ -66,9 +93,10 @@ app.use((req: Request, res: Response) => {
 });
 
 // -----------------------------------------------
-// 🚀 Start Server
+// Start Server
 // -----------------------------------------------
 app.listen(PORT, () => {
+  console.log(">>> ACTUAL SERVER ADDRESS:", PORT);
   console.log(`🚀 Server running on http://localhost:${PORT}`);
   console.log(`📋 Health Check: http://localhost:${PORT}/api/v1/health`);
   console.log(`📊 Analyze Endpoint: POST http://localhost:${PORT}/api/v1/projects/:id/analyze`);
