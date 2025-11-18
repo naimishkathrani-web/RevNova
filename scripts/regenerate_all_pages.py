@@ -162,17 +162,56 @@ def generate_sidebar_weeks_html(dev_prefix, weeks):
     
     return '\n'.join(html_parts)
 
+def generate_all_developers_sidebar():
+    """Generate complete sidebar with ALL THREE developers' tasks"""
+    all_devs_html = []
+    
+    for dev in DEVELOPERS:
+        dev_name = dev['name']
+        dev_prefix = dev['prefix']
+        weeks = dev['weeks']
+        
+        dev_short = {
+            'dev1': 'Developer 1',
+            'dev2': 'Developer 2',
+            'dev3': 'Developer 3'
+        }[dev_prefix]
+        
+        # Generate weeks HTML for this developer
+        weeks_html = generate_sidebar_weeks_html(dev_prefix, weeks)
+        
+        # Create section for this developer
+        dev_section = f'''                <!-- {dev_short}: Daily Tasks Section -->
+                <div class="nav-section">
+                    <button class="nav-section-header">
+                        <svg class="nav-section-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M6 6L14 10L6 14V6Z"/>
+                        </svg>
+                        {dev_short}: Daily Tasks
+                    </button>
+                    <div class="nav-section-content">
+{weeks_html}
+                    </div>
+                </div>
+                '''
+        all_devs_html.append(dev_section)
+    
+    return '\n'.join(all_devs_html)
+
 def main():
     # Read template
-    template_path = Path('docs/Onboarding/dev1-day07-new.html')
+    template_path = Path('docs/Onboarding/dev1-day07.html')
     with open(template_path, 'r', encoding='utf-8') as f:
         template = f.read()
     
     total_pages = sum(len(week['days']) for dev in DEVELOPERS for week in dev['weeks'])
     processed = 0
     
-    print(f"Regenerating {total_pages} pages with Salesforce-style template...")
+    print(f"Regenerating {total_pages} pages with ALL THREE developers in sidebar...")
     print()
+    
+    # Generate complete sidebar HTML with ALL THREE developers
+    complete_sidebar_html = generate_all_developers_sidebar()
     
     for dev in DEVELOPERS:
         dev_name = dev['name']
@@ -180,9 +219,6 @@ def main():
         weeks = dev['weeks']
         
         print(f"Processing {dev_name}...")
-        
-        # Generate sidebar weeks HTML for this developer
-        sidebar_weeks_html = generate_sidebar_weeks_html(dev_prefix, weeks)
         
         # Process each day
         for week_num, week in enumerate(weeks, 1):
@@ -219,16 +255,10 @@ def main():
                     f'<p class="page-subtitle">{dev_name} | Duration: ~6-8 hours</p>'
                 )
                 
-                # Replace sidebar section title
-                page = page.replace(
-                    'Developer 1: Daily Tasks',
-                    f'{dev_short}: Daily Tasks'
-                )
-                
-                # Replace the weeks subsection HTML
-                # Find the pattern between first <!-- Week and last </div> of weeks
-                pattern = r'<!-- Week 1 Subsection -->.*?</div>\s+</div>\s+</div>\s+</nav>'
-                replacement = sidebar_weeks_html + '\n                    </div>\n                </div>\n            </nav>'
+                # Replace ALL developer sections with complete sidebar
+                # Find and replace from first Developer section to end of nav
+                pattern = r'<!-- Developer 1: Daily Tasks Section -->.*?</nav>'
+                replacement = complete_sidebar_html + '\n            </nav>'
                 page = re.sub(pattern, replacement, page, flags=re.DOTALL)
                 
                 # Mark current page as active
@@ -238,14 +268,24 @@ def main():
                     f'<a href="{day_file}" class="nav-subsection-link active">'
                 )
                 
+                # Expand current developer's section
+                page = page.replace(
+                    f'<button class="nav-section-header">\n                        <svg class="nav-section-icon" fill="currentColor" viewBox="0 0 20 20">\n                            <path d="M6 6L14 10L6 14V6Z"/>\n                        </svg>\n                        {dev_short}: Daily Tasks',
+                    f'<button class="nav-section-header expanded">\n                        <svg class="nav-section-icon" fill="currentColor" viewBox="0 0 20 20">\n                            <path d="M6 6L14 10L6 14V6Z"/>\n                        </svg>\n                        {dev_short}: Daily Tasks'
+                )
+                page = re.sub(
+                    f'({re.escape(dev_short)}: Daily Tasks.*?</button>\\s+<div class="nav-section-content")>',
+                    r'\1 expanded>',
+                    page,
+                    flags=re.DOTALL
+                )
+                
                 # Auto-expand current week
                 current_week_title = week['title']
-                # Expand the week header
                 page = page.replace(
                     f'<button class="nav-subsection-header">\n                                <svg class="nav-subsection-icon" fill="currentColor" viewBox="0 0 20 20">\n                                    <path d="M6 6L14 10L6 14V6Z"/>\n                                </svg>\n                                {current_week_title}',
                     f'<button class="nav-subsection-header expanded">\n                                <svg class="nav-subsection-icon" fill="currentColor" viewBox="0 0 20 20">\n                                    <path d="M6 6L14 10L6 14V6Z"/>\n                                </svg>\n                                {current_week_title}'
                 )
-                # Find and expand the content div after this week's button
                 page = re.sub(
                     f'({re.escape(current_week_title)}.*?</button>\\s+<div class="nav-subsection-content")>',
                     r'\1 expanded>',
@@ -288,11 +328,13 @@ def main():
     print()
     print("All pages now have:")
     print("  - Salesforce-style look and feel")
+    print("  - ALL THREE developers' tasks in sidebar")
     print("  - Collapsible Getting Started section")
     print("  - Collapsible Developer Guides section")
-    print("  - Collapsible week subsections")
-    print("  - Static sidebar that never moves")
-    print("  - Auto-expand current week and highlight current page")
+    print("  - Collapsible week subsections for all devs")
+    print("  - IDENTICAL sidebar HTML (prevents refresh)")
+    print("  - Auto-expand current developer and week")
+    print("  - Highlight current page")
 
 if __name__ == '__main__':
     main()
