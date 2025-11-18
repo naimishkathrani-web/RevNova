@@ -457,7 +457,7 @@
                     </div>
                 </div>
                 
-                                <!-- Developer 1: Daily Tasks Section -->
+                                                <!-- Developer 1: Daily Tasks Section -->
                 <div class="nav-section">
                     <button class="nav-section-header">
                         <svg class="nav-section-icon" fill="currentColor" viewBox="0 0 20 20">
@@ -945,21 +945,24 @@ export default redisClient;</code></pre>
                 });
             });
             
-            // Auto-expand sections containing active page
-            const activeLinks = document.querySelectorAll('.nav-link.active, .nav-subsection-link.active');
+            // Auto-expand ONLY Developer section and Week, NOT Getting Started or Developer Guides
+            const activeLinks = document.querySelectorAll('.nav-subsection-link.active');
             activeLinks.forEach(link => {
-                // Expand parent section
-                let parent = link.closest('.nav-section-content');
-                if (parent) {
-                    parent.classList.add('expanded');
-                    parent.previousElementSibling.classList.add('expanded');
+                // Expand parent developer section (only if it contains "Daily Tasks")
+                let devSection = link.closest('.nav-section-content');
+                if (devSection) {
+                    const header = devSection.previousElementSibling;
+                    if (header && header.textContent.includes('Daily Tasks')) {
+                        devSection.classList.add('expanded');
+                        header.classList.add('expanded');
+                    }
                 }
                 
-                // Expand parent subsection
-                let subsectionParent = link.closest('.nav-subsection-content');
-                if (subsectionParent) {
-                    subsectionParent.classList.add('expanded');
-                    subsectionParent.previousElementSibling.classList.add('expanded');
+                // Expand parent week subsection
+                let weekSubsection = link.closest('.nav-subsection-content');
+                if (weekSubsection) {
+                    weekSubsection.classList.add('expanded');
+                    weekSubsection.previousElementSibling.classList.add('expanded');
                 }
             });
         });
