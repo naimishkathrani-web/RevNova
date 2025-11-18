@@ -73,6 +73,59 @@
             font-size: 0.9rem;
         }
         
+        /* Collapsible week sections */
+        .week-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .week-item {
+            margin-bottom: 0.5rem;
+        }
+        
+        .week-toggle {
+            width: 100%;
+            text-align: left;
+            background: none;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            color: #333;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            display: block;
+        }
+        
+        .week-toggle:hover {
+            background: #e9ecef;
+            color: #11998e;
+        }
+        
+        .week-toggle.expanded {
+            background: #e9ecef;
+            color: #11998e;
+        }
+        
+        .day-list {
+            list-style: none;
+            padding-left: 0 !important;
+            margin: 0 !important;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .day-list.expanded {
+            max-height: 500px;
+        }
+        
+        .day-list li a {
+            padding-left: 2.5rem !important;
+        }
+        
         .main-content {
             flex: 1;
             margin-left: 280px;
@@ -151,9 +204,10 @@
             </ul>
             
             <h3>Developer 1: Daily Tasks</h3>
-            <ul>
-                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 1: Backend Setup</span>
-                    <ul>
+            <ul class="week-list">
+                <li class="week-item">
+                    <button class="week-toggle">▶ Week 1: Backend Setup</button>
+                    <ul class="day-list collapsed">
                         <li><a href="dev1-day01.html">Day 1</a></li>
                         <li><a href="dev1-day02.html">Day 2</a></li>
                         <li><a href="dev1-day03.html">Day 3</a></li>
@@ -161,8 +215,9 @@
                         <li><a href="dev1-day05.html">Day 5</a></li>
                     </ul>
                 </li>
-                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 2: Salesforce Integration</span>
-                    <ul>
+                <li class="week-item">
+                    <button class="week-toggle">▶ Week 2: Salesforce Integration</button>
+                    <ul class="day-list collapsed">
                         <li><a href="dev1-day06.html">Day 6</a></li>
                         <li><a href="dev1-day07.html">Day 7</a></li>
                         <li><a href="dev1-day08.html">Day 8</a></li>
@@ -170,8 +225,9 @@
                         <li><a href="dev1-day10.html">Day 10</a></li>
                     </ul>
                 </li>
-                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 3: Field Mapping API</span>
-                    <ul>
+                <li class="week-item">
+                    <button class="week-toggle">▶ Week 3: Field Mapping API</button>
+                    <ul class="day-list collapsed">
                         <li><a href="dev1-day11.html">Day 11</a></li>
                         <li><a href="dev1-day12.html">Day 12</a></li>
                         <li><a href="dev1-day13.html">Day 13</a></li>
@@ -179,8 +235,9 @@
                         <li><a href="dev1-day15.html">Day 15</a></li>
                     </ul>
                 </li>
-                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 4: Transformation & Queue</span>
-                    <ul>
+                <li class="week-item">
+                    <button class="week-toggle">▶ Week 4: Transformation & Queue</button>
+                    <ul class="day-list collapsed">
                         <li><a href="dev1-day16.html">Day 16</a></li>
                         <li><a href="dev1-day17.html">Day 17</a></li>
                         <li><a href="dev1-day18.html">Day 18</a></li>
@@ -188,8 +245,9 @@
                         <li><a href="dev1-day20.html">Day 20</a></li>
                     </ul>
                 </li>
-                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 5: Execution & Testing</span>
-                    <ul>
+                <li class="week-item">
+                    <button class="week-toggle">▶ Week 5: Execution & Testing</button>
+                    <ul class="day-list collapsed">
                         <li><a href="dev1-day21.html">Day 21</a></li>
                         <li><a href="dev1-day22.html">Day 22</a></li>
                         <li><a href="dev1-day23.html">Day 23</a></li>
@@ -367,5 +425,41 @@ curl http://localhost:3000/api/v1/projects/1/analyze/summary
             </main>
     </div>
     <script src="../script.js"></script>
+    <script>
+    // Collapsible sidebar functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const weekToggles = document.querySelectorAll('.week-toggle');
+        const currentPage = window.location.pathname.split('/').pop();
+        
+        weekToggles.forEach(toggle => {
+            toggle.addEventListener('click', function() {
+                const dayList = this.nextElementSibling;
+                const isExpanded = dayList.classList.contains('expanded');
+                
+                // Toggle this week
+                if (isExpanded) {
+                    dayList.classList.remove('expanded');
+                    this.classList.remove('expanded');
+                    this.innerHTML = '▶' + this.innerHTML.substring(1);
+                } else {
+                    dayList.classList.add('expanded');
+                    this.classList.add('expanded');
+                    this.innerHTML = '▼' + this.innerHTML.substring(1);
+                }
+            });
+            
+            // Auto-expand the week containing the current page
+            const dayList = toggle.nextElementSibling;
+            const dayLinks = dayList.querySelectorAll('a');
+            dayLinks.forEach(link => {
+                if (link.getAttribute('href') === currentPage) {
+                    dayList.classList.add('expanded');
+                    toggle.classList.add('expanded');
+                    toggle.innerHTML = '▼' + toggle.innerHTML.substring(1);
+                }
+            });
+        });
+    });
+    </script>
 </body>
 </html>
