@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Migration - Inflight Quotes</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <header class="container">
+        <a href="../index.html" class="logo">RevNova</a>
+    </header>
+    <main class="container wizard-step">
+        <h1>Migrate Inflight Quotes</h1>
+        <p>Migrate quotes that are currently being worked on (Draft, Pending, Negotiating status).</p>
+        
+        <div class="section-box" style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px; margin: 2rem 0;">
+            <h3>Inflight Quote Summary</h3>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 1rem;">
+                <div style="text-align: center;">
+                    <div style="font-size: 2rem; font-weight: bold; color: #11998e;">247</div>
+                    <div style="color: #666;">Draft Quotes</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 2rem; font-weight: bold; color: #FE9339;">89</div>
+                    <div style="color: #666;">Pending Approval</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 2rem; font-weight: bold; color: #00A1E0;">56</div>
+                    <div style="color: #666;">In Negotiation</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="migration-options">
+            <h3>Migration Options</h3>
+            <label><input type="checkbox" checked> Preserve quote line items</label><br>
+            <label><input type="checkbox" checked> Maintain quote approval history</label><br>
+            <label><input type="checkbox" checked> Link to original opportunities</label><br>
+            <label><input type="checkbox"> Convert pricing rules to Revenue Cloud</label>
+        </div>
+
+        <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+            <button class="btn btn-secondary" onclick="window.location.href='migration-report.html'">Back to Report</button>
+            <button class="btn btn-primary" onclick="startInflightQuoteMigration()">Start Inflight Quote Migration</button>
+        </div>
+    </main>
+    <script src="../script.js"></script>
+    <script>
+        function startInflightQuoteMigration() {
+            alert('Inflight quote migration started! You will be notified when complete.');
+            window.location.href = 'migration-inflight-orders.html';
+        }
+    </script>
+</body>
+</html>

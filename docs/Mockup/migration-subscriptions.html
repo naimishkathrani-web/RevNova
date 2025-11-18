@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Migration - Subscriptions</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <header class="container">
+        <a href="../index.html" class="logo">RevNova</a>
+    </header>
+    <main class="container wizard-step">
+        <h1>Migrate Subscriptions</h1>
+        <p>Migrate all subscription data to Revenue Cloud subscription and asset structure.</p>
+        
+        <div class="section-box" style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px; margin: 2rem 0;">
+            <h3>Subscription Summary</h3>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-top: 1rem;">
+                <div style="text-align: center;">
+                    <div style="font-size: 2rem; font-weight: bold; color: #2e844a;">1,456</div>
+                    <div style="color: #666;">Active Subscriptions</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 2rem; font-weight: bold; color: #FE9339;">312</div>
+                    <div style="color: #666;">Pending Changes</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 2rem; font-weight: bold; color: #00A1E0;">892</div>
+                    <div style="color: #666;">Recurring Revenue</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 2rem; font-weight: bold; color: #666;">456</div>
+                    <div style="color: #666;">Cancelled</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="migration-options">
+            <h3>Subscription Migration Options</h3>
+            <label><input type="checkbox" checked> Migrate subscription products</label><br>
+            <label><input type="checkbox" checked> Preserve billing schedules</label><br>
+            <label><input type="checkbox" checked> Link to contracts and assets</label><br>
+            <label><input type="checkbox" checked> Maintain renewal terms</label><br>
+            <label><input type="checkbox" checked> Convert usage-based pricing</label><br>
+            <label><input type="checkbox"> Migrate historical amendments</label>
+        </div>
+
+        <div class="warning-box" style="background: #fff3cd; padding: 1rem; border-radius: 6px; margin: 1.5rem 0; border-left: 4px solid #FE9339;">
+            <strong>⚠️ Important:</strong> Subscription migration will create Asset records and link them to Revenue Cloud subscriptions. This is the final step of Phase 1 migration.
+        </div>
+
+        <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+            <button class="btn btn-secondary" onclick="window.location.href='migration-contracts.html'">Back</button>
+            <button class="btn btn-primary" onclick="startSubscriptionMigration()">Start Subscription Migration</button>
+        </div>
+    </main>
+    <script src="../script.js"></script>
+    <script>
+        function startSubscriptionMigration() {
+            alert('Subscription migration started! This is the final migration step. You will be notified when the entire Phase 1 migration is complete.');
+            window.location.href='migration-final-report.html';
+        }
+    </script>
+</body>
+</html>

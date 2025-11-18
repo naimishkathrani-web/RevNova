@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Migration - Contracts</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <header class="container">
+        <a href="../index.html" class="logo">RevNova</a>
+    </header>
+    <main class="container wizard-step">
+        <h1>Migrate Contracts</h1>
+        <p>Migrate all active contracts and historical contract data to Revenue Cloud Asset structure.</p>
+        
+        <div class="section-box" style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px; margin: 2rem 0;">
+            <h3>Contract Summary</h3>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-top: 1rem;">
+                <div style="text-align: center;">
+                    <div style="font-size: 2rem; font-weight: bold; color: #2e844a;">892</div>
+                    <div style="color: #666;">Active Contracts</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 2rem; font-weight: bold; color: #FE9339;">234</div>
+                    <div style="color: #666;">Expiring Soon</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 2rem; font-weight: bold; color: #00A1E0;">567</div>
+                    <div style="color: #666;">Auto-Renew</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 2rem; font-weight: bold; color: #666;">1,203</div>
+                    <div style="color: #666;">Historical</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="migration-options">
+            <h3>Contract Migration Options</h3>
+            <label><input type="checkbox" checked> Migrate contract terms and conditions</label><br>
+            <label><input type="checkbox" checked> Preserve pricing schedules</label><br>
+            <label><input type="checkbox" checked> Link to related subscriptions</label><br>
+            <label><input type="checkbox" checked> Maintain renewal dates</label><br>
+            <label><input type="checkbox"> Convert auto-renewal rules</label>
+        </div>
+
+        <div class="warning-box" style="background: #fff3cd; padding: 1rem; border-radius: 6px; margin: 1.5rem 0; border-left: 4px solid #FE9339;">
+            <strong>⚠️ Important:</strong> Contract migration will create corresponding Asset records in Revenue Cloud. Review the mapping before proceeding.
+        </div>
+
+        <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+            <button class="btn btn-secondary" onclick="window.location.href='migration-inflight-orders.html'">Back</button>
+            <button class="btn btn-primary" onclick="startContractMigration()">Start Contract Migration</button>
+        </div>
+    </main>
+    <script src="../script.js"></script>
+    <script>
+        function startContractMigration() {
+            alert('Contract migration started! This may take several hours. You will be notified when complete.');
+            window.location.href = 'migration-subscriptions.html';
+        }
+    </script>
+</body>
+</html>

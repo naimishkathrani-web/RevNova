@@ -11,16 +11,33 @@
         <a href="../index.html" class="logo">RevNova</a>
     </header>
     <main class="container report-page">
-        <h1>Migration Report</h1>
-        <div class="report-summary">
-            <p>Project: CPQ -> RCA</p>
-            <p>Status: Completed</p>
-            <p>Rows migrated: 1200</p>
-            <p>Duration: 00:12:34</p>
+        <h1>Core Migration Report</h1>
+        <div class="report-summary" style="background: #f0f9ff; padding: 2rem; border-radius: 12px; margin: 2rem 0;">
+            <h2>Migration Complete</h2>
+            <p><strong>Project:</strong> CPQ -> Revenue Cloud</p>
+            <p><strong>Status:</strong> ✓ Completed</p>
+            <p><strong>Products Migrated:</strong> 1,234</p>
+            <p><strong>Price Books Migrated:</strong> 45</p>
+            <p><strong>Pricing Rules Converted:</strong> 89</p>
+            <p><strong>Duration:</strong> 00:12:34</p>
         </div>
-        <div class="report-actions">
-            <button class="btn">Download Full Report</button>
-            <button class="btn btn-secondary">View Logs</button>
+
+        <div class="next-steps-box" style="background: #fff3cd; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #FE9339; margin: 2rem 0;">
+            <h3 style="color: #856404; margin-top: 0;">Continue with Inflight Data</h3>
+            <p>Your core product catalog has been migrated successfully. Next, migrate your inflight business data:</p>
+            <ul style="line-height: 1.8;">
+                <li><strong>Inflight Quotes:</strong> 392 quotes in various stages</li>
+                <li><strong>Inflight Orders:</strong> 244 orders awaiting fulfillment</li>
+                <li><strong>Contracts:</strong> 2,095 active and historical contracts</li>
+                <li><strong>Subscriptions:</strong> 1,456 recurring subscriptions</li>
+            </ul>
+            <button class="btn btn-primary" onclick="window.location.href='migration-inflight-quotes.html'" style="margin-top: 1rem;">Continue with Inflight Data →</button>
+        </div>
+
+        <div class="report-actions" style="margin-top: 2rem;">
+            <button class="btn">Download Core Report (PDF)</button>
+            <button class="btn btn-secondary">View Migration Logs</button>
+            <button class="btn" onclick="window.location.href='migration-test.html'">← Back to Test</button>
         </div>
     </main>
     <script src="../script.js"></script>

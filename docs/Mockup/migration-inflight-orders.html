@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Migration - Inflight Orders</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <header class="container">
+        <a href="../index.html" class="logo">RevNova</a>
+    </header>
+    <main class="container wizard-step">
+        <h1>Migrate Inflight Orders</h1>
+        <p>Migrate orders that are currently in processing (Pending, Fulfillment, Activation status).</p>
+        
+        <div class="section-box" style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px; margin: 2rem 0;">
+            <h3>Inflight Order Summary</h3>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 1rem;">
+                <div style="text-align: center;">
+                    <div style="font-size: 2rem; font-weight: bold; color: #11998e;">143</div>
+                    <div style="color: #666;">Pending Orders</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 2rem; font-weight: bold; color: #FE9339;">67</div>
+                    <div style="color: #666;">In Fulfillment</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 2rem; font-weight: bold; color: #00A1E0;">34</div>
+                    <div style="color: #666;">Activation</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="migration-options">
+            <h3>Migration Options</h3>
+            <label><input type="checkbox" checked> Preserve order products</label><br>
+            <label><input type="checkbox" checked> Maintain fulfillment status</label><br>
+            <label><input type="checkbox" checked> Link to quotes and contracts</label><br>
+            <label><input type="checkbox"> Convert order rules to Revenue Cloud</label>
+        </div>
+
+        <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+            <button class="btn btn-secondary" onclick="window.location.href='migration-inflight-quotes.html'">Back</button>
+            <button class="btn btn-primary" onclick="startInflightOrderMigration()">Start Inflight Order Migration</button>
+        </div>
+    </main>
+    <script src="../script.js"></script>
+    <script>
+        function startInflightOrderMigration() {
+            alert('Inflight order migration started! You will be notified when complete.');
+            window.location.href = 'migration-contracts.html';
+        }
+    </script>
+</body>
+</html>

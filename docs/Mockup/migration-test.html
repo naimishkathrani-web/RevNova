@@ -20,9 +20,20 @@
                 <option selected>500</option>
                 <option>1000</option>
             </select>
-            <button class="btn btn-primary">Run Test</button>
+            <button class="btn btn-primary" onclick="runTest()">Run Test</button>
+        </div>
+        <div id="test-results" style="display:none; margin-top: 2rem; padding: 1.5rem; background: #f0f9ff; border-radius: 8px;">
+            <h3 style="color: #2e844a;">✓ Test Completed Successfully</h3>
+            <p>500 records processed</p>
+            <p>0 errors found</p>
+            <button class="btn btn-primary" onclick="window.location.href='migration-report.html'">View Full Report</button>
         </div>
     </main>
     <script src="../script.js"></script>
+    <script>
+        function runTest() {
+            document.getElementById('test-results').style.display = 'block';
+        }
+    </script>
 </body>
 </html>
