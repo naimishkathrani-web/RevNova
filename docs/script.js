@@ -241,58 +241,51 @@ function initCollapsibleSidebar() {
     const sidebar = document.querySelector('.sidebar');
     if (!sidebar) return;
 
-    // Find all list items that have a nested <ul>
-    const parents = Array.from(sidebar.querySelectorAll('li')).filter(li => li.querySelector(':scope > ul'));
-    parents.forEach(li => {
-        li.classList.add('has-children');
-        const link = li.querySelector(':scope > a');
-
-        // Insert a toggle button after the link
-        const btn = document.createElement('button');
-        btn.className = 'collapse-toggle';
-        btn.setAttribute('aria-label', 'Toggle section');
-        btn.setAttribute('aria-expanded', 'false');
-        btn.innerHTML = '<span class="chevron">▶</span>';
-
-        // If link exists, place toggle right after it, otherwise prepend
-        if (link && link.nextSibling) {
-            link.parentNode.insertBefore(btn, link.nextSibling);
-        } else {
-            li.insertBefore(btn, li.firstChild);
-        }
-
-        btn.addEventListener('click', (e) => {
+    // Handle week toggle buttons
+    const weekToggles = sidebar.querySelectorAll('.week-toggle');
+    weekToggles.forEach(toggle => {
+        toggle.addEventListener('click', (e) => {
             e.preventDefault();
-            const expanded = li.classList.toggle('expanded');
-            btn.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+            e.stopPropagation();
+            
+            const weekSection = toggle.closest('.week-section');
+            const isExpanded = weekSection.classList.contains('expanded');
+            
+            // Toggle expanded state
+            weekSection.classList.toggle('expanded');
+            toggle.setAttribute('aria-expanded', !isExpanded);
+            
+            // Rotate chevron
+            const chevron = toggle.querySelector('.chevron');
+            if (chevron) {
+                chevron.style.transform = !isExpanded ? 'rotate(90deg)' : 'rotate(0deg)';
+            }
         });
     });
 
-    // Auto-expand branch for current page
+    // Auto-expand the week containing the current page
     try {
-        const currentPath = window.location.pathname.replace(/\\/g, '/');
-        // Match any anchor whose href is a suffix of current path
-        const activeLink = Array.from(sidebar.querySelectorAll('a[href]')).find(a => {
-            try {
-                const href = a.getAttribute('href');
-                if (!href) return false;
-                // Resolve relative paths
-                const resolved = new URL(href, window.location.origin + currentPath).pathname;
-                return currentPath.endsWith(resolved);
-            } catch { return false; }
-        });
+        const currentFile = window.location.pathname.split('/').pop();
+        const activeLink = sidebar.querySelector(`a[href="${currentFile}"]`);
+        
         if (activeLink) {
-            let li = activeLink.closest('li');
-            while (li && sidebar.contains(li)) {
-                if (li.classList.contains('has-children')) {
-                    li.classList.add('expanded');
-                    const toggle = li.querySelector(':scope > .collapse-toggle');
-                    if (toggle) toggle.setAttribute('aria-expanded', 'true');
+            // Find the parent week section
+            const weekSection = activeLink.closest('.week-section');
+            if (weekSection) {
+                weekSection.classList.add('expanded');
+                const toggle = weekSection.querySelector('.week-toggle');
+                if (toggle) {
+                    toggle.setAttribute('aria-expanded', 'true');
+                    const chevron = toggle.querySelector('.chevron');
+                    if (chevron) {
+                        chevron.style.transform = 'rotate(90deg)';
+                    }
                 }
-                li = li.parentElement && li.parentElement.closest('li');
             }
         }
-    } catch {}
+    } catch (err) {
+        console.error('Error expanding active week:', err);
+    }
 }
 
 function sortTable(table, columnIndex) {
