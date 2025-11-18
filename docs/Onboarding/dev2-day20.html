@@ -1,453 +1,773 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Dev2 Day 20: Week 4 Testing & PR - RevNova Onboarding</title>
-    <link rel="stylesheet" href="../styles.css">
-        <style>
-        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
-        
-        .onboarding-layout {
-            display: flex;
-            min-height: calc(100vh - 80px);
-            margin-top: 80px;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 20: Week 4 Testing & PR - RevNova Developer Onboarding</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
         
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Salesforce Sans', Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #181818;
+            background: #fff;
+        }
+        
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 0 2rem;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        /* Layout */
+        .page-container {
+            display: flex;
+            margin-top: 60px;
+            min-height: calc(100vh - 60px);
+        }
+        
+        /* Sidebar - Salesforce Style */
         .sidebar {
             width: 280px;
-            background: #f8f9fa;
-            border-right: 1px solid #e0e0e0;
-            padding: 2rem 0;
+            background: #f4f6f9;
+            border-right: 1px solid #c9c9c9;
             position: fixed;
             left: 0;
-            top: 80px;
-            height: calc(100vh - 80px);
+            top: 60px;
+            bottom: 0;
             overflow-y: auto;
             z-index: 100;
         }
         
-        .sidebar h3 {
-            padding: 0 1.5rem;
-            font-size: 0.85rem;
-            color: #666;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin: 1.5rem 0 0.5rem;
+        .sidebar::-webkit-scrollbar {
+            width: 8px;
         }
         
-        .sidebar h3:first-child { margin-top: 0; }
-        
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
+        .sidebar::-webkit-scrollbar-track {
+            background: #f4f6f9;
         }
         
-        .sidebar ul li a {
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #c9c9c9;
+            border-radius: 4px;
+        }
+        
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+        
+        /* Sidebar Navigation */
+        .sidebar-nav {
+            padding: 1rem 0;
+        }
+        
+        .nav-section {
+            margin-bottom: 0.25rem;
+        }
+        
+        .nav-section-header {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            font-size: 13px;
+            font-weight: 600;
+            color: #181818;
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        
+        .nav-section-header:hover {
+            background: #e5e5e5;
+        }
+        
+        .nav-section-header.expanded {
+            background: #e5e5e5;
+        }
+        
+        .nav-section-icon {
+            width: 16px;
+            height: 16px;
+            margin-right: 0.5rem;
+            transition: transform 0.2s;
+            flex-shrink: 0;
+        }
+        
+        .nav-section-header.expanded .nav-section-icon {
+            transform: rotate(90deg);
+        }
+        
+        .nav-section-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .nav-section-content.expanded {
+            max-height: 2000px;
+        }
+        
+        .nav-link {
             display: block;
-            padding: 0.6rem 1.5rem;
-            color: #333;
+            padding: 0.5rem 1rem 0.5rem 2.5rem;
+            color: #006dcc;
             text-decoration: none;
-            font-size: 0.95rem;
-            transition: all 0.2s;
+            font-size: 13px;
+            transition: background 0.15s;
         }
         
-        .sidebar ul li a:hover {
-            background: #e9ecef;
-            color: #11998e;
+        .nav-link:hover {
+            background: #e5e5e5;
+            text-decoration: underline;
         }
         
-        .sidebar ul li a.active {
-            background: #667eea;
+        .nav-link.active {
+            background: #1589ee;
             color: #fff;
+            font-weight: 600;
+        }
+        
+        .nav-link.active:hover {
+            background: #0b5cab;
+            text-decoration: none;
+        }
+        
+        /* Subsection (weeks) */
+        .nav-subsection {
+            margin: 0.25rem 0;
+        }
+        
+        .nav-subsection-header {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem 0.5rem 2.5rem;
+            font-size: 13px;
             font-weight: 500;
+            color: #181818;
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            transition: background 0.15s;
         }
         
-        .sidebar ul ul {
-            padding-left: 0;
+        .nav-subsection-header:hover {
+            background: #e5e5e5;
         }
         
-        .sidebar ul ul li a {
-            padding-left: 2.5rem;
-            font-size: 0.9rem;
+        .nav-subsection-header.expanded {
+            background: #e5e5e5;
         }
         
-        .main-content {
-            flex: 1;
-            margin-left: 280px;
-            padding: 3rem;
-            background: #fff;
-            min-width: 0;
+        .nav-subsection-icon {
+            width: 12px;
+            height: 12px;
+            margin-right: 0.5rem;
+            transition: transform 0.2s;
+            flex-shrink: 0;
         }
         
-        .day-header {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        .nav-subsection-header.expanded .nav-subsection-icon {
+            transform: rotate(90deg);
+        }
+        
+        .nav-subsection-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .nav-subsection-content.expanded {
+            max-height: 1000px;
+        }
+        
+        .nav-subsection-link {
+            display: block;
+            padding: 0.4rem 1rem 0.4rem 3.5rem;
+            color: #006dcc;
+            text-decoration: none;
+            font-size: 13px;
+            transition: background 0.15s;
+        }
+        
+        .nav-subsection-link:hover {
+            background: #e5e5e5;
+            text-decoration: underline;
+        }
+        
+        .nav-subsection-link.active {
+            background: #1589ee;
             color: #fff;
-            padding: 1.5rem;
-            border-radius: 10px;
+            font-weight: 600;
+        }
+        
+        .nav-subsection-link.active:hover {
+            background: #0b5cab;
+            text-decoration: none;
+        }
+        
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            padding: 2rem 3rem;
+            max-width: 1200px;
+            flex: 1;
+        }
+        
+        .breadcrumb {
+            font-size: 12px;
+            color: #706e6b;
             margin-bottom: 1rem;
         }
         
-        .step-card {
+        .breadcrumb a {
+            color: #006dcc;
+            text-decoration: none;
+        }
+        
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        .page-title {
+            font-size: 2rem;
+            font-weight: 300;
+            color: #181818;
+            margin-bottom: 0.5rem;
+        }
+        
+        .page-subtitle {
+            font-size: 1rem;
+            color: #706e6b;
+            margin-bottom: 2rem;
+        }
+        
+        .content-section {
+            margin-bottom: 2rem;
             background: #fff;
-            border: 1px solid #e0e0e0;
-            padding: 1rem;
-            border-radius: 8px;
+            border: 1px solid #c9c9c9;
+            border-radius: 4px;
+            padding: 1.5rem;
+        }
+        
+        .content-section h2 {
+            font-size: 1.5rem;
+            font-weight: 400;
+            color: #181818;
             margin-bottom: 1rem;
+        }
+        
+        .content-section h3 {
+            font-size: 1.2rem;
+            font-weight: 400;
+            color: #181818;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .content-section p {
+            margin-bottom: 1rem;
+            line-height: 1.7;
+        }
+        
+        .content-section ul,
+        .content-section ol {
+            margin-bottom: 1rem;
+            padding-left: 2rem;
+        }
+        
+        .content-section li {
+            margin-bottom: 0.5rem;
+        }
+        
+        code {
+            background: #f4f6f9;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Courier New', Consolas, monospace;
+            font-size: 0.9em;
+            color: #c7254e;
+        }
+        
+        pre {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        
+        pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+            font-size: 0.85em;
+        }
+        
+        .info-box {
+            background: #f0f9ff;
+            border-left: 4px solid #1589ee;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        
+        .warning-box {
+            background: #fffbf0;
+            border-left: 4px solid #ffb75d;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        
+        .success-box {
+            background: #f0fff4;
+            border-left: 4px solid #45c65a;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
         }
         
         .nav-buttons {
             display: flex;
             justify-content: space-between;
-            margin-top: 1.5rem;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #c9c9c9;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: #0176d3;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background 0.15s;
+        }
+        
+        .btn:hover {
+            background: #014486;
+        }
+        
+        .btn-secondary {
+            background: #f4f6f9;
+            color: #0176d3;
+            border: 1px solid #c9c9c9;
+        }
+        
+        .btn-secondary:hover {
+            background: #e5e5e5;
         }
         
         @media (max-width: 768px) {
             .sidebar {
-                position: relative;
                 width: 100%;
-                height: auto;
+                position: relative;
                 top: 0;
+                border-right: none;
+                border-bottom: 1px solid #c9c9c9;
             }
+            
             .main-content {
                 margin-left: 0;
-            }
-            .onboarding-layout {
-                flex-direction: column;
+                padding: 1.5rem;
             }
         }
     </style>
 </head>
 <body>
     <header>
-        <div class="container header-container">
-            <div class="nav-left">
-                <a href="../index.html" class="logo"><div class="logo-box">RevNova</div></a>
-                <nav class="main-nav">
-                    <ul>
-                        <li><a href="onboarding-home.html" class="active">Onboarding</a></li>
-                        <li><a href="../about-revnova.html">About RevNova</a></li>
-                        <li><a href="../features.html">Features</a></li>
-                        <li><a href="../pricing.html">Pricing</a></li>
-                        <li><a href="../RevNovaRequirements/requirements-home.html">RevNova Requirements</a></li>
-                        <li><a href="../contact.html">Contact</a></li>
-                    </ul>
-                </nav>
-            </div>
-            <div class="header-right">
-                <div class="country-selector"><span class="fi fi-us"></span></div>
-                <a href="../login.html" class="btn btn-login">Login</a>
-            </div>
-        </div>
+        <h1>RevNova Developer Onboarding</h1>
     </header>
-
-    <div class="onboarding-layout">
-        <!-- Sidebar -->
+    
+    <div class="page-container">
         <aside class="sidebar">
-            <h3>Getting Started</h3>
-            <ul>
-                <li><a href="onboarding-home.html">Onboarding Home</a></li>
-                <li><a href="onboarding-overview.html">Project Overview</a></li>
-                <li><a href="manual-repo-setup.html">Manual Repository Setup</a></li>
-                <li><a href="repo-setup-guide.html">Automated Setup Guide</a></li>
-            </ul>
-            
-            <h3>Developer Guides</h3>
-            <ul>
-                <li><a href="onboarding-dev1-phase1.html">Developer 1: Backend & Database</a></li>
-                <li><a href="onboarding-dev2-phase1.html">Developer 2: Frontend & React</a></li>
-                <li><a href="onboarding-dev3-phase1.html">Developer 3: DevOps & QA</a></li>
-            </ul>
-            
-            <h3>Developer 2: Daily Tasks</h3>
-            <ul>
-                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 1: React Setup</span>
-                    <ul>
-                        <li><a href="dev2-day01.html">Day 1: React Setup</a></li>
-                        <li><a href="dev2-day02.html">Day 2: Component Library</a></li>
-                        <li><a href="dev2-day03.html">Day 3: Wizard Layout & Routing</a></li>
-                        <li><a href="dev2-day04.html">Day 4: State Management</a></li>
-                        <li><a href="dev2-day05.html">Day 5: API Client & Week 1 PR</a></li>
-                    </ul>
-                </li>
-                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 2: Connection Wizard</span>
-                    <ul>
-                        <li><a href="dev2-day06.html">Day 6: Connection Form UI</a></li>
-                        <li><a href="dev2-day07.html">Day 7: OAuth Integration</a></li>
-                        <li><a href="dev2-day08.html">Day 8: Connection Testing</a></li>
-                        <li><a href="dev2-day09.html">Day 9: Error Handling</a></li>
-                        <li><a href="dev2-day10.html">Day 10: Week 2 Testing & PR</a></li>
-                    </ul>
-                </li>
-                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 3: Field Mapping UI</span>
-                    <ul>
-                        <li><a href="dev2-day11.html">Day 11: Mapping Table UI</a></li>
-                        <li><a href="dev2-day12.html">Day 12: AI Suggestions Display</a></li>
-                        <li><a href="dev2-day13.html">Day 13: Drag & Drop Mapping</a></li>
-                        <li><a href="dev2-day14.html">Day 14: Bulk Operations</a></li>
-                        <li><a href="dev2-day15.html">Day 15: Week 3 Testing & PR</a></li>
-                    </ul>
-                </li>
-                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 4: Transformation & Validation</span>
-                    <ul>
-                        <li><a href="dev2-day16.html">Day 16: Transformation Preview UI</a></li>
-                        <li><a href="dev2-day17.html">Day 17: Data Tables & Pagination</a></li>
-                        <li><a href="dev2-day18.html">Day 18: Validation Results Display</a></li>
-                        <li><a href="dev2-day19.html">Day 19: Error Display</a></li>
-                        <li><a href="dev2-day20.html">Day 20: Week 4 Testing & PR</a></li>
-                    </ul>
-                </li>
-                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 5: Execution & Reports</span>
-                    <ul>
-                        <li><a href="dev2-day21.html">Day 21: Execution Progress UI</a></li>
-                        <li><a href="dev2-day22.html">Day 22: Real-time Updates</a></li>
-                        <li><a href="dev2-day23.html">Day 23: Test Reports & Comparison</a></li>
-                        <li><a href="dev2-day24.html">Day 24: Export & UI Testing</a></li>
-                        <li><a href="dev2-day25.html">Day 25: Final Polish & Documentation</a></li>
-                    </ul>
-                </li>
-            </ul>
+            <nav class="sidebar-nav">
+                <!-- Getting Started Section -->
+                <div class="nav-section">
+                    <button class="nav-section-header expanded">
+                        <svg class="nav-section-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M6 6L14 10L6 14V6Z"/>
+                        </svg>
+                        Getting Started
+                    </button>
+                    <div class="nav-section-content expanded">
+                        <a href="onboarding-home.html" class="nav-link">Onboarding Home</a>
+                        <a href="onboarding-overview.html" class="nav-link">Project Overview</a>
+                        <a href="manual-repo-setup.html" class="nav-link">Manual Repository Setup</a>
+                        <a href="repo-setup-guide.html" class="nav-link">Automated Setup Guide</a>
+                    </div>
+                </div>
+                
+                <!-- Developer Guides Section -->
+                <div class="nav-section">
+                    <button class="nav-section-header expanded">
+                        <svg class="nav-section-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M6 6L14 10L6 14V6Z"/>
+                        </svg>
+                        Developer Guides
+                    </button>
+                    <div class="nav-section-content expanded">
+                        <a href="onboarding-dev1.html" class="nav-link">Developer 1: Backend & Database</a>
+                        <a href="onboarding-dev2.html" class="nav-link">Developer 2: Frontend & React</a>
+                        <a href="onboarding-dev3.html" class="nav-link">Developer 3: DevOps & QA</a>
+                    </div>
+                </div>
+                
+                <!-- 8-Week Timeline Section -->
+                <div class="nav-section">
+                    <button class="nav-section-header">
+                        <svg class="nav-section-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M6 6L14 10L6 14V6Z"/>
+                        </svg>
+                        8-Week Timeline
+                    </button>
+                    <div class="nav-section-content">
+                        <a href="../RevNovaRequirements/requirements-home.html" class="nav-link">Project Timeline</a>
+                        <a href="onboarding-dev1-phase1.html" class="nav-link">Phase 1: SFDC CPQ Migration</a>
+                    </div>
+                </div>
+                
+                <!-- Developer 2: Daily Tasks Section -->
+                <div class="nav-section">
+                    <button class="nav-section-header expanded">
+                        <svg class="nav-section-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M6 6L14 10L6 14V6Z"/>
+                        </svg>
+                        Developer 2: Daily Tasks
+                    </button>
+                    <div class="nav-section-content expanded">
+                                                <!-- Week 1 Subsection -->
+                        <div class="nav-subsection">
+                            <button class="nav-subsection-header">
+                                <svg class="nav-subsection-icon" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M6 6L14 10L6 14V6Z"/>
+                                </svg>
+                                Week 1: React Setup
+                            </button>
+                            <div class="nav-subsection-content">
+                                <a href="dev2-day01.html" class="nav-subsection-link">Day 1: React & Vite Setup</a>
+                                <a href="dev2-day02.html" class="nav-subsection-link">Day 2: Project Structure</a>
+                                <a href="dev2-day03.html" class="nav-subsection-link">Day 3: Routing & Navigation</a>
+                                <a href="dev2-day04.html" class="nav-subsection-link">Day 4: State Management</a>
+                                <a href="dev2-day05.html" class="nav-subsection-link">Day 5: UI Component Library</a>
+                            </div>
+                        </div>
+                        
+                        <!-- Week 2 Subsection -->
+                        <div class="nav-subsection">
+                            <button class="nav-subsection-header">
+                                <svg class="nav-subsection-icon" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M6 6L14 10L6 14V6Z"/>
+                                </svg>
+                                Week 2: Core Pages
+                            </button>
+                            <div class="nav-subsection-content">
+                                <a href="dev2-day06.html" class="nav-subsection-link">Day 6: Dashboard Page</a>
+                                <a href="dev2-day07.html" class="nav-subsection-link">Day 7: Project Creation</a>
+                                <a href="dev2-day08.html" class="nav-subsection-link">Day 8: Connection Setup UI</a>
+                                <a href="dev2-day09.html" class="nav-subsection-link">Day 9: Schema Analysis UI</a>
+                                <a href="dev2-day10.html" class="nav-subsection-link">Day 10: Week 2 Testing & PR</a>
+                            </div>
+                        </div>
+                        
+                        <!-- Week 3 Subsection -->
+                        <div class="nav-subsection">
+                            <button class="nav-subsection-header">
+                                <svg class="nav-subsection-icon" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M6 6L14 10L6 14V6Z"/>
+                                </svg>
+                                Week 3: Mapping Interface
+                            </button>
+                            <div class="nav-subsection-content">
+                                <a href="dev2-day11.html" class="nav-subsection-link">Day 11: Field Mapping UI (Part 1)</a>
+                                <a href="dev2-day12.html" class="nav-subsection-link">Day 12: Field Mapping UI (Part 2)</a>
+                                <a href="dev2-day13.html" class="nav-subsection-link">Day 13: Drag & Drop Interface</a>
+                                <a href="dev2-day14.html" class="nav-subsection-link">Day 14: AI Suggestions UI</a>
+                                <a href="dev2-day15.html" class="nav-subsection-link">Day 15: Week 3 Testing & PR</a>
+                            </div>
+                        </div>
+                        
+                        <!-- Week 4 Subsection -->
+                        <div class="nav-subsection">
+                            <button class="nav-subsection-header expanded">
+                                <svg class="nav-subsection-icon" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M6 6L14 10L6 14V6Z"/>
+                                </svg>
+                                Week 4: Transformation UI
+                            </button>
+                            <div class="nav-subsection-content" expanded>
+                                <a href="dev2-day16.html" class="nav-subsection-link">Day 16: Transformation Rules UI</a>
+                                <a href="dev2-day17.html" class="nav-subsection-link">Day 17: Preview & Validation</a>
+                                <a href="dev2-day18.html" class="nav-subsection-link">Day 18: Queue Status Dashboard</a>
+                                <a href="dev2-day19.html" class="nav-subsection-link">Day 19: Error Display & Retry</a>
+                                <a href="dev2-day20.html" class="nav-subsection-link active">Day 20: Week 4 Testing & PR</a>
+                            </div>
+                        </div>
+                        
+                        <!-- Week 5 Subsection -->
+                        <div class="nav-subsection">
+                            <button class="nav-subsection-header">
+                                <svg class="nav-subsection-icon" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M6 6L14 10L6 14V6Z"/>
+                                </svg>
+                                Week 5: Testing & Polish
+                            </button>
+                            <div class="nav-subsection-content">
+                                <a href="dev2-day21.html" class="nav-subsection-link">Day 21: Execution Progress UI</a>
+                                <a href="dev2-day22.html" class="nav-subsection-link">Day 22: Results & Reports</a>
+                                <a href="dev2-day23.html" class="nav-subsection-link">Day 23: Responsive Design</a>
+                                <a href="dev2-day24.html" class="nav-subsection-link">Day 24: E2E Testing</a>
+                                <a href="dev2-day25.html" class="nav-subsection-link">Day 25: Final Polish & Handoff</a>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </nav>
         </aside>
-
-        <!-- Main Content -->
+        
         <main class="main-content">
-        <div class="day-header"><h1>Day 20: Week 4 Testing & PR</h1><p>Developer 2 — Frontend</p></div>
-
-        <div class="step-card" style="background:#fffbea;border-left:4px solid #f59e0b;">
-            <h2>⚠️ IMPORTANT: Start of Day Checklist</h2>
-            <p><strong>Before starting today's work, run these commands:</strong></p>
-            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
-cd C:\Dev\RevNovaRepository<br>
-git pull origin main
+            <div class="breadcrumb">
+                <a href="onboarding-home.html">Home</a> › 
+                <a href="onboarding-dev2.html">Developer 2</a> › Week 4 › Day 20
             </div>
-            <p>This ensures you have the latest code from your teammates. Always pull before starting work!</p>
-        </div>
-
-        <div class="step-card" style="background:#e0f2fe;border-left:4px solid #0284c7;">
-            <h2>🤖 Copy This Prompt for Your GitHub Copilot</h2>
-            <p><strong>Paste into Copilot Chat:</strong></p>
-            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;max-height:400px;overflow-y:auto;">
-Day 20 - RevNova Frontend Developer<br><br>
-**PLATFORM:** Salesforce CPQ → Revenue Cloud migration SaaS. 7-step wizard with AI field mapping.<br>
-**TECH:** React 18, TypeScript, TailwindCSS, Vite, Vitest, @testing-library/react<br>
-**REQUIREMENTS:** docs/RevNovaRequirements/testing-plan.html, functional-requirements.html<br>
-**MVP:** Week 4/5 (Nov 30). ✅Weeks 1-3: Wizard complete. 🔄Week 4: Validation UI complete. Testing & PR today.<br><br>
-**CONTEXT:** Days 16-19 built transformation preview, DataTable, ValidationResults, ErrorDetailModal<br>
-**TODAY:** Write component tests, manual test wizard flow, document UI, open Week 4 PR<br><br>
-**TASKS:**<br>
-1. Write Vitest tests for ValidationResults component (mount, render summary cards, click "View Details")<br>
-2. Write tests for ErrorDetailModal (fetch details, display records, close button)<br>
-3. Write tests for DataTable (pagination, sorting, filtering)<br>
-4. Manual test wizard: Connection → Schema → Mapping → Validation → Preview<br>
-5. Document props/interfaces in JSDoc comments<br>
-6. Open PR: "feat(frontend): Week 4 - Validation UI and error handling"<br><br>
-**TEST PATTERN:** Mock fetch, fireEvent.click, expect toBeInTheDocument, waitFor async<br><br>
-**ACCEPTANCE:** 3 component test files pass. Wizard tested end-to-end. PR opened with description.<br><br>
-Guide me through writing Vitest component tests and opening Week 4 PR.
+            
+            <h1 class="page-title">Day 20: Week 4 Testing & PR</h1>
+            <p class="page-subtitle">Developer 2: Frontend & React | Duration: ~6-8 hours</p>
+            
+            <div class="content-section">
+                <h2>📋 Objective</h2>
+                <p>Enhance the schema analysis API to fetch detailed field metadata, implement job status polling, and add Redis caching for performance optimization.</p>
+                
+                <p><strong>API Endpoints to Build:</strong></p>
+                <ul>
+                    <li><code>GET /api/v1/projects/{id}/analyze/{job_id}</code> - Poll job status</li>
+                    <li><code>GET /api/v1/projects/{id}/analyze/summary</code> - Get analysis summary</li>
+                </ul>
             </div>
-        </div>
+            
+            <div class="content-section">
+                <h2>📦 Step 1: Install Redis Client</h2>
+                <p>Install the Redis client for Node.js to enable caching:</p>
+                <pre><code>cd backend
+npm install redis</code></pre>
+                
+                <p>Create a Redis client configuration:</p>
+                <p><strong>File:</strong> <code>backend/src/config/redis.ts</code></p>
+                <pre><code>import { createClient } from 'redis';
 
-        <div class="step-card">
-            <h2>📋 Objective</h2>
-            <p>Write component tests, manual test wizard, document UI, and open Week 4 PR.</p>
-        </div>
-
-        <div class="step-card">
-            <h2>🧪 Step 1: Write ValidationResults Component Tests</h2>
-            <p>Create <code>frontend/src/pages/__tests__/ValidationResults.test.tsx</code>:</p>
-            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';<br>
-import { vi } from 'vitest';<br>
-import ValidationResults from '../ValidationResults';<br><br>
-
-describe('ValidationResults', () => {<br>
-&nbsp;&nbsp;beforeEach(() => {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;global.fetch = vi.fn();<br>
-&nbsp;&nbsp;&nbsp;&nbsp;sessionStorage.setItem('mappingId', 'test-mapping-123');<br>
-&nbsp;&nbsp;});<br><br>
-
-&nbsp;&nbsp;it('should display summary cards with correct counts', async () => {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;(global.fetch as any).mockResolvedValue({<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;json: async () => ({<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;valid: false,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;issues: [<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ severity: 'critical', field: 'Price', message: 'Required field missing' },<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ severity: 'warning', field: 'Description', message: 'Exceeds 255 chars' }<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;})<br>
-&nbsp;&nbsp;&nbsp;&nbsp;});<br><br>
-
-&nbsp;&nbsp;&nbsp;&nbsp;render(&lt;ValidationResults /&gt;);<br><br>
-
-&nbsp;&nbsp;&nbsp;&nbsp;await waitFor(() => {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect(screen.getByText('1')).toBeInTheDocument(); // Critical count<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect(screen.getByText('1')).toBeInTheDocument(); // Warning count<br>
-&nbsp;&nbsp;&nbsp;&nbsp;});<br>
-&nbsp;&nbsp;});<br><br>
-
-&nbsp;&nbsp;it('should disable Start Migration button when critical errors exist', async () => {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;(global.fetch as any).mockResolvedValue({<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;json: async () => ({<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;valid: false,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;issues: [{ severity: 'critical', field: 'Price', message: 'Required' }]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;})<br>
-&nbsp;&nbsp;&nbsp;&nbsp;});<br><br>
-
-&nbsp;&nbsp;&nbsp;&nbsp;render(&lt;ValidationResults /&gt;);<br><br>
-
-&nbsp;&nbsp;&nbsp;&nbsp;await waitFor(() => {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const button = screen.getByText('Start Migration');<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect(button).toBeDisabled();<br>
-&nbsp;&nbsp;&nbsp;&nbsp;});<br>
-&nbsp;&nbsp;});<br><br>
-
-&nbsp;&nbsp;it('should open ErrorDetailModal when clicking View Details', async () => {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;(global.fetch as any).mockResolvedValue({<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;json: async () => ({<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;valid: false,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;issues: [{ severity: 'error', field: 'Price', message: 'Invalid type' }]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;})<br>
-&nbsp;&nbsp;&nbsp;&nbsp;});<br><br>
-
-&nbsp;&nbsp;&nbsp;&nbsp;render(&lt;ValidationResults /&gt;);<br><br>
-
-&nbsp;&nbsp;&nbsp;&nbsp;await waitFor(() => {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const button = screen.getByText('View Details');<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fireEvent.click(button);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;});<br><br>
-
-&nbsp;&nbsp;&nbsp;&nbsp;expect(screen.getByText(/Error Details:/)).toBeInTheDocument();<br>
-&nbsp;&nbsp;});<br>
+const redisClient = createClient({
+  url: process.env.REDIS_URL || 'redis://localhost:6379'
 });
+
+redisClient.on('error', (err) => console.error('Redis Client Error', err));
+
+export const connectRedis = async () => {
+  await redisClient.connect();
+  console.log('Redis connected');
+};
+
+export default redisClient;</code></pre>
             </div>
-        </div>
-
-        <div class="step-card">
-            <h2>🧪 Step 2: Write ErrorDetailModal Tests</h2>
-            <p>Create <code>frontend/src/components/__tests__/ErrorDetailModal.test.tsx</code>:</p>
-            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';<br>
-import { vi } from 'vitest';<br>
-import ErrorDetailModal from '../ErrorDetailModal';<br><br>
-
-describe('ErrorDetailModal', () => {<br>
-&nbsp;&nbsp;it('should fetch and display affected records', async () => {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;global.fetch = vi.fn().mockResolvedValue({<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;json: async () => ({<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;field: 'Price',<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;records: [<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ id: 'REC-001', value: 'invalid', error: 'Not a number' },<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ id: 'REC-002', value: 'abc', error: 'Not a number' }<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;})<br>
-&nbsp;&nbsp;&nbsp;&nbsp;});<br><br>
-
-&nbsp;&nbsp;&nbsp;&nbsp;render(&lt;ErrorDetailModal field="Price" onClose={vi.fn()} /&gt;);<br><br>
-
-&nbsp;&nbsp;&nbsp;&nbsp;await waitFor(() => {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect(screen.getByText('Error Details: Price')).toBeInTheDocument();<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect(screen.getByText('REC-001')).toBeInTheDocument();<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect(screen.getByText('Not a number')).toBeInTheDocument();<br>
-&nbsp;&nbsp;&nbsp;&nbsp;});<br>
-&nbsp;&nbsp;});<br><br>
-
-&nbsp;&nbsp;it('should call onClose when clicking Close button', async () => {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;const onClose = vi.fn();<br>
-&nbsp;&nbsp;&nbsp;&nbsp;global.fetch = vi.fn().mockResolvedValue({<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;json: async () => ({ field: 'Price', records: [] })<br>
-&nbsp;&nbsp;&nbsp;&nbsp;});<br><br>
-
-&nbsp;&nbsp;&nbsp;&nbsp;render(&lt;ErrorDetailModal field="Price" onClose={onClose} /&gt;);<br><br>
-
-&nbsp;&nbsp;&nbsp;&nbsp;await waitFor(() => screen.getByText('Close'));<br>
-&nbsp;&nbsp;&nbsp;&nbsp;fireEvent.click(screen.getByText('Close'));<br><br>
-
-&nbsp;&nbsp;&nbsp;&nbsp;expect(onClose).toHaveBeenCalled();<br>
-&nbsp;&nbsp;});<br>
-});
+            
+            <div class="content-section">
+                <h2>🔄 Step 2: Create Job Status Polling Endpoint</h2>
+                <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
+                <pre><code>router.get('/projects/:id/analyze/:jobId', async (req, res) => {
+  try {
+    const { id, jobId } = req.params;
+    
+    // Check Redis for job status
+    const jobData = await redisClient.get(`job:${jobId}`);
+    
+    if (!jobData) {
+      return res.status(404).json({ error: 'Job not found' });
+    }
+    
+    const job = JSON.parse(jobData);
+    res.json({
+      jobId: job.id,
+      status: job.status, // 'pending', 'running', 'completed', 'failed'
+      progress: job.progress,
+      result: job.result || null,
+      error: job.error || null
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});</code></pre>
             </div>
-        </div>
-
-        <div class="step-card">
-            <h2>📝 Step 3: Manual Test Wizard Flow</h2>
-            <p>Complete manual test checklist:</p>
-            <div style="background:#fffbea;border-left:4px solid #f59e0b;padding:1rem;border-radius:6px;margin:1rem 0;">
-<strong>Manual Test Checklist:</strong><br>
-□ Step 1: Connection - OAuth works, displays success message<br>
-□ Step 2: Schema Analysis - Shows CPQ objects (Product2, PricebookEntry)<br>
-□ Step 3: Mapping - Drag-drop works, AI suggestions appear<br>
-□ Step 4: Validation - Summary cards show counts, severity colors correct<br>
-□ Step 5: Error Details - Modal opens with affected records<br>
-□ Step 6: CSV Export - Downloads file with proper headers<br>
-□ Step 7: Preview - DataTable shows pagination (25/page), sorting works<br>
-□ Step 8: Migration Button - Disabled with critical errors, enabled without<br><br>
-
-<strong>Edge Cases:</strong><br>
-□ Test with empty validation (no errors)<br>
-□ Test with 100+ validation issues<br>
-□ Test modal with 50+ affected records<br>
-□ Test CSV export with special characters in messages
+            
+            <div class="content-section">
+                <h2>📊 Step 3: Enhance Field Metadata</h2>
+                <p>Update the schema analysis to include detailed field information:</p>
+                <pre><code>const getDetailedFieldMetadata = (field: any) => {
+  return {
+    name: field.name,
+    label: field.label,
+    type: field.type,
+    length: field.length,
+    precision: field.precision,
+    scale: field.scale,
+    required: !field.nillable,
+    unique: field.unique,
+    externalId: field.externalId,
+    defaultValue: field.defaultValue,
+    picklistValues: field.picklistValues || [],
+    referenceTo: field.referenceTo || [],
+    relationshipName: field.relationshipName,
+    calculated: field.calculated,
+    customField: field.custom
+  };
+};</code></pre>
             </div>
-        </div>
-
-        <div class="step-card">
-            <h2>📄 Step 4: Open Week 4 Pull Request</h2>
-            <p>Create PR with comprehensive description:</p>
-            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
-git add .<br>
-git commit -m "feat(frontend): Week 4 - Validation UI and error handling"<br>
-git push origin main<br><br>
-
-# Open PR on GitHub with title:<br>
-# "feat(frontend): Week 4 - Validation UI and error handling"<br><br>
-
-# PR Description:<br>
-## Week 4 Frontend Work (Days 16-20)<br><br>
-
-**Added Components:**<br>
-- ValidationResults: Display mapping validation issues grouped by severity<br>
-- ErrorDetailModal: Show affected records for specific fields<br>
-- DataTable: Pagination (25/page), sorting, column filtering<br>
-- TransformationPreview: Before/after comparison<br><br>
-
-**Features:**<br>
-- Summary cards with critical/error/warning/info counts<br>
-- Severity-based color coding (red/orange/yellow/blue)<br>
-- "View Details" modal with first 5 affected records<br>
-- CSV export functionality (Field, Severity, Message, Suggestion, Timestamp)<br>
-- Migration button disabled with critical errors<br><br>
-
-**Testing:**<br>
-- Vitest tests for ValidationResults, ErrorDetailModal, DataTable<br>
-- Manual wizard flow tested (connection → validation → preview)<br>
-- Edge cases tested (empty results, 100+ issues, special chars)<br><br>
-
-**API Integration:**<br>
-- GET /api/mappings/:id/validate<br>
-- GET /api/mappings/:id/issues/:field<br>
-- GET /api/transform/preview<br><br>
-
-**Closes:** #WEEK4-FRONTEND
+            
+            <div class="content-section">
+                <h2>📈 Step 4: Create Analysis Summary Endpoint</h2>
+                <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
+                <pre><code>router.get('/projects/:id/analyze/summary', async (req, res) => {
+  try {
+    const projectId = parseInt(req.params.id);
+    
+    // Query database for analysis results
+    const summary = {
+      total_objects: 3,
+      custom_objects: 0,
+      total_fields: 45,
+      custom_fields: 12,
+      readiness_score: 0.92,
+      warnings: ['Custom field Product2.Special__c has no target mapping'],
+      analyzed_at: new Date().toISOString()
+    };
+    
+    res.json(summary);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});</code></pre>
             </div>
-        </div>
-
-        <div class="step-card">
-            <h2>✅ End of Day 20 & Week 4 Checklist</h2>
-            <ul>
-                <li>✅ ValidationResults.test.tsx: Tests summary cards, disabled button, modal trigger</li>
-                <li>✅ ErrorDetailModal.test.tsx: Tests record fetch, display, close handler</li>
-                <li>✅ DataTable.test.tsx: Tests pagination, sorting, filtering</li>
-                <li>✅ Manual wizard flow tested end-to-end (all 7 steps)</li>
-                <li>✅ Edge cases validated (empty, large datasets, special characters)</li>
-                <li>✅ UI components documented with JSDoc comments</li>
-                <li>✅ Week 4 PR opened: "feat(frontend): Week 4 - Validation UI and error handling"</li>
-                <li>✅ <strong>Week 4 Complete! 🎉</strong></li>
-            </ul>
-        </div>
-        <div class="nav-buttons"><a href="dev2-day19.html" class="nav-btn back">← Back to Day 19</a><a href="dev2-day21.html" class="nav-btn next">Next: Day 21 →</a></div>
-            </main>
+            
+            <div class="content-section">
+                <h2>✅ Step 5: Test All Endpoints</h2>
+                
+                <p><strong>Test job status polling:</strong></p>
+                <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/job_1699632000000</code></pre>
+                
+                <p><strong>Test analysis summary:</strong></p>
+                <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/summary</code></pre>
+                
+                <div class="success-box">
+                    <strong>✓ Expected Response:</strong> Job status should return progress information, and summary should show aggregate statistics.
+                </div>
+            </div>
+            
+            <div class="content-section">
+                <h2>🎯 End of Day Checklist</h2>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li>☐ Redis client installed and connected</li>
+                    <li>☐ Job status endpoint returns job progress</li>
+                    <li>☐ Enhanced metadata includes picklists and lookups</li>
+                    <li>☐ Summary endpoint aggregates analysis results</li>
+                    <li>☐ All endpoints tested and working</li>
+                    <li>☐ Code committed with meaningful message</li>
+                </ul>
+                
+                <p><strong>Commit Message:</strong></p>
+                <code>feat(backend): add job polling, detailed metadata, and Redis caching</code>
+            </div>
+            
+            <div class="nav-buttons">
+                <a href="dev2-day19.html" class="btn btn-secondary">Previous: Day 19</a>
+                <a href="dev2-day21.html" class="btn">Next: Day 21</a>
+            </div>
+        </main>
     </div>
-    <script src="../script.js"></script>
+    
+    <script>
+        // Collapsible navigation functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle section headers
+            const sectionHeaders = document.querySelectorAll('.nav-section-header');
+            sectionHeaders.forEach(header => {
+                header.addEventListener('click', function() {
+                    const content = this.nextElementSibling;
+                    const isExpanded = this.classList.contains('expanded');
+                    
+                    if (isExpanded) {
+                        this.classList.remove('expanded');
+                        content.classList.remove('expanded');
+                    } else {
+                        this.classList.add('expanded');
+                        content.classList.add('expanded');
+                    }
+                });
+            });
+            
+            // Handle subsection headers
+            const subsectionHeaders = document.querySelectorAll('.nav-subsection-header');
+            subsectionHeaders.forEach(header => {
+                header.addEventListener('click', function() {
+                    const content = this.nextElementSibling;
+                    const isExpanded = this.classList.contains('expanded');
+                    
+                    if (isExpanded) {
+                        this.classList.remove('expanded');
+                        content.classList.remove('expanded');
+                    } else {
+                        this.classList.add('expanded');
+                        content.classList.add('expanded');
+                    }
+                });
+            });
+            
+            // Auto-expand sections containing active page
+            const activeLinks = document.querySelectorAll('.nav-link.active, .nav-subsection-link.active');
+            activeLinks.forEach(link => {
+                // Expand parent section
+                let parent = link.closest('.nav-section-content');
+                if (parent) {
+                    parent.classList.add('expanded');
+                    parent.previousElementSibling.classList.add('expanded');
+                }
+                
+                // Expand parent subsection
+                let subsectionParent = link.closest('.nav-subsection-content');
+                if (subsectionParent) {
+                    subsectionParent.classList.add('expanded');
+                    subsectionParent.previousElementSibling.classList.add('expanded');
+                }
+            });
+        });
+    </script>
 </body>
 </html>

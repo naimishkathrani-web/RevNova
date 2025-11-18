@@ -1,272 +1,773 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Day 3: Database Tables (STG2) - RevNova Onboarding</title>
-    <link rel="stylesheet" href="../styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 3: Database Tables (STG2) - RevNova Developer Onboarding</title>
     <style>
-        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
-        .onboarding-layout { display: flex; min-height: calc(100vh - 80px); margin-top: 80px; }
-        .sidebar { width: 280px; background: #f8f9fa; border-right: 1px solid #e0e0e0; padding: 2rem 0; position: fixed; left: 0; top: 80px; height: calc(100vh - 80px); overflow-y: auto; z-index: 100; }
-        .sidebar h3 { padding: 0 1.5rem; font-size: 0.85rem; color: #666; text-transform: uppercase; letter-spacing: 0.5px; margin: 1.5rem 0 0.5rem; }
-        .sidebar h3:first-child { margin-top: 0; }
-        .sidebar ul { list-style: none; padding: 0; margin: 0; }
-        .sidebar ul li a { display: block; padding: 0.6rem 1.5rem; color: #333; text-decoration: none; font-size: 0.95rem; transition: all 0.2s; }
-        .sidebar ul li a:hover { background: #e9ecef; color: #667eea; }
-        .sidebar ul li a.active { background: #667eea; color: #fff; font-weight: 500; }
-        .sidebar ul ul { padding-left: 0; }
-        .sidebar ul ul li a { padding-left: 2.5rem; font-size: 0.9rem; }
-        .main-content { flex: 1; margin-left: 280px; padding: 3rem; background: #fff; min-width: 0; }
-        .day-header { background: linear-gradient(135deg, #4facfe, #00f2fe); color: #fff; padding: 2rem; border-radius: 12px; margin-bottom: 2rem; }
-        .day-header h1 { margin: 0 0 0.5rem 0; font-size: 2rem; }
-        .day-header p { margin: 0; font-size: 1.1rem; opacity: 0.95; }
-        .step-card { background: #fff; border: 2px solid #e0e0e0; border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; }
-        .step-number { display: inline-block; background: #4facfe; color: #fff; width: 36px; height: 36px; border-radius: 50%; text-align: center; line-height: 36px; font-weight: bold; margin-right: 1rem; }
-        .step-card h2 { color: #4facfe; margin: 0 0 1rem 0; display: flex; align-items: center; }
-        .command-box { background: #2d2d2d; color: #f8f8f2; padding: 1rem; border-radius: 8px; margin: 1rem 0; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.95rem; overflow-x: auto; }
-        .tip-box { background: #fff3cd; border-left: 4px solid #ffc107; padding: 1rem; margin: 1rem 0; border-radius: 4px; }
-        .tip-box strong { color: #856404; }
-        .checklist { list-style: none; padding: 0; }
-        .checklist li { padding: 0.5rem 0; position: relative; padding-left: 2rem; }
-        .checklist li:before { content: "☐"; position: absolute; left: 0; font-size: 1.5rem; color: #4facfe; }
-        .nav-buttons { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid #e0e0e0; }
-        .nav-btn { display: inline-block; padding: 0.75rem 2rem; border-radius: 8px; text-decoration: none; font-weight: 500; transition: all 0.3s; }
-        .nav-btn.back { background: #f0f0f0; color: #333; }
-        .nav-btn.back:hover { background: #e0e0e0; }
-        .nav-btn.next { background: #4facfe; color: #fff; }
-        .nav-btn.next:hover { background: #00f2fe; }
-        @media (max-width: 768px) { .sidebar { display: none; } .main-content { margin-left: 0; } }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Salesforce Sans', Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #181818;
+            background: #fff;
+        }
+        
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 0 2rem;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        /* Layout */
+        .page-container {
+            display: flex;
+            margin-top: 60px;
+            min-height: calc(100vh - 60px);
+        }
+        
+        /* Sidebar - Salesforce Style */
+        .sidebar {
+            width: 280px;
+            background: #f4f6f9;
+            border-right: 1px solid #c9c9c9;
+            position: fixed;
+            left: 0;
+            top: 60px;
+            bottom: 0;
+            overflow-y: auto;
+            z-index: 100;
+        }
+        
+        .sidebar::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .sidebar::-webkit-scrollbar-track {
+            background: #f4f6f9;
+        }
+        
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #c9c9c9;
+            border-radius: 4px;
+        }
+        
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+        
+        /* Sidebar Navigation */
+        .sidebar-nav {
+            padding: 1rem 0;
+        }
+        
+        .nav-section {
+            margin-bottom: 0.25rem;
+        }
+        
+        .nav-section-header {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            font-size: 13px;
+            font-weight: 600;
+            color: #181818;
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        
+        .nav-section-header:hover {
+            background: #e5e5e5;
+        }
+        
+        .nav-section-header.expanded {
+            background: #e5e5e5;
+        }
+        
+        .nav-section-icon {
+            width: 16px;
+            height: 16px;
+            margin-right: 0.5rem;
+            transition: transform 0.2s;
+            flex-shrink: 0;
+        }
+        
+        .nav-section-header.expanded .nav-section-icon {
+            transform: rotate(90deg);
+        }
+        
+        .nav-section-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .nav-section-content.expanded {
+            max-height: 2000px;
+        }
+        
+        .nav-link {
+            display: block;
+            padding: 0.5rem 1rem 0.5rem 2.5rem;
+            color: #006dcc;
+            text-decoration: none;
+            font-size: 13px;
+            transition: background 0.15s;
+        }
+        
+        .nav-link:hover {
+            background: #e5e5e5;
+            text-decoration: underline;
+        }
+        
+        .nav-link.active {
+            background: #1589ee;
+            color: #fff;
+            font-weight: 600;
+        }
+        
+        .nav-link.active:hover {
+            background: #0b5cab;
+            text-decoration: none;
+        }
+        
+        /* Subsection (weeks) */
+        .nav-subsection {
+            margin: 0.25rem 0;
+        }
+        
+        .nav-subsection-header {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem 0.5rem 2.5rem;
+            font-size: 13px;
+            font-weight: 500;
+            color: #181818;
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        
+        .nav-subsection-header:hover {
+            background: #e5e5e5;
+        }
+        
+        .nav-subsection-header.expanded {
+            background: #e5e5e5;
+        }
+        
+        .nav-subsection-icon {
+            width: 12px;
+            height: 12px;
+            margin-right: 0.5rem;
+            transition: transform 0.2s;
+            flex-shrink: 0;
+        }
+        
+        .nav-subsection-header.expanded .nav-subsection-icon {
+            transform: rotate(90deg);
+        }
+        
+        .nav-subsection-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .nav-subsection-content.expanded {
+            max-height: 1000px;
+        }
+        
+        .nav-subsection-link {
+            display: block;
+            padding: 0.4rem 1rem 0.4rem 3.5rem;
+            color: #006dcc;
+            text-decoration: none;
+            font-size: 13px;
+            transition: background 0.15s;
+        }
+        
+        .nav-subsection-link:hover {
+            background: #e5e5e5;
+            text-decoration: underline;
+        }
+        
+        .nav-subsection-link.active {
+            background: #1589ee;
+            color: #fff;
+            font-weight: 600;
+        }
+        
+        .nav-subsection-link.active:hover {
+            background: #0b5cab;
+            text-decoration: none;
+        }
+        
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            padding: 2rem 3rem;
+            max-width: 1200px;
+            flex: 1;
+        }
+        
+        .breadcrumb {
+            font-size: 12px;
+            color: #706e6b;
+            margin-bottom: 1rem;
+        }
+        
+        .breadcrumb a {
+            color: #006dcc;
+            text-decoration: none;
+        }
+        
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        .page-title {
+            font-size: 2rem;
+            font-weight: 300;
+            color: #181818;
+            margin-bottom: 0.5rem;
+        }
+        
+        .page-subtitle {
+            font-size: 1rem;
+            color: #706e6b;
+            margin-bottom: 2rem;
+        }
+        
+        .content-section {
+            margin-bottom: 2rem;
+            background: #fff;
+            border: 1px solid #c9c9c9;
+            border-radius: 4px;
+            padding: 1.5rem;
+        }
+        
+        .content-section h2 {
+            font-size: 1.5rem;
+            font-weight: 400;
+            color: #181818;
+            margin-bottom: 1rem;
+        }
+        
+        .content-section h3 {
+            font-size: 1.2rem;
+            font-weight: 400;
+            color: #181818;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .content-section p {
+            margin-bottom: 1rem;
+            line-height: 1.7;
+        }
+        
+        .content-section ul,
+        .content-section ol {
+            margin-bottom: 1rem;
+            padding-left: 2rem;
+        }
+        
+        .content-section li {
+            margin-bottom: 0.5rem;
+        }
+        
+        code {
+            background: #f4f6f9;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Courier New', Consolas, monospace;
+            font-size: 0.9em;
+            color: #c7254e;
+        }
+        
+        pre {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        
+        pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+            font-size: 0.85em;
+        }
+        
+        .info-box {
+            background: #f0f9ff;
+            border-left: 4px solid #1589ee;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        
+        .warning-box {
+            background: #fffbf0;
+            border-left: 4px solid #ffb75d;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        
+        .success-box {
+            background: #f0fff4;
+            border-left: 4px solid #45c65a;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #c9c9c9;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: #0176d3;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background 0.15s;
+        }
+        
+        .btn:hover {
+            background: #014486;
+        }
+        
+        .btn-secondary {
+            background: #f4f6f9;
+            color: #0176d3;
+            border: 1px solid #c9c9c9;
+        }
+        
+        .btn-secondary:hover {
+            background: #e5e5e5;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                position: relative;
+                top: 0;
+                border-right: none;
+                border-bottom: 1px solid #c9c9c9;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 1.5rem;
+            }
+        }
     </style>
 </head>
 <body>
     <header>
-        <div class="container header-container">
-            <div class="nav-left">
-                <a href="../index.html" class="logo"><div class="logo-box">RevNova</div></a>
-                <nav class="main-nav">
-                    <ul>
-                        <li><a href="onboarding-home.html" class="active">Onboarding</a></li>
-                        <li><a href="../about-revnova.html">About RevNova</a></li>
-                        <li><a href="../features.html">Features</a></li>
-                        <li><a href="../pricing.html">Pricing</a></li>
-                        <li><a href="../RevNovaRequirements/requirements-home.html">RevNova Requirements</a></li>
-                        <li><a href="../contact.html">Contact</a></li>
-                    </ul>
-                </nav>
-            </div>
-            <div class="header-right">
-                <div class="country-selector"><span class="fi fi-us"></span></div>
-                <a href="../login.html" class="btn btn-login">Login</a>
-            </div>
-        </div>
+        <h1>RevNova Developer Onboarding</h1>
     </header>
-
-    <div class="onboarding-layout">
+    
+    <div class="page-container">
         <aside class="sidebar">
-            <h3>Getting Started</h3>
-            <ul>
-                <li><a href="onboarding-home.html">Onboarding Home</a></li>
-                <li><a href="onboarding-overview.html">Project Overview</a></li>
-                <li><a href="manual-repo-setup.html">Manual Repository Setup</a></li>
-                <li><a href="repo-setup-guide.html">Automated Setup Guide</a></li>
-            </ul>
-            
-            <h3>Developer Guides</h3>
-            <ul>
-                <li><a href="onboarding-dev1-phase1.html">Developer 1: Backend & Database</a></li>
-                <li><a href="onboarding-dev2-phase1.html">Developer 2: Frontend & React</a></li>
-                <li><a href="onboarding-dev3-phase1.html">Developer 3: DevOps & QA</a></li>
-            </ul>
-            
-            <h3>8-Week Timeline</h3>
-            <ul>
-                <li><a href="onboarding-home.html#timeline">Project Timeline</a></li>
-                <li><a href="onboarding-home.html#phase1">Phase 1: SFDC CPQ Migration (Weeks 1-5)</a></li>
-                <li><a href="onboarding-home.html#phase2">Phase 2: AI Configuration (Weeks 6-8)</a></li>
-            </ul>
-            
-            <h3>Development Workflows</h3>
-            <ul>
-                <li><a href="onboarding-home.html#vscode">VS Code Setup & Extensions</a></li>
-                <li><a href="onboarding-home.html#copilot">GitHub Copilot Usage</a></li>
-                <li><a href="onboarding-home.html#git">Git Workflow & PRs</a></li>
-                <li><a href="onboarding-home.html#testing">Unit & Integration Testing</a></li>
-            </ul>
-            
-            <h3>Page Assignments</h3>
-            <ul>
-                <li><a href="onboarding-home.html#page-assignments">Phase 1 Pages</a></li>
-                <li><a href="phase2-tasks.html">Phase 2 Pages</a></li>
-            </ul>
+            <nav class="sidebar-nav">
+                <!-- Getting Started Section -->
+                <div class="nav-section">
+                    <button class="nav-section-header expanded">
+                        <svg class="nav-section-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M6 6L14 10L6 14V6Z"/>
+                        </svg>
+                        Getting Started
+                    </button>
+                    <div class="nav-section-content expanded">
+                        <a href="onboarding-home.html" class="nav-link">Onboarding Home</a>
+                        <a href="onboarding-overview.html" class="nav-link">Project Overview</a>
+                        <a href="manual-repo-setup.html" class="nav-link">Manual Repository Setup</a>
+                        <a href="repo-setup-guide.html" class="nav-link">Automated Setup Guide</a>
+                    </div>
+                </div>
+                
+                <!-- Developer Guides Section -->
+                <div class="nav-section">
+                    <button class="nav-section-header expanded">
+                        <svg class="nav-section-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M6 6L14 10L6 14V6Z"/>
+                        </svg>
+                        Developer Guides
+                    </button>
+                    <div class="nav-section-content expanded">
+                        <a href="onboarding-dev1.html" class="nav-link">Developer 1: Backend & Database</a>
+                        <a href="onboarding-dev2.html" class="nav-link">Developer 2: Frontend & React</a>
+                        <a href="onboarding-dev3.html" class="nav-link">Developer 3: DevOps & QA</a>
+                    </div>
+                </div>
+                
+                <!-- 8-Week Timeline Section -->
+                <div class="nav-section">
+                    <button class="nav-section-header">
+                        <svg class="nav-section-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M6 6L14 10L6 14V6Z"/>
+                        </svg>
+                        8-Week Timeline
+                    </button>
+                    <div class="nav-section-content">
+                        <a href="../RevNovaRequirements/requirements-home.html" class="nav-link">Project Timeline</a>
+                        <a href="onboarding-dev1-phase1.html" class="nav-link">Phase 1: SFDC CPQ Migration</a>
+                    </div>
+                </div>
+                
+                <!-- Developer 1: Daily Tasks Section -->
+                <div class="nav-section">
+                    <button class="nav-section-header expanded">
+                        <svg class="nav-section-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M6 6L14 10L6 14V6Z"/>
+                        </svg>
+                        Developer 1: Daily Tasks
+                    </button>
+                    <div class="nav-section-content expanded">
+                                                <!-- Week 1 Subsection -->
+                        <div class="nav-subsection">
+                            <button class="nav-subsection-header expanded">
+                                <svg class="nav-subsection-icon" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M6 6L14 10L6 14V6Z"/>
+                                </svg>
+                                Week 1: Backend Setup
+                            </button>
+                            <div class="nav-subsection-content" expanded>
+                                <a href="dev1-day01.html" class="nav-subsection-link">Day 1: Workstation Setup</a>
+                                <a href="dev1-day02.html" class="nav-subsection-link">Day 2: Database Tables (STG1)</a>
+                                <a href="dev1-day03.html" class="nav-subsection-link active">Day 3: Database Tables (STG2)</a>
+                                <a href="dev1-day04.html" class="nav-subsection-link">Day 4: Database Tables (EAV)</a>
+                                <a href="dev1-day05.html" class="nav-subsection-link">Day 5: First API Endpoint</a>
+                            </div>
+                        </div>
+                        
+                        <!-- Week 2 Subsection -->
+                        <div class="nav-subsection">
+                            <button class="nav-subsection-header">
+                                <svg class="nav-subsection-icon" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M6 6L14 10L6 14V6Z"/>
+                                </svg>
+                                Week 2: Schema Analysis APIs
+                            </button>
+                            <div class="nav-subsection-content">
+                                <a href="dev1-day06.html" class="nav-subsection-link">Day 6: Schema Analysis API (Part 1)</a>
+                                <a href="dev1-day07.html" class="nav-subsection-link">Day 7: Schema Analysis API (Part 2)</a>
+                                <a href="dev1-day08.html" class="nav-subsection-link">Day 8: Metadata Extraction</a>
+                                <a href="dev1-day09.html" class="nav-subsection-link">Day 9: Relationship Detection</a>
+                                <a href="dev1-day10.html" class="nav-subsection-link">Day 10: Week 2 Testing & PR</a>
+                            </div>
+                        </div>
+                        
+                        <!-- Week 3 Subsection -->
+                        <div class="nav-subsection">
+                            <button class="nav-subsection-header">
+                                <svg class="nav-subsection-icon" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M6 6L14 10L6 14V6Z"/>
+                                </svg>
+                                Week 3: Field Mapping & AI
+                            </button>
+                            <div class="nav-subsection-content">
+                                <a href="dev1-day11.html" class="nav-subsection-link">Day 11: Field Mapping API (Part 1)</a>
+                                <a href="dev1-day12.html" class="nav-subsection-link">Day 12: Field Mapping API (Part 2)</a>
+                                <a href="dev1-day13.html" class="nav-subsection-link">Day 13: AI Integration Setup</a>
+                                <a href="dev1-day14.html" class="nav-subsection-link">Day 14: Confidence Scoring</a>
+                                <a href="dev1-day15.html" class="nav-subsection-link">Day 15: Week 3 Testing & PR</a>
+                            </div>
+                        </div>
+                        
+                        <!-- Week 4 Subsection -->
+                        <div class="nav-subsection">
+                            <button class="nav-subsection-header">
+                                <svg class="nav-subsection-icon" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M6 6L14 10L6 14V6Z"/>
+                                </svg>
+                                Week 4: Transformation & Queue
+                            </button>
+                            <div class="nav-subsection-content">
+                                <a href="dev1-day16.html" class="nav-subsection-link">Day 16: Data Transformation Engine</a>
+                                <a href="dev1-day17.html" class="nav-subsection-link">Day 17: Queue System Setup</a>
+                                <a href="dev1-day18.html" class="nav-subsection-link">Day 18: Job Management</a>
+                                <a href="dev1-day19.html" class="nav-subsection-link">Day 19: Error Handling</a>
+                                <a href="dev1-day20.html" class="nav-subsection-link">Day 20: Week 4 Testing & PR</a>
+                            </div>
+                        </div>
+                        
+                        <!-- Week 5 Subsection -->
+                        <div class="nav-subsection">
+                            <button class="nav-subsection-header">
+                                <svg class="nav-subsection-icon" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M6 6L14 10L6 14V6Z"/>
+                                </svg>
+                                Week 5: Execution & Testing
+                            </button>
+                            <div class="nav-subsection-content">
+                                <a href="dev1-day21.html" class="nav-subsection-link">Day 21: Migration Execution</a>
+                                <a href="dev1-day22.html" class="nav-subsection-link">Day 22: Validation & Rollback</a>
+                                <a href="dev1-day23.html" class="nav-subsection-link">Day 23: Performance Optimization</a>
+                                <a href="dev1-day24.html" class="nav-subsection-link">Day 24: Integration Testing</a>
+                                <a href="dev1-day25.html" class="nav-subsection-link">Day 25: Final Review & Handoff</a>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </nav>
         </aside>
-
+        
         <main class="main-content">
-            <div class="day-header">
-                <h1>✅ Day 3: Database Tables (STG2) [COMPLETED]</h1>
-                <p>Developer 1 - Backend & Database | Duration: ~6-8 hours</p>
+            <div class="breadcrumb">
+                <a href="onboarding-home.html">Home</a> › 
+                <a href="onboarding-dev1.html">Developer 1</a> › Week 1 › Day 3
             </div>
-
-            <div class="step-card">
-                <h2><span class="step-number">1</span> Understand STG2 Tables</h2>
-                <p><strong>What you need to do:</strong> Learn what STG2 tables are for</p>
+            
+            <h1 class="page-title">Day 3: Database Tables (STG2)</h1>
+            <p class="page-subtitle">Developer 1: Backend & Database | Duration: ~6-8 hours</p>
+            
+            <div class="content-section">
+                <h2>📋 Objective</h2>
+                <p>Enhance the schema analysis API to fetch detailed field metadata, implement job status polling, and add Redis caching for performance optimization.</p>
                 
-                <p><strong>STG2 tables store normalized data:</strong></p>
+                <p><strong>API Endpoints to Build:</strong></p>
                 <ul>
-                    <li>STG1 = Raw JSON data from Salesforce</li>
-                    <li>STG2 = Clean, structured data ready for migration</li>
-                    <li>We'll create 3 tables: quotes, line_items, products</li>
+                    <li><code>GET /api/v1/projects/{id}/analyze/{job_id}</code> - Poll job status</li>
+                    <li><code>GET /api/v1/projects/{id}/analyze/summary</code> - Get analysis summary</li>
                 </ul>
+            </div>
+            
+            <div class="content-section">
+                <h2>📦 Step 1: Install Redis Client</h2>
+                <p>Install the Redis client for Node.js to enable caching:</p>
+                <pre><code>cd backend
+npm install redis</code></pre>
                 
-                <div class="tip-box">
-                    <strong>💡 Why normalize?</strong> JSON is flexible but slow. Relational tables are faster and easier to query!
+                <p>Create a Redis client configuration:</p>
+                <p><strong>File:</strong> <code>backend/src/config/redis.ts</code></p>
+                <pre><code>import { createClient } from 'redis';
+
+const redisClient = createClient({
+  url: process.env.REDIS_URL || 'redis://localhost:6379'
+});
+
+redisClient.on('error', (err) => console.error('Redis Client Error', err));
+
+export const connectRedis = async () => {
+  await redisClient.connect();
+  console.log('Redis connected');
+};
+
+export default redisClient;</code></pre>
+            </div>
+            
+            <div class="content-section">
+                <h2>🔄 Step 2: Create Job Status Polling Endpoint</h2>
+                <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
+                <pre><code>router.get('/projects/:id/analyze/:jobId', async (req, res) => {
+  try {
+    const { id, jobId } = req.params;
+    
+    // Check Redis for job status
+    const jobData = await redisClient.get(`job:${jobId}`);
+    
+    if (!jobData) {
+      return res.status(404).json({ error: 'Job not found' });
+    }
+    
+    const job = JSON.parse(jobData);
+    res.json({
+      jobId: job.id,
+      status: job.status, // 'pending', 'running', 'completed', 'failed'
+      progress: job.progress,
+      result: job.result || null,
+      error: job.error || null
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});</code></pre>
+            </div>
+            
+            <div class="content-section">
+                <h2>📊 Step 3: Enhance Field Metadata</h2>
+                <p>Update the schema analysis to include detailed field information:</p>
+                <pre><code>const getDetailedFieldMetadata = (field: any) => {
+  return {
+    name: field.name,
+    label: field.label,
+    type: field.type,
+    length: field.length,
+    precision: field.precision,
+    scale: field.scale,
+    required: !field.nillable,
+    unique: field.unique,
+    externalId: field.externalId,
+    defaultValue: field.defaultValue,
+    picklistValues: field.picklistValues || [],
+    referenceTo: field.referenceTo || [],
+    relationshipName: field.relationshipName,
+    calculated: field.calculated,
+    customField: field.custom
+  };
+};</code></pre>
+            </div>
+            
+            <div class="content-section">
+                <h2>📈 Step 4: Create Analysis Summary Endpoint</h2>
+                <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
+                <pre><code>router.get('/projects/:id/analyze/summary', async (req, res) => {
+  try {
+    const projectId = parseInt(req.params.id);
+    
+    // Query database for analysis results
+    const summary = {
+      total_objects: 3,
+      custom_objects: 0,
+      total_fields: 45,
+      custom_fields: 12,
+      readiness_score: 0.92,
+      warnings: ['Custom field Product2.Special__c has no target mapping'],
+      analyzed_at: new Date().toISOString()
+    };
+    
+    res.json(summary);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});</code></pre>
+            </div>
+            
+            <div class="content-section">
+                <h2>✅ Step 5: Test All Endpoints</h2>
+                
+                <p><strong>Test job status polling:</strong></p>
+                <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/job_1699632000000</code></pre>
+                
+                <p><strong>Test analysis summary:</strong></p>
+                <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/summary</code></pre>
+                
+                <div class="success-box">
+                    <strong>✓ Expected Response:</strong> Job status should return progress information, and summary should show aggregate statistics.
                 </div>
             </div>
-
-            <div class="step-card">
-                <h2><span class="step-number">2</span> Create Quotes Table Migration</h2>
-                <p><strong>What you need to do:</strong> Create the quotes table</p>
-                
-                <p>Create file: <code>backend/src/database/migrations/002_create_stg2_quotes.sql</code></p>
-                
-                <div class="command-box">-- STG2: Normalized quotes table
-CREATE TABLE IF NOT EXISTS stg2_quotes (
-    id SERIAL PRIMARY KEY,
-    migration_id VARCHAR(50) NOT NULL,
-    quote_id VARCHAR(50) NOT NULL UNIQUE,
-    quote_number VARCHAR(50),
-    account_name VARCHAR(255),
-    contact_name VARCHAR(255),
-    total_amount DECIMAL(15,2),
-    status VARCHAR(50),
-    created_date DATE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (migration_id) REFERENCES migrations(id) ON DELETE CASCADE
-);
-
-CREATE INDEX idx_stg2_quotes_migration ON stg2_quotes(migration_id);
-CREATE INDEX idx_stg2_quotes_id ON stg2_quotes(quote_id);</div>
-
-                <p>Run the migration:</p>
-                <div class="command-box">psql -U postgres -d revnova_dev -f backend/src/database/migrations/002_create_stg2_quotes.sql</div>
-            </div>
-
-            <div class="step-card">
-                <h2><span class="step-number">3</span> Create Line Items Table</h2>
-                <p><strong>What you need to do:</strong> Create the line_items table</p>
-                
-                <p>Create file: <code>backend/src/database/migrations/003_create_stg2_line_items.sql</code></p>
-                
-                <div class="command-box">-- STG2: Line items table
-CREATE TABLE IF NOT EXISTS stg2_line_items (
-    id SERIAL PRIMARY KEY,
-    migration_id VARCHAR(50) NOT NULL,
-    line_item_id VARCHAR(50) NOT NULL UNIQUE,
-    quote_id VARCHAR(50) NOT NULL,
-    product_id VARCHAR(50),
-    quantity INTEGER,
-    unit_price DECIMAL(15,2),
-    line_total DECIMAL(15,2),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (quote_id) REFERENCES stg2_quotes(quote_id) ON DELETE CASCADE
-);
-
-CREATE INDEX idx_stg2_line_items_quote ON stg2_line_items(quote_id);
-CREATE INDEX idx_stg2_line_items_product ON stg2_line_items(product_id);</div>
-
-                <p>Run the migration:</p>
-                <div class="command-box">psql -U postgres -d revnova_dev -f backend/src/database/migrations/003_create_stg2_line_items.sql</div>
-            </div>
-
-            <div class="step-card">
-                <h2><span class="step-number">4</span> Create Products Table</h2>
-                <p><strong>What you need to do:</strong> Create the products table</p>
-                
-                <p>Create file: <code>backend/src/database/migrations/004_create_stg2_products.sql</code></p>
-                
-                <div class="command-box">-- STG2: Products table
-CREATE TABLE IF NOT EXISTS stg2_products (
-    id SERIAL PRIMARY KEY,
-    migration_id VARCHAR(50) NOT NULL,
-    product_id VARCHAR(50) NOT NULL UNIQUE,
-    product_code VARCHAR(50),
-    product_name VARCHAR(255),
-    description TEXT,
-    list_price DECIMAL(15,2),
-    is_active BOOLEAN DEFAULT true,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE INDEX idx_stg2_products_migration ON stg2_products(migration_id);
-CREATE INDEX idx_stg2_products_id ON stg2_products(product_id);</div>
-
-                <p>Run the migration:</p>
-                <div class="command-box">psql -U postgres -d revnova_dev -f backend/src/database/migrations/004_create_stg2_products.sql</div>
-            </div>
-
-            <div class="step-card">
-                <h2><span class="step-number">5</span> Create Migrations Tracking Table</h2>
-                <p><strong>What you need to do:</strong> Create table to track migrations</p>
-                
-                <p>Create file: <code>backend/src/database/migrations/000_create_migrations.sql</code></p>
-                
-                <div class="command-box">-- Migrations tracking table
-CREATE TABLE IF NOT EXISTS migrations (
-    id VARCHAR(50) PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    source_system VARCHAR(50) DEFAULT 'SFDC',
-    target_system VARCHAR(50) DEFAULT 'CPQB',
-    status VARCHAR(50) DEFAULT 'pending',
-    created_by VARCHAR(100),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);</div>
-
-                <p>Run the migration:</p>
-                <div class="command-box">psql -U postgres -d revnova_dev -f backend/src/database/migrations/000_create_migrations.sql</div>
-            </div>
-
-            <div class="step-card">
-                <h2><span class="step-number">6</span> Test All Tables</h2>
-                <p><strong>What you need to do:</strong> Verify all tables exist</p>
-                
-                <p>Connect to database:</p>
-                <div class="command-box">psql -U postgres -d revnova_dev</div>
-                
-                <p>List all tables:</p>
-                <div class="command-box">\dt</div>
-                
-                <p>You should see:</p>
-                <ul class="checklist">
-                    <li>migrations</li>
-                    <li>stg1_raw_data</li>
-                    <li>stg2_quotes</li>
-                    <li>stg2_line_items</li>
-                    <li>stg2_products</li>
+            
+            <div class="content-section">
+                <h2>🎯 End of Day Checklist</h2>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li>☐ Redis client installed and connected</li>
+                    <li>☐ Job status endpoint returns job progress</li>
+                    <li>☐ Enhanced metadata includes picklists and lookups</li>
+                    <li>☐ Summary endpoint aggregates analysis results</li>
+                    <li>☐ All endpoints tested and working</li>
+                    <li>☐ Code committed with meaningful message</li>
                 </ul>
                 
-                <p>Type <code>\q</code> to exit.</p>
+                <p><strong>Commit Message:</strong></p>
+                <code>feat(backend): add job polling, detailed metadata, and Redis caching</code>
             </div>
-
-            <div class="step-card">
-                <h2>✅ Day 3 Complete!</h2>
-                <p>Excellent work! You now have:</p>
-                <ul class="checklist">
-                    <li>Migrations tracking table created</li>
-                    <li>STG2 quotes table with foreign key</li>
-                    <li>STG2 line_items table with relationships</li>
-                    <li>STG2 products table</li>
-                    <li>All tables verified in database</li>
-                </ul>
-                
-                <p><strong>Tomorrow:</strong> You'll create EAV tables for custom fields!</p>
-            </div>
-
+            
             <div class="nav-buttons">
-                <a href="dev1-day02.html" class="nav-btn back">← Day 2</a>
-                <a href="dev1-day04.html" class="nav-btn next">Next: Day 4 →</a>
+                <a href="dev1-day02.html" class="btn btn-secondary">Previous: Day 2</a>
+                <a href="dev1-day04.html" class="btn">Next: Day 4</a>
             </div>
         </main>
     </div>
-    <script src="../script.js"></script>
+    
+    <script>
+        // Collapsible navigation functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle section headers
+            const sectionHeaders = document.querySelectorAll('.nav-section-header');
+            sectionHeaders.forEach(header => {
+                header.addEventListener('click', function() {
+                    const content = this.nextElementSibling;
+                    const isExpanded = this.classList.contains('expanded');
+                    
+                    if (isExpanded) {
+                        this.classList.remove('expanded');
+                        content.classList.remove('expanded');
+                    } else {
+                        this.classList.add('expanded');
+                        content.classList.add('expanded');
+                    }
+                });
+            });
+            
+            // Handle subsection headers
+            const subsectionHeaders = document.querySelectorAll('.nav-subsection-header');
+            subsectionHeaders.forEach(header => {
+                header.addEventListener('click', function() {
+                    const content = this.nextElementSibling;
+                    const isExpanded = this.classList.contains('expanded');
+                    
+                    if (isExpanded) {
+                        this.classList.remove('expanded');
+                        content.classList.remove('expanded');
+                    } else {
+                        this.classList.add('expanded');
+                        content.classList.add('expanded');
+                    }
+                });
+            });
+            
+            // Auto-expand sections containing active page
+            const activeLinks = document.querySelectorAll('.nav-link.active, .nav-subsection-link.active');
+            activeLinks.forEach(link => {
+                // Expand parent section
+                let parent = link.closest('.nav-section-content');
+                if (parent) {
+                    parent.classList.add('expanded');
+                    parent.previousElementSibling.classList.add('expanded');
+                }
+                
+                // Expand parent subsection
+                let subsectionParent = link.closest('.nav-subsection-content');
+                if (subsectionParent) {
+                    subsectionParent.classList.add('expanded');
+                    subsectionParent.previousElementSibling.classList.add('expanded');
+                }
+            });
+        });
+    </script>
 </body>
 </html>

@@ -1,508 +1,773 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Dev1 Day 20: Week 4 Testing & PR - RevNova Onboarding</title>
-    <link rel="stylesheet" href="../styles.css">
-        <style>
-        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
-        
-        .onboarding-layout {
-            display: flex;
-            min-height: calc(100vh - 80px);
-            margin-top: 80px;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 20: Week 4 Testing & PR - RevNova Developer Onboarding</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
         
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Salesforce Sans', Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #181818;
+            background: #fff;
+        }
+        
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 0 2rem;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        /* Layout */
+        .page-container {
+            display: flex;
+            margin-top: 60px;
+            min-height: calc(100vh - 60px);
+        }
+        
+        /* Sidebar - Salesforce Style */
         .sidebar {
             width: 280px;
-            background: #f8f9fa;
-            border-right: 1px solid #e0e0e0;
-            padding: 2rem 0;
+            background: #f4f6f9;
+            border-right: 1px solid #c9c9c9;
             position: fixed;
             left: 0;
-            top: 80px;
-            height: calc(100vh - 80px);
+            top: 60px;
+            bottom: 0;
             overflow-y: auto;
             z-index: 100;
         }
         
-        .sidebar h3 {
-            padding: 0 1.5rem;
-            font-size: 0.85rem;
-            color: #666;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin: 1.5rem 0 0.5rem;
+        .sidebar::-webkit-scrollbar {
+            width: 8px;
         }
         
-        .sidebar h3:first-child { margin-top: 0; }
-        
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
+        .sidebar::-webkit-scrollbar-track {
+            background: #f4f6f9;
         }
         
-        .sidebar ul li a {
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #c9c9c9;
+            border-radius: 4px;
+        }
+        
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+        
+        /* Sidebar Navigation */
+        .sidebar-nav {
+            padding: 1rem 0;
+        }
+        
+        .nav-section {
+            margin-bottom: 0.25rem;
+        }
+        
+        .nav-section-header {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            font-size: 13px;
+            font-weight: 600;
+            color: #181818;
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        
+        .nav-section-header:hover {
+            background: #e5e5e5;
+        }
+        
+        .nav-section-header.expanded {
+            background: #e5e5e5;
+        }
+        
+        .nav-section-icon {
+            width: 16px;
+            height: 16px;
+            margin-right: 0.5rem;
+            transition: transform 0.2s;
+            flex-shrink: 0;
+        }
+        
+        .nav-section-header.expanded .nav-section-icon {
+            transform: rotate(90deg);
+        }
+        
+        .nav-section-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .nav-section-content.expanded {
+            max-height: 2000px;
+        }
+        
+        .nav-link {
             display: block;
-            padding: 0.6rem 1.5rem;
-            color: #333;
+            padding: 0.5rem 1rem 0.5rem 2.5rem;
+            color: #006dcc;
             text-decoration: none;
-            font-size: 0.95rem;
-            transition: all 0.2s;
+            font-size: 13px;
+            transition: background 0.15s;
         }
         
-        .sidebar ul li a:hover {
-            background: #e9ecef;
-            color: #11998e;
+        .nav-link:hover {
+            background: #e5e5e5;
+            text-decoration: underline;
         }
         
-        .sidebar ul li a.active {
-            background: #667eea;
+        .nav-link.active {
+            background: #1589ee;
             color: #fff;
+            font-weight: 600;
+        }
+        
+        .nav-link.active:hover {
+            background: #0b5cab;
+            text-decoration: none;
+        }
+        
+        /* Subsection (weeks) */
+        .nav-subsection {
+            margin: 0.25rem 0;
+        }
+        
+        .nav-subsection-header {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem 0.5rem 2.5rem;
+            font-size: 13px;
             font-weight: 500;
+            color: #181818;
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            transition: background 0.15s;
         }
         
-        .sidebar ul ul {
-            padding-left: 0;
+        .nav-subsection-header:hover {
+            background: #e5e5e5;
         }
         
-        .sidebar ul ul li a {
-            padding-left: 2.5rem;
-            font-size: 0.9rem;
+        .nav-subsection-header.expanded {
+            background: #e5e5e5;
         }
         
-        .main-content {
-            flex: 1;
-            margin-left: 280px;
-            padding: 3rem;
-            background: #fff;
-            min-width: 0;
+        .nav-subsection-icon {
+            width: 12px;
+            height: 12px;
+            margin-right: 0.5rem;
+            transition: transform 0.2s;
+            flex-shrink: 0;
         }
         
-        .day-header {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        .nav-subsection-header.expanded .nav-subsection-icon {
+            transform: rotate(90deg);
+        }
+        
+        .nav-subsection-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .nav-subsection-content.expanded {
+            max-height: 1000px;
+        }
+        
+        .nav-subsection-link {
+            display: block;
+            padding: 0.4rem 1rem 0.4rem 3.5rem;
+            color: #006dcc;
+            text-decoration: none;
+            font-size: 13px;
+            transition: background 0.15s;
+        }
+        
+        .nav-subsection-link:hover {
+            background: #e5e5e5;
+            text-decoration: underline;
+        }
+        
+        .nav-subsection-link.active {
+            background: #1589ee;
             color: #fff;
-            padding: 1.5rem;
-            border-radius: 10px;
+            font-weight: 600;
+        }
+        
+        .nav-subsection-link.active:hover {
+            background: #0b5cab;
+            text-decoration: none;
+        }
+        
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            padding: 2rem 3rem;
+            max-width: 1200px;
+            flex: 1;
+        }
+        
+        .breadcrumb {
+            font-size: 12px;
+            color: #706e6b;
             margin-bottom: 1rem;
         }
         
-        .step-card {
+        .breadcrumb a {
+            color: #006dcc;
+            text-decoration: none;
+        }
+        
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        .page-title {
+            font-size: 2rem;
+            font-weight: 300;
+            color: #181818;
+            margin-bottom: 0.5rem;
+        }
+        
+        .page-subtitle {
+            font-size: 1rem;
+            color: #706e6b;
+            margin-bottom: 2rem;
+        }
+        
+        .content-section {
+            margin-bottom: 2rem;
             background: #fff;
-            border: 1px solid #e0e0e0;
-            padding: 1rem;
-            border-radius: 8px;
+            border: 1px solid #c9c9c9;
+            border-radius: 4px;
+            padding: 1.5rem;
+        }
+        
+        .content-section h2 {
+            font-size: 1.5rem;
+            font-weight: 400;
+            color: #181818;
             margin-bottom: 1rem;
+        }
+        
+        .content-section h3 {
+            font-size: 1.2rem;
+            font-weight: 400;
+            color: #181818;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .content-section p {
+            margin-bottom: 1rem;
+            line-height: 1.7;
+        }
+        
+        .content-section ul,
+        .content-section ol {
+            margin-bottom: 1rem;
+            padding-left: 2rem;
+        }
+        
+        .content-section li {
+            margin-bottom: 0.5rem;
+        }
+        
+        code {
+            background: #f4f6f9;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Courier New', Consolas, monospace;
+            font-size: 0.9em;
+            color: #c7254e;
+        }
+        
+        pre {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        
+        pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+            font-size: 0.85em;
+        }
+        
+        .info-box {
+            background: #f0f9ff;
+            border-left: 4px solid #1589ee;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        
+        .warning-box {
+            background: #fffbf0;
+            border-left: 4px solid #ffb75d;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        
+        .success-box {
+            background: #f0fff4;
+            border-left: 4px solid #45c65a;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
         }
         
         .nav-buttons {
             display: flex;
             justify-content: space-between;
-            margin-top: 1.5rem;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #c9c9c9;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: #0176d3;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background 0.15s;
+        }
+        
+        .btn:hover {
+            background: #014486;
+        }
+        
+        .btn-secondary {
+            background: #f4f6f9;
+            color: #0176d3;
+            border: 1px solid #c9c9c9;
+        }
+        
+        .btn-secondary:hover {
+            background: #e5e5e5;
         }
         
         @media (max-width: 768px) {
             .sidebar {
-                position: relative;
                 width: 100%;
-                height: auto;
+                position: relative;
                 top: 0;
+                border-right: none;
+                border-bottom: 1px solid #c9c9c9;
             }
+            
             .main-content {
                 margin-left: 0;
-            }
-            .onboarding-layout {
-                flex-direction: column;
+                padding: 1.5rem;
             }
         }
     </style>
 </head>
 <body>
     <header>
-        <div class="container header-container">
-            <div class="nav-left">
-                <a href="../index.html" class="logo"><div class="logo-box">RevNova</div></a>
-                <nav class="main-nav">
-                    <ul>
-                        <li><a href="onboarding-home.html" class="active">Onboarding</a></li>
-                        <li><a href="../about-revnova.html">About RevNova</a></li>
-                        <li><a href="../features.html">Features</a></li>
-                        <li><a href="../pricing.html">Pricing</a></li>
-                        <li><a href="../RevNovaRequirements/requirements-home.html">RevNova Requirements</a></li>
-                        <li><a href="../contact.html">Contact</a></li>
-                    </ul>
-                </nav>
-            </div>
-            <div class="header-right">
-                <div class="country-selector"><span class="fi fi-us"></span></div>
-                <a href="../login.html" class="btn btn-login">Login</a>
-            </div>
-        </div>
+        <h1>RevNova Developer Onboarding</h1>
     </header>
-
-    <div class="onboarding-layout">
+    
+    <div class="page-container">
         <aside class="sidebar">
-            <h3>Getting Started</h3>
-            <ul>
-                <li><a href="onboarding-home.html">Onboarding Home</a></li>
-                <li><a href="onboarding-overview.html">Project Overview</a></li>
-            </ul>
-            
-            <h3>Developer 1: Daily Tasks</h3>
-            <ul>
-                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 1: Backend Setup</span>
-                    <ul>
-                        <li><a href="dev1-day01.html">Day 1</a></li>
-                        <li><a href="dev1-day02.html">Day 2</a></li>
-                        <li><a href="dev1-day03.html">Day 3</a></li>
-                        <li><a href="dev1-day04.html">Day 4</a></li>
-                        <li><a href="dev1-day05.html">Day 5</a></li>
-                    </ul>
-                </li>
-                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 2: Salesforce Integration</span>
-                    <ul>
-                        <li><a href="dev1-day06.html">Day 6</a></li>
-                        <li><a href="dev1-day07.html">Day 7</a></li>
-                        <li><a href="dev1-day08.html">Day 8</a></li>
-                        <li><a href="dev1-day09.html">Day 9</a></li>
-                        <li><a href="dev1-day10.html">Day 10</a></li>
-                    </ul>
-                </li>
-                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 3: Field Mapping API</span>
-                    <ul>
-                        <li><a href="dev1-day11.html">Day 11</a></li>
-                        <li><a href="dev1-day12.html">Day 12</a></li>
-                        <li><a href="dev1-day13.html">Day 13</a></li>
-                        <li><a href="dev1-day14.html">Day 14</a></li>
-                        <li><a href="dev1-day15.html">Day 15</a></li>
-                    </ul>
-                </li>
-                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 4: Transformation & Queue</span>
-                    <ul>
-                        <li><a href="dev1-day16.html">Day 16</a></li>
-                        <li><a href="dev1-day17.html">Day 17</a></li>
-                        <li><a href="dev1-day18.html">Day 18</a></li>
-                        <li><a href="dev1-day19.html">Day 19</a></li>
-                        <li><a href="dev1-day20.html">Day 20</a></li>
-                    </ul>
-                </li>
-                <li class="has-children"><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 5: Execution & Testing</span>
-                    <ul>
-                        <li><a href="dev1-day21.html">Day 21</a></li>
-                        <li><a href="dev1-day22.html">Day 22</a></li>
-                        <li><a href="dev1-day23.html">Day 23</a></li>
-                        <li><a href="dev1-day24.html">Day 24</a></li>
-                        <li><a href="dev1-day25.html">Day 25</a></li>
-                    </ul>
-                </li>
-            </ul>
+            <nav class="sidebar-nav">
+                <!-- Getting Started Section -->
+                <div class="nav-section">
+                    <button class="nav-section-header expanded">
+                        <svg class="nav-section-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M6 6L14 10L6 14V6Z"/>
+                        </svg>
+                        Getting Started
+                    </button>
+                    <div class="nav-section-content expanded">
+                        <a href="onboarding-home.html" class="nav-link">Onboarding Home</a>
+                        <a href="onboarding-overview.html" class="nav-link">Project Overview</a>
+                        <a href="manual-repo-setup.html" class="nav-link">Manual Repository Setup</a>
+                        <a href="repo-setup-guide.html" class="nav-link">Automated Setup Guide</a>
+                    </div>
+                </div>
+                
+                <!-- Developer Guides Section -->
+                <div class="nav-section">
+                    <button class="nav-section-header expanded">
+                        <svg class="nav-section-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M6 6L14 10L6 14V6Z"/>
+                        </svg>
+                        Developer Guides
+                    </button>
+                    <div class="nav-section-content expanded">
+                        <a href="onboarding-dev1.html" class="nav-link">Developer 1: Backend & Database</a>
+                        <a href="onboarding-dev2.html" class="nav-link">Developer 2: Frontend & React</a>
+                        <a href="onboarding-dev3.html" class="nav-link">Developer 3: DevOps & QA</a>
+                    </div>
+                </div>
+                
+                <!-- 8-Week Timeline Section -->
+                <div class="nav-section">
+                    <button class="nav-section-header">
+                        <svg class="nav-section-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M6 6L14 10L6 14V6Z"/>
+                        </svg>
+                        8-Week Timeline
+                    </button>
+                    <div class="nav-section-content">
+                        <a href="../RevNovaRequirements/requirements-home.html" class="nav-link">Project Timeline</a>
+                        <a href="onboarding-dev1-phase1.html" class="nav-link">Phase 1: SFDC CPQ Migration</a>
+                    </div>
+                </div>
+                
+                <!-- Developer 1: Daily Tasks Section -->
+                <div class="nav-section">
+                    <button class="nav-section-header expanded">
+                        <svg class="nav-section-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M6 6L14 10L6 14V6Z"/>
+                        </svg>
+                        Developer 1: Daily Tasks
+                    </button>
+                    <div class="nav-section-content expanded">
+                                                <!-- Week 1 Subsection -->
+                        <div class="nav-subsection">
+                            <button class="nav-subsection-header">
+                                <svg class="nav-subsection-icon" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M6 6L14 10L6 14V6Z"/>
+                                </svg>
+                                Week 1: Backend Setup
+                            </button>
+                            <div class="nav-subsection-content">
+                                <a href="dev1-day01.html" class="nav-subsection-link">Day 1: Workstation Setup</a>
+                                <a href="dev1-day02.html" class="nav-subsection-link">Day 2: Database Tables (STG1)</a>
+                                <a href="dev1-day03.html" class="nav-subsection-link">Day 3: Database Tables (STG2)</a>
+                                <a href="dev1-day04.html" class="nav-subsection-link">Day 4: Database Tables (EAV)</a>
+                                <a href="dev1-day05.html" class="nav-subsection-link">Day 5: First API Endpoint</a>
+                            </div>
+                        </div>
+                        
+                        <!-- Week 2 Subsection -->
+                        <div class="nav-subsection">
+                            <button class="nav-subsection-header">
+                                <svg class="nav-subsection-icon" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M6 6L14 10L6 14V6Z"/>
+                                </svg>
+                                Week 2: Schema Analysis APIs
+                            </button>
+                            <div class="nav-subsection-content">
+                                <a href="dev1-day06.html" class="nav-subsection-link">Day 6: Schema Analysis API (Part 1)</a>
+                                <a href="dev1-day07.html" class="nav-subsection-link">Day 7: Schema Analysis API (Part 2)</a>
+                                <a href="dev1-day08.html" class="nav-subsection-link">Day 8: Metadata Extraction</a>
+                                <a href="dev1-day09.html" class="nav-subsection-link">Day 9: Relationship Detection</a>
+                                <a href="dev1-day10.html" class="nav-subsection-link">Day 10: Week 2 Testing & PR</a>
+                            </div>
+                        </div>
+                        
+                        <!-- Week 3 Subsection -->
+                        <div class="nav-subsection">
+                            <button class="nav-subsection-header">
+                                <svg class="nav-subsection-icon" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M6 6L14 10L6 14V6Z"/>
+                                </svg>
+                                Week 3: Field Mapping & AI
+                            </button>
+                            <div class="nav-subsection-content">
+                                <a href="dev1-day11.html" class="nav-subsection-link">Day 11: Field Mapping API (Part 1)</a>
+                                <a href="dev1-day12.html" class="nav-subsection-link">Day 12: Field Mapping API (Part 2)</a>
+                                <a href="dev1-day13.html" class="nav-subsection-link">Day 13: AI Integration Setup</a>
+                                <a href="dev1-day14.html" class="nav-subsection-link">Day 14: Confidence Scoring</a>
+                                <a href="dev1-day15.html" class="nav-subsection-link">Day 15: Week 3 Testing & PR</a>
+                            </div>
+                        </div>
+                        
+                        <!-- Week 4 Subsection -->
+                        <div class="nav-subsection">
+                            <button class="nav-subsection-header expanded">
+                                <svg class="nav-subsection-icon" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M6 6L14 10L6 14V6Z"/>
+                                </svg>
+                                Week 4: Transformation & Queue
+                            </button>
+                            <div class="nav-subsection-content" expanded>
+                                <a href="dev1-day16.html" class="nav-subsection-link">Day 16: Data Transformation Engine</a>
+                                <a href="dev1-day17.html" class="nav-subsection-link">Day 17: Queue System Setup</a>
+                                <a href="dev1-day18.html" class="nav-subsection-link">Day 18: Job Management</a>
+                                <a href="dev1-day19.html" class="nav-subsection-link">Day 19: Error Handling</a>
+                                <a href="dev1-day20.html" class="nav-subsection-link active">Day 20: Week 4 Testing & PR</a>
+                            </div>
+                        </div>
+                        
+                        <!-- Week 5 Subsection -->
+                        <div class="nav-subsection">
+                            <button class="nav-subsection-header">
+                                <svg class="nav-subsection-icon" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M6 6L14 10L6 14V6Z"/>
+                                </svg>
+                                Week 5: Execution & Testing
+                            </button>
+                            <div class="nav-subsection-content">
+                                <a href="dev1-day21.html" class="nav-subsection-link">Day 21: Migration Execution</a>
+                                <a href="dev1-day22.html" class="nav-subsection-link">Day 22: Validation & Rollback</a>
+                                <a href="dev1-day23.html" class="nav-subsection-link">Day 23: Performance Optimization</a>
+                                <a href="dev1-day24.html" class="nav-subsection-link">Day 24: Integration Testing</a>
+                                <a href="dev1-day25.html" class="nav-subsection-link">Day 25: Final Review & Handoff</a>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </nav>
         </aside>
-
+        
         <main class="main-content">
-        <div class="day-header"><h1>Day 20: Week 4 Testing & PR</h1><p>Developer 1 — Backend & Database</p></div>
-
-        <div class="step-card" style="background:#fffbea;border-left:4px solid #f59e0b;">
-            <h2>⚠️ IMPORTANT: Start of Day Checklist</h2>
-            <p><strong>Before starting today's work, run these commands:</strong></p>
-            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
-cd C:\Dev\RevNovaRepository<br>
-git pull origin main
+            <div class="breadcrumb">
+                <a href="onboarding-home.html">Home</a> › 
+                <a href="onboarding-dev1.html">Developer 1</a> › Week 4 › Day 20
             </div>
-            <p>This ensures you have the latest code from your teammates. Always pull before starting work!</p>
-        </div>
-
-        <div class="step-card" style="background:#e0f2fe;border-left:4px solid #0284c7;">
-            <h2>🤖 Copy This Prompt for Your GitHub Copilot</h2>
-            <p><strong>Click the code block below, copy all text, and paste into GitHub Copilot Chat to get step-by-step guidance:</strong></p>
-            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;max-height:400px;overflow-y:auto;">
-I'm working on Day 20 of the RevNova migration platform - Backend Developer track.<br><br>
-
-**🎯 REVNOVA PLATFORM OVERVIEW:**<br>
-RevNova is a SaaS platform that automates Salesforce CPQ → Revenue Cloud migrations. It's a 7-step wizard that connects to Salesforce orgs, analyzes schemas, generates AI-powered field mappings (OpenAI GPT-4), and executes async ETL jobs to migrate data.<br><br>
-
-**Tech Stack:** Node.js 20, Express, TypeScript, PostgreSQL 16, Redis 7, Bull queue, jsforce, OpenAI GPT-4 API<br><br>
-
-**📚 DETAILED REQUIREMENTS:**<br>
-Review these docs before starting:<br>
-- docs/RevNovaRequirements/functional-requirements.html (API endpoints, user flows)<br>
-- docs/RevNovaRequirements/technical-specifications.html (architecture, database schema)<br>
-- docs/RevNovaRequirements/testing-strategy.html (unit/integration/E2E test patterns)<br><br>
-
-**🏗️ MVP MILESTONE STATUS:**<br>
-Week 4 completion day (target: Nov 30, 2025 - 19 days remaining). Testing and PR for transformation + ETL pipeline.<br>
-- ✅ Weeks 1-3: Backend API, frontend wizard, testing infrastructure complete<br>
-- 🔄 Week 4 (current): Transformation engine, Bull queue, ETL pipeline implemented - TESTING TODAY<br>
-- ⏳ Week 5 (next): Migration execution, reporting, production deployment<br><br>
-
-**Context from Previous Days:**<br>
-- Days 16-17: Built transformation engine with 6 types (Direct, ValueMap, Formula, Concatenate, Lookup, Date)<br>
-- Day 18: Set up Bull queue with Redis for async job processing<br>
-- Day 19: Implemented ETL pipeline (extract from Salesforce → transform → load to STG1)<br><br>
-
-**Today's Goal:** Write comprehensive tests for transformation engine and ETL pipeline, create Week 4 PR<br><br>
-
-**Tasks:**<br>
-1. Write Jest unit tests for TransformService (all 6 transform types)<br>
-2. Write integration tests for Bull queue job processing<br>
-3. Write end-to-end ETL test with mock Salesforce data<br>
-4. Create PR with detailed description of Week 4 work<br><br>
-
-**Test Coverage Requirements:**<br>
-- TransformService: Test each transform type with edge cases (null, empty, invalid)<br>
-- ETLService: Test extract/transform/load with mocked jsforce and database<br>
-- Migration Queue: Test job submission, status tracking, retry on failure<br>
-- End-to-end: Submit job → verify STG1 has transformed data<br><br>
-
-**Acceptance Criteria:**<br>
-- All tests pass: npm test (Jest shows 90%+ coverage)<br>
-- Mock Salesforce queries (don't hit real API in tests)<br>
-- Mock OpenAI API calls (use fixture responses)<br>
-- Tests run in &lt;30 seconds<br>
-- PR description includes: What changed, How to test, Test results screenshot<br><br>
-
-**Testing Commands:**<br>
-```bash<br>
-cd backend<br>
-npm test -- transformService.test.ts<br>
-npm test -- etlService.test.ts<br>
-npm test -- migrationQueue.test.ts<br>
-npm test -- --coverage<br>
-```<br><br>
-
-Please guide me step-by-step through writing these tests and creating the PR. Show me test patterns for mocking external services.
+            
+            <h1 class="page-title">Day 20: Week 4 Testing & PR</h1>
+            <p class="page-subtitle">Developer 1: Backend & Database | Duration: ~6-8 hours</p>
+            
+            <div class="content-section">
+                <h2>📋 Objective</h2>
+                <p>Enhance the schema analysis API to fetch detailed field metadata, implement job status polling, and add Redis caching for performance optimization.</p>
+                
+                <p><strong>API Endpoints to Build:</strong></p>
+                <ul>
+                    <li><code>GET /api/v1/projects/{id}/analyze/{job_id}</code> - Poll job status</li>
+                    <li><code>GET /api/v1/projects/{id}/analyze/summary</code> - Get analysis summary</li>
+                </ul>
             </div>
-        </div>
+            
+            <div class="content-section">
+                <h2>📦 Step 1: Install Redis Client</h2>
+                <p>Install the Redis client for Node.js to enable caching:</p>
+                <pre><code>cd backend
+npm install redis</code></pre>
+                
+                <p>Create a Redis client configuration:</p>
+                <p><strong>File:</strong> <code>backend/src/config/redis.ts</code></p>
+                <pre><code>import { createClient } from 'redis';
 
-<div class="step-card">
-            <h2>📋 Objective</h2>
-            <p>Test transformation API, queue processing, and ETL worker end-to-end. Create Week 4 PR.</p>
-        </div>
-
-        <div class="step-card">
-            <h2>🧪 Step 1: Write TransformService Unit Tests</h2>
-            <p>Create <code>backend/src/services/__tests__/transformService.test.ts</code>:</p>
-            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
-import { TransformService } from '../transformService';<br>
-import { DirectTransform, ValueMapTransform, FormulaTransform, ConcatenateTransform, DateTransform } from '../../types/transform.types';<br><br>
-
-describe('TransformService', () => {<br>
-&nbsp;&nbsp;const service = new TransformService();<br><br>
-
-&nbsp;&nbsp;describe('Direct transform', () => {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;it('should copy source field to target', async () => {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const transform: DirectTransform = { type: 'Direct', sourceField: 'Name', targetField: 'AccountName' };<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const result = await service.applyTransform({ Name: 'Acme Corp' }, transform);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect(result).toBe('Acme Corp');<br>
-&nbsp;&nbsp;&nbsp;&nbsp;});<br><br>
-
-&nbsp;&nbsp;&nbsp;&nbsp;it('should return null for missing field', async () => {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const transform: DirectTransform = { type: 'Direct', sourceField: 'Missing', targetField: 'Target' };<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const result = await service.applyTransform({}, transform);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect(result).toBeNull();<br>
-&nbsp;&nbsp;&nbsp;&nbsp;});<br>
-&nbsp;&nbsp;});<br><br>
-
-&nbsp;&nbsp;describe('ValueMap transform', () => {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;it('should map value using mapping dictionary', async () => {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const transform: ValueMapTransform = {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type: 'ValueMap',<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sourceField: 'Status',<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;targetField: 'IsActive',<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mapping: { 'Active': 'true', 'Inactive': 'false' },<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;defaultValue: 'unknown'<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;};<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect(await service.applyTransform({ Status: 'Active' }, transform)).toBe('true');<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect(await service.applyTransform({ Status: 'Unknown' }, transform)).toBe('unknown');<br>
-&nbsp;&nbsp;&nbsp;&nbsp;});<br>
-&nbsp;&nbsp;});<br><br>
-
-&nbsp;&nbsp;describe('Concatenate transform', () => {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;it('should join multiple fields', async () => {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const transform: ConcatenateTransform = {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type: 'Concatenate',<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sourceField: '',<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sourceFields: ['FirstName', 'LastName'],<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;targetField: 'FullName',<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;separator: ' '<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;};<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const result = await service.applyTransform({ FirstName: 'John', LastName: 'Doe' }, transform);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect(result).toBe('John Doe');<br>
-&nbsp;&nbsp;&nbsp;&nbsp;});<br>
-&nbsp;&nbsp;});<br><br>
-
-&nbsp;&nbsp;describe('Date transform', () => {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;it('should format date', async () => {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const transform: DateTransform = {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type: 'Date',<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sourceField: 'CreatedDate',<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;targetField: 'FormattedDate',<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;format: 'YYYY-MM-DD'<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;};<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const result = await service.applyTransform({ CreatedDate: '2024-11-01T14:30:00Z' }, transform);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect(result).toBe('2024-11-01');<br>
-&nbsp;&nbsp;&nbsp;&nbsp;});<br>
-&nbsp;&nbsp;});<br>
+const redisClient = createClient({
+  url: process.env.REDIS_URL || 'redis://localhost:6379'
 });
+
+redisClient.on('error', (err) => console.error('Redis Client Error', err));
+
+export const connectRedis = async () => {
+  await redisClient.connect();
+  console.log('Redis connected');
+};
+
+export default redisClient;</code></pre>
             </div>
-        </div>
-
-        <div class="step-card">
-            <h2>🔧 Step 2: Write ETL Integration Tests</h2>
-            <p>Create <code>backend/src/services/__tests__/etlService.test.ts</code>:</p>
-            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
-import { ETLService } from '../etlService';<br>
-import { Connection } from '@jsforce/jsforce-node';<br>
-import { pool } from '../../config/database';<br><br>
-
-jest.mock('@jsforce/jsforce-node');<br>
-jest.mock('../../config/redis');<br><br>
-
-describe('ETLService', () => {<br>
-&nbsp;&nbsp;const service = new ETLService();<br><br>
-
-&nbsp;&nbsp;beforeEach(async () => {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;// Clear test database<br>
-&nbsp;&nbsp;&nbsp;&nbsp;await pool.query('DELETE FROM stg1_records');<br>
-&nbsp;&nbsp;});<br><br>
-
-&nbsp;&nbsp;describe('extractFromSalesforce', () => {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;it('should query Salesforce and return records', async () => {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const mockQuery = jest.fn().mockResolvedValue({<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;records: [{ Id: '001', Name: 'Test Account' }]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});<br><br>
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Connection as jest.Mock).mockImplementation(() => ({<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;query: mockQuery<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}));<br><br>
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const records = await service.extractFromSalesforce('conn-123', 'Account', 10);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect(records).toHaveLength(1);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect(mockQuery).toHaveBeenCalledWith('SELECT * FROM Account LIMIT 10');<br>
-&nbsp;&nbsp;&nbsp;&nbsp;});<br>
-&nbsp;&nbsp;});<br><br>
-
-&nbsp;&nbsp;describe('loadToStaging', () => {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;it('should insert records into STG1', async () => {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const records = [<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ source_id: '001', AccountName: 'Acme Corp' },<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ source_id: '002', AccountName: 'Beta Inc' }<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;];<br><br>
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;await service.loadToStaging('migration_1', records);<br><br>
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const result = await pool.query('SELECT COUNT(*) FROM stg1_records WHERE migration_id = $1', ['migration_1']);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect(parseInt(result.rows[0].count)).toBe(2);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;});<br>
-&nbsp;&nbsp;});<br>
-});
+            
+            <div class="content-section">
+                <h2>🔄 Step 2: Create Job Status Polling Endpoint</h2>
+                <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
+                <pre><code>router.get('/projects/:id/analyze/:jobId', async (req, res) => {
+  try {
+    const { id, jobId } = req.params;
+    
+    // Check Redis for job status
+    const jobData = await redisClient.get(`job:${jobId}`);
+    
+    if (!jobData) {
+      return res.status(404).json({ error: 'Job not found' });
+    }
+    
+    const job = JSON.parse(jobData);
+    res.json({
+      jobId: job.id,
+      status: job.status, // 'pending', 'running', 'completed', 'failed'
+      progress: job.progress,
+      result: job.result || null,
+      error: job.error || null
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});</code></pre>
             </div>
-        </div>
-
-        <div class="step-card">
-            <h2>⚙️ Step 3: Test Bull Queue Processing</h2>
-            <p>Create <code>backend/src/__tests__/migrationQueue.test.ts</code>:</p>
-            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;font-size:0.85rem;">
-import { migrationQueue } from '../queues/migrationQueue';<br><br>
-
-describe('Migration Queue', () => {<br>
-&nbsp;&nbsp;afterAll(async () => {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;await migrationQueue.close();<br>
-&nbsp;&nbsp;});<br><br>
-
-&nbsp;&nbsp;it('should add job to queue', async () => {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;const job = await migrationQueue.add({<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mappingId: 'test-mapping',<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;connectionId: 'test-conn'<br>
-&nbsp;&nbsp;&nbsp;&nbsp;});<br><br>
-
-&nbsp;&nbsp;&nbsp;&nbsp;expect(job.id).toBeDefined();<br>
-&nbsp;&nbsp;&nbsp;&nbsp;expect(job.data.mappingId).toBe('test-mapping');<br>
-&nbsp;&nbsp;});<br><br>
-
-&nbsp;&nbsp;it('should track job status', async () => {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;const job = await migrationQueue.add({ mappingId: 'test', connectionId: 'test' });<br>
-&nbsp;&nbsp;&nbsp;&nbsp;const state = await job.getState();<br>
-&nbsp;&nbsp;&nbsp;&nbsp;expect(['waiting', 'active', 'completed']).toContain(state);<br>
-&nbsp;&nbsp;});<br>
-});
+            
+            <div class="content-section">
+                <h2>📊 Step 3: Enhance Field Metadata</h2>
+                <p>Update the schema analysis to include detailed field information:</p>
+                <pre><code>const getDetailedFieldMetadata = (field: any) => {
+  return {
+    name: field.name,
+    label: field.label,
+    type: field.type,
+    length: field.length,
+    precision: field.precision,
+    scale: field.scale,
+    required: !field.nillable,
+    unique: field.unique,
+    externalId: field.externalId,
+    defaultValue: field.defaultValue,
+    picklistValues: field.picklistValues || [],
+    referenceTo: field.referenceTo || [],
+    relationshipName: field.relationshipName,
+    calculated: field.calculated,
+    customField: field.custom
+  };
+};</code></pre>
             </div>
-        </div>
-
-        <div class="step-card">
-            <h2>🚀 Step 4: Run All Tests</h2>
-            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
-cd backend<br><br>
-
-# Run all tests<br>
-npm test<br><br>
-
-# Run with coverage<br>
-npm test -- --coverage<br><br>
-
-# Expected output:<br>
-# Test Suites: 3 passed, 3 total<br>
-# Tests: 10 passed, 10 total<br>
-# Coverage: 90%+
+            
+            <div class="content-section">
+                <h2>📈 Step 4: Create Analysis Summary Endpoint</h2>
+                <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
+                <pre><code>router.get('/projects/:id/analyze/summary', async (req, res) => {
+  try {
+    const projectId = parseInt(req.params.id);
+    
+    // Query database for analysis results
+    const summary = {
+      total_objects: 3,
+      custom_objects: 0,
+      total_fields: 45,
+      custom_fields: 12,
+      readiness_score: 0.92,
+      warnings: ['Custom field Product2.Special__c has no target mapping'],
+      analyzed_at: new Date().toISOString()
+    };
+    
+    res.json(summary);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});</code></pre>
             </div>
-        </div>
-
-        <div class="step-card">
-            <h2>📝 Step 5: Create Week 4 Pull Request</h2>
-            <div style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:6px;font-family:monospace;margin:1rem 0;">
-cd C:\Dev\RevNovaRepository<br><br>
-
-# Create branch for Week 4<br>
-git checkout -b feat/week4-transformation-etl<br><br>
-
-# Add all changes<br>
-git add .<br><br>
-
-# Commit<br>
-git commit -m "feat(backend): Week 4 - Transformation Engine + ETL Pipeline<br><br>
-
-Implemented:<br>
-- Transformation engine with 6 types (Direct, ValueMap, Formula, Concatenate, Lookup, Date)<br>
-- Bull queue for async job processing<br>
-- ETL pipeline (extract from Salesforce, transform, load to STG1)<br>
-- Comprehensive test coverage (90%+)<br><br>
-
-API Endpoints:<br>
-- POST /api/transform/preview - Preview transformations<br>
-- POST /api/jobs - Submit ETL job<br>
-- GET /api/jobs/:jobId - Get job status<br><br>
-
-Testing:<br>
-- Unit tests for all transform types<br>
-- Integration tests for ETL service<br>
-- Queue processing tests<br>
-"<br><br>
-
-# Push branch<br>
-git push origin feat/week4-transformation-etl<br><br>
-
-# Create PR on GitHub with description above
+            
+            <div class="content-section">
+                <h2>✅ Step 5: Test All Endpoints</h2>
+                
+                <p><strong>Test job status polling:</strong></p>
+                <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/job_1699632000000</code></pre>
+                
+                <p><strong>Test analysis summary:</strong></p>
+                <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/summary</code></pre>
+                
+                <div class="success-box">
+                    <strong>✓ Expected Response:</strong> Job status should return progress information, and summary should show aggregate statistics.
+                </div>
             </div>
-        </div>
-
-        <div class="step-card">
-            <h2>✅ End of Day 20 Checklist</h2>
-            <ul>
-                <li>✅ TransformService tests pass (all 6 transform types + edge cases)</li>
-                <li>✅ ETLService tests pass (extract, transform, load)</li>
-                <li>✅ Migration queue tests pass (job submission, status tracking)</li>
-                <li>✅ Test coverage ≥ 90% (<code>npm test -- --coverage</code>)</li>
-                <li>✅ All tests run in &lt;30 seconds</li>
-                <li>✅ External services mocked (jsforce, OpenAI, Redis)</li>
-                <li>✅ Pull request created with detailed description</li>
-                <li>✅ PR includes: What changed, How to test, Test results</li>
-                <li>✅ All Week 4 work committed: <code>feat(backend): Week 4 - Transformation Engine + ETL Pipeline</code></li>
-            </ul>
-        </div>
-        <div class="nav-buttons"><a href="dev1-day19.html" class="nav-btn back">← Back to Day 19</a><a href="dev1-day21.html" class="nav-btn next">Next: Day 21 →</a></div>
-            </main>
+            
+            <div class="content-section">
+                <h2>🎯 End of Day Checklist</h2>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li>☐ Redis client installed and connected</li>
+                    <li>☐ Job status endpoint returns job progress</li>
+                    <li>☐ Enhanced metadata includes picklists and lookups</li>
+                    <li>☐ Summary endpoint aggregates analysis results</li>
+                    <li>☐ All endpoints tested and working</li>
+                    <li>☐ Code committed with meaningful message</li>
+                </ul>
+                
+                <p><strong>Commit Message:</strong></p>
+                <code>feat(backend): add job polling, detailed metadata, and Redis caching</code>
+            </div>
+            
+            <div class="nav-buttons">
+                <a href="dev1-day19.html" class="btn btn-secondary">Previous: Day 19</a>
+                <a href="dev1-day21.html" class="btn">Next: Day 21</a>
+            </div>
+        </main>
     </div>
-    <script src="../script.js"></script>
+    
+    <script>
+        // Collapsible navigation functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle section headers
+            const sectionHeaders = document.querySelectorAll('.nav-section-header');
+            sectionHeaders.forEach(header => {
+                header.addEventListener('click', function() {
+                    const content = this.nextElementSibling;
+                    const isExpanded = this.classList.contains('expanded');
+                    
+                    if (isExpanded) {
+                        this.classList.remove('expanded');
+                        content.classList.remove('expanded');
+                    } else {
+                        this.classList.add('expanded');
+                        content.classList.add('expanded');
+                    }
+                });
+            });
+            
+            // Handle subsection headers
+            const subsectionHeaders = document.querySelectorAll('.nav-subsection-header');
+            subsectionHeaders.forEach(header => {
+                header.addEventListener('click', function() {
+                    const content = this.nextElementSibling;
+                    const isExpanded = this.classList.contains('expanded');
+                    
+                    if (isExpanded) {
+                        this.classList.remove('expanded');
+                        content.classList.remove('expanded');
+                    } else {
+                        this.classList.add('expanded');
+                        content.classList.add('expanded');
+                    }
+                });
+            });
+            
+            // Auto-expand sections containing active page
+            const activeLinks = document.querySelectorAll('.nav-link.active, .nav-subsection-link.active');
+            activeLinks.forEach(link => {
+                // Expand parent section
+                let parent = link.closest('.nav-section-content');
+                if (parent) {
+                    parent.classList.add('expanded');
+                    parent.previousElementSibling.classList.add('expanded');
+                }
+                
+                // Expand parent subsection
+                let subsectionParent = link.closest('.nav-subsection-content');
+                if (subsectionParent) {
+                    subsectionParent.classList.add('expanded');
+                    subsectionParent.previousElementSibling.classList.add('expanded');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
