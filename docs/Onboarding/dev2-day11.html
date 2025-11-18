@@ -5,7 +5,119 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Dev2 Day 11: Mapping Table UI - RevNova Onboarding</title>
     <link rel="stylesheet" href="../styles.css">
-    <style>body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Ubuntu,sans-serif}.main-content{margin-left:280px;padding:2.5rem}.day-header{background:linear-gradient(135deg,#43e97b 0%,#38f9d7 100%);color:#fff;padding:1.5rem;border-radius:10px;margin-bottom:1rem}.step-card{background:#fff;border:1px solid #e0e0e0;padding:1rem;border-radius:8px;margin-bottom:1rem}.nav-buttons{display:flex;justify-content:space-between;margin-top:1.5rem}</style>
+        <style>
+        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
+        
+        .onboarding-layout {
+            display: flex;
+            min-height: calc(100vh - 80px);
+            margin-top: 80px;
+        }
+        
+        .sidebar {
+            width: 280px;
+            background: #f8f9fa;
+            border-right: 1px solid #e0e0e0;
+            padding: 2rem 0;
+            position: fixed;
+            left: 0;
+            top: 80px;
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+            z-index: 100;
+        }
+        
+        .sidebar h3 {
+            padding: 0 1.5rem;
+            font-size: 0.85rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 1.5rem 0 0.5rem;
+        }
+        
+        .sidebar h3:first-child { margin-top: 0; }
+        
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .sidebar ul li a {
+            display: block;
+            padding: 0.6rem 1.5rem;
+            color: #333;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+        
+        .sidebar ul li a:hover {
+            background: #e9ecef;
+            color: #11998e;
+        }
+        
+        .sidebar ul li a.active {
+            background: #667eea;
+            color: #fff;
+            font-weight: 500;
+        }
+        
+        .sidebar ul ul {
+            padding-left: 0;
+        }
+        
+        .sidebar ul ul li a {
+            padding-left: 2.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 3rem;
+            background: #fff;
+            min-width: 0;
+        }
+        
+        .day-header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: #fff;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+        
+        .step-card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                top: 0;
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .onboarding-layout {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 <body>
     <header>
