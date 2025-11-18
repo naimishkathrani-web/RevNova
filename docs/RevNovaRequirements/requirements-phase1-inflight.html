@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Phase 1 - Inflight Data Migration | RevNova Requirements</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
+        .requirements-layout{display:flex;min-height:calc(100vh - 80px);margin-top:80px}
+        .sidebar{width:280px;background:#f8f9fa;border-right:1px solid #e0e0e0;padding:2rem 0;position:fixed;left:0;top:80px;height:calc(100vh - 80px);overflow-y:auto;z-index:100}
+        .sidebar h3{padding:0 1.5rem;font-size:0.85rem;color:#666;text-transform:uppercase;letter-spacing:0.5px;margin:1.5rem 0 0.5rem}
+        .sidebar ul{list-style:none;padding:0;margin:0}
+        .sidebar ul li a{display:block;padding:0.6rem 1.5rem;color:#333;text-decoration:none;font-size:0.95rem;transition:all 0.2s}
+        .sidebar ul li a:hover{background:#e9ecef;color:#11998e}
+        .sidebar ul li a.active{background:#11998e;color:#fff;font-weight:500}
+        .main-content{flex:1;margin-left:280px;padding:3rem;background:#fff;min-width:0}
+        .page-header{background:linear-gradient(135deg,#11998e 0%,#38ef7d 100%);color:#fff;padding:3rem;border-radius:12px;margin-bottom:3rem;box-shadow:0 4px 15px rgba(17,153,142,0.2)}
+        .section-box{background:#fff;border:2px solid #e0e0e0;padding:2.5rem;margin:2rem 0;border-radius:12px}
+        .section-box h3{color:#11998e;margin-top:0;border-bottom:2px solid #38ef7d;padding-bottom:0.5rem}
+        table{width:100%;border-collapse:collapse;margin:1.5rem 0}
+        th,td{border:1px solid #ddd;padding:12px;text-align:left}
+        th{background:linear-gradient(135deg,#11998e 0%,#38ef7d 100%);color:#fff}
+        .badge{display:inline-block;background:#667eea;color:#fff;padding:0.3rem 0.6rem;border-radius:12px;font-size:0.75rem;font-weight:600;margin:0.2rem}
+        .badge-functional{background:#11998e}
+        .badge-technical{background:#e74c3c}
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="nav-left">
+                <a href="../index.html" class="logo"><div class="logo-box">RevNova</div></a>
+            </div>
+        </div>
+    </header>
+
+    <div class="requirements-layout">
+        <aside class="sidebar">
+            <h3>Phase 1 - Migration Steps</h3>
+            <ul>
+                <li><a href="requirements-phase1-connect.html">1. Connection</a></li>
+                <li><a href="requirements-phase1-analyze.html">2. Analysis</a></li>
+                <li><a href="requirements-phase1-mapping.html">3. Mapping</a></li>
+                <li><a href="requirements-phase1-transform.html">4. Transform</a></li>
+                <li><a href="requirements-phase1-validate.html">5. Validate</a></li>
+                <li><a href="requirements-phase1-execute.html">6. Execute</a></li>
+                <li><a href="requirements-phase1-test.html">7. Test</a></li>
+                <li><a href="requirements-phase1-inflight.html" class="active">8. Inflight Data</a></li>
+                <li><a href="requirements-phase1-contracts.html">9. Contracts</a></li>
+                <li><a href="requirements-phase1-subscriptions.html">10. Subscriptions</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="page-header">
+                <h1>📋 Inflight Data Migration</h1>
+                <p>Migrate quotes and orders currently in-progress in the CPQ system</p>
+            </div>
+
+            <section class="section-box">
+                <h3><span class="badge badge-functional">Functional</span> Overview</h3>
+                <p><strong>Purpose:</strong> Migrate quotes and orders that are not yet complete (Draft, Pending, In Negotiation, Awaiting Fulfillment) to preserve business continuity during the migration cutover.</p>
+                
+                <p><strong>Scope:</strong></p>
+                <ul>
+                    <li><strong>Inflight Quotes:</strong> Draft, Pending Approval, In Negotiation status</li>
+                    <li><strong>Inflight Orders:</strong> Pending, In Fulfillment, Activation Pending status</li>
+                </ul>
+
+                <p><strong>Business Impact:</strong></p>
+                <ul>
+                    <li>Prevents loss of sales opportunities during migration</li>
+                    <li>Maintains deal momentum and customer relationships</li>
+                    <li>Preserves approval histories and negotiation notes</li>
+                    <li>Ensures order fulfillment continuity</li>
+                </ul>
+            </section>
+
+            <section class="section-box">
+                <h3><span class="badge badge-functional">Functional</span> Inflight Quotes Requirements</h3>
+                
+                <h4>BR-IQ-001: Quote Status Detection</h4>
+                <table>
+                    <tr><th>ID</th><th>Requirement</th><th>Priority</th></tr>
+                    <tr><td>BR-IQ-001.1</td><td>System SHALL identify all quotes with Status = 'Draft', 'Pending', or 'In Negotiation'</td><td>P0</td></tr>
+                    <tr><td>BR-IQ-001.2</td><td>System SHALL display quote counts by status category</td><td>P0</td></tr>
+                    <tr><td>BR-IQ-001.3</td><td>System SHALL allow user to preview quote list before migration</td><td>P1</td></tr>
+                </table>
+
+                <h4>BR-IQ-002: Quote Line Item Preservation</h4>
+                <table>
+                    <tr><th>ID</th><th>Requirement</th><th>Priority</th></tr>
+                    <tr><td>BR-IQ-002.1</td><td>System SHALL migrate all quote line items with product references</td><td>P0</td></tr>
+                    <tr><td>BR-IQ-002.2</td><td>System SHALL preserve custom pricing, discounts, and manual adjustments</td><td>P0</td></tr>
+                    <tr><td>BR-IQ-002.3</td><td>System SHALL maintain quote line item groupings and bundles</td><td>P1</td></tr>
+                </table>
+
+                <h4>BR-IQ-003: Approval History Migration</h4>
+                <table>
+                    <tr><th>ID</th><th>Requirement</th><th>Priority</th></tr>
+                    <tr><td>BR-IQ-003.1</td><td>System SHALL migrate approval step history with timestamps</td><td>P0</td></tr>
+                    <tr><td>BR-IQ-003.2</td><td>System SHALL preserve approver comments and rejection reasons</td><td>P1</td></tr>
+                    <tr><td>BR-IQ-003.3</td><td>System SHALL maintain pending approval assignments</td><td>P0</td></tr>
+                </table>
+
+                <h4>BR-IQ-004: Opportunity Linking</h4>
+                <table>
+                    <tr><th>ID</th><th>Requirement</th><th>Priority</th></tr>
+                    <tr><td>BR-IQ-004.1</td><td>System SHALL maintain quote-to-opportunity relationships</td><td>P0</td></tr>
+                    <tr><td>BR-IQ-004.2</td><td>System SHALL link quotes to migrated account/contact records</td><td>P0</td></tr>
+                    <tr><td>BR-IQ-004.3</td><td>System SHALL preserve primary quote flags</td><td>P1</td></tr>
+                </table>
+            </section>
+
+            <section class="section-box">
+                <h3><span class="badge badge-functional">Functional</span> Inflight Orders Requirements</h3>
+                
+                <h4>BR-IO-001: Order Status Detection</h4>
+                <table>
+                    <tr><th>ID</th><th>Requirement</th><th>Priority</th></tr>
+                    <tr><td>BR-IO-001.1</td><td>System SHALL identify all orders with Status = 'Pending', 'In Fulfillment', or 'Activation Pending'</td><td>P0</td></tr>
+                    <tr><td>BR-IO-001.2</td><td>System SHALL display order counts by fulfillment stage</td><td>P0</td></tr>
+                    <tr><td>BR-IO-001.3</td><td>System SHALL flag orders with partial fulfillment</td><td>P1</td></tr>
+                </table>
+
+                <h4>BR-IO-002: Order Product Migration</h4>
+                <table>
+                    <tr><th>ID</th><th>Requirement</th><th>Priority</th></tr>
+                    <tr><td>BR-IO-002.1</td><td>System SHALL migrate all order products with quantities and pricing</td><td>P0</td></tr>
+                    <tr><td>BR-IO-002.2</td><td>System SHALL preserve order product fulfillment status</td><td>P0</td></tr>
+                    <tr><td>BR-IO-002.3</td><td>System SHALL maintain shipping addresses and delivery dates</td><td>P0</td></tr>
+                </table>
+
+                <h4>BR-IO-003: Fulfillment Tracking</h4>
+                <table>
+                    <tr><th>ID</th><th>Requirement</th><th>Priority</th></tr>
+                    <tr><td>BR-IO-003.1</td><td>System SHALL migrate fulfillment order references</td><td>P0</td></tr>
+                    <tr><td>BR-IO-003.2</td><td>System SHALL preserve tracking numbers and shipment details</td><td>P1</td></tr>
+                    <tr><td>BR-IO-003.3</td><td>System SHALL maintain fulfillment status history</td><td>P1</td></tr>
+                </table>
+
+                <h4>BR-IO-004: Quote-to-Order Linking</h4>
+                <table>
+                    <tr><th>ID</th><th>Requirement</th><th>Priority</th></tr>
+                    <tr><td>BR-IO-004.1</td><td>System SHALL maintain order-to-quote relationships</td><td>P0</td></tr>
+                    <tr><td>BR-IO-004.2</td><td>System SHALL link orders to account/contact records</td><td>P0</td></tr>
+                </table>
+            </section>
+
+            <section class="section-box">
+                <h3><span class="badge badge-technical">Technical</span> User Interface Requirements</h3>
+                
+                <h4>UI-IQ-001: Inflight Quotes Page Layout</h4>
+                <table>
+                    <tr><th>Element</th><th>Specification</th></tr>
+                    <tr><td>Page Title</td><td>"Inflight Quotes Migration" with quote icon</td></tr>
+                    <tr><td>Summary Grid</td><td>3-column layout: Draft (blue #11998e), Pending Approval (orange #FE9339), In Negotiation (purple #667eea)</td></tr>
+                    <tr><td>Column Content</td><td>Large count number, status label, icon</td></tr>
+                    <tr><td>Migration Options</td><td>Checkbox list: Preserve line items, Preserve approval history, Link to opportunities, Convert pricing rules</td></tr>
+                    <tr><td>Warning Box</td><td>Orange (#FED7AA) background with exclamation icon</td></tr>
+                    <tr><td>Navigation</td><td>"Back to Report" (secondary), "Start Quote Migration" (primary green gradient)</td></tr>
+                </table>
+
+                <h4>UI-IO-001: Inflight Orders Page Layout</h4>
+                <table>
+                    <tr><th>Element</th><th>Specification</th></tr>
+                    <tr><td>Page Title</td><td>"Inflight Orders Migration" with truck/order icon</td></tr>
+                    <tr><td>Summary Grid</td><td>3-column layout: Pending (blue), In Fulfillment (orange), Activation (green)</td></tr>
+                    <tr><td>Migration Options</td><td>Checkbox list: Order products, Fulfillment status, Shipping addresses, Link to accounts</td></tr>
+                    <tr><td>Navigation</td><td>"Back to Quotes", "Start Order Migration" → Contracts</td></tr>
+                </table>
+            </section>
+
+            <section class="section-box">
+                <h3><span class="badge badge-technical">Technical</span> API Specifications</h3>
+                
+                <h4>API-IQ-001: Get Inflight Quotes</h4>
+                <table>
+                    <tr><th>Property</th><th>Value</th></tr>
+                    <tr><td>Endpoint</td><td>POST /api/v1/migration/inflight-quotes/analyze</td></tr>
+                    <tr><td>Request Body</td><td>{ migrationId: string, includeApprovalHistory: boolean }</td></tr>
+                    <tr><td>Response</td><td>{ draftCount: number, pendingCount: number, negotiatingCount: number, quotes: Quote[] }</td></tr>
+                </table>
+
+                <h4>API-IQ-002: Migrate Inflight Quotes</h4>
+                <table>
+                    <tr><th>Property</th><th>Value</th></tr>
+                    <tr><td>Endpoint</td><td>POST /api/v1/migration/inflight-quotes/execute</td></tr>
+                    <tr><td>Request Body</td><td>{ migrationId: string, options: { preserveLineItems, preserveApprovalHistory, linkOpportunities, convertPricingRules } }</td></tr>
+                    <tr><td>Response</td><td>{ jobId: string, status: string, quotesProcessed: number }</td></tr>
+                </table>
+
+                <h4>API-IO-001: Get Inflight Orders</h4>
+                <table>
+                    <tr><th>Property</th><th>Value</th></tr>
+                    <tr><td>Endpoint</td><td>POST /api/v1/migration/inflight-orders/analyze</td></tr>
+                    <tr><td>Response</td><td>{ pendingCount, fulfillmentCount, activationCount, orders: Order[] }</td></tr>
+                </table>
+
+                <h4>API-IO-002: Migrate Inflight Orders</h4>
+                <table>
+                    <tr><th>Property</th><th>Value</th></tr>
+                    <tr><td>Endpoint</td><td>POST /api/v1/migration/inflight-orders/execute</td></tr>
+                    <tr><td>Request Body</td><td>{ migrationId: string, options: { migrateProducts, migrateFulfillment, migrateShipping, linkAccounts } }</td></tr>
+                    <tr><td>Response</td><td>{ jobId: string, status: string, ordersProcessed: number }</td></tr>
+                </table>
+            </section>
+
+            <section class="section-box">
+                <h3><span class="badge badge-technical">Technical</span> Database Schema</h3>
+                
+                <h4>Table: inflight_quote_migrations</h4>
+                <table>
+                    <tr><th>Column</th><th>Type</th><th>Description</th></tr>
+                    <tr><td>id</td><td>UUID</td><td>Primary key</td></tr>
+                    <tr><td>migration_id</td><td>UUID</td><td>Foreign key to migrations table</td></tr>
+                    <tr><td>source_quote_id</td><td>VARCHAR(18)</td><td>Salesforce CPQ Quote ID</td></tr>
+                    <tr><td>target_quote_id</td><td>VARCHAR(18)</td><td>Revenue Cloud Quote ID</td></tr>
+                    <tr><td>quote_status</td><td>VARCHAR(50)</td><td>Draft | Pending | Negotiating</td></tr>
+                    <tr><td>line_item_count</td><td>INTEGER</td><td>Number of line items</td></tr>
+                    <tr><td>approval_steps</td><td>INTEGER</td><td>Number of approval steps</td></tr>
+                    <tr><td>migrated_at</td><td>TIMESTAMP</td><td>Migration completion time</td></tr>
+                </table>
+
+                <h4>Table: inflight_order_migrations</h4>
+                <table>
+                    <tr><th>Column</th><th>Type</th><th>Description</th></tr>
+                    <tr><td>id</td><td>UUID</td><td>Primary key</td></tr>
+                    <tr><td>migration_id</td><td>UUID</td><td>Foreign key to migrations table</td></tr>
+                    <tr><td>source_order_id</td><td>VARCHAR(18)</td><td>Salesforce CPQ Order ID</td></tr>
+                    <tr><td>target_order_id</td><td>VARCHAR(18)</td><td>Revenue Cloud Order ID</td></tr>
+                    <tr><td>order_status</td><td>VARCHAR(50)</td><td>Pending | Fulfillment | Activation</td></tr>
+                    <tr><td>product_count</td><td>INTEGER</td><td>Number of order products</td></tr>
+                    <tr><td>fulfillment_orders</td><td>INTEGER</td><td>Number of linked fulfillment orders</td></tr>
+                    <tr><td>migrated_at</td><td>TIMESTAMP</td><td>Migration completion time</td></tr>
+                </table>
+            </section>
+        </main>
+    </div>
+    <script src="../script.js"></script>
+</body>
+</html>

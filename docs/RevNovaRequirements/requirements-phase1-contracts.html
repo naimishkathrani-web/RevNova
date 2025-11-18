@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Phase 1 - Contracts Migration | RevNova Requirements</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
+        .requirements-layout{display:flex;min-height:calc(100vh - 80px);margin-top:80px}
+        .sidebar{width:280px;background:#f8f9fa;border-right:1px solid #e0e0e0;padding:2rem 0;position:fixed;left:0;top:80px;height:calc(100vh - 80px);overflow-y:auto;z-index:100}
+        .sidebar h3{padding:0 1.5rem;font-size:0.85rem;color:#666;text-transform:uppercase;letter-spacing:0.5px;margin:1.5rem 0 0.5rem}
+        .sidebar ul{list-style:none;padding:0;margin:0}
+        .sidebar ul li a{display:block;padding:0.6rem 1.5rem;color:#333;text-decoration:none;font-size:0.95rem;transition:all 0.2s}
+        .sidebar ul li a:hover{background:#e9ecef;color:#11998e}
+        .sidebar ul li a.active{background:#11998e;color:#fff;font-weight:500}
+        .main-content{flex:1;margin-left:280px;padding:3rem;background:#fff;min-width:0}
+        .page-header{background:linear-gradient(135deg,#11998e 0%,#38ef7d 100%);color:#fff;padding:3rem;border-radius:12px;margin-bottom:3rem}
+        .section-box{background:#fff;border:2px solid #e0e0e0;padding:2.5rem;margin:2rem 0;border-radius:12px}
+        .section-box h3{color:#11998e;margin-top:0;border-bottom:2px solid #38ef7d;padding-bottom:0.5rem}
+        table{width:100%;border-collapse:collapse;margin:1.5rem 0}
+        th,td{border:1px solid #ddd;padding:12px;text-align:left}
+        th{background:linear-gradient(135deg,#11998e 0%,#38ef7d 100%);color:#fff}
+        .badge{display:inline-block;background:#667eea;color:#fff;padding:0.3rem 0.6rem;border-radius:12px;font-size:0.75rem;font-weight:600;margin:0.2rem}
+        .badge-functional{background:#11998e}
+        .badge-technical{background:#e74c3c}
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="nav-left">
+                <a href="../index.html" class="logo"><div class="logo-box">RevNova</div></a>
+            </div>
+        </div>
+    </header>
+
+    <div class="requirements-layout">
+        <aside class="sidebar">
+            <h3>Phase 1 - Migration Steps</h3>
+            <ul>
+                <li><a href="requirements-phase1-connect.html">1. Connection</a></li>
+                <li><a href="requirements-phase1-analyze.html">2. Analysis</a></li>
+                <li><a href="requirements-phase1-mapping.html">3. Mapping</a></li>
+                <li><a href="requirements-phase1-transform.html">4. Transform</a></li>
+                <li><a href="requirements-phase1-validate.html">5. Validate</a></li>
+                <li><a href="requirements-phase1-execute.html">6. Execute</a></li>
+                <li><a href="requirements-phase1-test.html">7. Test</a></li>
+                <li><a href="requirements-phase1-inflight.html">8. Inflight Data</a></li>
+                <li><a href="requirements-phase1-contracts.html" class="active">9. Contracts</a></li>
+                <li><a href="requirements-phase1-subscriptions.html">10. Subscriptions</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="page-header">
+                <h1>📄 Contract to Asset Migration</h1>
+                <p>Migrate CPQ contracts to Revenue Cloud Asset structure for subscription and renewal management</p>
+            </div>
+
+            <section class="section-box">
+                <h3><span class="badge badge-functional">Functional</span> Overview</h3>
+                <p><strong>Purpose:</strong> Convert Salesforce CPQ Contracts into Revenue Cloud Assets to enable proper subscription billing, renewals, amendments, and revenue recognition in the new system.</p>
+                
+                <p><strong>Key Transformation:</strong></p>
+                <ul>
+                    <li><strong>CPQ Contract → Revenue Cloud Asset:</strong> Each contract becomes an Asset record</li>
+                    <li><strong>Contract Line Items → Asset Line Items:</strong> Products under contract become asset components</li>
+                    <li><strong>Renewal Opportunities:</strong> Auto-create renewal opportunities for expiring contracts</li>
+                </ul>
+
+                <p><strong>Business Impact:</strong></p>
+                <ul>
+                    <li>Enables recurring revenue tracking in Revenue Cloud</li>
+                    <li>Preserves contract terms and renewal dates</li>
+                    <li>Maintains customer entitlements and product usage rights</li>
+                    <li>Supports automated renewal quote generation</li>
+                </ul>
+            </section>
+
+            <section class="section-box">
+                <h3><span class="badge badge-functional">Functional</span> Contract Detection & Categorization</h3>
+                
+                <h4>BR-CT-001: Contract Status Detection</h4>
+                <table>
+                    <tr><th>ID</th><th>Requirement</th><th>Priority</th></tr>
+                    <tr><td>BR-CT-001.1</td><td>System SHALL categorize contracts by status: Active, Expiring Soon (90 days), Auto-Renew, Historical</td><td>P0</td></tr>
+                    <tr><td>BR-CT-001.2</td><td>System SHALL display contract counts in each category</td><td>P0</td></tr>
+                    <tr><td>BR-CT-001.3</td><td>System SHALL calculate total contract value (TCV) per category</td><td>P1</td></tr>
+                </table>
+
+                <h4>BR-CT-002: Contract-to-Asset Mapping</h4>
+                <table>
+                    <tr><th>ID</th><th>Requirement</th><th>Priority</th></tr>
+                    <tr><td>BR-CT-002.1</td><td>System SHALL create one Asset record for each active/auto-renew contract</td><td>P0</td></tr>
+                    <tr><td>BR-CT-002.2</td><td>System SHALL set Asset Status based on contract status (Active → Registered, Expired → Obsolete)</td><td>P0</td></tr>
+                    <tr><td>BR-CT-002.3</td><td>System SHALL link Asset to Account from contract</td><td>P0</td></tr>
+                    <tr><td>BR-CT-002.4</td><td>System SHALL copy contract start/end dates to Asset install/purchased dates</td><td>P0</td></tr>
+                </table>
+            </section>
+
+            <section class="section-box">
+                <h3><span class="badge badge-functional">Functional</span> Contract Line Item Migration</h3>
+                
+                <h4>BR-CT-003: Asset Line Item Creation</h4>
+                <table>
+                    <tr><th>ID</th><th>Requirement</th><th>Priority</th></tr>
+                    <tr><td>BR-CT-003.1</td><td>System SHALL create Asset Line Items for each contracted product</td><td>P0</td></tr>
+                    <tr><td>BR-CT-003.2</td><td>System SHALL preserve product quantities and pricing</td><td>P0</td></tr>
+                    <tr><td>BR-CT-003.3</td><td>System SHALL maintain subscription terms (monthly/annual billing)</td><td>P0</td></tr>
+                    <tr><td>BR-CT-003.4</td><td>System SHALL link to Product2 records migrated in earlier steps</td><td>P0</td></tr>
+                </table>
+
+                <h4>BR-CT-004: Renewal Terms Migration</h4>
+                <table>
+                    <tr><th>ID</th><th>Requirement</th><th>Priority</th></tr>
+                    <tr><td>BR-CT-004.1</td><td>System SHALL migrate renewal term (12/24/36 months)</td><td>P0</td></tr>
+                    <tr><td>BR-CT-004.2</td><td>System SHALL preserve auto-renewal flags</td><td>P0</td></tr>
+                    <tr><td>BR-CT-004.3</td><td>System SHALL copy renewal pricing models (flat rate, usage-based, tiered)</td><td>P1</td></tr>
+                    <tr><td>BR-CT-004.4</td><td>System SHALL set renewal notice period (30/60/90 days)</td><td>P1</td></tr>
+                </table>
+            </section>
+
+            <section class="section-box">
+                <h3><span class="badge badge-functional">Functional</span> Amendment & Historical Data</h3>
+                
+                <h4>BR-CT-005: Amendment History</h4>
+                <table>
+                    <tr><th>ID</th><th>Requirement</th><th>Priority</th></tr>
+                    <tr><td>BR-CT-005.1</td><td>System SHALL preserve contract amendment history as Asset change events</td><td>P1</td></tr>
+                    <tr><td>BR-CT-005.2</td><td>System SHALL maintain amendment dates, reasons, and approval records</td><td>P1</td></tr>
+                    <tr><td>BR-CT-005.3</td><td>System SHALL link amendments to original contract/asset</td><td>P1</td></tr>
+                </table>
+
+                <h4>BR-CT-006: Historical Contracts</h4>
+                <table>
+                    <tr><th>ID</th><th>Requirement</th><th>Priority</th></tr>
+                    <tr><td>BR-CT-006.1</td><td>System SHALL migrate expired contracts as historical Assets</td><td>P1</td></tr>
+                    <tr><td>BR-CT-006.2</td><td>System SHALL preserve contract closure reasons</td><td>P2</td></tr>
+                    <tr><td>BR-CT-006.3</td><td>System SHALL allow filtering historical contracts from active view</td><td>P2</td></tr>
+                </table>
+            </section>
+
+            <section class="section-box">
+                <h3><span class="badge badge-technical">Technical</span> User Interface Requirements</h3>
+                
+                <h4>UI-CT-001: Contracts Page Layout</h4>
+                <table>
+                    <tr><th>Element</th><th>Specification</th></tr>
+                    <tr><td>Page Title</td><td>"Contract to Asset Migration" with document icon</td></tr>
+                    <tr><td>Summary Grid</td><td>4-column layout: Active (green #2e844a), Expiring Soon (orange #FE9339), Auto-Renew (blue #11998e), Historical (gray #6c757d)</td></tr>
+                    <tr><td>Column Content</td><td>Large count, status label, TCV value, icon</td></tr>
+                    <tr><td>Migration Options</td><td>Checkbox list: Convert contracts to assets, Preserve line items, Maintain renewal terms, Link to subscriptions, Preserve amendment history</td></tr>
+                    <tr><td>Warning Box</td><td>Orange background (#FED7AA) with border-left orange (#FE9339) 4px: "Contract migration will create corresponding Asset records in Revenue Cloud."</td></tr>
+                    <tr><td>Navigation</td><td>"Back to Orders" (secondary), "Start Contract Migration" (primary green gradient) → Subscriptions</td></tr>
+                </table>
+            </section>
+
+            <section class="section-box">
+                <h3><span class="badge badge-technical">Technical</span> API Specifications</h3>
+                
+                <h4>API-CT-001: Analyze Contracts</h4>
+                <table>
+                    <tr><th>Property</th><th>Value</th></tr>
+                    <tr><td>Endpoint</td><td>POST /api/v1/migration/contracts/analyze</td></tr>
+                    <tr><td>Request</td><td>{ migrationId: string, includeHistorical: boolean }</td></tr>
+                    <tr><td>Response</td><td>{ activeCount, expiringCount, autoRenewCount, historicalCount, totalTCV: number, contracts: Contract[] }</td></tr>
+                </table>
+
+                <h4>API-CT-002: Migrate Contracts to Assets</h4>
+                <table>
+                    <tr><th>Property</th><th>Value</th></tr>
+                    <tr><td>Endpoint</td><td>POST /api/v1/migration/contracts/execute</td></tr>
+                    <tr><td>Request</td><td>{ migrationId: string, options: { convertToAssets, preserveLineItems, maintainRenewalTerms, linkSubscriptions, preserveAmendments } }</td></tr>
+                    <tr><td>Response</td><td>{ jobId: string, status: string, contractsProcessed: number, assetsCreated: number }</td></tr>
+                </table>
+            </section>
+
+            <section class="section-box">
+                <h3><span class="badge badge-technical">Technical</span> Database Schema</h3>
+                
+                <h4>Table: contract_asset_migrations</h4>
+                <table>
+                    <tr><th>Column</th><th>Type</th><th>Description</th></tr>
+                    <tr><td>id</td><td>UUID</td><td>Primary key</td></tr>
+                    <tr><td>migration_id</td><td>UUID</td><td>Foreign key to migrations</td></tr>
+                    <tr><td>source_contract_id</td><td>VARCHAR(18)</td><td>CPQ Contract ID</td></tr>
+                    <tr><td>target_asset_id</td><td>VARCHAR(18)</td><td>Revenue Cloud Asset ID</td></tr>
+                    <tr><td>contract_status</td><td>VARCHAR(50)</td><td>Active | Expiring | AutoRenew | Historical</td></tr>
+                    <tr><td>line_item_count</td><td>INTEGER</td><td>Number of contracted products</td></tr>
+                    <tr><td>total_contract_value</td><td>DECIMAL(18,2)</td><td>TCV</td></tr>
+                    <tr><td>renewal_date</td><td>DATE</td><td>Contract renewal/expiration date</td></tr>
+                    <tr><td>migrated_at</td><td>TIMESTAMP</td><td>Migration timestamp</td></tr>
+                </table>
+            </section>
+        </main>
+    </div>
+    <script src="../script.js"></script>
+</body>
+</html>

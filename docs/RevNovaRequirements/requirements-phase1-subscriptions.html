@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Phase 1 - Subscriptions Migration | RevNova Requirements</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
+        .requirements-layout{display:flex;min-height:calc(100vh - 80px);margin-top:80px}
+        .sidebar{width:280px;background:#f8f9fa;border-right:1px solid #e0e0e0;padding:2rem 0;position:fixed;left:0;top:80px;height:calc(100vh - 80px);overflow-y:auto;z-index:100}
+        .sidebar h3{padding:0 1.5rem;font-size:0.85rem;color:#666;text-transform:uppercase;letter-spacing:0.5px;margin:1.5rem 0 0.5rem}
+        .sidebar ul{list-style:none;padding:0;margin:0}
+        .sidebar ul li a{display:block;padding:0.6rem 1.5rem;color:#333;text-decoration:none;font-size:0.95rem;transition:all 0.2s}
+        .sidebar ul li a:hover{background:#e9ecef;color:#11998e}
+        .sidebar ul li a.active{background:#11998e;color:#fff;font-weight:500}
+        .main-content{flex:1;margin-left:280px;padding:3rem;background:#fff;min-width:0}
+        .page-header{background:linear-gradient(135deg,#11998e 0%,#38ef7d 100%);color:#fff;padding:3rem;border-radius:12px;margin-bottom:3rem}
+        .section-box{background:#fff;border:2px solid #e0e0e0;padding:2.5rem;margin:2rem 0;border-radius:12px}
+        .section-box h3{color:#11998e;margin-top:0;border-bottom:2px solid #38ef7d;padding-bottom:0.5rem}
+        table{width:100%;border-collapse:collapse;margin:1.5rem 0}
+        th,td{border:1px solid #ddd;padding:12px;text-align:left}
+        th{background:linear-gradient(135deg,#11998e 0%,#38ef7d 100%);color:#fff}
+        .badge{display:inline-block;background:#667eea;color:#fff;padding:0.3rem 0.6rem;border-radius:12px;font-size:0.75rem;font-weight:600;margin:0.2rem}
+        .badge-functional{background:#11998e}
+        .badge-technical{background:#e74c3c}
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="nav-left">
+                <a href="../index.html" class="logo"><div class="logo-box">RevNova</div></a>
+            </div>
+        </div>
+    </header>
+
+    <div class="requirements-layout">
+        <aside class="sidebar">
+            <h3>Phase 1 - Migration Steps</h3>
+            <ul>
+                <li><a href="requirements-phase1-connect.html">1. Connection</a></li>
+                <li><a href="requirements-phase1-analyze.html">2. Analysis</a></li>
+                <li><a href="requirements-phase1-mapping.html">3. Mapping</a></li>
+                <li><a href="requirements-phase1-transform.html">4. Transform</a></li>
+                <li><a href="requirements-phase1-validate.html">5. Validate</a></li>
+                <li><a href="requirements-phase1-execute.html">6. Execute</a></li>
+                <li><a href="requirements-phase1-test.html">7. Test</a></li>
+                <li><a href="requirements-phase1-inflight.html">8. Inflight Data</a></li>
+                <li><a href="requirements-phase1-contracts.html">9. Contracts</a></li>
+                <li><a href="requirements-phase1-subscriptions.html" class="active">10. Subscriptions</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="page-header">
+                <h1>🔄 Subscription Migration - Final Phase 1 Step</h1>
+                <p>Migrate recurring subscription models to Revenue Cloud for automated billing and revenue recognition</p>
+            </div>
+
+            <section class="section-box">
+                <h3><span class="badge badge-functional">Functional</span> Overview</h3>
+                <p><strong>Purpose:</strong> Migrate active subscription models from CPQ to Revenue Cloud to enable automated recurring billing, usage-based pricing, and subscription lifecycle management (amendments, upgrades, cancellations).</p>
+                
+                <p><strong>Scope:</strong></p>
+                <ul>
+                    <li><strong>Active Subscriptions:</strong> Currently billing customers (monthly/annual/custom)</li>
+                    <li><strong>Pending Changes:</strong> Subscription amendments awaiting next billing cycle</li>
+                    <li><strong>Recurring Revenue:</strong> MRR/ARR tracking and forecasting</li>
+                    <li><strong>Cancelled Subscriptions:</strong> Historical data for churn analysis</li>
+                </ul>
+
+                <p><strong>Business Impact:</strong></p>
+                <ul>
+                    <li>Enables automated recurring invoice generation</li>
+                    <li>Supports usage-based pricing models (metered billing)</li>
+                    <li>Maintains subscription revenue recognition schedules</li>
+                    <li>Preserves customer subscription history and entitlements</li>
+                    <li><strong>COMPLETES Phase 1 MVP migration</strong></li>
+                </ul>
+            </section>
+
+            <section class="section-box">
+                <h3><span class="badge badge-functional">Functional</span> Subscription Detection & Categorization</h3>
+                
+                <h4>BR-SB-001: Subscription Status Detection</h4>
+                <table>
+                    <tr><th>ID</th><th>Requirement</th><th>Priority</th></tr>
+                    <tr><td>BR-SB-001.1</td><td>System SHALL categorize subscriptions: Active, Pending Changes, Recurring Revenue, Cancelled</td><td>P0</td></tr>
+                    <tr><td>BR-SB-001.2</td><td>System SHALL display subscription counts in each category</td><td>P0</td></tr>
+                    <tr><td>BR-SB-001.3</td><td>System SHALL calculate total MRR (Monthly Recurring Revenue) and ARR (Annual)</td><td>P0</td></tr>
+                </table>
+
+                <h4>BR-SB-002: Subscription Product Migration</h4>
+                <table>
+                    <tr><th>ID</th><th>Requirement</th><th>Priority</th></tr>
+                    <tr><td>BR-SB-002.1</td><td>System SHALL migrate subscription products with billing frequency (monthly/quarterly/annual)</td><td>P0</td></tr>
+                    <tr><td>BR-SB-002.2</td><td>System SHALL preserve subscription pricing (per-unit, tiered, volume)</td><td>P0</td></tr>
+                    <tr><td>BR-SB-002.3</td><td>System SHALL link subscriptions to migrated Product2 records</td><td>P0</td></tr>
+                    <tr><td>BR-SB-002.4</td><td>System SHALL maintain subscription quantities and terms</td><td>P0</td></tr>
+                </table>
+            </section>
+
+            <section class="section-box">
+                <h3><span class="badge badge-functional">Functional</span> Billing & Payment Schedules</h3>
+                
+                <h4>BR-SB-003: Billing Schedule Migration</h4>
+                <table>
+                    <tr><th>ID</th><th>Requirement</th><th>Priority</th></tr>
+                    <tr><td>BR-SB-003.1</td><td>System SHALL migrate billing schedules (next billing date, billing cycle)</td><td>P0</td></tr>
+                    <tr><td>BR-SB-003.2</td><td>System SHALL preserve billing frequency settings</td><td>P0</td></tr>
+                    <tr><td>BR-SB-003.3</td><td>System SHALL maintain payment method references</td><td>P1</td></tr>
+                    <tr><td>BR-SB-003.4</td><td>System SHALL copy invoice preferences (auto-send, billing contact)</td><td>P1</td></tr>
+                </table>
+
+                <h4>BR-SB-004: Usage-Based Pricing</h4>
+                <table>
+                    <tr><th>ID</th><th>Requirement</th><th>Priority</th></tr>
+                    <tr><td>BR-SB-004.1</td><td>System SHALL migrate usage-based pricing models (per-transaction, per-API-call, per-user)</td><td>P0</td></tr>
+                    <tr><td>BR-SB-004.2</td><td>System SHALL preserve usage tracking settings and thresholds</td><td>P1</td></tr>
+                    <tr><td>BR-SB-004.3</td><td>System SHALL maintain historical usage data for trending</td><td>P1</td></tr>
+                </table>
+            </section>
+
+            <section class="section-box">
+                <h3><span class="badge badge-functional">Functional</span> Contract & Amendment Linking</h3>
+                
+                <h4>BR-SB-005: Contract Linking</h4>
+                <table>
+                    <tr><th>ID</th><th>Requirement</th><th>Priority</th></tr>
+                    <tr><td>BR-SB-005.1</td><td>System SHALL link subscriptions to migrated Asset/Contract records</td><td>P0</td></tr>
+                    <tr><td>BR-SB-005.2</td><td>System SHALL maintain master subscription and child subscription relationships</td><td>P1</td></tr>
+                    <tr><td>BR-SB-005.3</td><td>System SHALL preserve subscription-to-account linkages</td><td>P0</td></tr>
+                </table>
+
+                <h4>BR-SB-006: Renewal & Amendment Terms</h4>
+                <table>
+                    <tr><th>ID</th><th>Requirement</th><th>Priority</th></tr>
+                    <tr><td>BR-SB-006.1</td><td>System SHALL migrate renewal terms (auto-renew flags, renewal dates)</td><td>P0</td></tr>
+                    <tr><td>BR-SB-006.2</td><td>System SHALL preserve pending amendments (upgrades, downgrades, add-ons)</td><td>P0</td></tr>
+                    <tr><td>BR-SB-006.3</td><td>System SHALL maintain amendment effective dates</td><td>P0</td></tr>
+                    <tr><td>BR-SB-006.4</td><td>System SHALL preserve historical amendments for audit trail</td><td>P1</td></tr>
+                </table>
+            </section>
+
+            <section class="section-box">
+                <h3><span class="badge badge-technical">Technical</span> User Interface Requirements</h3>
+                
+                <h4>UI-SB-001: Subscriptions Page Layout</h4>
+                <table>
+                    <tr><th>Element</th><th>Specification</th></tr>
+                    <tr><td>Page Title</td><td>"Subscription Migration - Final Step" with sync/refresh icon</td></tr>
+                    <tr><td>Summary Grid</td><td>4-column layout: Active (green #2e844a), Pending Changes (orange #FE9339), Recurring Revenue (blue #11998e), Cancelled (red #e74c3c)</td></tr>
+                    <tr><td>Column Content</td><td>Large count, status label, MRR/ARR value, icon</td></tr>
+                    <tr><td>Migration Options</td><td>Checkbox list (6 items): Migrate subscription products, Preserve billing schedules, Link to contracts, Maintain renewal terms, Migrate usage-based pricing models, Preserve historical amendments</td></tr>
+                    <tr><td>Warning Box</td><td>Orange background (#FED7AA) with border (#FE9339): "This is the final step of Phase 1 migration. After completion, your full CPQ data will be available in Revenue Cloud."</td></tr>
+                    <tr><td>Navigation</td><td>"Back to Contracts" (secondary), "Start Subscription Migration" (primary green gradient) → Final Report</td></tr>
+                </table>
+            </section>
+
+            <section class="section-box">
+                <h3><span class="badge badge-technical">Technical</span> API Specifications</h3>
+                
+                <h4>API-SB-001: Analyze Subscriptions</h4>
+                <table>
+                    <tr><th>Property</th><th>Value</th></tr>
+                    <tr><td>Endpoint</td><td>POST /api/v1/migration/subscriptions/analyze</td></tr>
+                    <tr><td>Request</td><td>{ migrationId: string, includeCancelled: boolean }</td></tr>
+                    <tr><td>Response</td><td>{ activeCount, pendingChangesCount, recurringRevenueCount, cancelledCount, totalMRR: number, totalARR: number, subscriptions: Subscription[] }</td></tr>
+                </table>
+
+                <h4>API-SB-002: Migrate Subscriptions</h4>
+                <table>
+                    <tr><th>Property</th><th>Value</th></tr>
+                    <tr><td>Endpoint</td><td>POST /api/v1/migration/subscriptions/execute</td></tr>
+                    <tr><td>Request</td><td>{ migrationId: string, options: { migrateProducts, preserveBillingSchedules, linkContracts, maintainRenewalTerms, migrateUsageBasedPricing, preserveAmendments } }</td></tr>
+                    <tr><td>Response</td><td>{ jobId: string, status: string, subscriptionsProcessed: number, phase1Complete: boolean }</td></tr>
+                </table>
+
+                <h4>API-SB-003: Generate Final Report</h4>
+                <table>
+                    <tr><th>Property</th><th>Value</th></tr>
+                    <tr><td>Endpoint</td><td>GET /api/v1/migration/{migrationId}/final-report</td></tr>
+                    <tr><td>Response</td><td>{ migrationId, completionDate, totalProducts, totalQuotes, totalOrders, totalContracts, totalSubscriptions, successRate, phase1Status: "COMPLETE" }</td></tr>
+                </table>
+            </section>
+
+            <section class="section-box">
+                <h3><span class="badge badge-technical">Technical</span> Database Schema</h3>
+                
+                <h4>Table: subscription_migrations</h4>
+                <table>
+                    <tr><th>Column</th><th>Type</th><th>Description</th></tr>
+                    <tr><td>id</td><td>UUID</td><td>Primary key</td></tr>
+                    <tr><td>migration_id</td><td>UUID</td><td>Foreign key to migrations</td></tr>
+                    <tr><td>source_subscription_id</td><td>VARCHAR(18)</td><td>CPQ Subscription ID</td></tr>
+                    <tr><td>target_subscription_id</td><td>VARCHAR(18)</td><td>Revenue Cloud Subscription ID</td></tr>
+                    <tr><td>subscription_status</td><td>VARCHAR(50)</td><td>Active | PendingChanges | Cancelled</td></tr>
+                    <tr><td>billing_frequency</td><td>VARCHAR(20)</td><td>Monthly | Quarterly | Annual</td></tr>
+                    <tr><td>mrr_amount</td><td>DECIMAL(18,2)</td><td>Monthly Recurring Revenue</td></tr>
+                    <tr><td>arr_amount</td><td>DECIMAL(18,2)</td><td>Annual Recurring Revenue</td></tr>
+                    <tr><td>next_billing_date</td><td>DATE</td><td>Next scheduled billing</td></tr>
+                    <tr><td>linked_contract_id</td><td>VARCHAR(18)</td><td>Associated contract/asset</td></tr>
+                    <tr><td>migrated_at</td><td>TIMESTAMP</td><td>Migration timestamp</td></tr>
+                </table>
+            </section>
+
+            <section class="section-box">
+                <h3><span class="badge badge-functional">Functional</span> Phase 1 Completion</h3>
+                <p><strong>Success Criteria:</strong></p>
+                <ul>
+                    <li>✅ Core product catalog migrated (products, price books, pricing rules)</li>
+                    <li>✅ Inflight business data migrated (quotes, orders)</li>
+                    <li>✅ Contracts converted to Assets</li>
+                    <li>✅ Subscriptions migrated with billing schedules</li>
+                    <li>✅ All relationships preserved (account, product, pricing)</li>
+                    <li>✅ Zero data loss validation passed</li>
+                </ul>
+
+                <p><strong>Post-Migration Actions:</strong></p>
+                <ol>
+                    <li>Review Final Report with migration summary</li>
+                    <li>Test Revenue Cloud functionality with migrated data</li>
+                    <li>Schedule user training sessions</li>
+                    <li>Plan production cutover date</li>
+                    <li><em>Optional:</em> Enable Phase 2 (AI Product Configuration)</li>
+                </ol>
+            </section>
+        </main>
+    </div>
+    <script src="../script.js"></script>
+</body>
+</html>
