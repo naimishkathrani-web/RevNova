@@ -1,380 +1,765 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>RevNova Developer Onboarding - Step by Step Guide</title>
-    <link rel="stylesheet" href="../styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RevNova Developer Onboarding - Home</title>
     <style>
-        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
-        
-        .onboarding-layout {
-            display: flex;
-            min-height: calc(100vh - 80px);
-            margin-top: 80px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
         
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Salesforce Sans', Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #181818;
+            background: #fff;
+        }
+        
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 0 2rem;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        /* Layout */
+        .page-container {
+            display: flex;
+            margin-top: 60px;
+            min-height: calc(100vh - 60px);
+        }
+        
+        /* Sidebar - Salesforce Style */
         .sidebar {
             width: 280px;
-            background: #f8f9fa;
-            border-right: 1px solid #e0e0e0;
-            padding: 2rem 0;
+            background: #f4f6f9;
+            border-right: 1px solid #c9c9c9;
             position: fixed;
             left: 0;
-            top: 80px;
-            height: calc(100vh - 80px);
+            top: 60px;
+            bottom: 0;
             overflow-y: auto;
             z-index: 100;
         }
         
-        .sidebar h3 {
-            padding: 0 1.5rem;
-            font-size: 0.85rem;
-            color: #666;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin: 1.5rem 0 0.5rem;
+        .sidebar::-webkit-scrollbar {
+            width: 8px;
         }
         
-        .sidebar h3:first-child { margin-top: 0; }
-        
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
+        .sidebar::-webkit-scrollbar-track {
+            background: #f4f6f9;
         }
         
-        .sidebar ul li a {
-            display: block;
-            padding: 0.6rem 1.5rem;
-            color: #333;
-            text-decoration: none;
-            font-size: 0.95rem;
-            transition: all 0.2s;
-        }
-        
-        .sidebar ul li a:hover {
-            background: #e9ecef;
-            color: #667eea;
-        }
-        
-        .sidebar ul li a.active {
-            background: #667eea;
-            color: #fff;
-            font-weight: 500;
-        }
-        
-        .sidebar ul ul {
-            padding-left: 0;
-        }
-        
-        .sidebar ul ul li a {
-            padding-left: 2.5rem;
-            font-size: 0.9rem;
-        }
-        
-        .main-content {
-            flex: 1;
-            margin-left: 280px;
-            padding: 3rem;
-            background: #fff;
-            min-width: 0;
-        }
-        
-        .hero {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #fff;
-            padding: 3rem;
-            border-radius: 12px;
-            margin-bottom: 2rem;
-        }
-        
-        .hero h1 {
-            margin: 0 0 1rem 0;
-            font-size: 2.5rem;
-        }
-        
-        .hero p {
-            margin: 0;
-            font-size: 1.2rem;
-            opacity: 0.95;
-        }
-        
-        .card {
-            background: #fff;
-            border: 1px solid #e0e0e0;
-            border-radius: 12px;
-            padding: 2rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .card h2 {
-            color: #667eea;
-            margin: 0 0 1rem 0;
-        }
-        
-        .info-box {
-            background: #e7f3ff;
-            border-left: 4px solid #0066cc;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #c9c9c9;
             border-radius: 4px;
         }
         
-        .dev-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin: 2rem 0;
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
         }
         
-        .dev-card {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        /* Sidebar Navigation */
+        .sidebar-nav {
+            padding: 1rem 0;
+        }
+        
+        .nav-section {
+            margin-bottom: 0.25rem;
+        }
+        
+        .nav-section-header {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            font-size: 13px;
+            font-weight: 600;
+            color: #181818;
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        
+        .nav-section-header:hover {
+            background: #e5e5e5;
+        }
+        
+        .nav-section-header.expanded {
+            background: #e5e5e5;
+        }
+        
+        .nav-section-icon {
+            width: 16px;
+            height: 16px;
+            margin-right: 0.5rem;
+            transition: transform 0.2s;
+            flex-shrink: 0;
+        }
+        
+        .nav-section-header.expanded .nav-section-icon {
+            transform: rotate(90deg);
+        }
+        
+        .nav-section-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .nav-section-content.expanded {
+            max-height: 2000px;
+        }
+        
+        .nav-link {
+            display: block;
+            padding: 0.5rem 1rem 0.5rem 2.5rem;
+            color: #006dcc;
+            text-decoration: none;
+            font-size: 13px;
+            transition: background 0.15s;
+        }
+        
+        .nav-link:hover {
+            background: #e5e5e5;
+            text-decoration: underline;
+        }
+        
+        .nav-link.active {
+            background: #1589ee;
             color: #fff;
-            padding: 2rem;
-            border-radius: 12px;
-            text-align: center;
+            font-weight: 600;
         }
         
-        .dev-card.dev1 {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        .nav-link.active:hover {
+            background: #0b5cab;
+            text-decoration: none;
         }
         
-        .dev-card.dev2 {
-            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        /* Subsection (weeks) */
+        .nav-subsection {
+            margin: 0.25rem 0;
         }
         
-        .dev-card.dev3 {
-            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        .nav-subsection-header {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem 0.5rem 2.5rem;
+            font-size: 13px;
+            font-weight: 500;
+            color: #181818;
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            transition: background 0.15s;
         }
         
-        .dev-card h3 {
-            margin: 0 0 0.5rem 0;
+        .nav-subsection-header:hover {
+            background: #e5e5e5;
+        }
+        
+        .nav-subsection-header.expanded {
+            background: #e5e5e5;
+        }
+        
+        .nav-subsection-icon {
+            width: 12px;
+            height: 12px;
+            margin-right: 0.5rem;
+            transition: transform 0.2s;
+            flex-shrink: 0;
+        }
+        
+        .nav-subsection-header.expanded .nav-subsection-icon {
+            transform: rotate(90deg);
+        }
+        
+        .nav-subsection-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .nav-subsection-content.expanded {
+            max-height: 1000px;
+        }
+        
+        .nav-subsection-link {
+            display: block;
+            padding: 0.4rem 1rem 0.4rem 3.5rem;
+            color: #006dcc;
+            text-decoration: none;
+            font-size: 13px;
+            transition: background 0.15s;
+        }
+        
+        .nav-subsection-link:hover {
+            background: #e5e5e5;
+            text-decoration: underline;
+        }
+        
+        .nav-subsection-link.active {
+            background: #1589ee;
+            color: #fff;
+            font-weight: 600;
+        }
+        
+        .nav-subsection-link.active:hover {
+            background: #0b5cab;
+            text-decoration: none;
+        }
+        
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            padding: 2rem 3rem;
+            max-width: 1200px;
+            flex: 1;
+        }
+        
+        .breadcrumb {
+            font-size: 12px;
+            color: #706e6b;
+            margin-bottom: 1rem;
+        }
+        
+        .breadcrumb a {
+            color: #006dcc;
+            text-decoration: none;
+        }
+        
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        .page-title {
+            font-size: 2rem;
+            font-weight: 300;
+            color: #181818;
+            margin-bottom: 0.5rem;
+        }
+        
+        .page-subtitle {
+            font-size: 1rem;
+            color: #706e6b;
+            margin-bottom: 2rem;
+        }
+        
+        .content-section {
+            margin-bottom: 2rem;
+            background: #fff;
+            border: 1px solid #c9c9c9;
+            border-radius: 4px;
+            padding: 1.5rem;
+        }
+        
+        .content-section h2 {
             font-size: 1.5rem;
+            font-weight: 400;
+            color: #181818;
+            margin-bottom: 1rem;
         }
         
-        .dev-card p {
-            margin: 0.5rem 0;
-            opacity: 0.95;
+        .content-section h3 {
+            font-size: 1.2rem;
+            font-weight: 400;
+            color: #181818;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
         }
         
-        .dev-card .btn {
+        .content-section p {
+            margin-bottom: 1rem;
+            line-height: 1.7;
+        }
+        
+        .content-section ul,
+        .content-section ol {
+            margin-bottom: 1rem;
+            padding-left: 2rem;
+        }
+        
+        .content-section li {
+            margin-bottom: 0.5rem;
+        }
+        
+        code {
+            background: #f4f6f9;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Courier New', Consolas, monospace;
+            font-size: 0.9em;
+            color: #c7254e;
+        }
+        
+        pre {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        
+        pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+            font-size: 0.85em;
+        }
+        
+        .info-box {
+            background: #f0f9ff;
+            border-left: 4px solid #1589ee;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        
+        .warning-box {
+            background: #fffbf0;
+            border-left: 4px solid #ffb75d;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        
+        .success-box {
+            background: #f0fff4;
+            border-left: 4px solid #45c65a;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #c9c9c9;
+        }
+        
+        .btn {
             display: inline-block;
-            margin-top: 1rem;
-            padding: 0.75rem 1.5rem;
-            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            background: #0176d3;
             color: #fff;
             text-decoration: none;
-            border-radius: 6px;
+            border-radius: 4px;
+            font-size: 14px;
             font-weight: 500;
-            transition: all 0.3s;
+            transition: background 0.15s;
         }
         
-        .dev-card .btn:hover {
-            background: rgba(255, 255, 255, 0.3);
+        .btn:hover {
+            background: #014486;
+        }
+        
+        .btn-secondary {
+            background: #f4f6f9;
+            color: #0176d3;
+            border: 1px solid #c9c9c9;
+        }
+        
+        .btn-secondary:hover {
+            background: #e5e5e5;
         }
         
         @media (max-width: 768px) {
             .sidebar {
-                display: none;
+                width: 100%;
+                position: relative;
+                top: 0;
+                border-right: none;
+                border-bottom: 1px solid #c9c9c9;
             }
             
             .main-content {
                 margin-left: 0;
+                padding: 1.5rem;
             }
         }
     </style>
 </head>
 <body>
     <header>
-        <div class="container header-container">
-            <div class="nav-left">
-                <a href="../index.html" class="logo"><div class="logo-box">RevNova</div></a>
-                <nav class="main-nav">
-                    <ul>
-                        <li><a href="onboarding-home.html" class="active">Onboarding</a></li>
-                        <li><a href="../about-revnova.html">About RevNova</a></li>
-                        <li><a href="../features.html">Features</a></li>
-                        <li><a href="../pricing.html">Pricing</a></li>
-                        <li><a href="../RevNovaRequirements/requirements-home.html">RevNova Requirements</a></li>
-                        <li><a href="../contact.html">Contact</a></li>
-                    </ul>
-                </nav>
-            </div>
-            <div class="header-right">
-                <div class="country-selector"><span class="fi fi-us"></span></div>
-                <a href="../login.html" class="btn btn-login">Login</a>
-            </div>
-        </div>
+        <h1>RevNova Developer Onboarding</h1>
     </header>
-
-    <div class="onboarding-layout">
-        <!-- Left Sidebar Navigation -->
+    
+    <div class="page-container">
         <aside class="sidebar">
-            <h3>Getting Started</h3>
-            <ul>
-                <li><a href="onboarding-home.html" class="active">Onboarding Home</a></li>
-                <li><a href="onboarding-overview.html">Project Overview</a></li>
-                <li><a href="manual-repo-setup.html">Manual Repository Setup</a></li>
-                <li><a href="repo-setup-guide.html">Automated Setup Guide</a></li>
-            </ul>
-            
-            <h3>Developer 1: Backend & Database</h3>
-            <ul>
-                <li><a href="dev1-week1.html">Week 1: Setup & Database Foundation</a>
-                    <ul>
-                        <li><a href="dev1-day01.html">Day 1: Workstation Setup</a></li>
-                        <li><a href="dev1-day02.html">Day 2: Database Tables (STG1)</a></li>
-                        <li><a href="dev1-day03.html">Day 3: Database Tables (STG2)</a></li>
-                        <li><a href="dev1-day04.html">Day 4: Database Tables (EAV)</a></li>
-                        <li><a href="dev1-day05.html">Day 5: First API Endpoint</a></li>
-                    </ul>
-                </li>
-                <li><a href="dev1-week2.html">Week 2: Schema Analysis APIs</a>
-                    <ul>
-                        <li><a href="dev1-day06.html">Day 6: Schema Analysis API (Part 1)</a></li>
-                        <li><a href="dev1-day07.html">Day 7: Schema Analysis API (Part 2)</a></li>
-                        <li><a href="dev1-day08.html">Day 8: Metadata Extraction</a></li>
-                        <li><a href="dev1-day09.html">Day 9: Relationship Detection</a></li>
-                        <li><a href="dev1-day10.html">Day 10: Week 2 Testing & PR</a></li>
-                    </ul>
-                </li>
-                <li><a href="dev1-week3.html">Week 3: Field Mapping & AI</a>
-                    <ul>
-                        <li><a href="dev1-day11.html">Day 11: Field Mapping API (Part 1)</a></li>
-                        <li><a href="dev1-day12.html">Day 12: Field Mapping API (Part 2)</a></li>
-                        <li><a href="dev1-day13.html">Day 13: AI Mapping Integration</a></li>
-                        <li><a href="dev1-day14.html">Day 14: Mapping Validation</a></li>
-                        <li><a href="dev1-day15.html">Day 15: Week 3 Testing & PR</a></li>
-                    </ul>
-                </li>
-                <li><a href="dev1-week4.html">Week 4: Data Transformation & Queue</a>
-                    <ul>
-                        <li><a href="dev1-day16.html">Day 16: Transformation API (Part 1)</a></li>
-                        <li><a href="dev1-day17.html">Day 17: Transformation API (Part 2)</a></li>
-                        <li><a href="dev1-day18.html">Day 18: Bull Queue Setup</a></li>
-                        <li><a href="dev1-day19.html">Day 19: ETL Job Processing</a></li>
-                        <li><a href="dev1-day20.html">Day 20: Week 4 Testing & PR</a></li>
-                    </ul>
-                </li>
-                <li><a href="dev1-week5.html">Week 5: Migration Execution & Testing</a>
-                    <ul>
-                        <li><a href="dev1-day21.html">Day 21: Migration Execution API</a></li>
-                        <li><a href="dev1-day22.html">Day 22: Error Handling & Rollback</a></li>
-                        <li><a href="dev1-day23.html">Day 23: Testing Reports API</a></li>
-                        <li><a href="dev1-day24.html">Day 24: Integration Testing</a></li>
-                        <li><a href="dev1-day25.html">Day 25: Final Testing & Documentation</a></li>
-                    </ul>
-                </li>
-            </ul>
-            
-            <h3>Developer 2: Frontend & React</h3>
-            <ul>
-                <li><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 1: React Setup & Components</span>
-                    <ul>
-                        <li><a href="dev2-day01.html">Day 1: React Setup</a></li>
-                        <li><a href="dev2-day02.html">Day 2: Component Library</a></li>
-                        <li><a href="dev2-day03.html">Day 3: Wizard Layout & Routing</a></li>
-                        <li><a href="dev2-day04.html">Day 4: State Management</a></li>
-                        <li><a href="dev2-day05.html">Day 5: API Client & Week 1 PR</a></li>
-                    </ul>
-                </li>
-                <li><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 2: Connection Wizard Page</span>
-                    <ul>
-                        <li><a href="dev2-day06.html">Day 6: Connection Form UI</a></li>
-                        <li><a href="dev2-day07.html">Day 7: OAuth Integration</a></li>
-                        <li><a href="dev2-day08.html">Day 8: Connection Testing</a></li>
-                        <li><a href="dev2-day09.html">Day 9: Error Handling</a></li>
-                        <li><a href="dev2-day10.html">Day 10: Week 2 Testing & PR</a></li>
-                    </ul>
-                </li>
-                <li><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 3: Field Mapping UI</span>
-                    <ul>
-                        <li><a href="dev2-day11.html">Day 11: Mapping Table UI</a></li>
-                        <li><a href="dev2-day12.html">Day 12: AI Suggestions Display</a></li>
-                        <li><a href="dev2-day13.html">Day 13: Drag & Drop Mapping</a></li>
-                        <li><a href="dev2-day14.html">Day 14: Bulk Operations</a></li>
-                        <li><a href="dev2-day15.html">Day 15: Week 3 Testing & PR</a></li>
-                    </ul>
-                </li>
-                <li><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 4: Transformation & Validation UI</span>
-                    <ul>
-                        <li><a href="dev2-day16.html">Day 16: Transformation Preview UI</a></li>
-                        <li><a href="dev2-day17.html">Day 17: Data Tables & Pagination</a></li>
-                        <li><a href="dev2-day18.html">Day 18: Validation Results Display</a></li>
-                        <li><a href="dev2-day19.html">Day 19: Error Display</a></li>
-                        <li><a href="dev2-day20.html">Day 20: Week 4 Testing & PR</a></li>
-                    </ul>
-                </li>
-                <li><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 5: Execution & Test Reports</span>
-                    <ul>
-                        <li><a href="dev2-day21.html">Day 21: Execution Progress UI</a></li>
-                        <li><a href="dev2-day22.html">Day 22: Real-time Updates</a></li>
-                        <li><a href="dev2-day23.html">Day 23: Test Reports & Comparison</a></li>
-                        <li><a href="dev2-day24.html">Day 24: Export & UI Testing</a></li>
-                        <li><a href="dev2-day25.html">Day 25: Final Polish & Documentation</a></li>
-                    </ul>
-                </li>
-            </ul>
-            
-            <h3>Developer 3: DevOps & QA</h3>
-            <ul>
-                <li><a href="dev3-week1.html">Week 1: CI/CD Pipeline & Docker</a>
-                    <ul>
-                        <li><a href="dev3-day01.html">Day 1: GitHub Actions Setup</a></li>
-                        <li><a href="dev3-day02.html">Day 2: CI Pipeline (Lint & Test)</a></li>
-                        <li><a href="dev3-day03.html">Day 3: Docker for Backend</a></li>
-                        <li><a href="dev3-day04.html">Day 4: Docker for Frontend</a></li>
-                        <li><a href="dev3-day05.html">Day 5: Code Coverage & Week 1 PR</a></li>
-                    </ul>
-                </li>
-                <li><a href="dev3-week2.html">Week 2: Local Dev Environment</a>
-                    <ul>
-                        <li><a href="dev3-day06.html">Day 6: Docker Compose Setup</a></li>
-                        <li><a href="dev3-day07.html">Day 7: PostgreSQL & Redis</a></li>
-                        <li><a href="dev3-day08.html">Day 8: Database Migrations</a></li>
-                        <li><a href="dev3-day09.html">Day 9: Seed Data Scripts</a></li>
-                        <li><a href="dev3-day10.html">Day 10: Bull Queue & Week 2 PR</a></li>
-                    </ul>
-                </li>
-                <li><a href="dev3-week3.html">Week 3: Integration & E2E Testing</a>
-                    <ul>
-                        <li><a href="dev3-day11.html">Day 11: API Integration Tests (Part 1)</a></li>
-                        <li><a href="dev3-day12.html">Day 12: API Integration Tests (Part 2)</a></li>
-                        <li><a href="dev3-day13.html">Day 13: Test Database Setup</a></li>
-                        <li><a href="dev3-day14.html">Day 14: Playwright Setup</a></li>
-                        <li><a href="dev3-day15.html">Day 15: E2E Tests & Week 3 PR</a></li>
-                    </ul>
-                </li>
-                <li><a href="dev3-week4.html">Week 4: Deployment Automation</a>
-                    <ul>
-                        <li><a href="dev3-day16.html">Day 16: Deploy to Dev Workflow</a></li>
-                        <li><a href="dev3-day17.html">Day 17: Secrets Management</a></li>
-                        <li><a href="dev3-day18.html">Day 18: Health Checks</a></li>
-                        <li><a href="dev3-day19.html">Day 19: Deploy to Test Workflow</a></li>
-                        <li><a href="dev3-day20.html">Day 20: Week 4 Testing & PR</a></li>
-                    </ul>
-                </li>
-                <li><a href="dev3-week5.html">Week 5: Production Ready & Testing</a>
-                    <ul>
-                        <li><a href="dev3-day21.html">Day 21: Smoke Tests</a></li>
-                        <li><a href="dev3-day22.html">Day 22: Environment Promotion</a></li>
-                        <li><a href="dev3-day23.html">Day 23: Rollback Procedures</a></li>
-                        <li><a href="dev3-day24.html">Day 24: Full System Testing</a></li>
-                        <li><a href="dev3-day25.html">Day 25: Documentation & Handoff</a></li>
-                    </ul>
-                </li>
-            </ul>
+            <nav class="sidebar-nav">
+                <!-- Getting Started Section -->
+                <div class="nav-section">
+                    <button class="nav-section-header">
+                        <svg class="nav-section-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M6 6L14 10L6 14V6Z"/>
+                        </svg>
+                        Getting Started
+                    </button>
+                    <div class="nav-section-content">
+                        <a href="onboarding-home.html" class="nav-link">Onboarding Home</a>
+                        <a href="onboarding-overview.html" class="nav-link">Project Overview</a>
+                        <a href="manual-repo-setup.html" class="nav-link">Manual Repository Setup</a>
+                        <a href="repo-setup-guide.html" class="nav-link">Automated Setup Guide</a>
+                    </div>
+                </div>
+                
+                <!-- Developer Guides Section -->
+                <div class="nav-section">
+                    <button class="nav-section-header">
+                        <svg class="nav-section-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M6 6L14 10L6 14V6Z"/>
+                        </svg>
+                        Developer Guides
+                    </button>
+                    <div class="nav-section-content">
+                        <a href="onboarding-dev1.html" class="nav-link">Developer 1: Backend & Database</a>
+                        <a href="onboarding-dev2.html" class="nav-link">Developer 2: Frontend & React</a>
+                        <a href="onboarding-dev3.html" class="nav-link">Developer 3: DevOps & QA</a>
+                    </div>
+                </div>
+                
+                <!-- 8-Week Timeline Section -->
+                <div class="nav-section">
+                    <button class="nav-section-header">
+                        <svg class="nav-section-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M6 6L14 10L6 14V6Z"/>
+                        </svg>
+                        8-Week Timeline
+                    </button>
+                    <div class="nav-section-content">
+                        <a href="../RevNovaRequirements/requirements-home.html" class="nav-link">Project Timeline</a>
+                        <a href="onboarding-dev1-phase1.html" class="nav-link">Phase 1: SFDC CPQ Migration</a>
+                    </div>
+                </div>
+                
+                                                                <!-- Developer 1: Daily Tasks Section -->
+                <div class="nav-section">
+                    <button class="nav-section-header expanded">
+                        <svg class="nav-section-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M6 6L14 10L6 14V6Z"/>
+                        </svg>
+                        Developer 1: Daily Tasks
+                    </button>
+                    <div class="nav-section-content" expanded>
+                        <!-- Week 1 Subsection -->
+                        <div class="nav-subsection">
+                            <button class="nav-subsection-header expanded">
+                                <svg class="nav-subsection-icon" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M6 6L14 10L6 14V6Z"/>
+                                </svg>
+                                Week 1: Backend Setup
+                            </button>
+                            <div class="nav-subsection-content" expanded>
+                                <a href="dev1-day01.html" class="nav-subsection-link active">Day 1: Workstation Setup</a>
+                                <a href="dev1-day02.html" class="nav-subsection-link">Day 2: Database Tables (STG1)</a>
+                                <a href="dev1-day03.html" class="nav-subsection-link">Day 3: Database Tables (STG2)</a>
+                                <a href="dev1-day04.html" class="nav-subsection-link">Day 4: Database Tables (EAV)</a>
+                                <a href="dev1-day05.html" class="nav-subsection-link">Day 5: First API Endpoint</a>
+                            </div>
+                        </div>
+                        
+                        <!-- Week 2 Subsection -->
+                        <div class="nav-subsection">
+                            <button class="nav-subsection-header">
+                                <svg class="nav-subsection-icon" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M6 6L14 10L6 14V6Z"/>
+                                </svg>
+                                Week 2: Schema Analysis APIs
+                            </button>
+                            <div class="nav-subsection-content">
+                                <a href="dev1-day06.html" class="nav-subsection-link">Day 6: Schema Analysis API (Part 1)</a>
+                                <a href="dev1-day07.html" class="nav-subsection-link">Day 7: Schema Analysis API (Part 2)</a>
+                                <a href="dev1-day08.html" class="nav-subsection-link">Day 8: Metadata Extraction</a>
+                                <a href="dev1-day09.html" class="nav-subsection-link">Day 9: Relationship Detection</a>
+                                <a href="dev1-day10.html" class="nav-subsection-link">Day 10: Week 2 Testing & PR</a>
+                            </div>
+                        </div>
+                        
+                        <!-- Week 3 Subsection -->
+                        <div class="nav-subsection">
+                            <button class="nav-subsection-header">
+                                <svg class="nav-subsection-icon" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M6 6L14 10L6 14V6Z"/>
+                                </svg>
+                                Week 3: Field Mapping & AI
+                            </button>
+                            <div class="nav-subsection-content">
+                                <a href="dev1-day11.html" class="nav-subsection-link">Day 11: Field Mapping API (Part 1)</a>
+                                <a href="dev1-day12.html" class="nav-subsection-link">Day 12: Field Mapping API (Part 2)</a>
+                                <a href="dev1-day13.html" class="nav-subsection-link">Day 13: AI Integration Setup</a>
+                                <a href="dev1-day14.html" class="nav-subsection-link">Day 14: Confidence Scoring</a>
+                                <a href="dev1-day15.html" class="nav-subsection-link">Day 15: Week 3 Testing & PR</a>
+                            </div>
+                        </div>
+                        
+                        <!-- Week 4 Subsection -->
+                        <div class="nav-subsection">
+                            <button class="nav-subsection-header">
+                                <svg class="nav-subsection-icon" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M6 6L14 10L6 14V6Z"/>
+                                </svg>
+                                Week 4: Transformation & Queue
+                            </button>
+                            <div class="nav-subsection-content">
+                                <a href="dev1-day16.html" class="nav-subsection-link">Day 16: Data Transformation Engine</a>
+                                <a href="dev1-day17.html" class="nav-subsection-link">Day 17: Queue System Setup</a>
+                                <a href="dev1-day18.html" class="nav-subsection-link">Day 18: Job Management</a>
+                                <a href="dev1-day19.html" class="nav-subsection-link">Day 19: Error Handling</a>
+                                <a href="dev1-day20.html" class="nav-subsection-link">Day 20: Week 4 Testing & PR</a>
+                            </div>
+                        </div>
+                        
+                        <!-- Week 5 Subsection -->
+                        <div class="nav-subsection">
+                            <button class="nav-subsection-header">
+                                <svg class="nav-subsection-icon" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M6 6L14 10L6 14V6Z"/>
+                                </svg>
+                                Week 5: Execution & Testing
+                            </button>
+                            <div class="nav-subsection-content">
+                                <a href="dev1-day21.html" class="nav-subsection-link">Day 21: Migration Execution</a>
+                                <a href="dev1-day22.html" class="nav-subsection-link">Day 22: Validation & Rollback</a>
+                                <a href="dev1-day23.html" class="nav-subsection-link">Day 23: Performance Optimization</a>
+                                <a href="dev1-day24.html" class="nav-subsection-link">Day 24: Integration Testing</a>
+                                <a href="dev1-day25.html" class="nav-subsection-link">Day 25: Final Review & Handoff</a>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <!-- Developer 2: Daily Tasks Section -->
+                <div class="nav-section">
+                    <button class="nav-section-header">
+                        <svg class="nav-section-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M6 6L14 10L6 14V6Z"/>
+                        </svg>
+                        Developer 2: Daily Tasks
+                    </button>
+                    <div class="nav-section-content">
+                        <!-- Week 1 Subsection -->
+                        <div class="nav-subsection">
+                            <button class="nav-subsection-header">
+                                <svg class="nav-subsection-icon" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M6 6L14 10L6 14V6Z"/>
+                                </svg>
+                                Week 1: React Setup
+                            </button>
+                            <div class="nav-subsection-content">
+                                <a href="dev2-day01.html" class="nav-subsection-link">Day 1: React & Vite Setup</a>
+                                <a href="dev2-day02.html" class="nav-subsection-link">Day 2: Project Structure</a>
+                                <a href="dev2-day03.html" class="nav-subsection-link">Day 3: Routing & Navigation</a>
+                                <a href="dev2-day04.html" class="nav-subsection-link">Day 4: State Management</a>
+                                <a href="dev2-day05.html" class="nav-subsection-link">Day 5: UI Component Library</a>
+                            </div>
+                        </div>
+                        
+                        <!-- Week 2 Subsection -->
+                        <div class="nav-subsection">
+                            <button class="nav-subsection-header">
+                                <svg class="nav-subsection-icon" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M6 6L14 10L6 14V6Z"/>
+                                </svg>
+                                Week 2: Core Pages
+                            </button>
+                            <div class="nav-subsection-content">
+                                <a href="dev2-day06.html" class="nav-subsection-link">Day 6: Dashboard Page</a>
+                                <a href="dev2-day07.html" class="nav-subsection-link">Day 7: Project Creation</a>
+                                <a href="dev2-day08.html" class="nav-subsection-link">Day 8: Connection Setup UI</a>
+                                <a href="dev2-day09.html" class="nav-subsection-link">Day 9: Schema Analysis UI</a>
+                                <a href="dev2-day10.html" class="nav-subsection-link">Day 10: Week 2 Testing & PR</a>
+                            </div>
+                        </div>
+                        
+                        <!-- Week 3 Subsection -->
+                        <div class="nav-subsection">
+                            <button class="nav-subsection-header">
+                                <svg class="nav-subsection-icon" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M6 6L14 10L6 14V6Z"/>
+                                </svg>
+                                Week 3: Mapping Interface
+                            </button>
+                            <div class="nav-subsection-content">
+                                <a href="dev2-day11.html" class="nav-subsection-link">Day 11: Field Mapping UI (Part 1)</a>
+                                <a href="dev2-day12.html" class="nav-subsection-link">Day 12: Field Mapping UI (Part 2)</a>
+                                <a href="dev2-day13.html" class="nav-subsection-link">Day 13: Drag & Drop Interface</a>
+                                <a href="dev2-day14.html" class="nav-subsection-link">Day 14: AI Suggestions UI</a>
+                                <a href="dev2-day15.html" class="nav-subsection-link">Day 15: Week 3 Testing & PR</a>
+                            </div>
+                        </div>
+                        
+                        <!-- Week 4 Subsection -->
+                        <div class="nav-subsection">
+                            <button class="nav-subsection-header">
+                                <svg class="nav-subsection-icon" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M6 6L14 10L6 14V6Z"/>
+                                </svg>
+                                Week 4: Transformation UI
+                            </button>
+                            <div class="nav-subsection-content">
+                                <a href="dev2-day16.html" class="nav-subsection-link">Day 16: Transformation Rules UI</a>
+                                <a href="dev2-day17.html" class="nav-subsection-link">Day 17: Preview & Validation</a>
+                                <a href="dev2-day18.html" class="nav-subsection-link">Day 18: Queue Status Dashboard</a>
+                                <a href="dev2-day19.html" class="nav-subsection-link">Day 19: Error Display & Retry</a>
+                                <a href="dev2-day20.html" class="nav-subsection-link">Day 20: Week 4 Testing & PR</a>
+                            </div>
+                        </div>
+                        
+                        <!-- Week 5 Subsection -->
+                        <div class="nav-subsection">
+                            <button class="nav-subsection-header">
+                                <svg class="nav-subsection-icon" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M6 6L14 10L6 14V6Z"/>
+                                </svg>
+                                Week 5: Testing & Polish
+                            </button>
+                            <div class="nav-subsection-content">
+                                <a href="dev2-day21.html" class="nav-subsection-link">Day 21: Execution Progress UI</a>
+                                <a href="dev2-day22.html" class="nav-subsection-link">Day 22: Results & Reports</a>
+                                <a href="dev2-day23.html" class="nav-subsection-link">Day 23: Responsive Design</a>
+                                <a href="dev2-day24.html" class="nav-subsection-link">Day 24: E2E Testing</a>
+                                <a href="dev2-day25.html" class="nav-subsection-link">Day 25: Final Polish & Handoff</a>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <!-- Developer 3: Daily Tasks Section -->
+                <div class="nav-section">
+                    <button class="nav-section-header">
+                        <svg class="nav-section-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M6 6L14 10L6 14V6Z"/>
+                        </svg>
+                        Developer 3: Daily Tasks
+                    </button>
+                    <div class="nav-section-content">
+                        <!-- Week 1 Subsection -->
+                        <div class="nav-subsection">
+                            <button class="nav-subsection-header">
+                                <svg class="nav-subsection-icon" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M6 6L14 10L6 14V6Z"/>
+                                </svg>
+                                Week 1: DevOps Setup
+                            </button>
+                            <div class="nav-subsection-content">
+                                <a href="dev3-day01.html" class="nav-subsection-link">Day 1: AWS & Infrastructure</a>
+                                <a href="dev3-day02.html" class="nav-subsection-link">Day 2: Docker Setup</a>
+                                <a href="dev3-day03.html" class="nav-subsection-link">Day 3: CI/CD Pipeline</a>
+                                <a href="dev3-day04.html" class="nav-subsection-link">Day 4: Monitoring Setup</a>
+                                <a href="dev3-day05.html" class="nav-subsection-link">Day 5: Security Configuration</a>
+                            </div>
+                        </div>
+                        
+                        <!-- Week 2 Subsection -->
+                        <div class="nav-subsection">
+                            <button class="nav-subsection-header">
+                                <svg class="nav-subsection-icon" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M6 6L14 10L6 14V6Z"/>
+                                </svg>
+                                Week 2: Testing Framework
+                            </button>
+                            <div class="nav-subsection-content">
+                                <a href="dev3-day06.html" class="nav-subsection-link">Day 6: Unit Testing Setup</a>
+                                <a href="dev3-day07.html" class="nav-subsection-link">Day 7: Backend Tests</a>
+                                <a href="dev3-day08.html" class="nav-subsection-link">Day 8: Integration Tests</a>
+                                <a href="dev3-day09.html" class="nav-subsection-link">Day 9: API Tests</a>
+                                <a href="dev3-day10.html" class="nav-subsection-link">Day 10: Week 2 Testing & PR</a>
+                            </div>
+                        </div>
+                        
+                        <!-- Week 3 Subsection -->
+                        <div class="nav-subsection">
+                            <button class="nav-subsection-header">
+                                <svg class="nav-subsection-icon" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M6 6L14 10L6 14V6Z"/>
+                                </svg>
+                                Week 3: QA & Testing
+                            </button>
+                            <div class="nav-subsection-content">
+                                <a href="dev3-day11.html" class="nav-subsection-link">Day 11: Frontend Testing</a>
+                                <a href="dev3-day12.html" class="nav-subsection-link">Day 12: E2E Test Setup</a>
+                                <a href="dev3-day13.html" class="nav-subsection-link">Day 13: Test Automation</a>
+                                <a href="dev3-day14.html" class="nav-subsection-link">Day 14: Load Testing</a>
+                                <a href="dev3-day15.html" class="nav-subsection-link">Day 15: Week 3 Testing & PR</a>
+                            </div>
+                        </div>
+                        
+                        <!-- Week 4 Subsection -->
+                        <div class="nav-subsection">
+                            <button class="nav-subsection-header">
+                                <svg class="nav-subsection-icon" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M6 6L14 10L6 14V6Z"/>
+                                </svg>
+                                Week 4: Performance
+                            </button>
+                            <div class="nav-subsection-content">
+                                <a href="dev3-day16.html" class="nav-subsection-link">Day 16: Performance Monitoring</a>
+                                <a href="dev3-day17.html" class="nav-subsection-link">Day 17: Database Optimization</a>
+                                <a href="dev3-day18.html" class="nav-subsection-link">Day 18: Caching Strategy</a>
+                                <a href="dev3-day19.html" class="nav-subsection-link">Day 19: Load Balancing</a>
+                                <a href="dev3-day20.html" class="nav-subsection-link">Day 20: Week 4 Testing & PR</a>
+                            </div>
+                        </div>
+                        
+                        <!-- Week 5 Subsection -->
+                        <div class="nav-subsection">
+                            <button class="nav-subsection-header">
+                                <svg class="nav-subsection-icon" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M6 6L14 10L6 14V6Z"/>
+                                </svg>
+                                Week 5: Production
+                            </button>
+                            <div class="nav-subsection-content">
+                                <a href="dev3-day21.html" class="nav-subsection-link">Day 21: Production Deployment</a>
+                                <a href="dev3-day22.html" class="nav-subsection-link">Day 22: Backup & Recovery</a>
+                                <a href="dev3-day23.html" class="nav-subsection-link">Day 23: Documentation</a>
+                                <a href="dev3-day24.html" class="nav-subsection-link">Day 24: Final QA</a>
+                                <a href="dev3-day25.html" class="nav-subsection-link">Day 25: Production Handoff</a>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+            </nav>
         </aside>
-
-        <!-- Main Content -->
+        
         <main class="main-content">
-            <div class="hero">
-                <h1>Welcome to RevNova!</h1>
-                <p>Your step-by-step guide to building the RevNova migration platform</p>
+            <div class="breadcrumb">
+                <a href="../index.html">Home</a> › <a href="onboarding-home.html">Onboarding</a>
             </div>
-
-            <section class="card">
+            
+            <h1 class="page-title">Welcome to RevNova!</h1>
+            <p class="page-subtitle">Your step-by-step guide to building the RevNova migration platform</p>
+            
+            <div class="content-section">
                 <h2>Getting Started</h2>
                 <p>Welcome to the team! This onboarding guide will take you through <strong>everything you need to do, day by day</strong>, to build the RevNova platform.</p>
                 
@@ -390,43 +775,44 @@
                     <li><strong>Pick your role:</strong> Backend, Frontend, or DevOps</li>
                     <li><strong>Follow the days:</strong> Start with Day 1 and work through each day in order</li>
                     <li><strong>Complete each step:</strong> Every day has clear tasks - just follow them</li>
-                    <li><strong>Use the buttons:</strong> Click "Next" at the bottom of each page to continue</li>
+                    <li><strong>Click Next:</strong> Use the navigation buttons at the bottom to continue</li>
                     <li><strong>Ask for help:</strong> If you're stuck, ask your team or team lead</li>
                 </ol>
-            </section>
+            </div>
 
-            <section class="card">
+            <div class="content-section">
                 <h2>Choose Your Role</h2>
                 <p>Select your developer role to start your onboarding journey:</p>
+                <br>
                 
-                <div class="dev-cards">
-                    <div class="dev-card dev1">
-                        <h3>Developer 1</h3>
-                        <p><strong>Backend & Database</strong></p>
-                        <p>Build APIs, database schemas, and business logic</p>
-                        <p>Technologies: Node.js, PostgreSQL, TypeScript</p>
-                        <a href="dev1-day01.html" class="btn">Start Day 1 →</a>
-                    </div>
-                    
-                    <div class="dev-card dev2">
-                        <h3>Developer 2</h3>
-                        <p><strong>Frontend & React</strong></p>
-                        <p>Build user interfaces and wizard pages</p>
-                        <p>Technologies: React, TypeScript, TailwindCSS</p>
-                        <a href="dev2-day01.html" class="btn">Start Day 1 →</a>
-                    </div>
-                    
-                    <div class="dev-card dev3">
-                        <h3>Developer 3</h3>
-                        <p><strong>DevOps & QA</strong></p>
-                        <p>Set up CI/CD, Docker, and testing automation</p>
-                        <p>Technologies: GitHub Actions, Docker, Playwright</p>
-                        <a href="dev3-day01.html" class="btn">Start Day 1 →</a>
-                    </div>
-                </div>
-            </section>
+                <table style="width: 100%; border-collapse: separate; border-spacing: 1rem 0;">
+                    <tr>
+                        <td style="width: 33%; vertical-align: top; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 2rem; border-radius: 8px; color: white;">
+                            <h3 style="margin-top: 0; color: white;">Developer 1</h3>
+                            <p style="color: rgba(255,255,255,0.95);"><strong>Backend & Database</strong></p>
+                            <p style="color: rgba(255,255,255,0.9);">Build APIs, database schemas, and business logic</p>
+                            <p style="color: rgba(255,255,255,0.9); font-size: 0.9em;">Technologies: Node.js, PostgreSQL, TypeScript</p>
+                            <a href="dev1-day01.html" class="btn" style="background: rgba(255,255,255,0.2); color: white; display: inline-block; margin-top: 1rem;">Start Day 1 →</a>
+                        </td>
+                        <td style="width: 33%; vertical-align: top; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 2rem; border-radius: 8px; color: white;">
+                            <h3 style="margin-top: 0; color: white;">Developer 2</h3>
+                            <p style="color: rgba(255,255,255,0.95);"><strong>Frontend & React</strong></p>
+                            <p style="color: rgba(255,255,255,0.9);">Build user interfaces and wizard pages</p>
+                            <p style="color: rgba(255,255,255,0.9); font-size: 0.9em;">Technologies: React, TypeScript, TailwindCSS</p>
+                            <a href="dev2-day01.html" class="btn" style="background: rgba(255,255,255,0.2); color: white; display: inline-block; margin-top: 1rem;">Start Day 1 →</a>
+                        </td>
+                        <td style="width: 33%; vertical-align: top; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); padding: 2rem; border-radius: 8px; color: white;">
+                            <h3 style="margin-top: 0; color: white;">Developer 3</h3>
+                            <p style="color: rgba(255,255,255,0.95);"><strong>DevOps & QA</strong></p>
+                            <p style="color: rgba(255,255,255,0.9);">Set up CI/CD, Docker, and testing automation</p>
+                            <p style="color: rgba(255,255,255,0.9); font-size: 0.9em;">Technologies: GitHub Actions, Docker, Playwright</p>
+                            <a href="dev3-day01.html" class="btn" style="background: rgba(255,255,255,0.2); color: white; display: inline-block; margin-top: 1rem;">Start Day 1 →</a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
 
-            <section class="card">
+            <div class="content-section">
                 <h2>Before You Start</h2>
                 <p>Make sure you have completed these setup steps:</p>
                 <ul>
@@ -435,9 +821,66 @@
                     <li>✅ Follow either the <a href="manual-repo-setup.html">Manual Repository Setup</a> or <a href="repo-setup-guide.html">Automated Setup Guide</a></li>
                     <li>✅ Install required software (listed in your Day 1 guide)</li>
                 </ul>
-            </section>
+            </div>
+
+            <div class="nav-buttons">
+                <a href="onboarding-overview.html" class="btn">Read Project Overview →</a>
+            </div>
         </main>
     </div>
-    <script src="../script.js"></script>
+    
+    <script>
+        // Collapsible navigation functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle section headers
+            const sectionHeaders = document.querySelectorAll('.nav-section-header');
+            sectionHeaders.forEach(header => {
+                header.addEventListener('click', function() {
+                    const content = this.nextElementSibling;
+                    const isExpanded = this.classList.contains('expanded');
+                    
+                    if (isExpanded) {
+                        this.classList.remove('expanded');
+                        content.classList.remove('expanded');
+                    } else {
+                        this.classList.add('expanded');
+                        content.classList.add('expanded');
+                    }
+                });
+            });
+            
+            // Handle subsection headers
+            const subsectionHeaders = document.querySelectorAll('.nav-subsection-header');
+            subsectionHeaders.forEach(header => {
+                header.addEventListener('click', function() {
+                    const content = this.nextElementSibling;
+                    const isExpanded = this.classList.contains('expanded');
+                    
+                    if (isExpanded) {
+                        this.classList.remove('expanded');
+                        content.classList.remove('expanded');
+                    } else {
+                        this.classList.add('expanded');
+                        content.classList.add('expanded');
+                    }
+                });
+            });
+            
+            // Auto-expand Getting Started section for home page
+            const gettingStartedSection = document.querySelector('.nav-section:first-of-type');
+            if (gettingStartedSection) {
+                const header = gettingStartedSection.querySelector('.nav-section-header');
+                const content = gettingStartedSection.querySelector('.nav-section-content');
+                header.classList.add('expanded');
+                content.classList.add('expanded');
+                
+                // Mark Onboarding Home as active
+                const homeLink = content.querySelector('a[href="onboarding-home.html"]');
+                if (homeLink) {
+                    homeLink.classList.add('active');
+                }
+            }
+        });
+    </script>
 </body>
 </html>
