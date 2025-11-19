@@ -120,7 +120,9 @@ PROMPTS = {
         ('Step 5', '# Document Week 1 completion\n# Screenshot working endpoints\n# List all completed features\n# Note any bugs or issues for Week 2')
     ],
     
-    # Week 2: Salesforce Integration (Days 6-10)
+    # Week 2: Salesforce Integration (Days 6-10) - COMPLETED ABOVE
+    
+    # Week 3: Field Mapping & AI (Days 11-15)
     'dev1-day06': [
         ('Step 1', '# Install jsforce for Salesforce API integration\n# Install package: npm install jsforce @types/jsforce\n# Verify TypeScript types available'),
         ('Step 2', '# Create Salesforce connection helper in src/services/salesforce.ts\n# Function: connectToSalesforce(credentials)\n# Accept: instanceUrl, username, password, securityToken\n# Return connection object with access token'),
@@ -229,6 +231,339 @@ PROMPTS = {
         ('Step 3', '# Performance testing\n# Measure schema analysis time for large org\n# Test with org having 100+ custom objects\n# Check UI responsiveness with large data sets'),
         ('Step 4', '# Create Week 2 test report\n# Document all test results\n# List pass/fail for each scenario\n# Note any bugs or issues found'),
         ('Step 5', '# Week 2 completion documentation\n# Summary of all features completed\n# Screenshots of working application\n# List known issues and planned improvements')
+    ],
+    
+    # Week 3: Field Mapping & AI (Days 11-15) continued
+    'dev1-day11': [
+        ('Step 1', '# Create field_mappings database table\n# Columns: id, project_id, source_object, source_field, target_object, target_field, mapping_type, transform_rule\n# Add UNIQUE constraint on (project_id, source_field_id, target_field_id)'),
+        ('Step 2', '# Create POST /api/v1/mappings endpoint\n# Accept: sourceFieldId, targetFieldId, mappingType (direct, formula, lookup)\n# Validate required fields and foreign key relationships\n# Return created mapping with 201 status'),
+        ('Step 3', '# Implement GET /api/v1/mappings/:projectId endpoint\n# Return all mappings for a project\n# Include source/target field metadata with JOINs\n# Order by: source object, then source field'),
+        ('Step 4', '# Add transformation rule validation\n# Validate formula syntax for formula mappings\n# Check type compatibility (text→number validation)\n# Return validation errors with specific messages'),
+        ('Step 5', '# Test manual mapping creation\n# Map Product2.Name to OrderProduct__c.ProductName__c\n# Map SBQQ__Quote__c.Amount__c to Order.TotalAmount\n# Verify mappings stored correctly in database')
+    ],
+    'dev2-day11': [
+        ('Step 1', '# Create MappingCanvas component with drag-and-drop\n# Use @dnd-kit/core for DnD functionality\n# Layout: source fields (left), target fields (right), connection lines (center)\n# Implement DndContext wrapper'),
+        ('Step 2', '# Create FieldSourceList component\n# Display draggable source fields\n# Show field icon, name, type badge\n# Group by object with collapsible sections'),
+        ('Step 3', '# Create FieldTargetList component\n# Display droppable target fields\n# Show field icon, name, type badge, mapped status\n# Highlight compatible fields on drag hover'),
+        ('Step 4', '# Implement handleDragEnd function\n# Extract source and target field IDs from drag event\n# Call POST /api/v1/mappings API\n# Update UI with new mapping and connection line'),
+        ('Step 5', '# Test drag-and-drop mapping\n# Drag source field to target field\n# Verify API call made correctly\n# Check connection line appears between mapped fields')
+    ],
+    'dev3-day11': [
+        ('Step 1', '# Create integration tests for mappings API\n# Test POST /api/v1/mappings with valid data\n# Test GET /api/v1/mappings/:projectId returns all mappings\n# Verify response includes field metadata'),
+        ('Step 2', '# Test mapping validation rules\n# Test duplicate mapping rejection (unique constraint)\n# Test invalid field ID rejection (foreign key)\n# Verify error messages clear and helpful'),
+        ('Step 3', '# Test frontend ConnectionForm component\n# Write unit test: form renders all fields\n# Test: required field validation triggers\n# Test: form submission calls API correctly'),
+        ('Step 4', '# Test ObjectList search functionality\n# Test: search filters objects correctly\n# Test: custom vs standard filter works\n# Test: object count updates on filter'),
+        ('Step 5', '# Document Day 11 completion\n# Screenshot mapping canvas with DnD\n# Verify mappings persist in database\n# Note any UX improvements needed')
+    ],
+    
+    'dev1-day12': [
+        ('Step 1', '# Implement bulk operations endpoint\n# POST /api/v1/mappings/bulk accepts array of mappings\n# Use transaction for atomicity\n# INSERT with ON CONFLICT DO UPDATE'),
+        ('Step 2', '# Create PUT /api/v1/mappings/:id endpoint\n# Accept: mapping_type, transform_rule updates\n# Validate changes before updating\n# Return updated mapping'),
+        ('Step 3', '# Create DELETE /api/v1/mappings/:id endpoint\n# Soft delete: set deleted_at timestamp\n# Or hard delete based on requirements\n# Return 204 No Content on success'),
+        ('Step 4', '# Test bulk operations\n# Create 20 mappings in single request\n# Test ON CONFLICT update behavior\n# Verify transaction rollback on error'),
+        ('Step 5', '# Test update and delete operations\n# Update mapping transform rule\n# Delete mapping and verify removed\n# Test 404 for non-existent mapping')
+    ],
+    'dev2-day12': [
+        ('Step 1', '# Create ConnectionLines component\n# Use SVG to draw lines between mapped fields\n# Calculate positions: offsetLeft, offsetTop\n# Draw line from source to target'),
+        ('Step 2', '# Style connection lines\n# Color: #0176d3 (Salesforce blue)\n# Stroke width: 2px\n# Add arrow marker at target end'),
+        ('Step 3', '# Implement save/load mappings\n# Button: "Save All Mappings"\n# Call bulk API with all current mappings\n# Load mappings on page load'),
+        ('Step 4', '# Add edit and delete actions\n# Show icons on mapping row hover\n# Edit opens dialog with current values\n# Delete shows confirmation'),
+        ('Step 5', '# Test mapping UI complete flow\n# Create mapping via DnD\n# Edit mapping transform rule\n# Delete mapping\n# Verify all actions work')
+    ],
+    'dev3-day12': [
+        ('Step 1', '# Set up Playwright for E2E testing\n# Install: @playwright/test\n# Run: npx playwright install\n# Create playwright.config.ts'),
+        ('Step 2', '# Write connection flow E2E test\n# Test: fill connection form\n# Test: test connection button\n# Test: save connection\n# Verify connection card appears'),
+        ('Step 3', '# Test bulk operations API\n# Mock multiple mappings\n# Send bulk create request\n# Verify all mappings created'),
+        ('Step 4', '# Test ConnectionLines rendering\n# Verify SVG lines appear\n# Test line positions correct\n# Check updates when mappings change'),
+        ('Step 5', '# Document Day 12 completion\n# Screenshot connection lines\n# Note E2E test results\n# List any issues found')
+    ],
+    
+    'dev1-day13': [
+        ('Step 1', '# Create mapping validation service\n# Function: validateMapping(sourceField, targetField, transformRule)\n# Check type compatibility matrix\n# Return validation result with errors array'),
+        ('Step 2', '# Implement type compatibility rules\n# Compatible: Text→Text, Number→Number, Date→Date\n# Compatible with conversion: Text→Number (if numeric), Number→Text\n# Incompatible: Date→Number, Picklist→Boolean'),
+        ('Step 3', '# Create POST /api/v1/mappings/validate endpoint\n# Accept: source_field_id, target_field_id, transform_rule\n# Run validation checks\n# Return: { valid: boolean, errors: [], warnings: [] }'),
+        ('Step 4', '# Add formula syntax validation\n# Parse formula using expression parser\n# Validate function names: CONCAT, UPPER, DATEVALUE\n# Check field references exist\n# Return syntax errors with line/column'),
+        ('Step 5', '# Test validation rules\n# Test: Text→Number fails without conversion formula\n# Test: CONCAT(Field1__c, Field2__c) validates successfully\n# Test: invalid field reference rejected')
+    ],
+    'dev2-day13': [
+        ('Step 1', '# Create MappingValidationIndicator component\n# Show validation status icon: checkmark (valid), warning, error\n# Color-code: green (valid), yellow (warning), red (error)\n# Display on each mapping row'),
+        ('Step 2', '# Implement inline validation feedback\n# Call /api/v1/mappings/validate on field selection\n# Show validation errors below mapping dropdown\n# Highlight incompatible types in red'),
+        ('Step 3', '# Create validation error tooltip\n# Hover over error icon to show details\n# Display: error message, suggested fix, documentation link\n# Style with Salesforce Lightning design'),
+        ('Step 4', '# Disable Save button for invalid mappings\n# Check all mappings validated before enabling Save\n# Show count: "X invalid mappings - fix before saving"\n# Add "View Errors" button to jump to first error'),
+        ('Step 5', '# Test validation feedback\n# Map incompatible types (Date→Number)\n# Verify error message displays\n# Check Save button disabled until fixed')
+    ],
+    'dev3-day13': [
+        ('Step 1', '# Write tests for validation service\n# Test type compatibility matrix\n# Test formula syntax validation\n# Test required field validation'),
+        ('Step 2', '# Test validation API endpoint\n# Test: POST /api/v1/mappings/validate with valid mapping\n# Test: invalid type combination returns error\n# Test: invalid formula syntax returns detailed error'),
+        ('Step 3', '# Write UI tests for validation indicators\n# Test: valid mapping shows green checkmark\n# Test: invalid mapping shows red error icon\n# Test: tooltip displays error details'),
+        ('Step 4', '# Test Save button enable/disable logic\n# Test: Save disabled with invalid mappings\n# Test: Save enabled when all valid\n# Test: error count displays correctly'),
+        ('Step 5', '# Document validation rules\n# Create type compatibility table\n# List all supported formula functions\n# Document error messages and solutions')
+    ],
+    
+    'dev1-day14': [
+        ('Step 1', '# Implement confidence scoring algorithm\n# Calculate name similarity using Levenshtein distance\n# Normalize score to 0-1 range\n# Weight: name similarity 40%, type match 30%, AI confidence 30%'),
+        ('Step 2', '# Add confidence_score column to field_mappings table\n# Type: DECIMAL(3,2) - stores 0.00 to 1.00\n# Update all mapping endpoints to include score\n# Default score: 1.0 for manual mappings'),
+        ('Step 3', '# Create confidence calculation service\n# Function: calculateConfidence(sourceField, targetField, aiScore)\n# Implement name similarity algorithm\n# Combine scores with weighted average'),
+        ('Step 4', '# Update POST /api/v1/mappings endpoint\n# Calculate confidence score before saving\n# Store score in database\n# Return score in response'),
+        ('Step 5', '# Test confidence scoring\n# Test: identical names (Amount__c → Amount) = high score (>0.9)\n# Test: similar names (ProductName__c → Product_Name__c) = medium (0.7-0.8)\n# Test: different names (Quantity__c → TotalAmount__c) = low (<0.5)')
+    ],
+    'dev2-day14': [
+        ('Step 1', '# Create ConfidenceScoreBadge component\n# Display score as percentage with color\n# Green (>80%), Yellow (50-80%), Red (<50%)\n# Show score bar and numeric value'),
+        ('Step 2', '# Add confidence score to mapping list\n# Show badge next to each mapping\n# Sort mappings by confidence (high to low)\n# Add filter: "Show only high confidence (>80%)"'),
+        ('Step 3', '# Create confidence score legend\n# Explain scoring factors\n# Show: name similarity, type match, AI confidence\n# Add info icon with tooltip'),
+        ('Step 4', '# Implement "Map All High Confidence" action\n# Button: auto-accept all suggestions >80% confidence\n# Show confirmation dialog with count\n# Display progress during bulk mapping'),
+        ('Step 5', '# Test confidence score display\n# Verify scores display correctly (percentage and bar)\n# Test color coding works\n# Test bulk high-confidence mapping')
+    ],
+    'dev3-day14': [
+        ('Step 1', '# Write tests for confidence calculation\n# Test: identical names return high score\n# Test: type mismatch lowers score\n# Test: weighted average calculation correct'),
+        ('Step 2', '# Test confidence score storage\n# Verify score saved in database\n# Test: GET /api/v1/mappings returns scores\n# Check score precision (2 decimal places)'),
+        ('Step 3', '# Write E2E test for mapping workflow\n# Test: create connection → analyze → map fields → validate → save\n# Verify each step completes successfully\n# Check database state after each step'),
+        ('Step 4', '# Test bulk high-confidence mapping\n# Create 10 test suggestions with varying confidence\n# Trigger "Map All High Confidence"\n# Verify only >80% confidence mapped'),
+        ('Step 5', '# Document Week 3 completion\n# Screenshot mapping interface with confidence scores\n# Document AI integration and validation\n# List all features completed')
+    ],
+    
+    'dev1-day15': [
+        ('Step 1', '# Create PUT /api/v1/mappings/:id endpoint\n# Accept: mapping_type, transform_rule, confidence_score updates\n# Validate changes before updating\n# Return updated mapping'),
+        ('Step 2', '# Create DELETE /api/v1/mappings/:id endpoint\n# Soft delete: set deleted_at timestamp\n# Or hard delete: remove from database\n# Return 204 No Content on success'),
+        ('Step 3', '# Implement bulk update endpoint\n# POST /api/v1/mappings/bulk\n# Accept array of mappings to create/update\n# Use transaction for atomicity\n# Return: created count, updated count, errors'),
+        ('Step 4', '# Create mapping export functionality\n# GET /api/v1/mappings/:projectId/export\n# Export as JSON with all metadata\n# Include: source/target field details, confidence scores\n# Return JSON file for download'),
+        ('Step 5', '# Test full CRUD workflow\n# Create mapping, read it, update transform rule, delete it\n# Test bulk update with 20 mappings\n# Test export and verify JSON format')
+    ],
+    'dev2-day15': [
+        ('Step 1', '# Add Edit action to mapping rows\n# Show edit icon on hover\n# Open mapping dialog pre-filled with current values\n# Allow updating target field and transform rule'),
+        ('Step 2', '# Add Delete action to mapping rows\n# Show delete icon on hover\n# Confirmation dialog: "Delete mapping for {sourceField}?"\n# Remove mapping and connection line on confirm'),
+        ('Step 3', '# Implement "Clear All Mappings" action\n# Button with confirmation dialog\n# Warning: "This will delete all X mappings. Continue?"\n# Bulk delete via API, clear UI'),
+        ('Step 4', '# Add Export Mappings button\n# Button: "Export Mappings" with download icon\n# Trigger download of JSON file\n# Filename: "project-{name}-mappings-{date}.json"'),
+        ('Step 5', '# Polish mapping interface\n# Add keyboard shortcuts (Del to delete, Enter to save)\n# Improve connection lines rendering\n# Test full mapping workflow')
+    ],
+    'dev3-day15': [
+        ('Step 1', '# Test update endpoint\n# Test: PUT /api/v1/mappings/:id updates mapping\n# Test: validation still applies on update\n# Test: 404 if mapping not found'),
+        ('Step 2', '# Test delete endpoint\n# Test: DELETE /api/v1/mappings/:id removes mapping\n# Test: 404 if already deleted\n# Test: mapping removed from GET response'),
+        ('Step 3', '# Test bulk operations\n# Test: bulk create 20 mappings at once\n# Test: transaction rollback on error\n# Test: partial success handling'),
+        ('Step 4', '# Test export functionality\n# Test: export returns valid JSON\n# Test: includes all mapping metadata\n# Test: file download triggers correctly'),
+        ('Step 5', '# Performance testing\n# Test with 1000 fields (500 source, 500 target)\n# Measure mapping suggestion time\n# Measure UI rendering performance\n# Document any bottlenecks')
+    ],
+    
+    # Week 4: Transformation & Validation (Days 16-20)
+    'dev1-day16': [
+        ('Step 1', '# Create transformation engine service\n# Implement type conversion functions: stringToNumber, numberToString, dateFormat\n# Handle null/undefined values safely'),
+        ('Step 2', '# Implement formula evaluator\n# Parse formula syntax: CONCAT, UPPER, LOWER, SUBSTRING, DATEVALUE\n# Evaluate with source data context'),
+        ('Step 3', '# Create POST /api/v1/transform/preview endpoint\n# Accept: mapping_id, sample_data\n# Apply transformation to sample\n# Return transformed result'),
+        ('Step 4', '# Test transformations\n# Test: CONCAT(FirstName__c, " ", LastName__c)\n# Test: type conversions\n# Test: error handling'),
+        ('Step 5', '# Create transformation test suite\n# Test all formula functions\n# Test edge cases: null, empty, overflow')
+    ],
+    'dev2-day16': [
+        ('Step 1', '# Create TransformationPreview component\n# Two-column layout: source data | transformed data'),
+        ('Step 2', '# Display sample records table\n# Show: original value, arrow, transformed value\n# Highlight changes'),
+        ('Step 3', '# Add "Refresh Sample" button\n# Fetch new sample from Salesforce\n# Re-apply transformations'),
+        ('Step 4', '# Show transformation formula\n# Display formula above preview\n# Add edit button to modify'),
+        ('Step 5', '# Test preview workflow\n# View source data, see transformed result\n# Verify transformations correct')
+    ],
+    'dev3-day16': [
+        ('Step 1', '# Write transformation engine tests\n# Test each formula function\n# Test type conversions'),
+        ('Step 2', '# Test error handling\n# Test: invalid formula syntax\n# Test: type conversion failures\n# Test: null value handling'),
+        ('Step 3', '# Integration tests for preview endpoint\n# Test: POST /api/v1/transform/preview\n# Verify transformed data correct'),
+        ('Step 4', '# Test preview UI\n# Verify data displays correctly\n# Test refresh functionality'),
+        ('Step 5', '# Document transformation functions\n# List all supported formulas\n# Provide examples for each')
+    ],
+    
+    'dev1-day17': [
+        ('Step 1', '# Create data sampling service\n# Use jsforce to query sample records (LIMIT 10)\n# Function: fetchSampleData(objectName, fieldNames)'),
+        ('Step 2', '# Create POST /api/v1/data/sample endpoint\n# Accept: object_name, field_ids\n# Query Salesforce and return records'),
+        ('Step 3', '# Apply transformations to sample\n# For each record, apply all field mappings\n# Return source and transformed data'),
+        ('Step 4', '# Cache sample data\n# Store in Redis for 5 minutes\n# Avoid repeated Salesforce queries'),
+        ('Step 5', '# Test sampling with CPQ objects\n# Sample SBQQ__Quote__c records\n# Verify all fields retrieved\n# Test transformation applied')
+    ],
+    'dev2-day17': [
+        ('Step 1', '# Create DataTable component\n# Reusable table with sorting and pagination\n# Props: columns, data, onSort, onPageChange'),
+        ('Step 2', '# Add column sorting\n# Click header to sort ascending/descending\n# Show sort indicator arrow'),
+        ('Step 3', '# Implement pagination\n# Show: rows per page selector (10, 25, 50, 100)\n# Display: "Showing 1-25 of 247"'),
+        ('Step 4', '# Add filtering\n# Search box filters all columns\n# Highlight matching text'),
+        ('Step 5', '# Test DataTable\n# Verify sorting works\n# Test pagination\n# Test filtering')
+    ],
+    'dev3-day17': [
+        ('Step 1', '# Test data sampling service\n# Mock jsforce query responses\n# Verify LIMIT applied correctly'),
+        ('Step 2', '# Test sample endpoint\n# POST /api/v1/data/sample\n# Verify returns sample records'),
+        ('Step 3', '# Test transformation application\n# Verify formulas applied to sample\n# Check transformed values correct'),
+        ('Step 4', '# Test DataTable component\n# Test sorting functionality\n# Test pagination\n# Test filtering'),
+        ('Step 5', '# Document sampling approach\n# Note sample size limits\n# Document cache duration')
+    ],
+    
+    'dev1-day18': [
+        ('Step 1', '# Create validation service\n# Function: validateRecord(record, targetObject, mappings)\n# Check required fields populated'),
+        ('Step 2', '# Implement validation rules\n# Required field validation\n# Data type validation\n# Value range validation (min/max)'),
+        ('Step 3', '# Create POST /api/v1/validate endpoint\n# Accept: sample_data, mappings\n# Run validation on each record\n# Return errors by record and field'),
+        ('Step 4', '# Store validation errors in database\n# Table: validation_errors(id, project_id, record_id, field, severity, message)'),
+        ('Step 5', '# Test validation\n# Test: missing required field detected\n# Test: invalid data type detected\n# Test: value out of range detected')
+    ],
+    'dev2-day18': [
+        ('Step 1', '# Create ValidationSummary component\n# Card showing: total records, errors, warnings'),
+        ('Step 2', '# Display error breakdown by type\n# Chart: required field errors, type errors, range errors'),
+        ('Step 3', '# Create ValidationErrors table\n# Columns: record ID, field, error message, severity'),
+        ('Step 4', '# Add severity badges\n# Red (error), yellow (warning), blue (info)'),
+        ('Step 5', '# Test validation display\n# View errors after validation\n# Verify error details shown')
+    ],
+    'dev3-day18': [
+        ('Step 1', '# Test validation service\n# Test all validation rule types\n# Verify errors detected correctly'),
+        ('Step 2', '# Test validation endpoint\n# POST /api/v1/validate\n# Verify returns all errors'),
+        ('Step 3', '# Test error storage\n# Verify errors saved in database\n# Test query by severity'),
+        ('Step 4', '# Test validation UI\n# Verify summary displays correctly\n# Test error table functionality'),
+        ('Step 5', '# Document validation rules\n# List all validation types\n# Provide error message examples')
+    ],
+    
+    'dev1-day19': [
+        ('Step 1', '# Create GET /api/v1/errors/:projectId endpoint\n# Return all validation errors\n# Filter by severity: error, warning, info'),
+        ('Step 2', '# Add error statistics endpoint\n# GET /api/v1/errors/:projectId/stats\n# Return: total errors, errors by type, errors by object'),
+        ('Step 3', '# Implement error grouping\n# Group by: field, error type, severity\n# Return counts per group'),
+        ('Step 4', '# Add error resolution tracking\n# Column: resolved (boolean), resolved_at (timestamp)\n# Endpoint: PUT /api/v1/errors/:id/resolve'),
+        ('Step 5', '# Test error reporting\n# Generate validation errors\n# Query errors by project\n# Test resolution marking')
+    ],
+    'dev2-day19': [
+        ('Step 1', '# Add error navigation\n# Click error to highlight record/field\n# Scroll to problematic data'),
+        ('Step 2', '# Create "Fix" action buttons\n# Button opens edit dialog for record\n# Pre-fill with current value\n# Allow correction'),
+        ('Step 3', '# Show error history\n# Display: error occurred, error resolved timestamps\n# Show who resolved'),
+        ('Step 4', '# Add bulk error resolution\n# Checkbox to select multiple errors\n# "Mark as Resolved" button'),
+        ('Step 5', '# Test error navigation\n# Click error, verify highlights correctly\n# Test fix action\n# Test bulk resolution')
+    ],
+    'dev3-day19': [
+        ('Step 1', '# Test error endpoints\n# GET /api/v1/errors/:projectId\n# Test filtering by severity'),
+        ('Step 2', '# Test error statistics\n# Verify counts correct\n# Test grouping logic'),
+        ('Step 3', '# Test error resolution\n# Mark error resolved\n# Verify resolved flag set'),
+        ('Step 4', '# Write E2E test for validation flow\n# Transform → Validate → View errors → Fix → Re-validate'),
+        ('Step 5', '# Document error handling\n# List error types and severities\n# Document resolution workflow')
+    ],
+    
+    'dev1-day20': [
+        ('Step 1', '# Add caching for transformations\n# Cache formula evaluation results in Redis\n# Key: mapping_id + source_value hash'),
+        ('Step 2', '# Optimize formula evaluation\n# Parse formula once, cache AST\n# Reuse parsed formula for all records'),
+        ('Step 3', '# Add retry logic for Salesforce API\n# Implement exponential backoff\n# Max retries: 3, timeout: 30s'),
+        ('Step 4', '# Performance profiling\n# Measure: query time, transformation time, validation time\n# Log slow operations (>1s)'),
+        ('Step 5', '# Test optimizations\n# Measure before/after performance\n# Test with 1000 records\n# Document improvements')
+    ],
+    'dev2-day20': [
+        ('Step 1', '# Add loading states everywhere\n# Show skeleton loaders during data fetch\n# Display spinner for long operations'),
+        ('Step 2', '# Implement error boundaries\n# Catch React errors gracefully\n# Show friendly error message with retry'),
+        ('Step 3', '# Add keyboard shortcuts\n# Cmd/Ctrl+S: Save\n# Cmd/Ctrl+Enter: Submit\n# Esc: Close dialog'),
+        ('Step 4', '# Polish animations\n# Smooth transitions for all state changes\n# Add fade-in for new content'),
+        ('Step 5', '# Full UI testing\n# Test all pages and interactions\n# Verify no console errors\n# Check responsive design')
+    ],
+    'dev3-day20': [
+        ('Step 1', '# Load testing setup\n# Install k6 or Artillery\n# Create load test scripts'),
+        ('Step 2', '# Test with concurrent users\n# Simulate 100 concurrent users\n# Test key operations: connect, analyze, map'),
+        ('Step 3', '# Measure performance metrics\n# Response times, error rates, throughput\n# Identify bottlenecks'),
+        ('Step 4', '# Stress testing\n# Test with large datasets (10k+ records)\n# Test API limits'),
+        ('Step 5', '# Document Week 4 completion\n# Performance test results\n# List all features completed')
+    ],
+    
+    # Week 5: Execution & Polish (Days 21-25)
+    'dev1-day21': [
+        ('Step 1', '# Create migration execution service\n# Function: executeMigration(projectId, batchSize)\n# Use jsforce to insert/update records'),
+        ('Step 2', '# Create POST /api/v1/execute endpoint\n# Accept: project_id, execution_mode (insert/upsert)\n# Start migration job\n# Return: job_id'),
+        ('Step 3', '# Implement progress tracking\n# Table: migration_jobs(id, project_id, status, processed, total, start_time)\n# Update progress after each batch'),
+        ('Step 4', '# Create GET /api/v1/execute/:jobId/status endpoint\n# Return: status, progress percentage, records processed, errors'),
+        ('Step 5', '# Test execution with 10 records\n# Execute migration to sandbox\n# Verify records created in Salesforce\n# Check progress tracking')
+    ],
+    'dev2-day21': [
+        ('Step 1', '# Create ExecutionPage component\n# Show: project summary, execution settings\n# Button: "Start Migration"'),
+        ('Step 2', '# Display execution progress\n# Progress bar with percentage\n# Show: X of Y records processed\n# Display elapsed time'),
+        ('Step 3', '# Real-time status updates\n# Poll /api/v1/execute/:jobId/status every 2s\n# Update progress bar and counts'),
+        ('Step 4', '# Show execution log\n# Display: timestamp, action, record, result\n# Auto-scroll to latest'),
+        ('Step 5', '# Test execution UI\n# Start migration, watch progress\n# Verify updates in real-time')
+    ],
+    'dev3-day21': [
+        ('Step 1', '# Test execution service\n# Mock jsforce insert operations\n# Verify batching logic'),
+        ('Step 2', '# Test execute endpoint\n# POST /api/v1/execute\n# Verify job created\n# Check status endpoint returns progress'),
+        ('Step 3', '# Test progress tracking\n# Verify progress updates correctly\n# Test percentage calculation'),
+        ('Step 4', '# Test error handling during execution\n# Simulate Salesforce API errors\n# Verify job doesn\'t crash'),
+        ('Step 5', '# Document execution flow\n# Diagram showing steps\n# Document batch size recommendations')
+    ],
+    
+    'dev1-day22': [
+        ('Step 1', '# Install Bull queue: npm install bull\n# Configure Redis connection\n# Create migration job queue'),
+        ('Step 2', '# Implement batch processing\n# Process 200 records per batch\n# Add jobs to queue for each batch'),
+        ('Step 3', '# Create job processor\n# Worker: process batch, insert to Salesforce\n# Handle errors, update job status'),
+        ('Step 4', '# Add job monitoring endpoints\n# GET /api/v1/jobs - list all jobs\n# GET /api/v1/jobs/:id - job details\n# DELETE /api/v1/jobs/:id - cancel job'),
+        ('Step 5', '# Test batch processing\n# Queue 1000 records (5 batches of 200)\n# Verify all batches processed\n# Check completion time')
+    ],
+    'dev2-day22': [
+        ('Step 1', '# Implement WebSocket for real-time updates\n# Or use polling (simpler): every 2 seconds\n# Update progress automatically'),
+        ('Step 2', '# Show batch progress\n# Display: "Processing batch 3 of 5"\n# Show records per batch'),
+        ('Step 3', '# Add notifications\n# Toast: "Batch 1 completed successfully"\n# Error notification if batch fails'),
+        ('Step 4', '# Show queue position\n# Display: "Job queued, position #2"\n# Estimate time remaining'),
+        ('Step 5', '# Test real-time updates\n# Start migration with 1000 records\n# Verify progress updates automatically\n# Check notifications appear')
+    ],
+    'dev3-day22': [
+        ('Step 1', '# Test Bull queue setup\n# Verify jobs added to queue\n# Test worker processes jobs'),
+        ('Step 2', '# Test batch processing\n# Test with multiple batches\n# Verify parallel processing\n# Check error handling per batch'),
+        ('Step 3', '# Write E2E test for full migration\n# Test: connection → analyze → map → execute\n# Verify records in target Salesforce org'),
+        ('Step 4', '# Test job cancellation\n# Start job, cancel mid-execution\n# Verify stops gracefully'),
+        ('Step 5', '# Document batch processing\n# Document queue configuration\n# Note performance characteristics')
+    ],
+    
+    'dev1-day23': [
+        ('Step 1', '# Design rollback strategy\n# Store original record IDs in rollback table\n# Table: rollback_records(migration_job_id, source_id, target_id)'),
+        ('Step 2', '# Implement rollback service\n# Function: rollback(jobId)\n# Delete records using stored target IDs'),
+        ('Step 3', '# Create POST /api/v1/rollback endpoint\n# Accept: job_id\n# Execute rollback\n# Return: rollback_job_id'),
+        ('Step 4', '# Track rollback progress\n# Same progress tracking as migration\n# Status: rollback_in_progress, rollback_completed'),
+        ('Step 5', '# Test rollback\n# Execute migration, then rollback\n# Verify records deleted from target\n# Check source untouched')
+    ],
+    'dev2-day23': [
+        ('Step 1', '# Add Rollback button to results page\n# Button: "Rollback Migration" with warning icon\n# Show confirmation dialog'),
+        ('Step 2', '# Confirmation dialog\n# Warning: "This will delete X records from target org"\n# Require typing "ROLLBACK" to confirm'),
+        ('Step 3', '# Display rollback progress\n# Same progress UI as execution\n# Show: X of Y records deleted'),
+        ('Step 4', '# Create ResultsPage component\n# Show: success count, failures, rollback option\n# Add "Download Report" button'),
+        ('Step 5', '# Test rollback UI\n# Execute migration, then rollback\n# Verify confirmation required\n# Check progress displayed')
+    ],
+    'dev3-day23': [
+        ('Step 1', '# Test rollback service\n# Mock Salesforce delete operations\n# Verify all target records deleted'),
+        ('Step 2', '# Test rollback endpoint\n# POST /api/v1/rollback\n# Verify rollback job created'),
+        ('Step 3', '# Test rollback tracking\n# Verify progress updates\n# Test rollback completion detection'),
+        ('Step 4', '# Test production deployment setup\n# Create production environment config\n# Document deployment process'),
+        ('Step 5', '# Deploy to staging\n# Test full flow in staging\n# Document any issues')
+    ],
+    
+    'dev1-day24': [
+        ('Step 1', '# Add rate limiting middleware\n# Use express-rate-limit\n# Limit: 100 requests per minute per IP'),
+        ('Step 2', '# Improve error handling\n# Centralized error handler middleware\n# Consistent error response format'),
+        ('Step 3', '# Set up Swagger/OpenAPI\n# Install: npm install swagger-jsdoc swagger-ui-express\n# Document all endpoints\n# Serve docs at /api-docs'),
+        ('Step 4', '# Add request logging\n# Log all requests with winston\n# Include: timestamp, method, path, status, duration'),
+        ('Step 5', '# Final API testing\n# Test all endpoints documented\n# Verify rate limiting works\n# Check error responses consistent')
+    ],
+    'dev2-day24': [
+        ('Step 1', '# Responsive design review\n# Test all pages on mobile, tablet, desktop\n# Fix any layout issues'),
+        ('Step 2', '# Add animations\n# Page transitions fade-in\n# Button hover effects\n# Loading state animations'),
+        ('Step 3', '# Dark mode implementation (optional)\n# Add theme toggle\n# Define dark color scheme\n# Test all components in dark mode'),
+        ('Step 4', '# Accessibility improvements\n# Add ARIA labels\n# Test keyboard navigation\n# Check color contrast ratios'),
+        ('Step 5', '# Final UI polish\n# Fix any visual bugs\n# Ensure consistent styling\n# Test cross-browser')
+    ],
+    'dev3-day24': [
+        ('Step 1', '# Run full test suite\n# Backend: npm run test\n# Frontend: npm run test\n# E2E: npm run test:e2e'),
+        ('Step 2', '# Fix any failing tests\n# Debug failures\n# Update tests if needed\n# Verify all pass'),
+        ('Step 3', '# Code coverage check\n# Verify >80% coverage\n# Identify untested code\n# Add missing tests'),
+        ('Step 4', '# Manual exploratory testing\n# Test edge cases\n# Try to break the app\n# Document any bugs'),
+        ('Step 5', '# Create bug report\n# List all issues found\n# Prioritize: critical, high, medium, low\n# Assign for fixes')
+    ],
+    
+    'dev1-day25': [
+        ('Step 1', '# Code cleanup and refactoring\n# Remove commented code\n# Fix linting errors\n# Improve code organization'),
+        ('Step 2', '# Write backend README\n# Document: setup, configuration, running, testing\n# List all environment variables\n# Include troubleshooting section'),
+        ('Step 3', '# Document API endpoints\n# Complete API documentation in Swagger\n# Add request/response examples\n# Document authentication'),
+        ('Step 4', '# Create deployment guide\n# Document: build process, environment setup, deployment steps\n# Include rollback procedure'),
+        ('Step 5', '# Prepare demo\n# Create demo script\n# Set up demo data\n# Practice full presentation')
+    ],
+    'dev2-day25': [
+        ('Step 1', '# Code cleanup\n# Remove unused components\n# Fix ESLint warnings\n# Organize imports'),
+        ('Step 2', '# Write frontend README\n# Document: setup, development, building, deployment\n# List all environment variables\n# Include component documentation'),
+        ('Step 3', '# Create user guide\n# Step-by-step walkthrough with screenshots\n# Cover: connection, analysis, mapping, execution\n# Include tips and best practices'),
+        ('Step 4', '# Document component architecture\n# Create component tree diagram\n# Document state management\n# List reusable components'),
+        ('Step 5', '# Final demo preparation\n# Take screenshots of all pages\n# Create demo video\n# Prepare handoff materials')
+    ],
+    'dev3-day25': [
+        ('Step 1', '# Write deployment documentation\n# Document: server requirements, deployment steps, monitoring\n# Include database migration procedure'),
+        ('Step 2', '# Create testing procedures document\n# Document: running tests, interpreting results, adding tests\n# Include CI/CD pipeline documentation'),
+        ('Step 3', '# Write troubleshooting guide\n# Common issues and solutions\n# Error messages and fixes\n# Performance tuning tips'),
+        ('Step 4', '# Create stakeholder presentation\n# Slides: project overview, features, architecture, demo, next steps\n# Include screenshots and metrics'),
+        ('Step 5', '# Week 5 completion and handoff\n# Final documentation review\n# Archive all deliverables\n# Celebrate successful MVP completion!')
     ],
 }
 

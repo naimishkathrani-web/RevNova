@@ -801,6 +801,13 @@
             
             <div class="content-section">
                 <h2>🎯 Step 1: Mapping Canvas Component</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Create MappingCanvas component with drag-and-drop
+# Use @dnd-kit/core for DnD functionality
+# Layout: source fields (left), target fields (right), connection lines (center)
+# Implement DndContext wrapper</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>frontend/src/components/mapping/MappingCanvas.tsx</code></p>
                 <pre><code>import { DndContext, DragEndEvent } from '@dnd-kit/core';
 
@@ -840,6 +847,13 @@ export default redisClient;</code></pre>
             
             <div class="content-section">
                 <h2>🔄 Step 2: Create Job Status Polling Endpoint</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Create FieldSourceList component
+# Display draggable source fields
+# Show field icon, name, type badge
+# Group by object with collapsible sections</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
                 <pre><code>router.get('/projects/:id/analyze/:jobId', async (req, res) => {
   try {
@@ -868,6 +882,13 @@ export default redisClient;</code></pre>
             
             <div class="content-section">
                 <h2>📊 Step 3: Enhance Field Metadata</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Create FieldTargetList component
+# Display droppable target fields
+# Show field icon, name, type badge, mapped status
+# Highlight compatible fields on drag hover</code></pre>
+                </div>
                 <p>Update the schema analysis to include detailed field information:</p>
                 <pre><code>const getDetailedFieldMetadata = (field: any) => {
   return {
@@ -892,6 +913,13 @@ export default redisClient;</code></pre>
             
             <div class="content-section">
                 <h2>📈 Step 4: Create Analysis Summary Endpoint</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Implement handleDragEnd function
+# Extract source and target field IDs from drag event
+# Call POST /api/v1/mappings API
+# Update UI with new mapping and connection line</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
                 <pre><code>router.get('/projects/:id/analyze/summary', async (req, res) => {
   try {
@@ -917,6 +945,13 @@ export default redisClient;</code></pre>
             
             <div class="content-section">
                 <h2>✅ Step 5: Test All Endpoints</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Test drag-and-drop mapping
+# Drag source field to target field
+# Verify API call made correctly
+# Check connection line appears between mapped fields</code></pre>
+                </div>
                 
                 <p><strong>Test job status polling:</strong></p>
                 <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/job_1699632000000</code></pre>

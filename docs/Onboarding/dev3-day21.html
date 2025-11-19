@@ -783,158 +783,115 @@
                 <a href="onboarding-dev1.html">Developer 1</a> › Week 2 › Day 7
             </div>
             
-            <h1 class="page-title">Day 21: Production Deployment</h1>
-            <p class="page-subtitle">Developer 1: Backend & Database | Duration: ~6-8 hours</p>
+                        <h1 class="page-title">Day 21: Execution Tests</h1>
+            <p class="page-subtitle">Developer 3: DevOps & QA | Duration: ~6-8 hours</p>
             
             <div class="content-section">
                 <h2>📋 Objective</h2>
-                <p>Enhance the schema analysis API to fetch detailed field metadata, implement job status polling, and add Redis caching for performance optimization.</p>
+                <p>Test migration execution service with mocked Salesforce API calls.</p>
                 
-                <p><strong>API Endpoints to Build:</strong></p>
-                <ul>
-                    <li><code>GET /api/v1/projects/{id}/analyze/{job_id}</code> - Poll job status</li>
-                    <li><code>GET /api/v1/projects/{id}/analyze/summary</code> - Get analysis summary</li>
-                </ul>
+                
+                
+                <p><strong>Tests:</strong></p><ul><li>Execution service tests</li><li>Progress tracking tests</li></ul>
             </div>
-            
-            <div class="content-section">
-                <h2>📦 Step 1: Install Redis Client</h2>
-                <p>Install the Redis client for Node.js to enable caching:</p>
-                <pre><code>cd backend
-npm install redis</code></pre>
-                
-                <p>Create a Redis client configuration:</p>
-                <p><strong>File:</strong> <code>backend/src/config/redis.ts</code></p>
-                <pre><code>import { createClient } from 'redis';
 
-const redisClient = createClient({
-  url: process.env.REDIS_URL || 'redis://localhost:6379'
-});
-
-redisClient.on('error', (err) => console.error('Redis Client Error', err));
-
-export const connectRedis = async () => {
-  await redisClient.connect();
-  console.log('Redis connected');
-};
-
-export default redisClient;</code></pre>
-            </div>
-            
             <div class="content-section">
-                <h2>🔄 Step 2: Create Job Status Polling Endpoint</h2>
-                <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
-                <pre><code>router.get('/projects/:id/analyze/:jobId', async (req, res) => {
-  try {
-    const { id, jobId } = req.params;
-    
-    // Check Redis for job status
-    const jobData = await redisClient.get(`job:${jobId}`);
-    
-    if (!jobData) {
-      return res.status(404).json({ error: 'Job not found' });
-    }
-    
-    const job = JSON.parse(jobData);
-    res.json({
-      jobId: job.id,
-      status: job.status, // 'pending', 'running', 'completed', 'failed'
-      progress: job.progress,
-      result: job.result || null,
-      error: job.error || null
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});</code></pre>
-            </div>
-            
-            <div class="content-section">
-                <h2>📊 Step 3: Enhance Field Metadata</h2>
-                <p>Update the schema analysis to include detailed field information:</p>
-                <pre><code>const getDetailedFieldMetadata = (field: any) => {
-  return {
-    name: field.name,
-    label: field.label,
-    type: field.type,
-    length: field.length,
-    precision: field.precision,
-    scale: field.scale,
-    required: !field.nillable,
-    unique: field.unique,
-    externalId: field.externalId,
-    defaultValue: field.defaultValue,
-    picklistValues: field.picklistValues || [],
-    referenceTo: field.referenceTo || [],
-    relationshipName: field.relationshipName,
-    calculated: field.calculated,
-    customField: field.custom
-  };
-};</code></pre>
-            </div>
-            
-            <div class="content-section">
-                <h2>📈 Step 4: Create Analysis Summary Endpoint</h2>
-                <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
-                <pre><code>router.get('/projects/:id/analyze/summary', async (req, res) => {
-  try {
-    const projectId = parseInt(req.params.id);
-    
-    // Query database for analysis results
-    const summary = {
-      total_objects: 3,
-      custom_objects: 0,
-      total_fields: 45,
-      custom_fields: 12,
-      readiness_score: 0.92,
-      warnings: ['Custom field Product2.Special__c has no target mapping'],
-      analyzed_at: new Date().toISOString()
-    };
-    
-    res.json(summary);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});</code></pre>
-            </div>
-            
-            <div class="content-section">
-                <h2>✅ Step 5: Test All Endpoints</h2>
-                
-                <p><strong>Test job status polling:</strong></p>
-                <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/job_1699632000000</code></pre>
-                
-                <p><strong>Test analysis summary:</strong></p>
-                <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/summary</code></pre>
-                
+                <h2>📦 Step 1: Mock jsforce operations</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Test execution service
+# Mock jsforce insert operations
+# Verify batching logic</code></pre>
+                </div>
+                <p>Complete this step according to the MVP strategy.</p>
                 <div class="success-box">
-                    <strong>✓ Expected Response:</strong> Job status should return progress information, and summary should show aggregate statistics.
+                    <strong>✅ Completion Checklist:</strong>
+                    <ul>
+                        <li>Code implemented and tested</li>
+                        <li>Unit tests passing</li>
+                        <li>Documentation updated</li>
+                    </ul>
                 </div>
             </div>
-            
+
             <div class="content-section">
-                <h2>🎯 End of Day Checklist</h2>
-                <ul style="list-style: none; padding-left: 0;">
-                    <li>☐ Redis client installed and connected</li>
-                    <li>☐ Job status endpoint returns job progress</li>
-                    <li>☐ Enhanced metadata includes picklists and lookups</li>
-                    <li>☐ Summary endpoint aggregates analysis results</li>
-                    <li>☐ All endpoints tested and working</li>
-                    <li>☐ Code committed with meaningful message</li>
-                </ul>
-                
-                <p><strong>Commit Message:</strong></p>
-                <code>feat(backend): add job polling, detailed metadata, and Redis caching</code>
+                <h2>📦 Step 2: Test job creation</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Test execute endpoint
+# POST /api/v1/execute
+# Verify job created
+# Check status endpoint returns progress</code></pre>
+                </div>
+                <p>Complete this step according to the MVP strategy.</p>
+                <div class="success-box">
+                    <strong>✅ Completion Checklist:</strong>
+                    <ul>
+                        <li>Code implemented and tested</li>
+                        <li>Unit tests passing</li>
+                        <li>Documentation updated</li>
+                    </ul>
+                </div>
             </div>
-            
-            <div class="nav-buttons">
-                <a href="dev3-day20.html" class="btn btn-secondary">Previous: Day 20</a>
-                <a href="dev3-day22.html" class="btn">Next: Day 22</a>
+
+            <div class="content-section">
+                <h2>📦 Step 3: Test progress updates</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Test progress tracking
+# Verify progress updates correctly
+# Test percentage calculation</code></pre>
+                </div>
+                <p>Complete this step according to the MVP strategy.</p>
+                <div class="success-box">
+                    <strong>✅ Completion Checklist:</strong>
+                    <ul>
+                        <li>Code implemented and tested</li>
+                        <li>Unit tests passing</li>
+                        <li>Documentation updated</li>
+                    </ul>
+                </div>
             </div>
-        </main>
-    </div>
-    
-    <script>
+
+            <div class="content-section">
+                <h2>📦 Step 4: Test progress updates</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Test error handling during execution
+# Simulate Salesforce API errors
+# Verify job doesn't crash</code></pre>
+                </div>
+                <p>Complete this step according to the MVP strategy.</p>
+                <div class="success-box">
+                    <strong>✅ Completion Checklist:</strong>
+                    <ul>
+                        <li>Code implemented and tested</li>
+                        <li>Unit tests passing</li>
+                        <li>Documentation updated</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2>📦 Step 5: Test progress updates</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Document execution flow
+# Diagram showing steps
+# Document batch size recommendations</code></pre>
+                </div>
+                <p>Complete this step according to the MVP strategy.</p>
+                <div class="success-box">
+                    <strong>✅ Completion Checklist:</strong>
+                    <ul>
+                        <li>Code implemented and tested</li>
+                        <li>Unit tests passing</li>
+                        <li>Documentation updated</li>
+                    </ul>
+                </div>
+            </div>
+
+            <script>
         // Collapsible navigation functionality
         document.addEventListener('DOMContentLoaded', function() {
             // Handle section headers

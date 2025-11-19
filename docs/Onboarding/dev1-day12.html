@@ -800,6 +800,13 @@
             
             <div class="content-section">
                 <h2>📝 Step 1: Bulk Operations</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Implement bulk operations endpoint
+# POST /api/v1/mappings/bulk accepts array of mappings
+# Use transaction for atomicity
+# INSERT with ON CONFLICT DO UPDATE</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>backend/src/routes/mappings.routes.ts</code></p>
                 <pre><code>router.post('/bulk', async (req, res) =&gt; {
   const { projectId, mappings } = req.body;
@@ -837,6 +844,13 @@ export default redisClient;</code></pre>
             
             <div class="content-section">
                 <h2>🔄 Step 2: Create Job Status Polling Endpoint</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Create PUT /api/v1/mappings/:id endpoint
+# Accept: mapping_type, transform_rule updates
+# Validate changes before updating
+# Return updated mapping</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
                 <pre><code>router.get('/projects/:id/analyze/:jobId', async (req, res) => {
   try {
@@ -865,6 +879,13 @@ export default redisClient;</code></pre>
             
             <div class="content-section">
                 <h2>📊 Step 3: Enhance Field Metadata</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Create DELETE /api/v1/mappings/:id endpoint
+# Soft delete: set deleted_at timestamp
+# Or hard delete based on requirements
+# Return 204 No Content on success</code></pre>
+                </div>
                 <p>Update the schema analysis to include detailed field information:</p>
                 <pre><code>const getDetailedFieldMetadata = (field: any) => {
   return {
@@ -889,6 +910,13 @@ export default redisClient;</code></pre>
             
             <div class="content-section">
                 <h2>📈 Step 4: Create Analysis Summary Endpoint</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Test bulk operations
+# Create 20 mappings in single request
+# Test ON CONFLICT update behavior
+# Verify transaction rollback on error</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
                 <pre><code>router.get('/projects/:id/analyze/summary', async (req, res) => {
   try {
@@ -914,6 +942,13 @@ export default redisClient;</code></pre>
             
             <div class="content-section">
                 <h2>✅ Step 5: Test All Endpoints</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Test update and delete operations
+# Update mapping transform rule
+# Delete mapping and verify removed
+# Test 404 for non-existent mapping</code></pre>
+                </div>
                 
                 <p><strong>Test job status polling:</strong></p>
                 <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/job_1699632000000</code></pre>

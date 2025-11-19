@@ -800,6 +800,13 @@
             
             <div class="content-section">
                 <h2>🧪 Step 1: ConnectionForm Tests</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Create integration tests for mappings API
+# Test POST /api/v1/mappings with valid data
+# Test GET /api/v1/mappings/:projectId returns all mappings
+# Verify response includes field metadata</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>frontend/tests/ConnectionForm.test.tsx</code></p>
                 <pre><code>import { render, screen, fireEvent } from '@testing-library/react';
 import { ConnectionForm } from '../components/ConnectionForm';
@@ -832,6 +839,13 @@ export default redisClient;</code></pre>
             
             <div class="content-section">
                 <h2>🔄 Step 2: Create Job Status Polling Endpoint</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Test mapping validation rules
+# Test duplicate mapping rejection (unique constraint)
+# Test invalid field ID rejection (foreign key)
+# Verify error messages clear and helpful</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
                 <pre><code>router.get('/projects/:id/analyze/:jobId', async (req, res) => {
   try {
@@ -860,6 +874,13 @@ export default redisClient;</code></pre>
             
             <div class="content-section">
                 <h2>📊 Step 3: Enhance Field Metadata</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Test frontend ConnectionForm component
+# Write unit test: form renders all fields
+# Test: required field validation triggers
+# Test: form submission calls API correctly</code></pre>
+                </div>
                 <p>Update the schema analysis to include detailed field information:</p>
                 <pre><code>const getDetailedFieldMetadata = (field: any) => {
   return {
@@ -884,6 +905,13 @@ export default redisClient;</code></pre>
             
             <div class="content-section">
                 <h2>📈 Step 4: Create Analysis Summary Endpoint</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Test ObjectList search functionality
+# Test: search filters objects correctly
+# Test: custom vs standard filter works
+# Test: object count updates on filter</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
                 <pre><code>router.get('/projects/:id/analyze/summary', async (req, res) => {
   try {
@@ -909,6 +937,13 @@ export default redisClient;</code></pre>
             
             <div class="content-section">
                 <h2>✅ Step 5: Test All Endpoints</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Document Day 11 completion
+# Screenshot mapping canvas with DnD
+# Verify mappings persist in database
+# Note any UX improvements needed</code></pre>
+                </div>
                 
                 <p><strong>Test job status polling:</strong></p>
                 <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/job_1699632000000</code></pre>

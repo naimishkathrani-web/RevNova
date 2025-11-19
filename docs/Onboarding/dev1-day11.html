@@ -800,6 +800,12 @@
             
             <div class="content-section">
                 <h2>🗄️ Step 1: Field Mappings Table</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Create field_mappings database table
+# Columns: id, project_id, source_object, source_field, target_object, target_field, mapping_type, transform_rule
+# Add UNIQUE constraint on (project_id, source_field_id, target_field_id)</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>backend/migrations/004_create_mappings.sql</code></p>
                 <pre><code>CREATE TABLE field_mappings (
   id SERIAL PRIMARY KEY,
@@ -824,6 +830,13 @@ export default redisClient;</code></pre>
             
             <div class="content-section">
                 <h2>🔄 Step 2: Create Job Status Polling Endpoint</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Create POST /api/v1/mappings endpoint
+# Accept: sourceFieldId, targetFieldId, mappingType (direct, formula, lookup)
+# Validate required fields and foreign key relationships
+# Return created mapping with 201 status</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
                 <pre><code>router.get('/projects/:id/analyze/:jobId', async (req, res) => {
   try {
@@ -852,6 +865,13 @@ export default redisClient;</code></pre>
             
             <div class="content-section">
                 <h2>📊 Step 3: Enhance Field Metadata</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Implement GET /api/v1/mappings/:projectId endpoint
+# Return all mappings for a project
+# Include source/target field metadata with JOINs
+# Order by: source object, then source field</code></pre>
+                </div>
                 <p>Update the schema analysis to include detailed field information:</p>
                 <pre><code>const getDetailedFieldMetadata = (field: any) => {
   return {
@@ -876,6 +896,13 @@ export default redisClient;</code></pre>
             
             <div class="content-section">
                 <h2>📈 Step 4: Create Analysis Summary Endpoint</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Add transformation rule validation
+# Validate formula syntax for formula mappings
+# Check type compatibility (text→number validation)
+# Return validation errors with specific messages</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
                 <pre><code>router.get('/projects/:id/analyze/summary', async (req, res) => {
   try {
@@ -901,6 +928,13 @@ export default redisClient;</code></pre>
             
             <div class="content-section">
                 <h2>✅ Step 5: Test All Endpoints</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Test manual mapping creation
+# Map Product2.Name to OrderProduct__c.ProductName__c
+# Map SBQQ__Quote__c.Amount__c to Order.TotalAmount
+# Verify mappings stored correctly in database</code></pre>
+                </div>
                 
                 <p><strong>Test job status polling:</strong></p>
                 <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/job_1699632000000</code></pre>

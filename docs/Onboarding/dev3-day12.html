@@ -800,6 +800,13 @@
             
             <div class="content-section">
                 <h2>🎭 Step 1: Install Playwright</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Set up Playwright for E2E testing
+# Install: @playwright/test
+# Run: npx playwright install
+# Create playwright.config.ts</code></pre>
+                </div>
                 <pre><code>cd frontend
 npm install -D @playwright/test
 npx playwright install
@@ -824,6 +831,14 @@ export default defineConfig({
             
             <div class="content-section">
                 <h2>🧪 Step 2: First E2E Test</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Write connection flow E2E test
+# Test: fill connection form
+# Test: test connection button
+# Test: save connection
+# Verify connection card appears</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>frontend/e2e/connection-flow.spec.ts</code></p>
                 <pre><code>import { test, expect } from '@playwright/test';
 
@@ -887,6 +902,13 @@ export default redisClient;</code></pre>
             
             <div class="content-section">
                 <h2>📊 Step 3: Enhance Field Metadata</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Test bulk operations API
+# Mock multiple mappings
+# Send bulk create request
+# Verify all mappings created</code></pre>
+                </div>
                 <p>Update the schema analysis to include detailed field information:</p>
                 <pre><code>const getDetailedFieldMetadata = (field: any) => {
   return {
@@ -911,6 +933,13 @@ export default redisClient;</code></pre>
             
             <div class="content-section">
                 <h2>📈 Step 4: Create Analysis Summary Endpoint</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Test ConnectionLines rendering
+# Verify SVG lines appear
+# Test line positions correct
+# Check updates when mappings change</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
                 <pre><code>router.get('/projects/:id/analyze/summary', async (req, res) => {
   try {
@@ -936,6 +965,13 @@ export default redisClient;</code></pre>
             
             <div class="content-section">
                 <h2>✅ Step 5: Test All Endpoints</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Document Day 12 completion
+# Screenshot connection lines
+# Note E2E test results
+# List any issues found</code></pre>
+                </div>
                 
                 <p><strong>Test job status polling:</strong></p>
                 <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/job_1699632000000</code></pre>
