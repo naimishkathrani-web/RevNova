@@ -873,6 +873,13 @@ export const testConnection = async (credentials: SalesforceCredentials): Promis
             
             <div class="content-section">
                 <h2>🔌 Step 3: Create Connections API Routes</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Implement error handling for Salesforce connection
+# Catch authentication errors
+# Handle invalid credentials, expired tokens
+# Return structured error messages</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>backend/src/routes/connections.routes.ts</code></p>
                 <pre><code>import express from 'express';
 import { Pool } from 'pg';
@@ -974,6 +981,13 @@ export default router;</code></pre>
             
             <div class="content-section">
                 <h2>🔗 Step 4: Register Router</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Create POST /api/v1/connections endpoint
+# Accept connection credentials
+# Test connection to Salesforce
+# Store connection if successful</code></pre>
+                </div>
                 <p>Update <code>backend/src/index.ts</code>:</p>
                 <pre><code>import connectionsRouter from './routes/connections.routes';
 
@@ -986,6 +1000,13 @@ app.use('/api/v1/connections', connectionsRouter);</code></pre>
             
             <div class="content-section">
                 <h2>🧪 Step 5: Test Connection Endpoints</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Test Salesforce connection with real/sandbox credentials
+# Verify successful authentication
+# Test with invalid credentials (should fail gracefully)
+# Store connection in database</code></pre>
+                </div>
                 <p><strong>Create connection:</strong></p>
                 <pre><code>curl -X POST http://localhost:3000/api/v1/connections \
   -H "Content-Type: application/json" \

@@ -800,6 +800,13 @@
             
             <div class="content-section">
                 <h2>🧪 Step 1: Run Backend Tests</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Run Week 2 backend test suite
+# Execute: npm run test --coverage
+# Verify all connection, schema, field, relationship tests pass
+# Check code coverage >80%</code></pre>
+                </div>
                 <p>Execute the complete test suite:</p>
                 <pre><code>cd backend
 npm run test -- --coverage
@@ -817,6 +824,13 @@ npm run test -- --coverage
             
             <div class="content-section">
                 <h2>📚 Step 2: Document Changes</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Create API documentation for Week 2 endpoints
+# Document all routes, parameters, responses
+# Add example requests and responses
+# Include error codes and messages</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>docs/API_WEEK2.md</code></p>
                 <pre><code># Week 2 API Documentation
 
@@ -873,6 +887,13 @@ export default redisClient;</code></pre>
             
             <div class="content-section">
                 <h2>📊 Step 3: Enhance Field Metadata</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Review code quality and refactor
+# Check for code duplication
+# Ensure consistent error handling
+# Verify TypeScript types correct</code></pre>
+                </div>
                 <p>Update the schema analysis to include detailed field information:</p>
                 <pre><code>const getDetailedFieldMetadata = (field: any) => {
   return {
@@ -897,6 +918,13 @@ export default redisClient;</code></pre>
             
             <div class="content-section">
                 <h2>📈 Step 4: Create Analysis Summary Endpoint</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Create PR checklist for Week 2
+# List all completed features
+# Note breaking changes
+# Document database migrations</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
                 <pre><code>router.get('/projects/:id/analyze/summary', async (req, res) => {
   try {
@@ -922,6 +950,13 @@ export default redisClient;</code></pre>
             
             <div class="content-section">
                 <h2>✅ Step 5: Test All Endpoints</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Prepare Week 2 demo
+# Test complete flow: connect → analyze → view schema
+# Create demo script
+# Take screenshots for documentation</code></pre>
+                </div>
                 
                 <p><strong>Test job status polling:</strong></p>
                 <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/job_1699632000000</code></pre>

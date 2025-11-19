@@ -800,6 +800,13 @@
             
             <div class="content-section">
                 <h2>📦 Step 1: Create Database Migration</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Create field analysis service
+# Function: analyzeFields(objectId)
+# Use jsforce describeSObject(objectName)
+# Parse field metadata: name, type, length, required, picklist values</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>backend/migrations/003_create_metadata_tables.sql</code></p>
                 <pre><code>CREATE TABLE salesforce_objects (
   id SERIAL PRIMARY KEY,
@@ -855,6 +862,13 @@ export default redisClient;</code></pre>
             
             <div class="content-section">
                 <h2>🔄 Step 2: Create Job Status Polling Endpoint</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Store fields in source_fields table
+# Insert all fields for analyzed object
+# Store: name, label, type, length, precision, scale, required, unique
+# Handle special types: picklist, reference, formula</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
                 <pre><code>router.get('/projects/:id/analyze/:jobId', async (req, res) => {
   try {
@@ -878,6 +892,13 @@ export default redisClient;</code></pre>
             
             <div class="content-section">
                 <h2>📊 Step 3: Enhance Field Metadata</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Create GET /api/v1/objects/:id/fields endpoint
+# Return fields for specified object
+# Include field metadata and relationships
+# Sort by: standard fields first, then custom</code></pre>
+                </div>
                 <p>Update the schema analysis to include detailed field information:</p>
                 <pre><code>const getDetailedFieldMetadata = (field: any) => {
   return {
@@ -902,6 +923,13 @@ export default redisClient;</code></pre>
             
             <div class="content-section">
                 <h2>📈 Step 4: Create Analysis Summary Endpoint</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Create POST /api/v1/analyze/fields endpoint
+# Accept object ID to analyze
+# Fetch field metadata from Salesforce
+# Store in database and return summary</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
                 <pre><code>router.get('/projects/:id/analyze/summary', async (req, res) => {
   try {
@@ -927,6 +955,13 @@ export default redisClient;</code></pre>
             
             <div class="content-section">
                 <h2>✅ Step 5: Test All Endpoints</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Test field analysis for CPQ objects
+# Analyze SBQQ__Quote__c fields (should find 100+ fields)
+# Verify picklist values stored correctly
+# Test lookup relationships captured</code></pre>
+                </div>
                 
                 <p><strong>Test job status polling:</strong></p>
                 <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/job_1699632000000</code></pre>

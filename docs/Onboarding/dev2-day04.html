@@ -801,6 +801,12 @@
             
             <div class="content-section">
                 <h2>📦 Step 1: Install Dependencies</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Create New Migration form component
+# Add form fields: project name, description, source/target types
+# Implement controlled inputs with React state</code></pre>
+                </div>
                 <p>Install Axios for HTTP requests:</p>
                 <pre><code>cd frontend
 npm install axios</code></pre>
@@ -810,6 +816,13 @@ npm install axios</code></pre>
             
             <div class="content-section">
                 <h2>🔧 Step 2: Create Base API Client</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Add form validation
+# Required field validation for project name
+# Validate project name uniqueness (client-side check)
+# Show error messages below fields</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>frontend/src/api/client.ts</code></p>
                 <pre><code>import axios, { AxiosInstance, AxiosError } from 'axios';
 
@@ -856,6 +869,12 @@ export default apiClient;</code></pre>
             
             <div class="content-section">
                 <h2>📝 Step 3: Create TypeScript Types</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Style form with Salesforce Lightning Design System
+# Use input groups, labels, help text
+# Add form layout with proper spacing</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>frontend/src/types/api.ts</code></p>
                 <pre><code>// Project types
 export interface Project {
@@ -903,6 +922,12 @@ export interface ApiError {
             
             <div class="content-section">
                 <h2>📡 Step 4: Create Projects API Service</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Implement dropdown for source/target system types
+# Options: "Salesforce CPQ", "Revenue Cloud", "Custom"
+# Style dropdown with search capability</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>frontend/src/api/projects.ts</code></p>
                 <pre><code>import apiClient from './client';
 import type { Project, CreateProjectRequest } from '../types/api';
@@ -943,6 +968,12 @@ export const projectsApi = {
             
             <div class="content-section">
                 <h2>🔗 Step 5: Create Connections API Service</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Add submit button with loading state
+# Disable button during submission
+# Show success message after creation</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>frontend/src/api/connections.ts</code></p>
                 <pre><code>import apiClient from './client';
 import type { Connection, CreateConnectionRequest } from '../types/api';

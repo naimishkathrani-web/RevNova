@@ -802,6 +802,12 @@
             
             <div class="content-section">
                 <h2>🔧 Step 1: Create GitHub Actions Workflow</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Create database schema verification script
+# Query information_schema to list all tables
+# Verify each expected table exists</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>.github/workflows/ci.yml</code></p>
                 <pre><code>name: CI Pipeline
 
@@ -920,6 +926,12 @@ jobs:
             
             <div class="content-section">
                 <h2>🧪 Step 2: Configure Package.json Scripts</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Test STG2 table operations with SQL
+# Insert mapping record, query it back
+# Verify foreign keys and constraints work</code></pre>
+                </div>
                 <p>Ensure both backend and frontend have the necessary npm scripts:</p>
                 
                 <p><strong>Backend:</strong> <code>backend/package.json</code></p>
@@ -958,6 +970,12 @@ jobs:
             
             <div class="content-section">
                 <h2>🎯 Step 3: Install ESLint and Testing Dependencies</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Create frontend component test checklist
+# List Dashboard page requirements
+# Document expected UI elements</code></pre>
+                </div>
                 <p><strong>Backend dependencies:</strong></p>
                 <pre><code>cd backend
 npm install --save-dev eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin
@@ -973,6 +991,12 @@ npm install --save-dev vitest @vitest/ui @testing-library/react @testing-library
             
             <div class="content-section">
                 <h2>🚀 Step 4: Test the Pipeline</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Manually test Dashboard page rendering
+# Verify empty state shows correctly
+# Test project card display with mock data</code></pre>
+                </div>
                 <p>Push a small change to trigger the workflow:</p>
                 <pre><code>git add .github/workflows/ci.yml
 git commit -m "feat: add CI/CD pipeline with GitHub Actions"

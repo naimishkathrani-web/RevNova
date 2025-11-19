@@ -803,6 +803,12 @@
             
             <div class="content-section">
                 <h2>📦 Step 1: Create Connection Form Component</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Create ConnectionForm component
+# Add fields: connection name, instance URL, username, password, security token
+# Implement controlled inputs with validation</code></pre>
+                </div>
                 <p>Create a React component for the connection form with validation and state management:</p>
                 
                 <p><strong>File:</strong> <code>frontend/src/components/connections/ConnectionForm.tsx</code></p>
@@ -1034,6 +1040,13 @@ export const ConnectionForm: React.FC&lt;ConnectionFormProps&gt; = ({ onSuccess 
             
             <div class="content-section">
                 <h2>🎨 Step 2: Style the Connection Form</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Style ConnectionForm with Salesforce Lightning design
+# Use input groups with icons
+# Add help text for security token field
+# Implement password visibility toggle</code></pre>
+                </div>
                 <p>Create styles following RevNova's design system:</p>
                 <p><strong>File:</strong> <code>frontend/src/components/connections/ConnectionForm.css</code></p>
                 <pre><code>.connection-form-container {
@@ -1196,6 +1209,13 @@ export const ConnectionForm: React.FC&lt;ConnectionFormProps&gt; = ({ onSuccess 
             
             <div class="content-section">
                 <h2>📋 Step 3: Create Connection List Component</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Add "Test Connection" button
+# Call API to verify credentials before saving
+# Show success/error message
+# Disable Save until test succeeds</code></pre>
+                </div>
                 <p>Display all saved connections with status indicators:</p>
                 <p><strong>File:</strong> <code>frontend/src/components/connections/ConnectionList.tsx</code></p>
                 <pre><code>import React, { useEffect, useState } from 'react';
@@ -1344,6 +1364,13 @@ export const ConnectionList: React.FC = () => {
             
             <div class="content-section">
                 <h2>🎨 Step 4: Style the Connection List</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Create ConnectionList component
+# Display saved connections in cards
+# Show connection status (active, failed)
+# Add Edit and Delete buttons</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>frontend/src/components/connections/ConnectionList.css</code></p>
                 <pre><code>.connection-list-container {
   background: var(--background-white);
@@ -1527,6 +1554,13 @@ export const ConnectionList: React.FC = () => {
             
             <div class="content-section">
                 <h2>🔗 Step 5: Create Connections Page Container</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Integrate ConnectionForm with backend API
+# POST to /api/v1/connections on submit
+# Handle success: add to list, show toast
+# Handle error: display validation message</code></pre>
+                </div>
                 <p>Combine the form and list into a complete page:</p>
                 <p><strong>File:</strong> <code>frontend/src/pages/ConnectionsPage.tsx</code></p>
                 <pre><code>import React, { useState } from 'react';

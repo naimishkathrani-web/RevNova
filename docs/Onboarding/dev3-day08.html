@@ -800,6 +800,13 @@
             
             <div class="content-section">
                 <h2>📦 Step 1: Test Metadata Persistence</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Test describeSObject() for CPQ Quote object
+# Verify returns all field metadata
+# Check field types parsed correctly
+# Document field count</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>backend/src/__tests__/metadata-persistence.test.ts</code></p>
                 <pre><code>import { Pool } from 'pg';
 
@@ -837,6 +844,13 @@ export default redisClient;</code></pre>
             
             <div class="content-section">
                 <h2>🔄 Step 2: Create Job Status Polling Endpoint</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Test field storage in database
+# Verify all fields inserted
+# Check data types stored correctly
+# Test querying fields by object</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
                 <pre><code>router.get('/projects/:id/analyze/:jobId', async (req, res) => {
   try {
@@ -860,6 +874,13 @@ export default redisClient;</code></pre>
             
             <div class="content-section">
                 <h2>📊 Step 3: Enhance Field Metadata</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Test fields API endpoint
+# GET /api/v1/objects/:id/fields
+# Verify response includes all metadata
+# Check filtering and sorting works</code></pre>
+                </div>
                 <p>Update the schema analysis to include detailed field information:</p>
                 <pre><code>const getDetailedFieldMetadata = (field: any) => {
   return {
@@ -884,6 +905,13 @@ export default redisClient;</code></pre>
             
             <div class="content-section">
                 <h2>📈 Step 4: Create Analysis Summary Endpoint</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Test FieldList component
+# Verify fields display correctly
+# Test search and filter functionality
+# Test field details modal</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
                 <pre><code>router.get('/projects/:id/analyze/summary', async (req, res) => {
   try {
@@ -909,6 +937,13 @@ export default redisClient;</code></pre>
             
             <div class="content-section">
                 <h2>✅ Step 5: Test All Endpoints</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Document Day 8 completion
+# Screenshot field list for SBQQ__Quote__c
+# Note field count and analysis time
+# List any metadata parsing issues</code></pre>
+                </div>
                 
                 <p><strong>Test job status polling:</strong></p>
                 <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/job_1699632000000</code></pre>

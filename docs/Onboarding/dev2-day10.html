@@ -800,6 +800,13 @@
             
             <div class="content-section">
                 <h2>🎨 Step 1: UI Polish</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Run frontend test suite
+# Execute: npm run test
+# Verify component tests pass
+# Check rendering, interactions, API mocks</code></pre>
+                </div>
                 <p>Verify all components match RevNova design:</p>
                 <pre><code># Components to verify:
 - ConnectionForm: Salesforce-inspired blue theme
@@ -814,6 +821,13 @@
             
             <div class="content-section">
                 <h2>🧪 Step 2: Run Frontend Tests</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># UI polish and consistency check
+# Verify Salesforce Lightning design applied consistently
+# Check color scheme matches (#0176d3 blue)
+# Test responsive behavior on mobile</code></pre>
+                </div>
                 <p>Execute Vitest suite:</p>
                 <pre><code>cd frontend
 npm run test
@@ -860,6 +874,13 @@ export default redisClient;</code></pre>
             
             <div class="content-section">
                 <h2>📊 Step 3: Enhance Field Metadata</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Review component structure
+# Ensure proper prop types
+# Check for unused code
+# Verify consistent naming conventions</code></pre>
+                </div>
                 <p>Update the schema analysis to include detailed field information:</p>
                 <pre><code>const getDetailedFieldMetadata = (field: any) => {
   return {
@@ -884,6 +905,13 @@ export default redisClient;</code></pre>
             
             <div class="content-section">
                 <h2>📈 Step 4: Create Analysis Summary Endpoint</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Test complete user flow
+# Create connection → Analyze org → View objects/fields/relationships
+# Verify no console errors
+# Check loading states work correctly</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
                 <pre><code>router.get('/projects/:id/analyze/summary', async (req, res) => {
   try {
@@ -909,6 +937,13 @@ export default redisClient;</code></pre>
             
             <div class="content-section">
                 <h2>✅ Step 5: Test All Endpoints</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Create Week 2 UI documentation
+# Screenshot all components
+# Document component props and usage
+# Note any accessibility improvements needed</code></pre>
+                </div>
                 
                 <p><strong>Test job status polling:</strong></p>
                 <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/job_1699632000000</code></pre>

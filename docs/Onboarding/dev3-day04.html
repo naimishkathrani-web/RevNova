@@ -801,6 +801,12 @@
             
             <div class="content-section">
                 <h2>📦 Step 1: Install Jest Dependencies</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Test EAV metadata storage and retrieval
+# Insert metadata for test project
+# Query back and verify values match</code></pre>
+                </div>
                 <p>Install Jest and related packages:</p>
                 <pre><code>cd backend
 npm install --save-dev jest @types/jest ts-jest
@@ -811,6 +817,12 @@ npm install --save-dev supertest @types/supertest</code></pre>
             
             <div class="content-section">
                 <h2>⚙️ Step 2: Configure Jest</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Create test data set for various metadata types
+# Test string, number, boolean, date values
+# Verify data type handling</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>backend/jest.config.js</code></p>
                 <pre><code>module.exports = {
   preset: 'ts-jest',
@@ -836,6 +848,13 @@ npm install --save-dev supertest @types/supertest</code></pre>
             
             <div class="content-section">
                 <h2>🗄️ Step 3: Create Test Database Setup</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Test frontend form validation
+# Try submitting empty form (should fail)
+# Try valid form (should succeed)
+# Verify error messages display correctly</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>backend/src/__tests__/setup.ts</code></p>
                 <pre><code>import { Pool } from 'pg';
 
@@ -870,6 +889,13 @@ export { pool };</code></pre>
             
             <div class="content-section">
                 <h2>🧪 Step 4: Write API Tests</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Test form field interactions
+# Type in all fields, verify state updates
+# Test dropdown selection
+# Test form reset</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>backend/src/__tests__/projects.test.ts</code></p>
                 <pre><code>import request from 'supertest';
 import app from '../app'; // Assuming you export your Express app
@@ -976,6 +1002,12 @@ describe('Projects API', () => {
             
             <div class="content-section">
                 <h2>▶️ Step 5: Run Tests</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Document Day 4 completion
+# Screenshot form page
+# Note validation rules working correctly</code></pre>
+                </div>
                 <p>Run the test suite:</p>
                 <pre><code>npm test</code></pre>
                 

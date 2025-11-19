@@ -800,6 +800,12 @@
             
             <div class="content-section">
                 <h2>📊 Step 1: Create Target Objects Table</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Create database migration for STG2 tables
+# Define target_objects table: id, connection_id, name, label, api_name
+# Define target_fields table: id, object_id, name, type, length, required</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>backend/migrations/005_create_target_objects_table.sql</code></p>
                 <pre><code>-- Target Objects table: stores custom object definitions for target org
 CREATE TABLE target_objects (
@@ -832,6 +838,12 @@ CREATE INDEX idx_target_objects_name ON target_objects(name);</code></pre>
             
             <div class="content-section">
                 <h2>📝 Step 2: Create Target Fields Table</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Define field_mappings table: id, project_id, source_object_id, source_field_id, target_object_id, target_field_id, transform_rule
+# Add unique constraint on (project_id, source_field_id, target_field_id)
+# Include mapping_type, confidence_score columns</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>backend/migrations/006_create_target_fields_table.sql</code></p>
                 <pre><code>-- Target Fields table: stores custom field definitions for target objects
 CREATE TABLE target_fields (
@@ -869,6 +881,12 @@ CREATE INDEX idx_target_fields_type ON target_fields(type);</code></pre>
             
             <div class="content-section">
                 <h2>🔗 Step 3: Create Field Mappings Table</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Add database indexes for performance
+# Index on project_id, source_object_id, target_object_id
+# Index on mapping_type for filtering</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>backend/migrations/007_create_field_mappings_table.sql</code></p>
                 <pre><code>-- Field Mappings table: stores mappings between source and target fields
 CREATE TABLE field_mappings (
@@ -903,6 +921,12 @@ CREATE INDEX idx_field_mappings_validation ON field_mappings(validation_status);
             
             <div class="content-section">
                 <h2>🚀 Step 4: Run Migrations</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Create seed data for RCA target objects
+# Insert: Order, OrderItem, OrderProductRelationship, OrderAction
+# Add sample fields for each object</code></pre>
+                </div>
                 <p>Execute the new migrations:</p>
                 <pre><code>npm run migrate
 
@@ -928,6 +952,12 @@ CREATE INDEX idx_field_mappings_validation ON field_mappings(validation_status);
             
             <div class="content-section">
                 <h2>🧪 Step 5: Insert Test Data</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Run migration and verify all tables created
+# Test insert/update/delete operations
+# Query mappings with JOIN to verify relationships</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>backend/seeds/002_stg2_test_data.sql</code></p>
                 <pre><code>-- Insert test target object
 INSERT INTO target_objects (connection_id, name, label, api_name, description)

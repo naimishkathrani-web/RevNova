@@ -800,6 +800,12 @@
             
             <div class="content-section">
                 <h2>📦 Step 1: Create Object Attributes Table</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Create EAV (Entity-Attribute-Value) schema migration
+# Define metadata_keys table: id, entity_type, key_name, data_type
+# Define metadata_values table: id, entity_id, key_id, value_text, value_number, value_date</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>backend/src/migrations/006_create_object_attributes.sql</code></p>
                 <pre><code>CREATE TABLE object_attributes (
   id SERIAL PRIMARY KEY,
@@ -839,6 +845,12 @@ COMMENT ON COLUMN object_attributes.data_type IS 'Type hint for parsing attribut
             
             <div class="content-section">
                 <h2>🏷️ Step 2: Create Field Attributes Table</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Add indexes for EAV queries
+# Index on (entity_id, key_id) for fast lookups
+# Index on value columns for search</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>backend/src/migrations/007_create_field_attributes.sql</code></p>
                 <pre><code>CREATE TABLE field_attributes (
   id SERIAL PRIMARY KEY,
@@ -878,6 +890,12 @@ COMMENT ON COLUMN field_attributes.data_type IS 'Type hint for parsing attribute
             
             <div class="content-section">
                 <h2>🔗 Step 3: Create Mapping Attributes Table</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Create helper functions for EAV operations
+# Function: setMetadata(entityId, key, value)
+# Function: getMetadata(entityId, key)</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>backend/src/migrations/008_create_mapping_attributes.sql</code></p>
                 <pre><code>CREATE TABLE mapping_attributes (
   id SERIAL PRIMARY KEY,
@@ -904,6 +922,12 @@ COMMENT ON COLUMN mapping_attributes.attribute_value IS 'Stored as TEXT, parsed 
             
             <div class="content-section">
                 <h2>📊 Step 4: Run Migrations</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Seed metadata keys for projects and connections
+# Add keys: "salesforce_version", "org_type", "cpq_package_version"
+# Insert sample metadata values</code></pre>
+                </div>
                 <p>Apply all three migrations:</p>
                 <pre><code>cd backend
 node -e "
@@ -941,6 +965,12 @@ psql -U postgres -d revnova -c "\d mapping_attributes"</code></pre>
             
             <div class="content-section">
                 <h2>💡 Step 5: Example Usage Patterns</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Test EAV system with various data types
+# Store string, number, date values
+# Query and verify correct data retrieval</code></pre>
+                </div>
                 <p>Insert dynamic attributes:</p>
                 <pre><code>-- Add Salesforce-specific metadata to object
 INSERT INTO object_attributes (object_id, object_type, attribute_key, attribute_value, data_type)

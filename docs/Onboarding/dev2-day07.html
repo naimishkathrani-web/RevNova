@@ -801,6 +801,12 @@
             
             <div class="content-section">
                 <h2>📦 Step 1: Create Object List Component</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Create ObjectList component
+# Display objects in searchable table
+# Columns: Object Name, Label, Type (Standard/Custom), Fields Count</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>frontend/src/components/objects/ObjectList.tsx</code></p>
                 <pre><code>import React, { useState, useEffect } from 'react';
 import axios from 'axios';
@@ -990,6 +996,13 @@ export default redisClient;</code></pre>
             
             <div class="content-section">
                 <h2>🔄 Step 2: Create Job Status Polling Endpoint</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Add search and filter functionality
+# Search by object name or label
+# Filter: All / Standard / Custom / CPQ objects
+# Implement instant search with debouncing</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
                 <pre><code>router.get('/projects/:id/analyze/:jobId', async (req, res) => {
   try {
@@ -1047,6 +1060,13 @@ git commit -m "feat(frontend): add Salesforce object list UI"</code></pre>
             
             <div class="content-section">
                 <h2>✅ Step 5: Test All Endpoints</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Integrate ObjectList with backend API
+# Fetch objects from GET /api/v1/connections/:id/objects
+# Trigger analysis with POST /api/v1/analyze/objects
+# Update UI when analysis completes</code></pre>
+                </div>
                 
                 <p><strong>Test job status polling:</strong></p>
                 <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/job_1699632000000</code></pre>

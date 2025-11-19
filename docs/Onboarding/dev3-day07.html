@@ -800,6 +800,13 @@
             
             <div class="content-section">
                 <h2>🧪 Step 1: Test Schema Analysis Service</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Test describeGlobal() with jsforce
+# Verify returns list of all objects
+# Check response includes CPQ objects
+# Document typical object count</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>backend/src/__tests__/schema-analysis.integration.test.ts</code></p>
                 <pre><code>import request from 'supertest';
 import app from '../app';
@@ -900,6 +907,13 @@ export default redisClient;</code></pre>
             
             <div class="content-section">
                 <h2>🔄 Step 2: Create Job Status Polling Endpoint</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Test schema analysis API
+# POST to /api/v1/analyze/objects
+# Verify objects stored in database
+# Check source_objects table populated</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
                 <pre><code>router.get('/projects/:id/analyze/:jobId', async (req, res) => {
   try {
@@ -922,6 +936,13 @@ export default redisClient;</code></pre>
             
             <div class="content-section">
                 <h2>📊 Step 3: Enhance Field Metadata</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Query objects table and verify structure
+# Check all required fields present
+# Verify standard vs custom flagged correctly
+# Test filtering queries</code></pre>
+                </div>
                 <p>Update the schema analysis to include detailed field information:</p>
 git commit -m "test(backend): add schema analysis API integration tests"</code></pre>
             </div>
@@ -935,6 +956,13 @@ git commit -m "test(backend): add schema analysis API integration tests"</code><
     
             <div class="content-section">
                 <h2>📈 Step 4: Create Analysis Summary Endpoint</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Test ObjectList component rendering
+# Verify objects display in table
+# Test search functionality
+# Test filter dropdown</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
                 <pre><code>router.get('/projects/:id/analyze/summary', async (req, res) => {
   try {
@@ -960,6 +988,13 @@ git commit -m "test(backend): add schema analysis API integration tests"</code><
             
             <div class="content-section">
                 <h2>✅ Step 5: Test All Endpoints</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Document Day 7 completion
+# Screenshot object list showing CPQ objects
+# Note object count and analysis time
+# List any performance issues</code></pre>
+                </div>
                 
                 <p><strong>Test job status polling:</strong></p>
                 <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/job_1699632000000</code></pre>

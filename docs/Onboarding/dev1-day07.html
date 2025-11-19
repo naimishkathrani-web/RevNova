@@ -800,6 +800,13 @@
             
             <div class="content-section">
                 <h2>📦 Step 1: Create Schema Analysis Service</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Create schema analysis service
+# Function: analyzeObjects(connectionId)
+# Use jsforce to call describeGlobal()
+# Return list of all objects</code></pre>
+                </div>
                 <p>Create a service to interact with Salesforce metadata API:</p>
                 
                 <p><strong>File:</strong> <code>backend/src/services/schema-analysis.service.ts</code></p>
@@ -990,6 +997,13 @@ export class SchemaAnalysisService {
             
             <div class="content-section">
                 <h2>🛣️ Step 2: Create Analyze API Routes</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Store discovered objects in source_objects table
+# Parse sobject metadata: name, label, custom, queryable
+# Bulk insert objects for connection
+# Handle duplicates with UPSERT</code></pre>
+                </div>
                 <p>Create REST API endpoints for schema analysis:</p>
                 <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
                 <pre><code>import { Router } from 'express';
@@ -1094,6 +1108,12 @@ export default router;</code></pre>
             
             <div class="content-section">
                 <h2>🔌 Step 3: Register Routes in Express App</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Create GET /api/v1/connections/:id/objects endpoint
+# Return cached objects from database
+# Include object counts and last analyzed timestamp</code></pre>
+                </div>
                 <p>Add the analyze routes to your main Express application:</p>
                 <p><strong>File:</strong> <code>backend/src/app.ts</code></p>
                 <pre><code>import analyzeRoutes from './routes/analyze.routes';
@@ -1108,6 +1128,13 @@ export default app;</code></pre>
             
             <div class="content-section">
                 <h2>🧪 Step 4: Test the Schema Analysis API</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Implement POST /api/v1/analyze/objects endpoint
+# Trigger fresh analysis of Salesforce org
+# Store results in database
+# Return analysis summary</code></pre>
+                </div>
                 <p>Test all three endpoints using curl:</p>
                 
                 <p><strong>1. Fetch all objects:</strong></p>

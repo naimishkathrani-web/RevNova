@@ -801,6 +801,12 @@
             
             <div class="content-section">
                 <h2>📦 Step 1: Install Vitest and Testing Libraries</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Create Week 1 integration test plan
+# List all API endpoints to test
+# Document expected request/response formats</code></pre>
+                </div>
                 <p>Install Vitest and React Testing Library:</p>
                 <pre><code>cd frontend
 npm install --save-dev vitest @vitest/ui jsdom
@@ -811,6 +817,12 @@ npm install --save-dev @testing-library/react @testing-library/jest-dom @testing
             
             <div class="content-section">
                 <h2>⚙️ Step 2: Configure Vitest</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Test health endpoint
+# Verify 200 status returned
+# Check response format matches specification</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>frontend/vite.config.ts</code></p>
                 <pre><code>import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
@@ -840,6 +852,13 @@ afterEach(() => {
             
             <div class="content-section">
                 <h2>🧪 Step 3: Write Component Tests</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Test project creation API
+# Send valid project data via Thunder Client
+# Verify 201 status and correct response
+# Query database to confirm record created</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>frontend/src/components/__tests__/ProjectCard.test.tsx</code></p>
                 <pre><code>import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
@@ -895,6 +914,13 @@ describe('ProjectCard', () => {
             
             <div class="content-section">
                 <h2>📊 Step 4: Write Store Tests</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Test frontend-backend integration
+# Create project through UI form
+# Monitor network tab for API call
+# Verify success flow end-to-end</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>frontend/src/stores/__tests__/projectStore.test.ts</code></p>
                 <pre><code>import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { useProjectStore } from '../projectStore';
@@ -971,6 +997,13 @@ describe('ProjectStore', () => {
             
             <div class="content-section">
                 <h2>▶️ Step 5: Run Tests</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Document Week 1 completion
+# Screenshot working endpoints
+# List all completed features
+# Note any bugs or issues for Week 2</code></pre>
+                </div>
                 <p>Run the test suite:</p>
                 <pre><code>npm test</code></pre>
                 

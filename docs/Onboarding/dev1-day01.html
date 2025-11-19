@@ -804,6 +804,12 @@
             
             <div class="content-section">
                 <h2>💻 Step 1: Install Node.js and npm</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Set up Node.js LTS development environment
+# Install PostgreSQL 15+ and Redis
+# Verify installations with version commands</code></pre>
+                </div>
                 <p>Download and install Node.js LTS from <a href="https://nodejs.org" target="_blank">nodejs.org</a></p>
                 
                 <p>Verify installation:</p>
@@ -818,6 +824,12 @@ npm --version
             
             <div class="content-section">
                 <h2>🐘 Step 2: Install PostgreSQL</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Clone RevNova repository from GitHub
+# Run npm install to install all dependencies
+# Create .env file from .env.example template</code></pre>
+                </div>
                 <p>Download PostgreSQL 16 from <a href="https://www.postgresql.org/download/" target="_blank">postgresql.org</a></p>
                 
                 <p>During installation:</p>
@@ -844,6 +856,12 @@ CREATE DATABASE revnova_dev;
             
             <div class="content-section">
                 <h2>⚡ Step 3: Install Redis</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Configure PostgreSQL connection in .env file
+# Set DATABASE_URL with host, port, database, username, password
+# Add Redis connection URL for job queuing</code></pre>
+                </div>
                 <p><strong>Windows:</strong> Download from <a href="https://github.com/microsoftarchive/redis/releases" target="_blank">GitHub</a> or use WSL</p>
                 <p><strong>macOS:</strong> <code>brew install redis</code></p>
                 <p><strong>Linux:</strong> <code>sudo apt-get install redis-server</code></p>
@@ -868,6 +886,12 @@ redis-cli ping
             
             <div class="content-section">
                 <h2>📁 Step 4: Clone Repository and Install Dependencies</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Run database migrations using npm run migrate
+# Verify all tables created successfully
+# Check migrations table for applied migrations</code></pre>
+                </div>
                 <p>Clone the RevNova repository:</p>
                 <pre><code>git clone https://github.com/naimishkathrani-web/RevNova.git
 cd RevNova/backend</code></pre>
@@ -890,6 +914,12 @@ cd RevNova/backend</code></pre>
             
             <div class="content-section">
                 <h2>⚙️ Step 5: Configure Environment Variables</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Start development server with npm run dev
+# Verify server runs on port 3000
+# Test health endpoint at http://localhost:3000/api/v1/health</code></pre>
+                </div>
                 <p>Create a <code>.env</code> file in the backend directory:</p>
                 <p><strong>File:</strong> <code>backend/.env</code></p>
                 <pre><code>NODE_ENV=development

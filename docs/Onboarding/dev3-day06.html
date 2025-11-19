@@ -802,6 +802,12 @@
             
             <div class="content-section">
                 <h2>📦 Step 1: Set Up Test Environment</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Create Salesforce connection test plan
+# Document required credentials
+# List test scenarios: valid, invalid, network error</code></pre>
+                </div>
                 <p>Install testing dependencies and configure test database:</p>
                 <pre><code>cd backend
 npm install --save-dev supertest @types/supertest nock</code></pre>
@@ -840,6 +846,13 @@ export const seedTestData = async (pool: Pool) => {
             
             <div class="content-section">
                 <h2>🧪 Step 2: Test Connections API Endpoints</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Test jsforce connection with sandbox credentials
+# Verify login succeeds
+# Check access token returned
+# Test describeGlobal() call works</code></pre>
+                </div>
                 <p>Create integration tests for all connection endpoints:</p>
                 <p><strong>File:</strong> <code>backend/src/__tests__/connections.integration.test.ts</code></p>
                 <pre><code>import request from 'supertest';
@@ -1099,6 +1112,13 @@ describe('Connections API Integration Tests', () => {
             
             <div class="content-section">
                 <h2>🔐 Step 3: Test Encryption and Decryption</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Test connections API endpoint
+# Send connection request via Thunder Client
+# Verify 201 status on success
+# Test with invalid credentials (should return 400)</code></pre>
+                </div>
                 <p>Verify password encryption is working correctly:</p>
                 <p><strong>File:</strong> <code>backend/src/__tests__/encryption.integration.test.ts</code></p>
                 <pre><code>import { encryptPassword, decryptPassword } from '../utils/encryption';
@@ -1229,6 +1249,13 @@ describe('Encryption Integration Tests', () => {
             
             <div class="content-section">
                 <h2>🚀 Step 4: Run Integration Tests</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Test frontend ConnectionForm
+# Fill all fields with test credentials
+# Click Test Connection button
+# Verify success/error message displays</code></pre>
+                </div>
                 <p>Execute the test suite and verify coverage:</p>
                 <pre><code># Run all integration tests
 npm test -- connections.integration.test.ts

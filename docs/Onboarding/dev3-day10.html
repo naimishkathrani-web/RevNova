@@ -800,6 +800,13 @@
             
             <div class="content-section">
                 <h2>🔄 Step 1: E2E Integration Tests</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Create Week 2 integration test suite
+# Test complete flow: connection to visualization
+# Verify data flows correctly through all layers
+# Document test scenarios</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>backend/tests/e2e/week2-integration.test.ts</code></p>
                 <pre><code>describe('Week 2 E2E Flow', () =&gt; {
   test('complete Salesforce analysis workflow', async () =&gt; {
@@ -837,6 +844,13 @@ export default redisClient;</code></pre>
             
             <div class="content-section">
                 <h2>🔄 Step 2: Create Job Status Polling Endpoint</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Execute end-to-end tests
+# Test with real Salesforce sandbox
+# Verify all API calls work
+# Check error handling for network issues</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
                 <pre><code>router.get('/projects/:id/analyze/:jobId', async (req, res) => {
   try {
@@ -865,6 +879,13 @@ export default redisClient;</code></pre>
             
             <div class="content-section">
                 <h2>📊 Step 3: Enhance Field Metadata</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Performance testing
+# Measure schema analysis time for large org
+# Test with org having 100+ custom objects
+# Check UI responsiveness with large data sets</code></pre>
+                </div>
                 <p>Update the schema analysis to include detailed field information:</p>
                 <pre><code>const getDetailedFieldMetadata = (field: any) => {
   return {
@@ -889,6 +910,13 @@ export default redisClient;</code></pre>
             
             <div class="content-section">
                 <h2>📈 Step 4: Create Analysis Summary Endpoint</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Create Week 2 test report
+# Document all test results
+# List pass/fail for each scenario
+# Note any bugs or issues found</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
                 <pre><code>router.get('/projects/:id/analyze/summary', async (req, res) => {
   try {
@@ -914,6 +942,13 @@ export default redisClient;</code></pre>
             
             <div class="content-section">
                 <h2>✅ Step 5: Test All Endpoints</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Week 2 completion documentation
+# Summary of all features completed
+# Screenshots of working application
+# List known issues and planned improvements</code></pre>
+                </div>
                 
                 <p><strong>Test job status polling:</strong></p>
                 <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/job_1699632000000</code></pre>

@@ -800,6 +800,12 @@
             
             <div class="content-section">
                 <h2>📦 Step 1: Install Zustand</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Create API service layer in src/services/api.ts
+# Set up axios instance with base URL
+# Configure default headers and timeout</code></pre>
+                </div>
                 <p>Install Zustand for state management:</p>
                 <pre><code>cd frontend
 npm install zustand</code></pre>
@@ -809,6 +815,13 @@ npm install zustand</code></pre>
             
             <div class="content-section">
                 <h2>🗂️ Step 2: Create Project Store</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Create projects API service
+# Function: createProject(data)
+# Function: getProjects()
+# Handle API errors and return structured responses</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>frontend/src/stores/projectStore.ts</code></p>
                 <pre><code>import { create } from 'zustand';
 import { projectsApi } from '../api/projects';
@@ -908,6 +921,13 @@ export const useProjectStore = create&lt;ProjectState&gt;((set, get) => ({
             
             <div class="content-section">
                 <h2>🔗 Step 3: Create Connection Store</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Integrate API with New Migration form
+# Call createProject on form submit
+# Handle success: redirect to dashboard
+# Handle error: show error message</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>frontend/src/stores/connectionStore.ts</code></p>
                 <pre><code>import { create } from 'zustand';
 import { connectionsApi } from '../api/connections';
@@ -989,6 +1009,13 @@ export const useConnectionStore = create&lt;ConnectionState&gt;((set) => ({
             
             <div class="content-section">
                 <h2>� Step 4: Create User Store</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Add loading and error states to form
+# Show spinner during API call
+# Display error message if API fails
+# Disable form during submission</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>frontend/src/stores/userStore.ts</code></p>
                 <pre><code>import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
@@ -1047,6 +1074,13 @@ export const useUserStore = create&lt;UserState&gt;()(
             
             <div class="content-section">
                 <h2>🔄 Step 5: Update Dashboard to Use Store</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Test full flow: create project through UI
+# Verify API call made correctly
+# Check database for created record
+# Verify redirect to dashboard works</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>frontend/src/pages/Dashboard.tsx</code></p>
                 <pre><code>import { useEffect } from 'react';
 import { useProjectStore } from '../stores/projectStore';

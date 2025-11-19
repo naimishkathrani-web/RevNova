@@ -802,6 +802,12 @@
             
             <div class="content-section">
                 <h2>� Step 1: Create Projects Table Migration</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Create database migration file for STG1 tables
+# Define projects table schema: id, name, description, status, timestamps
+# Include proper indexes and constraints</code></pre>
+                </div>
                 <p>Create a new migration file:</p>
                 <pre><code>cd backend
 npm run migration:create -- create-projects-table</code></pre>
@@ -829,6 +835,12 @@ CREATE INDEX idx_projects_created_at ON projects(created_at DESC);</code></pre>
             
             <div class="content-section">
                 <h2>� Step 2: Create Connections Table Migration</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Define connections table: id, project_id, name, type, credentials, status
+# Add foreign key to projects table
+# Include encrypted credentials field</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>backend/migrations/002_create_connections_table.sql</code></p>
                 <pre><code>-- Connections table: stores Salesforce connection credentials
 CREATE TABLE connections (
@@ -873,6 +885,12 @@ CREATE INDEX idx_connections_status ON connections(status);</code></pre>
             
             <div class="content-section">
                 <h2>📊 Step 3: Enhance Field Metadata</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Define source_objects table: id, connection_id, name, label, api_name
+# Define source_fields table: id, object_id, name, type, length, required
+# Add indexes for fast lookups</code></pre>
+                </div>
             </div>
             
             <div class="content-section">
@@ -908,6 +926,12 @@ CREATE INDEX idx_source_objects_is_custom ON source_objects(is_custom);</code></
             
             <div class="content-section">
                 <h2>📝 Step 4: Create Source Fields Table Migration</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Create seed data script for sample project and connection
+# Insert test data for CPQ objects: SBQQ__Quote__c, SBQQ__QuoteLine__c
+# Verify seed data loads correctly</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>backend/migrations/004_create_source_fields_table.sql</code></p>
                 <pre><code>-- Source Fields table: stores Salesforce field metadata
 CREATE TABLE source_fields (
@@ -947,6 +971,12 @@ CREATE INDEX idx_source_fields_is_custom ON source_fields(is_custom);</code></pr
             
             <div class="content-section">
                 <h2>🚀 Step 5: Run All Migrations</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Run migration: npm run migrate
+# Query tables to verify schema
+# Test foreign key relationships work correctly</code></pre>
+                </div>
                 <p>Execute all migration files:</p>
                 <pre><code>npm run migrate
 

@@ -802,6 +802,12 @@
             
             <div class="content-section">
                 <h2>� Step 1: Set Up Express Router</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Create Express route for health check
+# GET /api/v1/health endpoint
+# Return: { status: "ok", timestamp, version }</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>backend/src/routes/projects.routes.ts</code></p>
                 <pre><code>import express from 'express';
 import { Pool } from 'pg';
@@ -818,6 +824,13 @@ export default router;</code></pre>
             
             <div class="content-section">
                 <h2>📋 Step 2: GET /api/v1/projects (List All)</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Create POST /api/v1/projects endpoint
+# Accept: { name, description, source_type, target_type }
+# Validate required fields
+# Return created project with 201 status</code></pre>
+                </div>
                 <p>Add to <code>backend/src/routes/projects.routes.ts</code>:</p>
                 <pre><code>// GET /api/v1/projects - List all projects
 router.get('/', async (req, res) => {
@@ -837,6 +850,13 @@ router.get('/', async (req, res) => {
             
             <div class="content-section">
                 <h2>🔍 Step 3: GET /api/v1/projects/:id (Get Single)</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Implement input validation middleware
+# Check required fields present
+# Validate field lengths and formats
+# Return 400 with error details if invalid</code></pre>
+                </div>
                 <pre><code>// GET /api/v1/projects/:id - Get single project
 router.get('/:id', async (req, res) => {
   try {
@@ -862,6 +882,13 @@ router.get('/:id', async (req, res) => {
             
             <div class="content-section">
                 <h2>➕ Step 4: POST /api/v1/projects (Create)</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Write project creation logic
+# Insert into projects table
+# Handle database errors
+# Return project ID and created timestamp</code></pre>
+                </div>
                 <pre><code>// POST /api/v1/projects - Create new project
 router.post('/', async (req, res) => {
   try {
@@ -895,6 +922,13 @@ router.post('/', async (req, res) => {
             
             <div class="content-section">
                 <h2>✏️ Step 5: PUT /api/v1/projects/:id (Update)</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Test API endpoints with Thunder Client/Postman
+# Test health endpoint returns 200
+# Test project creation with valid/invalid data
+# Verify database record created</code></pre>
+                </div>
                 <pre><code>// PUT /api/v1/projects/:id - Update project
 router.put('/:id', async (req, res) => {
   try {

@@ -802,6 +802,12 @@
             
             <div class="content-section">
                 <h2>📝 Step 1: Create Form Component</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Create Dashboard page layout with project cards grid
+# Style cards with Salesforce Lightning design
+# Add project status badges</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>src/pages/NewMigration.tsx</code></p>
                 <pre><code>import { useState, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -974,6 +980,12 @@ export default function NewMigration() {
             
             <div class="content-section">
                 <h2>💅 Step 2: Style the Form</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Implement empty state for no projects
+# Add illustration and "Create New Migration" button
+# Style empty state with centered content</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>src/pages/NewMigration.css</code></p>
                 <pre><code>.new-migration {
   max-width: 700px;
@@ -1098,6 +1110,12 @@ export default function NewMigration() {
             
             <div class="content-section">
                 <h2>🚀 Step 3: Test the Form</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Create project card component
+# Display: project name, status, created date, owner
+# Add action buttons: Open, Delete</code></pre>
+                </div>
                 <p>Start development server:</p>
                 <pre><code>npm run dev</code></pre>
                 
@@ -1171,6 +1189,12 @@ git push</code></pre>
             
             <div class="content-section">
                 <h2>📈 Step 4: Create Analysis Summary Endpoint</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Add hover effects and transitions to cards
+# Implement responsive grid (1 column mobile, 2-3 desktop)
+# Test with multiple mock projects</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
                 <pre><code>router.get('/projects/:id/analyze/summary', async (req, res) => {
   try {
@@ -1196,6 +1220,12 @@ git push</code></pre>
             
             <div class="content-section">
                 <h2>✅ Step 5: Test All Endpoints</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Style status badges with color coding
+# Active: blue, Completed: green, Failed: red
+# Add icons to status badges</code></pre>
+                </div>
                 
                 <p><strong>Test job status polling:</strong></p>
                 <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/job_1699632000000</code></pre>

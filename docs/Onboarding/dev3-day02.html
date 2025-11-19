@@ -802,6 +802,12 @@
             
             <div class="content-section">
                 <h2>🐳 Step 1: Create Backend Dockerfile</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Create integration test checklist for Day 2
+# List all database tables to verify
+# Document expected columns and data types</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>backend/Dockerfile</code></p>
                 <pre><code># Use Node.js LTS
 FROM node:18-alpine
@@ -848,6 +854,12 @@ export default redisClient;</code></pre>
             
             <div class="content-section">
                 <h2>🔄 Step 2: Create Job Status Polling Endpoint</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Write SQL queries to test each table
+# Verify foreign key constraints work
+# Test inserting and querying sample data</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
                 <pre><code>router.get('/projects/:id/analyze/:jobId', async (req, res) => {
   try {
@@ -910,6 +922,12 @@ CMD ["nginx", "-g", "daemon off;"]</code></pre>
             
             <div class="content-section">
                 <h2>📦 Step 3: Create Docker Compose File</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Create frontend testing checklist
+# List all pages and routes to verify
+# Document expected navigation behavior</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>docker-compose.yml</code> (in root directory)</p>
                 <pre><code>version: '3.8'
 
@@ -993,6 +1011,12 @@ volumes:
             
             <div class="content-section">
                 <h2>🚀 Step 4: Start the Stack</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Test each frontend route manually
+# Verify page renders without errors
+# Check console for warnings</code></pre>
+                </div>
                 <p>Build and start all services:</p>
                 <pre><code>docker-compose up --build</code></pre>
                 
@@ -1026,6 +1050,12 @@ volumes:
             
             <div class="content-section">
                 <h2>🛠️ Step 5: Learn Docker Commands</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Document Day 2 completion status
+# List any issues found
+# Create bug tickets if needed</code></pre>
+                </div>
                 <p><strong>Common commands:</strong></p>
                 <pre><code># Start services
 docker-compose up

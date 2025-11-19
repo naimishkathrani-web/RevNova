@@ -804,6 +804,12 @@
             
             <div class="content-section">
                 <h2>� Step 1: Install Node.js and npm</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Install Node.js LTS for frontend development
+# Create new Vite project with React and TypeScript
+# Verify setup with npm run dev</code></pre>
+                </div>
                 <p>Download and install Node.js LTS from <a href="https://nodejs.org" target="_blank">nodejs.org</a></p>
                 
                 <p>Verify installation:</p>
@@ -818,6 +824,12 @@ npm --version
             
             <div class="content-section">
                 <h2>⚡ Step 2: Create Vite + React Project</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Create folder structure: src/components, src/pages, src/services, src/types
+# Set up path aliases in vite.config.ts and tsconfig.json
+# Add index files for clean imports</code></pre>
+                </div>
                 <p>Create a new Vite project with React template:</p>
                 <pre><code>npm create vite@latest revnova-frontend -- --template react-ts
 cd revnova-frontend
@@ -841,6 +853,12 @@ npm install</code></pre>
             
             <div class="content-section">
                 <h2>� Step 3: Set Up Project Structure</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Install dependencies: react-router-dom, axios, zustand
+# Install UI library: @salesforce/design-system-react or tailwindcss
+# Install dev dependencies: @types packages</code></pre>
+                </div>
                 <p>Create the following folder structure inside <code>src/</code>:</p>
                 <pre><code>src/
 ├── components/        # Reusable UI components
@@ -877,6 +895,12 @@ mkdir src/pages src/services src/stores src/types src/utils src/styles</code></p
             
             <div class="content-section">
                 <h2>📦 Step 4: Install Essential Dependencies</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Configure Vite proxy for backend API calls
+# Set up base URL for API requests
+# Test proxy with mock API call</code></pre>
+                </div>
                 <p>Install React Router for navigation:</p>
                 <pre><code>npm install react-router-dom</code></pre>
                 
@@ -902,6 +926,12 @@ mkdir src/pages src/services src/stores src/types src/utils src/styles</code></p
             
             <div class="content-section">
                 <h2>🗺️ Step 5: Configure React Router</h2>
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Start Vite dev server on port 5173
+# Verify hot reload works
+# Test that changes reflect immediately</code></pre>
+                </div>
                 <p><strong>File:</strong> <code>src/App.tsx</code></p>
                 <pre><code>import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './components/layout/Layout';
