@@ -757,100 +757,429 @@
                 <a href="onboarding-dev1.html">Developer 1</a> › Week 2 › Day 7
             </div>
             
-            <h1 class="page-title">Day 6: Unit Testing Setup</h1>
-            <p class="page-subtitle">Developer 1: Backend & Database | Duration: ~6-8 hours</p>
+            <h1 class="page-title">Day 6: Salesforce Connection Integration Tests</h1>
+            <p class="page-subtitle">Developer 3: Testing & DevOps | Duration: ~6-8 hours</p>
             
             <div class="content-section">
                 <h2>📋 Objective</h2>
-                <p>Enhance the schema analysis API to fetch detailed field metadata, implement job status polling, and add Redis caching for performance optimization.</p>
+                <p>Create comprehensive integration tests for the Salesforce connection functionality. Verify backend API endpoints, database operations, and end-to-end connection workflows.</p>
                 
-                <p><strong>API Endpoints to Build:</strong></p>
+                <p><strong>Test Coverage Goals:</strong></p>
                 <ul>
-                    <li><code>GET /api/v1/projects/{id}/analyze/{job_id}</code> - Poll job status</li>
-                    <li><code>GET /api/v1/projects/{id}/analyze/summary</code> - Get analysis summary</li>
+                    <li>Backend API endpoint testing (connections CRUD operations)</li>
+                    <li>Salesforce connection helper integration tests</li>
+                    <li>Database persistence and encryption validation</li>
+                    <li>Error handling and validation tests</li>
+                    <li>End-to-end connection workflow tests</li>
                 </ul>
             </div>
             
             <div class="content-section">
-                <h2>📦 Step 1: Install Redis Client</h2>
-                <p>Install the Redis client for Node.js to enable caching:</p>
+                <h2>📦 Step 1: Set Up Test Environment</h2>
+                <p>Install testing dependencies and configure test database:</p>
                 <pre><code>cd backend
-npm install redis</code></pre>
+npm install --save-dev supertest @types/supertest nock</code></pre>
                 
-                <p>Create a Redis client configuration:</p>
-                <p><strong>File:</strong> <code>backend/src/config/redis.ts</code></p>
-                <pre><code>import { createClient } from 'redis';
+                <p>Create test environment configuration:</p>
+                <p><strong>File:</strong> <code>backend/src/config/test-db.ts</code></p>
+                <pre><code>import { Pool } from 'pg';
 
-const redisClient = createClient({
-  url: process.env.REDIS_URL || 'redis://localhost:6379'
-});
-
-redisClient.on('error', (err) => console.error('Redis Client Error', err));
-
-export const connectRedis = async () => {
-  await redisClient.connect();
-  console.log('Redis connected');
+export const createTestPool = () => {
+  return new Pool({
+    host: process.env.TEST_DB_HOST || 'localhost',
+    port: parseInt(process.env.TEST_DB_PORT || '5432'),
+    database: process.env.TEST_DB_NAME || 'revnova_test',
+    user: process.env.TEST_DB_USER || 'postgres',
+    password: process.env.TEST_DB_PASSWORD || 'postgres'
+  });
 };
 
-export default redisClient;</code></pre>
-            </div>
-            
-            <div class="content-section">
-                <h2>🔄 Step 2: Create Job Status Polling Endpoint</h2>
-                <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
-                <pre><code>router.get('/projects/:id/analyze/:jobId', async (req, res) => {
-  try {
-    const { id, jobId } = req.params;
-    
-    // Check Redis for job status
-    const jobData = await redisClient.get(`job:${jobId}`);
-    
-    if (!jobData) {
-      return res.status(404).json({ error: 'Job not found' });
-    }
-    
-    const job = JSON.parse(jobData);
-    res.json({
-      jobId: job.id,
-      status: job.status, // 'pending', 'running', 'completed', 'failed'
-      progress: job.progress,
-      result: job.result || null,
-      error: job.error || null
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});</code></pre>
-            </div>
-            
-            <div class="content-section">
-                <h2>📊 Step 3: Enhance Field Metadata</h2>
-                <p>Update the schema analysis to include detailed field information:</p>
-                <pre><code>const getDetailedFieldMetadata = (field: any) => {
-  return {
-    name: field.name,
-    label: field.label,
-    type: field.type,
-    length: field.length,
-    precision: field.precision,
-    scale: field.scale,
-    required: !field.nillable,
-    unique: field.unique,
-    externalId: field.externalId,
-    defaultValue: field.defaultValue,
-    picklistValues: field.picklistValues || [],
-    referenceTo: field.referenceTo || [],
-    relationshipName: field.relationshipName,
-    calculated: field.calculated,
-    customField: field.custom
-  };
+export const cleanupTestDatabase = async (pool: Pool) => {
+  // Truncate all tables
+  await pool.query('TRUNCATE TABLE salesforce_connections CASCADE');
+  await pool.query('TRUNCATE TABLE projects CASCADE');
+};
+
+export const seedTestData = async (pool: Pool) => {
+  // Insert test project
+  const projectResult = await pool.query(
+    `INSERT INTO projects (name, description, created_at)
+     VALUES ($1, $2, NOW())
+     RETURNING id`,
+    ['Test Project', 'Test project for integration tests']
+  );
+  return { projectId: projectResult.rows[0].id };
 };</code></pre>
             </div>
             
             <div class="content-section">
-                <h2>📈 Step 4: Create Analysis Summary Endpoint</h2>
-                <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
-                <pre><code>router.get('/projects/:id/analyze/summary', async (req, res) => {
+                <h2>🧪 Step 2: Test Connections API Endpoints</h2>
+                <p>Create integration tests for all connection endpoints:</p>
+                <p><strong>File:</strong> <code>backend/src/__tests__/connections.integration.test.ts</code></p>
+                <pre><code>import request from 'supertest';
+import app from '../app';
+import { createTestPool, cleanupTestDatabase, seedTestData } from '../config/test-db';
+import nock from 'nock';
+
+describe('Connections API Integration Tests', () => {
+  let pool: any;
+  let projectId: number;
+
+  beforeAll(async () => {
+    pool = createTestPool();
+    const testData = await seedTestData(pool);
+    projectId = testData.projectId;
+  });
+
+  afterAll(async () => {
+    await cleanupTestDatabase(pool);
+    await pool.end();
+  });
+
+  afterEach(() => {
+    nock.cleanAll();
+  });
+
+  describe('POST /api/v1/connections', () => {
+    it('should create a new Salesforce connection with valid credentials', async () => {
+      // Mock Salesforce login
+      nock('https://login.salesforce.com')
+        .post('/services/oauth2/token')
+        .reply(200, {
+          access_token: 'test_token_123',
+          instance_url: 'https://test.salesforce.com',
+          id: 'https://login.salesforce.com/id/00D000000000001/005000000000001'
+        });
+
+      const response = await request(app)
+        .post('/api/v1/connections')
+        .send({
+          name: 'Test Production Org',
+          username: 'test@example.com',
+          password: 'testpass123',
+          securityToken: 'testtoken123',
+          environment: 'production'
+        });
+
+      expect(response.status).toBe(201);
+      expect(response.body).toHaveProperty('id');
+      expect(response.body.name).toBe('Test Production Org');
+      expect(response.body.username).toBe('test@example.com');
+      expect(response.body.environment).toBe('production');
+      expect(response.body).not.toHaveProperty('password');
+      expect(response.body).not.toHaveProperty('securityToken');
+    });
+
+    it('should reject connection with invalid credentials', async () => {
+      // Mock Salesforce login failure
+      nock('https://login.salesforce.com')
+        .post('/services/oauth2/token')
+        .reply(401, {
+          error: 'invalid_grant',
+          error_description: 'authentication failure'
+        });
+
+      const response = await request(app)
+        .post('/api/v1/connections')
+        .send({
+          name: 'Invalid Org',
+          username: 'invalid@example.com',
+          password: 'wrongpass',
+          securityToken: 'wrongtoken',
+          environment: 'production'
+        });
+
+      expect(response.status).toBe(400);
+      expect(response.body).toHaveProperty('error');
+    });
+
+    it('should validate required fields', async () => {
+      const response = await request(app)
+        .post('/api/v1/connections')
+        .send({
+          name: 'Incomplete Org'
+          // Missing username, password, securityToken, environment
+        });
+
+      expect(response.status).toBe(400);
+      expect(response.body.error).toMatch(/required/i);
+    });
+
+    it('should encrypt password and security token before storing', async () => {
+      nock('https://login.salesforce.com')
+        .post('/services/oauth2/token')
+        .reply(200, {
+          access_token: 'test_token_456',
+          instance_url: 'https://test.salesforce.com',
+          id: 'https://login.salesforce.com/id/00D000000000001/005000000000002'
+        });
+
+      const response = await request(app)
+        .post('/api/v1/connections')
+        .send({
+          name: 'Encryption Test Org',
+          username: 'encrypt@example.com',
+          password: 'plainpassword',
+          securityToken: 'plaintoken',
+          environment: 'sandbox'
+        });
+
+      expect(response.status).toBe(201);
+
+      // Query database directly to verify encryption
+      const dbResult = await pool.query(
+        'SELECT encrypted_password, password_iv FROM salesforce_connections WHERE id = $1',
+        [response.body.id]
+      );
+
+      // Encrypted values should not match plain text
+      expect(dbResult.rows[0].encrypted_password).not.toBe('plainpassword');
+      expect(dbResult.rows[0].password_iv).toBeTruthy();
+    });
+  });
+
+  describe('GET /api/v1/connections', () => {
+    beforeEach(async () => {
+      // Seed test connections
+      nock('https://login.salesforce.com')
+        .post('/services/oauth2/token')
+        .times(2)
+        .reply(200, {
+          access_token: 'test_token',
+          instance_url: 'https://test.salesforce.com',
+          id: 'https://login.salesforce.com/id/00D000000000001/005000000000003'
+        });
+
+      await request(app)
+        .post('/api/v1/connections')
+        .send({
+          name: 'List Test Org 1',
+          username: 'list1@example.com',
+          password: 'pass1',
+          securityToken: 'token1',
+          environment: 'production'
+        });
+
+      await request(app)
+        .post('/api/v1/connections')
+        .send({
+          name: 'List Test Org 2',
+          username: 'list2@example.com',
+          password: 'pass2',
+          securityToken: 'token2',
+          environment: 'sandbox'
+        });
+    });
+
+    it('should return all connections without sensitive data', async () => {
+      const response = await request(app)
+        .get('/api/v1/connections');
+
+      expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty('connections');
+      expect(Array.isArray(response.body.connections)).toBe(true);
+      expect(response.body.connections.length).toBeGreaterThanOrEqual(2);
+
+      // Verify no sensitive data in response
+      response.body.connections.forEach((conn: any) => {
+        expect(conn).not.toHaveProperty('password');
+        expect(conn).not.toHaveProperty('securityToken');
+        expect(conn).not.toHaveProperty('encrypted_password');
+        expect(conn).toHaveProperty('name');
+        expect(conn).toHaveProperty('username');
+        expect(conn).toHaveProperty('environment');
+      });
+    });
+  });
+
+  describe('POST /api/v1/connections/:id/test', () => {
+    let connectionId: string;
+
+    beforeEach(async () => {
+      nock('https://login.salesforce.com')
+        .post('/services/oauth2/token')
+        .reply(200, {
+          access_token: 'test_token',
+          instance_url: 'https://test.salesforce.com',
+          id: 'https://login.salesforce.com/id/00D000000000001/005000000000004'
+        });
+
+      const createResponse = await request(app)
+        .post('/api/v1/connections')
+        .send({
+          name: 'Test Connection Org',
+          username: 'testconn@example.com',
+          password: 'testpass',
+          securityToken: 'testtoken',
+          environment: 'production'
+        });
+
+      connectionId = createResponse.body.id;
+    });
+
+    it('should successfully test existing connection', async () => {
+      // Mock Salesforce identity API
+      nock('https://test.salesforce.com')
+        .get(/\/services\/oauth2\/userinfo/)
+        .reply(200, {
+          user_id: '005000000000004',
+          organization_id: '00D000000000001',
+          email: 'testconn@example.com'
+        });
+
+      nock('https://login.salesforce.com')
+        .post('/services/oauth2/token')
+        .reply(200, {
+          access_token: 'test_token_refresh',
+          instance_url: 'https://test.salesforce.com',
+          id: 'https://login.salesforce.com/id/00D000000000001/005000000000004'
+        });
+
+      const response = await request(app)
+        .post(`/api/v1/connections/${connectionId}/test`);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty('success', true);
+      expect(response.body).toHaveProperty('organizationId');
+      expect(response.body).toHaveProperty('userId');
+    });
+
+    it('should return error for non-existent connection', async () => {
+      const response = await request(app)
+        .post('/api/v1/connections/99999/test');
+
+      expect(response.status).toBe(404);
+      expect(response.body).toHaveProperty('error');
+    });
+
+    it('should handle Salesforce API errors gracefully', async () => {
+      nock('https://login.salesforce.com')
+        .post('/services/oauth2/token')
+        .reply(401, {
+          error: 'invalid_grant',
+          error_description: 'expired password'
+        });
+
+      const response = await request(app)
+        .post(`/api/v1/connections/${connectionId}/test`);
+
+      expect(response.status).toBe(400);
+      expect(response.body).toHaveProperty('error');
+      expect(response.body.error).toMatch(/expired password/i);
+    });
+  });
+});</code></pre>
+            </div>
+            
+            <div class="content-section">
+                <h2>🔐 Step 3: Test Encryption and Decryption</h2>
+                <p>Verify password encryption is working correctly:</p>
+                <p><strong>File:</strong> <code>backend/src/__tests__/encryption.integration.test.ts</code></p>
+                <pre><code>import { encryptPassword, decryptPassword } from '../utils/encryption';
+import crypto from 'crypto';
+
+describe('Encryption Integration Tests', () => {
+  const testPassword = 'MySecurePassword123!';
+  const testToken = 'AbCdEfGhIjKlMnOpQrSt';
+
+  beforeAll(() => {
+    // Ensure encryption key is set
+    if (!process.env.ENCRYPTION_KEY) {
+      process.env.ENCRYPTION_KEY = crypto.randomBytes(32).toString('hex');
+    }
+  });
+
+  describe('Password Encryption', () => {
+    it('should encrypt and decrypt password successfully', () => {
+      const { encryptedData, iv } = encryptPassword(testPassword);
+      
+      expect(encryptedData).not.toBe(testPassword);
+      expect(iv).toBeTruthy();
+      expect(iv.length).toBe(32); // 16 bytes in hex
+
+      const decrypted = decryptPassword(encryptedData, iv);
+      expect(decrypted).toBe(testPassword);
+    });
+
+    it('should produce different encrypted values with different IVs', () => {
+      const result1 = encryptPassword(testPassword);
+      const result2 = encryptPassword(testPassword);
+
+      expect(result1.encryptedData).not.toBe(result2.encryptedData);
+      expect(result1.iv).not.toBe(result2.iv);
+    });
+
+    it('should handle special characters in passwords', () => {
+      const specialPassword = 'P@ssw0rd!#$%^&*(){}[]|\\:";\'<>?,./';
+      const { encryptedData, iv } = encryptPassword(specialPassword);
+      const decrypted = decryptPassword(encryptedData, iv);
+
+      expect(decrypted).toBe(specialPassword);
+    });
+
+    it('should handle empty strings', () => {
+      const { encryptedData, iv } = encryptPassword('');
+      const decrypted = decryptPassword(encryptedData, iv);
+
+      expect(decrypted).toBe('');
+    });
+
+    it('should throw error with invalid IV during decryption', () => {
+      const { encryptedData } = encryptPassword(testPassword);
+      const invalidIv = 'invalidiv123';
+
+      expect(() => {
+        decryptPassword(encryptedData, invalidIv);
+      }).toThrow();
+    });
+
+    it('should throw error with corrupted encrypted data', () => {
+      const { iv } = encryptPassword(testPassword);
+      const corruptedData = 'corrupted encrypted data!!!';
+
+      expect(() => {
+        decryptPassword(corruptedData, iv);
+      }).toThrow();
+    });
+  });
+
+  describe('Security Token Encryption', () => {
+    it('should encrypt security token separately from password', () => {
+      const passwordResult = encryptPassword(testPassword);
+      const tokenResult = encryptPassword(testToken);
+
+      expect(passwordResult.encryptedData).not.toBe(tokenResult.encryptedData);
+      expect(passwordResult.iv).not.toBe(tokenResult.iv);
+
+      expect(decryptPassword(passwordResult.encryptedData, passwordResult.iv)).toBe(testPassword);
+      expect(decryptPassword(tokenResult.encryptedData, tokenResult.iv)).toBe(testToken);
+    });
+  });
+
+  describe('Key Management', () => {
+    it('should fail if encryption key is missing', () => {
+      const originalKey = process.env.ENCRYPTION_KEY;
+      delete process.env.ENCRYPTION_KEY;
+
+      expect(() => {
+        encryptPassword(testPassword);
+      }).toThrow(/encryption key/i);
+
+      process.env.ENCRYPTION_KEY = originalKey;
+    });
+
+    it('should fail if encryption key is wrong length', () => {
+      const originalKey = process.env.ENCRYPTION_KEY;
+      process.env.ENCRYPTION_KEY = 'tooshort';
+
+      expect(() => {
+        encryptPassword(testPassword);
+      }).toThrow();
+
+      process.env.ENCRYPTION_KEY = originalKey;
+    });
+  });
+});                <pre><code>router.get('/projects/:id/analyze/summary', async (req, res) => {
   try {
     const projectId = parseInt(req.params.id);
     
@@ -873,32 +1202,94 @@ export default redisClient;</code></pre>
             </div>
             
             <div class="content-section">
-                <h2>✅ Step 5: Test All Endpoints</h2>
+                <h2>🚀 Step 4: Run Integration Tests</h2>
+                <p>Execute the test suite and verify coverage:</p>
+                <pre><code># Run all integration tests
+npm test -- connections.integration.test.ts
+
+# Run encryption tests
+npm test -- encryption.integration.test.ts
+
+# Run with coverage
+npm test -- --coverage connections.integration.test.ts</code></pre>
                 
-                <p><strong>Test job status polling:</strong></p>
-                <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/job_1699632000000</code></pre>
-                
-                <p><strong>Test analysis summary:</strong></p>
-                <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/summary</code></pre>
-                
-                <div class="success-box">
-                    <strong>✓ Expected Response:</strong> Job status should return progress information, and summary should show aggregate statistics.
-                </div>
+                <p><strong>Expected Test Results:</strong></p>
+                <pre><code>PASS  src/__tests__/connections.integration.test.ts
+  Connections API Integration Tests
+    POST /api/v1/connections
+      ✓ should create a new Salesforce connection with valid credentials (245ms)
+      ✓ should reject connection with invalid credentials (156ms)
+      ✓ should validate required fields (45ms)
+      ✓ should encrypt password and security token before storing (198ms)
+    GET /api/v1/connections
+      ✓ should return all connections without sensitive data (89ms)
+    POST /api/v1/connections/:id/test
+      ✓ should successfully test existing connection (178ms)
+      ✓ should return error for non-existent connection (52ms)
+      ✓ should handle Salesforce API errors gracefully (123ms)
+
+PASS  src/__tests__/encryption.integration.test.ts
+  Encryption Integration Tests
+    Password Encryption
+      ✓ should encrypt and decrypt password successfully (12ms)
+      ✓ should produce different encrypted values with different IVs (8ms)
+      ✓ should handle special characters in passwords (6ms)
+      ✓ should handle empty strings (5ms)
+      ✓ should throw error with invalid IV during decryption (7ms)
+      ✓ should throw error with corrupted encrypted data (6ms)
+    Security Token Encryption
+      ✓ should encrypt security token separately from password (9ms)
+    Key Management
+      ✓ should fail if encryption key is missing (3ms)
+      ✓ should fail if encryption key is wrong length (4ms)
+
+Test Suites: 2 passed, 2 total
+Tests:       16 passed, 16 total
+Snapshots:   0 total
+Time:        3.456s
+Coverage:    87.5% Statements | 84.2% Branches | 89.1% Functions | 87.3% Lines</code></pre>
             </div>
             
             <div class="content-section">
-                <h2>🎯 End of Day Checklist</h2>
-                <ul style="list-style: none; padding-left: 0;">
-                    <li>☐ Redis client installed and connected</li>
-                    <li>☐ Job status endpoint returns job progress</li>
-                    <li>☐ Enhanced metadata includes picklists and lookups</li>
-                    <li>☐ Summary endpoint aggregates analysis results</li>
-                    <li>☐ All endpoints tested and working</li>
-                    <li>☐ Code committed with meaningful message</li>
+                <h2>✅ Completion Checklist</h2>
+                <p>Verify all integration tests are complete:</p>
+                <ul class="checklist">
+                    <li>✅ Test environment configured with test database</li>
+                    <li>✅ POST /api/v1/connections endpoint tested (create)</li>
+                    <li>✅ GET /api/v1/connections endpoint tested (list)</li>
+                    <li>✅ POST /api/v1/connections/:id/test endpoint tested</li>
+                    <li>✅ Encryption/decryption functions tested</li>
+                    <li>✅ Database persistence verified</li>
+                    <li>✅ Salesforce API mocking with nock working</li>
+                    <li>✅ Error handling scenarios covered</li>
+                    <li>✅ Test coverage above 80% for connections module</li>
+                    <li>✅ All tests passing consistently</li>
                 </ul>
-                
-                <p><strong>Commit Message:</strong></p>
-                <code>feat(backend): add job polling, detailed metadata, and Redis caching</code>
+            </div>
+            
+            <div class="content-section">
+                <h2>📝 Commit Your Changes</h2>
+                <pre><code>git add backend/src/__tests__/connections.integration.test.ts backend/src/__tests__/encryption.integration.test.ts backend/src/config/test-db.ts
+git commit -m "test(backend): add comprehensive integration tests for connections
+
+- Created integration tests for connections API endpoints
+- Added encryption/decryption test suite
+- Implemented test database configuration and cleanup
+- Mocked Salesforce API calls with nock
+- Verified password encryption and database persistence
+- Achieved 87% test coverage for connections module"
+            const subsectionHeaders = document.querySelectorAll('.nav-subsection-header');
+            subsectionHeaders.forEach(header => {
+                header.addEventListener('click', function() {
+                    const content = this.nextElementSibling;
+git commit -m "test(backend): add comprehensive integration tests for connections
+
+- Created integration tests for connections API endpoints
+- Added encryption/decryption test suite
+- Implemented test database configuration and cleanup
+- Mocked Salesforce API calls with nock
+- Verified password encryption and database persistence
+- Achieved 87% test coverage for connections module"</code></pre>
             </div>
             
             <div class="nav-buttons">
@@ -914,23 +1305,6 @@ export default redisClient;</code></pre>
             // Handle section headers
             const sectionHeaders = document.querySelectorAll('.nav-section-header');
             sectionHeaders.forEach(header => {
-                header.addEventListener('click', function() {
-                    const content = this.nextElementSibling;
-                    const isExpanded = this.classList.contains('expanded');
-                    
-                    if (isExpanded) {
-                        this.classList.remove('expanded');
-                        content.classList.remove('expanded');
-                    } else {
-                        this.classList.add('expanded');
-                        content.classList.add('expanded');
-                    }
-                });
-            });
-            
-            // Handle subsection headers
-            const subsectionHeaders = document.querySelectorAll('.nav-subsection-header');
-            subsectionHeaders.forEach(header => {
                 header.addEventListener('click', function() {
                     const content = this.nextElementSibling;
                     const isExpanded = this.classList.contains('expanded');
