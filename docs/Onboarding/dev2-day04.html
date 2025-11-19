@@ -757,149 +757,289 @@
                 <a href="onboarding-dev1.html">Developer 1</a> › Week 2 › Day 7
             </div>
             
-            <h1 class="page-title">Day 4: State Management</h1>
-            <p class="page-subtitle">Developer 1: Backend & Database | Duration: ~6-8 hours</p>
+            <h1 class="page-title">Day 4: API Integration Service Layer</h1>
+            <p class="page-subtitle">Developer 2: Frontend | Duration: ~6-8 hours</p>
             
             <div class="content-section">
                 <h2>📋 Objective</h2>
-                <p>Enhance the schema analysis API to fetch detailed field metadata, implement job status polling, and add Redis caching for performance optimization.</p>
+                <p>Create a centralized API service layer to handle all backend communication. This includes a base HTTP client with error handling, authentication, and type-safe request methods.</p>
                 
-                <p><strong>API Endpoints to Build:</strong></p>
+                <p><strong>Services to Build:</strong></p>
                 <ul>
-                    <li><code>GET /api/v1/projects/{id}/analyze/{job_id}</code> - Poll job status</li>
-                    <li><code>GET /api/v1/projects/{id}/analyze/summary</code> - Get analysis summary</li>
+                    <li><code>api/client.ts</code> - Base Axios client with interceptors</li>
+                    <li><code>api/projects.ts</code> - Project API methods</li>
+                    <li><code>api/connections.ts</code> - Connection API methods</li>
+                    <li><code>types/api.ts</code> - TypeScript interfaces for API responses</li>
                 </ul>
             </div>
             
             <div class="content-section">
-                <h2>📦 Step 1: Install Redis Client</h2>
-                <p>Install the Redis client for Node.js to enable caching:</p>
-                <pre><code>cd backend
-npm install redis</code></pre>
+                <h2>📦 Step 1: Install Dependencies</h2>
+                <p>Install Axios for HTTP requests:</p>
+                <pre><code>cd frontend
+npm install axios</code></pre>
                 
-                <p>Create a Redis client configuration:</p>
-                <p><strong>File:</strong> <code>backend/src/config/redis.ts</code></p>
-                <pre><code>import { createClient } from 'redis';
+                <p><strong>✅ Checkpoint:</strong> Axios installed</p>
+            </div>
+            
+            <div class="content-section">
+                <h2>🔧 Step 2: Create Base API Client</h2>
+                <p><strong>File:</strong> <code>frontend/src/api/client.ts</code></p>
+                <pre><code>import axios, { AxiosInstance, AxiosError } from 'axios';
 
-const redisClient = createClient({
-  url: process.env.REDIS_URL || 'redis://localhost:6379'
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1';
+
+// Create Axios instance
+const apiClient: AxiosInstance = axios.create({
+  baseURL: API_BASE_URL,
+  timeout: 10000,
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
 
-redisClient.on('error', (err) => console.error('Redis Client Error', err));
-
-export const connectRedis = async () => {
-  await redisClient.connect();
-  console.log('Redis connected');
-};
-
-export default redisClient;</code></pre>
-            </div>
-            
-            <div class="content-section">
-                <h2>🔄 Step 2: Create Job Status Polling Endpoint</h2>
-                <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
-                <pre><code>router.get('/projects/:id/analyze/:jobId', async (req, res) => {
-  try {
-    const { id, jobId } = req.params;
-    
-    // Check Redis for job status
-    const jobData = await redisClient.get(`job:${jobId}`);
-    
-    if (!jobData) {
-      return res.status(404).json({ error: 'Job not found' });
+// Request interceptor (add auth token if available)
+apiClient.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
-    
-    const job = JSON.parse(jobData);
-    res.json({
-      jobId: job.id,
-      status: job.status, // 'pending', 'running', 'completed', 'failed'
-      progress: job.progress,
-      result: job.result || null,
-      error: job.error || null
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+// Response interceptor (handle errors globally)
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error: AxiosError) => {
+    if (error.response?.status === 401) {
+      // Redirect to login
+      localStorage.removeItem('authToken');
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
   }
-});</code></pre>
+);
+
+export default apiClient;</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> Base API client with interceptors created</p>
             </div>
             
             <div class="content-section">
-                <h2>📊 Step 3: Enhance Field Metadata</h2>
-                <p>Update the schema analysis to include detailed field information:</p>
-                <pre><code>const getDetailedFieldMetadata = (field: any) => {
-  return {
-    name: field.name,
-    label: field.label,
-    type: field.type,
-    length: field.length,
-    precision: field.precision,
-    scale: field.scale,
-    required: !field.nillable,
-    unique: field.unique,
-    externalId: field.externalId,
-    defaultValue: field.defaultValue,
-    picklistValues: field.picklistValues || [],
-    referenceTo: field.referenceTo || [],
-    relationshipName: field.relationshipName,
-    calculated: field.calculated,
-    customField: field.custom
-  };
+                <h2>📝 Step 3: Create TypeScript Types</h2>
+                <p><strong>File:</strong> <code>frontend/src/types/api.ts</code></p>
+                <pre><code>// Project types
+export interface Project {
+  id: number;
+  name: string;
+  description?: string;
+  status: 'draft' | 'analyzing' | 'mapping' | 'ready' | 'executing' | 'completed' | 'failed';
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateProjectRequest {
+  name: string;
+  description?: string;
+  source_connection_id?: number;
+  target_connection_id?: number;
+}
+
+// Connection types
+export interface Connection {
+  id: number;
+  name: string;
+  type: 'salesforce' | 'netsuite' | 'other';
+  instance_url: string;
+  created_at: string;
+}
+
+export interface CreateConnectionRequest {
+  name: string;
+  type: 'salesforce' | 'netsuite' | 'other';
+  instance_url: string;
+  username: string;
+  password: string;
+  security_token?: string;
+}
+
+// API Error
+export interface ApiError {
+  message: string;
+  code?: string;
+}</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> API types defined</p>
+            </div>
+            
+            <div class="content-section">
+                <h2>📡 Step 4: Create Projects API Service</h2>
+                <p><strong>File:</strong> <code>frontend/src/api/projects.ts</code></p>
+                <pre><code>import apiClient from './client';
+import type { Project, CreateProjectRequest } from '../types/api';
+
+export const projectsApi = {
+  // Get all projects
+  getAll: async (): Promise<Project[]> => {
+    const response = await apiClient.get<Project[]>('/projects');
+    return response.data;
+  },
+
+  // Get project by ID
+  getById: async (id: number): Promise<Project> => {
+    const response = await apiClient.get<Project>(`/projects/${id}`);
+    return response.data;
+  },
+
+  // Create new project
+  create: async (data: CreateProjectRequest): Promise<Project> => {
+    const response = await apiClient.post<Project>('/projects', data);
+    return response.data;
+  },
+
+  // Update project
+  update: async (id: number, data: Partial<CreateProjectRequest>): Promise<Project> => {
+    const response = await apiClient.put<Project>(`/projects/${id}`, data);
+    return response.data;
+  },
+
+  // Delete project
+  delete: async (id: number): Promise<void> => {
+    await apiClient.delete(`/projects/${id}`);
+  },
 };</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> Projects API service created</p>
             </div>
             
             <div class="content-section">
-                <h2>📈 Step 4: Create Analysis Summary Endpoint</h2>
-                <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
-                <pre><code>router.get('/projects/:id/analyze/summary', async (req, res) => {
-  try {
-    const projectId = parseInt(req.params.id);
-    
-    // Query database for analysis results
-    const summary = {
-      total_objects: 3,
-      custom_objects: 0,
-      total_fields: 45,
-      custom_fields: 12,
-      readiness_score: 0.92,
-      warnings: ['Custom field Product2.Special__c has no target mapping'],
-      analyzed_at: new Date().toISOString()
-    };
-    
-    res.json(summary);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});</code></pre>
+                <h2>🔗 Step 5: Create Connections API Service</h2>
+                <p><strong>File:</strong> <code>frontend/src/api/connections.ts</code></p>
+                <pre><code>import apiClient from './client';
+import type { Connection, CreateConnectionRequest } from '../types/api';
+
+export const connectionsApi = {
+  // Get all connections
+  getAll: async (): Promise<Connection[]> => {
+    const response = await apiClient.get<Connection[]>('/connections');
+    return response.data;
+  },
+
+  // Get connection by ID
+  getById: async (id: number): Promise<Connection> => {
+    const response = await apiClient.get<Connection>(`/connections/${id}`);
+    return response.data;
+  },
+
+  // Create new connection
+  create: async (data: CreateConnectionRequest): Promise<Connection> => {
+    const response = await apiClient.post<Connection>('/connections', data);
+    return response.data;
+  },
+
+  // Test connection
+  test: async (id: number): Promise<{ success: boolean; message: string }> => {
+    const response = await apiClient.post<{ success: boolean; message: string }>(
+      `/connections/${id}/test`
+    );
+    return response.data;
+  },
+
+  // Delete connection
+  delete: async (id: number): Promise<void> => {
+    await apiClient.delete(`/connections/${id}`);
+  },
+};</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> Connections API service created</p>
             </div>
             
             <div class="content-section">
-                <h2>✅ Step 5: Test All Endpoints</h2>
+                <h2>🧪 Step 6: Test API Integration</h2>
+                <p>Update Dashboard to use the new API service:</p>
+                <p><strong>File:</strong> <code>frontend/src/pages/Dashboard.tsx</code></p>
+                <pre><code>import { useState, useEffect } from 'react';
+import { projectsApi } from '../api/projects';
+import type { Project } from '../types/api';
+import ProjectCard from '../components/ProjectCard';
+
+function Dashboard() {
+  const [projects, setProjects] = useState&lt;Project[]&gt;([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState&lt;string | null&gt;(null);
+
+  useEffect(() => {
+    loadProjects();
+  }, []);
+
+  const loadProjects = async () => {
+    try {
+      setLoading(true);
+      const data = await projectsApi.getAll();
+      setProjects(data);
+    } catch (err) {
+      setError('Failed to load projects');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) return &lt;div&gt;Loading...&lt;/div&gt;;
+  if (error) return &lt;div className="error"&gt;{error}&lt;/div&gt;;
+
+  return (
+    &lt;div className="dashboard"&gt;
+      &lt;h1&gt;My Projects&lt;/h1&gt;
+      {projects.length === 0 ? (
+        &lt;div className="empty-state"&gt;
+          &lt;p&gt;No projects yet. Create your first migration project!&lt;/p&gt;
+        &lt;/div&gt;
+      ) : (
+        &lt;div className="projects-grid"&gt;
+          {projects.map((project) => (
+            &lt;ProjectCard key={project.id} project={project} /&gt;
+          ))}
+        &lt;/div&gt;
+      )}
+    &lt;/div&gt;
+  );
+}
+
+export default Dashboard;</code></pre>
                 
-                <p><strong>Test job status polling:</strong></p>
-                <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/job_1699632000000</code></pre>
-                
-                <p><strong>Test analysis summary:</strong></p>
-                <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/summary</code></pre>
-                
-                <div class="success-box">
-                    <strong>✓ Expected Response:</strong> Job status should return progress information, and summary should show aggregate statistics.
-                </div>
+                <p><strong>✅ Checkpoint:</strong> Dashboard integrated with API service</p>
             </div>
             
             <div class="content-section">
-                <h2>🎯 End of Day Checklist</h2>
-                <ul style="list-style: none; padding-left: 0;">
-                    <li>☐ Redis client installed and connected</li>
-                    <li>☐ Job status endpoint returns job progress</li>
-                    <li>☐ Enhanced metadata includes picklists and lookups</li>
-                    <li>☐ Summary endpoint aggregates analysis results</li>
-                    <li>☐ All endpoints tested and working</li>
-                    <li>☐ Code committed with meaningful message</li>
+                <h2>✅ Day 4 Checklist</h2>
+                <ul>
+                    <li><input type="checkbox"> Installed Axios for HTTP requests</li>
+                    <li><input type="checkbox"> Created base API client with interceptors</li>
+                    <li><input type="checkbox"> Defined TypeScript types for API responses</li>
+                    <li><input type="checkbox"> Created Projects API service</li>
+                    <li><input type="checkbox"> Created Connections API service</li>
+                    <li><input type="checkbox"> Updated Dashboard to use API service</li>
                 </ul>
                 
-                <p><strong>Commit Message:</strong></p>
-                <code>feat(backend): add job polling, detailed metadata, and Redis caching</code>
+                <p><strong>📌 Git Commit Message:</strong></p>
+                <pre><code>feat: add API integration service layer
+
+- Created base Axios client with auth and error interceptors
+- Defined TypeScript types for projects and connections
+- Built projects API service with CRUD methods
+- Built connections API service with test method
+- Updated Dashboard to fetch real data from backend</code></pre>
             </div>
+            
+            <div class="nav-buttons">
+                <a href="dev2-day03.html" class="btn btn-secondary">Previous: Day 3</a>
+                <a href="dev2-day05.html" class="btn">Next: Day 5</a>
+            </div>
+                    <li>☐ All endpoints tested and working</li>
             
             <div class="nav-buttons">
                 <a href="dev2-day03.html" class="btn btn-secondary">Previous: Day 3</a>
