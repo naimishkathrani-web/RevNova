@@ -762,135 +762,195 @@
             
             <div class="content-section">
                 <h2>📋 Objective</h2>
-                <p>Enhance the schema analysis API to fetch detailed field metadata, implement job status polling, and add Redis caching for performance optimization.</p>
+                <p>Create STG2 database tables for target schema and field mappings. These tables will store custom object definitions, target fields, and the mapping relationships between source and target fields.</p>
                 
-                <p><strong>API Endpoints to Build:</strong></p>
+                <p><strong>Tables to Create:</strong></p>
                 <ul>
-                    <li><code>GET /api/v1/projects/{id}/analyze/{job_id}</code> - Poll job status</li>
-                    <li><code>GET /api/v1/projects/{id}/analyze/summary</code> - Get analysis summary</li>
+                    <li><code>target_objects</code> - Custom objects in target org</li>
+                    <li><code>target_fields</code> - Custom fields for target objects</li>
+                    <li><code>field_mappings</code> - Mappings between source and target fields</li>
                 </ul>
             </div>
             
             <div class="content-section">
-                <h2>📦 Step 1: Install Redis Client</h2>
-                <p>Install the Redis client for Node.js to enable caching:</p>
-                <pre><code>cd backend
-npm install redis</code></pre>
+                <h2>📊 Step 1: Create Target Objects Table</h2>
+                <p><strong>File:</strong> <code>backend/migrations/005_create_target_objects_table.sql</code></p>
+                <pre><code>-- Target Objects table: stores custom object definitions for target org
+CREATE TABLE target_objects (
+  id SERIAL PRIMARY KEY,
+  connection_id INTEGER NOT NULL REFERENCES connections(id) ON DELETE CASCADE,
+  name VARCHAR(255) NOT NULL, -- e.g., CPQ_Product__c
+  label VARCHAR(255) NOT NULL, -- e.g., CPQ Product
+  api_name VARCHAR(255) NOT NULL,
+  plural_label VARCHAR(255),
+  description TEXT,
+  deployment_status VARCHAR(50) DEFAULT 'InDevelopment', -- InDevelopment, Deployed
+  sharing_model VARCHAR(50) DEFAULT 'ReadWrite', -- Private, Public, ReadWrite
+  enable_activities BOOLEAN DEFAULT false,
+  enable_reports BOOLEAN DEFAULT true,
+  enable_search BOOLEAN DEFAULT true,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  UNIQUE(connection_id, api_name)
+);
+
+-- Indexes
+CREATE INDEX idx_target_objects_connection_id ON target_objects(connection_id);
+CREATE INDEX idx_target_objects_name ON target_objects(name);</code></pre>
                 
-                <p>Create a Redis client configuration:</p>
-                <p><strong>File:</strong> <code>backend/src/config/redis.ts</code></p>
-                <pre><code>import { createClient } from 'redis';
-
-const redisClient = createClient({
-  url: process.env.REDIS_URL || 'redis://localhost:6379'
-});
-
-redisClient.on('error', (err) => console.error('Redis Client Error', err));
-
-export const connectRedis = async () => {
+                <p><strong>✅ Checkpoint:</strong> Target objects table migration created</p>
+            </div>
   await redisClient.connect();
   console.log('Redis connected');
-};
+            </div>
+            
+            <div class="content-section">
+                <h2>📝 Step 2: Create Target Fields Table</h2>
+                <p><strong>File:</strong> <code>backend/migrations/006_create_target_fields_table.sql</code></p>
+                <pre><code>-- Target Fields table: stores custom field definitions for target objects
+CREATE TABLE target_fields (
+  id SERIAL PRIMARY KEY,
+  target_object_id INTEGER NOT NULL REFERENCES target_objects(id) ON DELETE CASCADE,
+  name VARCHAR(255) NOT NULL, -- e.g., Product_Name__c
+  label VARCHAR(255) NOT NULL, -- e.g., Product Name
+  api_name VARCHAR(255) NOT NULL,
+  type VARCHAR(100) NOT NULL, -- Text, Number, Date, Picklist, Lookup, etc.
+  length INTEGER,
+  precision_value INTEGER,
+  scale_value INTEGER,
+  is_required BOOLEAN DEFAULT false,
+  is_unique BOOLEAN DEFAULT false,
+  is_external_id BOOLEAN DEFAULT false,
+  default_value TEXT,
+  help_text TEXT,
+  description TEXT,
+  picklist_values JSONB, -- [{label, value, isDefault}]
+  reference_to VARCHAR(255), -- for lookup fields
+  relationship_name VARCHAR(255),
+  formula TEXT, -- for formula fields
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  UNIQUE(target_object_id, api_name)
+);
 
-export default redisClient;</code></pre>
-            </div>
-            
-            <div class="content-section">
-                <h2>🔄 Step 2: Create Job Status Polling Endpoint</h2>
-                <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
-                <pre><code>router.get('/projects/:id/analyze/:jobId', async (req, res) => {
-  try {
-    const { id, jobId } = req.params;
-    
-    // Check Redis for job status
-    const jobData = await redisClient.get(`job:${jobId}`);
-    
-    if (!jobData) {
-      return res.status(404).json({ error: 'Job not found' });
-    }
-    
-    const job = JSON.parse(jobData);
-    res.json({
-      jobId: job.id,
-      status: job.status, // 'pending', 'running', 'completed', 'failed'
-      progress: job.progress,
-      result: job.result || null,
-      error: job.error || null
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});</code></pre>
-            </div>
-            
-            <div class="content-section">
-                <h2>📊 Step 3: Enhance Field Metadata</h2>
-                <p>Update the schema analysis to include detailed field information:</p>
-                <pre><code>const getDetailedFieldMetadata = (field: any) => {
-  return {
-    name: field.name,
-    label: field.label,
-    type: field.type,
-    length: field.length,
-    precision: field.precision,
-    scale: field.scale,
-    required: !field.nillable,
-    unique: field.unique,
-    externalId: field.externalId,
-    defaultValue: field.defaultValue,
-    picklistValues: field.picklistValues || [],
-    referenceTo: field.referenceTo || [],
-    relationshipName: field.relationshipName,
-    calculated: field.calculated,
-    customField: field.custom
-  };
-};</code></pre>
-            </div>
-            
-            <div class="content-section">
-                <h2>📈 Step 4: Create Analysis Summary Endpoint</h2>
-                <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
-                <pre><code>router.get('/projects/:id/analyze/summary', async (req, res) => {
-  try {
-    const projectId = parseInt(req.params.id);
-    
-    // Query database for analysis results
-    const summary = {
-      total_objects: 3,
-      custom_objects: 0,
-      total_fields: 45,
-      custom_fields: 12,
-      readiness_score: 0.92,
-      warnings: ['Custom field Product2.Special__c has no target mapping'],
-      analyzed_at: new Date().toISOString()
-    };
-    
-    res.json(summary);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});</code></pre>
-            </div>
-            
-            <div class="content-section">
-                <h2>✅ Step 5: Test All Endpoints</h2>
+-- Indexes
+CREATE INDEX idx_target_fields_object_id ON target_fields(target_object_id);
+CREATE INDEX idx_target_fields_name ON target_fields(name);
+CREATE INDEX idx_target_fields_type ON target_fields(type);</code></pre>
                 
-                <p><strong>Test job status polling:</strong></p>
-                <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/job_1699632000000</code></pre>
+                <p><strong>✅ Checkpoint:</strong> Target fields table migration created</p>
+            </div>
+            
+            <div class="content-section">
+                <h2>🔗 Step 3: Create Field Mappings Table</h2>
+                <p><strong>File:</strong> <code>backend/migrations/007_create_field_mappings_table.sql</code></p>
+                <pre><code>-- Field Mappings table: stores mappings between source and target fields
+CREATE TABLE field_mappings (
+  id SERIAL PRIMARY KEY,
+  project_id INTEGER NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+  source_field_id INTEGER REFERENCES source_fields(id) ON DELETE CASCADE,
+  target_field_id INTEGER REFERENCES target_fields(id) ON DELETE CASCADE,
+  mapping_type VARCHAR(50) NOT NULL DEFAULT 'direct', -- direct, formula, constant, lookup
+  transformation_logic TEXT, -- formula or transformation code
+  constant_value TEXT, -- for constant mappings
+  is_required BOOLEAN DEFAULT false,
+  confidence_score DECIMAL(3,2), -- 0.00 to 1.00 (AI confidence)
+  mapping_source VARCHAR(50) DEFAULT 'manual', -- manual, ai, auto
+  validation_status VARCHAR(50) DEFAULT 'pending', -- pending, valid, invalid
+  validation_message TEXT,
+  notes TEXT,
+  created_by VARCHAR(255),
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  UNIQUE(project_id, source_field_id, target_field_id)
+);
+
+-- Indexes
+CREATE INDEX idx_field_mappings_project_id ON field_mappings(project_id);
+CREATE INDEX idx_field_mappings_source_field ON field_mappings(source_field_id);
+CREATE INDEX idx_field_mappings_target_field ON field_mappings(target_field_id);
+CREATE INDEX idx_field_mappings_confidence ON field_mappings(confidence_score DESC);
+CREATE INDEX idx_field_mappings_validation ON field_mappings(validation_status);</code></pre>
                 
-                <p><strong>Test analysis summary:</strong></p>
-                <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/summary</code></pre>
+                <p><strong>✅ Checkpoint:</strong> Field mappings table migration created</p>
+            </div>
+            
+            <div class="content-section">
+                <h2>🚀 Step 4: Run Migrations</h2>
+                <p>Execute the new migrations:</p>
+                <pre><code>npm run migrate
+
+# Output:
+# Running migration: 005_create_target_objects_table.sql
+# Running migration: 006_create_target_fields_table.sql
+# Running migration: 007_create_field_mappings_table.sql
+# ✅ All migrations completed successfully</code></pre>
+                
+                <p>Verify tables in PostgreSQL:</p>
+                <pre><code>psql -U postgres -d revnova_dev
+\dt
+# Should now list all 7 tables
+\d target_objects
+\d target_fields
+\d field_mappings
+\q</code></pre>
                 
                 <div class="success-box">
-                    <strong>✓ Expected Response:</strong> Job status should return progress information, and summary should show aggregate statistics.
+                    <strong>✓ Success:</strong> All STG2 tables created!
                 </div>
+            </div>
+            
+            <div class="content-section">
+                <h2>🧪 Step 5: Insert Test Data</h2>
+                <p><strong>File:</strong> <code>backend/seeds/002_stg2_test_data.sql</code></p>
+                <pre><code>-- Insert test target object
+INSERT INTO target_objects (connection_id, name, label, api_name, description)
+VALUES (1, 'CPQ_Product__c', 'CPQ Product', 'CPQ_Product__c', 'Custom object for CPQ products');
+
+-- Insert test target fields
+INSERT INTO target_fields (target_object_id, name, label, api_name, type, length, is_required)
+VALUES 
+  (1, 'Product_Name__c', 'Product Name', 'Product_Name__c', 'Text', 255, true),
+  (1, 'Product_Code__c', 'Product Code', 'Product_Code__c', 'Text', 100, false),
+  (1, 'Price__c', 'Price', 'Price__c', 'Number', NULL, false);
+
+-- Insert test mapping
+INSERT INTO field_mappings (project_id, source_field_id, target_field_id, mapping_type, confidence_score, mapping_source)
+VALUES (1, 1, 1, 'direct', 0.95, 'ai');</code></pre>
+                
+                <p>Run seed:</p>
+                <pre><code>psql -U postgres -d revnova_dev &lt; backend/seeds/002_stg2_test_data.sql</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> STG2 test data inserted</p>
             </div>
             
             <div class="content-section">
                 <h2>🎯 End of Day Checklist</h2>
                 <ul style="list-style: none; padding-left: 0;">
-                    <li>☐ Redis client installed and connected</li>
-                    <li>☐ Job status endpoint returns job progress</li>
+                    <li>☐ Target_objects table created</li>
+                    <li>☐ Target_fields table created</li>
+                    <li>☐ Field_mappings table created</li>
+                    <li>☐ All migrations run successfully</li>
+                    <li>☐ Verified all 7 tables exist</li>
+                    <li>☐ STG2 test data inserted</li>
+                    <li>☐ Can query mapping relationships</li>
+                    <li>☐ Understand confidence scoring column</li>
+                </ul>
+                
+                <p><strong>Commit Message:</strong></p>
+                <pre><code>git add backend/migrations/005* backend/migrations/006* backend/migrations/007* backend/seeds/002*
+git commit -m "feat(database): create STG2 tables for target schema and field mappings"
+git push</code></pre>
+            </div>
+            
+            <div class="nav-buttons">
+                <a href="dev1-day02.html" class="btn btn-secondary">Previous: Day 2</a>
+                <a href="dev1-day04.html" class="btn">Next: Day 4 - EAV Tables</a>
+            </div>
+        </main>
+    </div>
+    
+    <script>
                     <li>☐ Enhanced metadata includes picklists and lookups</li>
                     <li>☐ Summary endpoint aggregates analysis results</li>
                     <li>☐ All endpoints tested and working</li>
