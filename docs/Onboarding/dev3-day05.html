@@ -757,149 +757,256 @@
                 <a href="onboarding-dev1.html">Developer 1</a> › Week 2 › Day 7
             </div>
             
-            <h1 class="page-title">Day 5: Security Configuration</h1>
-            <p class="page-subtitle">Developer 1: Backend & Database | Duration: ~6-8 hours</p>
+            <h1 class="page-title">Day 5: Frontend Testing with Vitest</h1>
+            <p class="page-subtitle">Developer 3: DevOps & QA | Duration: ~6-8 hours</p>
             
             <div class="content-section">
                 <h2>📋 Objective</h2>
-                <p>Enhance the schema analysis API to fetch detailed field metadata, implement job status polling, and add Redis caching for performance optimization.</p>
+                <p>Set up Vitest for frontend testing. Write unit tests for React components, utility functions, and store logic. Configure React Testing Library for component testing.</p>
                 
-                <p><strong>API Endpoints to Build:</strong></p>
+                <p><strong>What You'll Build:</strong></p>
                 <ul>
-                    <li><code>GET /api/v1/projects/{id}/analyze/{job_id}</code> - Poll job status</li>
-                    <li><code>GET /api/v1/projects/{id}/analyze/summary</code> - Get analysis summary</li>
+                    <li>Vitest configuration with JSDOM</li>
+                    <li>React Testing Library setup</li>
+                    <li>Component tests for ProjectCard and Dashboard</li>
+                    <li>Store tests for Zustand state management</li>
                 </ul>
             </div>
             
             <div class="content-section">
-                <h2>📦 Step 1: Install Redis Client</h2>
-                <p>Install the Redis client for Node.js to enable caching:</p>
-                <pre><code>cd backend
-npm install redis</code></pre>
+                <h2>📦 Step 1: Install Vitest and Testing Libraries</h2>
+                <p>Install Vitest and React Testing Library:</p>
+                <pre><code>cd frontend
+npm install --save-dev vitest @vitest/ui jsdom
+npm install --save-dev @testing-library/react @testing-library/jest-dom @testing-library/user-event</code></pre>
                 
-                <p>Create a Redis client configuration:</p>
-                <p><strong>File:</strong> <code>backend/src/config/redis.ts</code></p>
-                <pre><code>import { createClient } from 'redis';
+                <p><strong>✅ Checkpoint:</strong> Testing dependencies installed</p>
+            </div>
+            
+            <div class="content-section">
+                <h2>⚙️ Step 2: Configure Vitest</h2>
+                <p><strong>File:</strong> <code>frontend/vite.config.ts</code></p>
+                <pre><code>import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
-const redisClient = createClient({
-  url: process.env.REDIS_URL || 'redis://localhost:6379'
-});
+export default defineConfig({
+  plugins: [react()],
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: './src/__tests__/setup.ts',
+    css: true,
+  },
+});</code></pre>
+                
+                <p><strong>File:</strong> <code>frontend/src/__tests__/setup.ts</code></p>
+                <pre><code>import '@testing-library/jest-dom';
+import { cleanup } from '@testing-library/react';
+import { afterEach } from 'vitest';
 
-redisClient.on('error', (err) => console.error('Redis Client Error', err));
+// Cleanup after each test
+afterEach(() => {
+  cleanup();
+});</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> Vitest configured</p>
+            </div>
+            
+            <div class="content-section">
+                <h2>🧪 Step 3: Write Component Tests</h2>
+                <p><strong>File:</strong> <code>frontend/src/components/__tests__/ProjectCard.test.tsx</code></p>
+                <pre><code>import { describe, it, expect } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import { BrowserRouter } from 'react-router-dom';
+import ProjectCard from '../ProjectCard';
 
-export const connectRedis = async () => {
-  await redisClient.connect();
-  console.log('Redis connected');
+const mockProject = {
+  id: 1,
+  name: 'Test Project',
+  description: 'Test Description',
+  status: 'draft' as const,
+  created_at: '2024-01-15T10:00:00Z',
+  updated_at: '2024-01-15T10:00:00Z',
 };
 
-export default redisClient;</code></pre>
+describe('ProjectCard', () => {
+  it('renders project name and description', () => {
+    render(
+      &lt;BrowserRouter&gt;
+        &lt;ProjectCard project={mockProject} /&gt;
+      &lt;/BrowserRouter&gt;
+    );
+    
+    expect(screen.getByText('Test Project')).toBeInTheDocument();
+    expect(screen.getByText('Test Description')).toBeInTheDocument();
+  });
+
+  it('displays status badge', () => {
+    render(
+      &lt;BrowserRouter&gt;
+        &lt;ProjectCard project={mockProject} /&gt;
+      &lt;/BrowserRouter&gt;
+    );
+    
+    expect(screen.getByText('draft')).toBeInTheDocument();
+  });
+
+  it('shows different status colors', () => {
+    const completedProject = { ...mockProject, status: 'completed' as const };
+    render(
+      &lt;BrowserRouter&gt;
+        &lt;ProjectCard project={completedProject} /&gt;
+      &lt;/BrowserRouter&gt;
+    );
+    
+    const statusBadge = screen.getByText('completed');
+    expect(statusBadge).toHaveClass('status-completed');
+  });
+});</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> ProjectCard tests written</p>
             </div>
             
             <div class="content-section">
-                <h2>🔄 Step 2: Create Job Status Polling Endpoint</h2>
-                <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
-                <pre><code>router.get('/projects/:id/analyze/:jobId', async (req, res) => {
-  try {
-    const { id, jobId } = req.params;
-    
-    // Check Redis for job status
-    const jobData = await redisClient.get(`job:${jobId}`);
-    
-    if (!jobData) {
-      return res.status(404).json({ error: 'Job not found' });
-    }
-    
-    const job = JSON.parse(jobData);
-    res.json({
-      jobId: job.id,
-      status: job.status, // 'pending', 'running', 'completed', 'failed'
-      progress: job.progress,
-      result: job.result || null,
-      error: job.error || null
+                <h2>📊 Step 4: Write Store Tests</h2>
+                <p><strong>File:</strong> <code>frontend/src/stores/__tests__/projectStore.test.ts</code></p>
+                <pre><code>import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { useProjectStore } from '../projectStore';
+import { projectsApi } from '../../api/projects';
+
+// Mock API
+vi.mock('../../api/projects', () => ({
+  projectsApi: {
+    getAll: vi.fn(),
+    getById: vi.fn(),
+    create: vi.fn(),
+    update: vi.fn(),
+    delete: vi.fn(),
+  },
+}));
+
+describe('ProjectStore', () => {
+  beforeEach(() => {
+    useProjectStore.setState({
+      projects: [],
+      selectedProject: null,
+      loading: false,
+      error: null,
     });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+    vi.clearAllMocks();
+  });
+
+  it('fetches projects successfully', async () => {
+    const mockProjects = [
+      { id: 1, name: 'Project 1', description: 'Desc 1', status: 'draft', created_at: '', updated_at: '' },
+    ];
+    vi.mocked(projectsApi.getAll).mockResolvedValue(mockProjects);
+
+    await useProjectStore.getState().fetchProjects();
+
+    expect(useProjectStore.getState().projects).toEqual(mockProjects);
+    expect(useProjectStore.getState().loading).toBe(false);
+    expect(useProjectStore.getState().error).toBe(null);
+  });
+
+  it('handles fetch error', async () => {
+    vi.mocked(projectsApi.getAll).mockRejectedValue(new Error('Network error'));
+
+    await useProjectStore.getState().fetchProjects();
+
+    expect(useProjectStore.getState().error).toBe('Network error');
+    expect(useProjectStore.getState().loading).toBe(false);
+  });
+
+  it('creates a new project', async () => {
+    const newProject = { id: 2, name: 'New Project', description: '', status: 'draft', created_at: '', updated_at: '' };
+    vi.mocked(projectsApi.create).mockResolvedValue(newProject);
+
+    await useProjectStore.getState().createProject({ name: 'New Project' });
+
+    expect(useProjectStore.getState().projects).toContainEqual(newProject);
+  });
+
+  it('deletes a project', async () => {
+    useProjectStore.setState({
+      projects: [
+        { id: 1, name: 'Project 1', description: '', status: 'draft', created_at: '', updated_at: '' },
+      ],
+    });
+
+    await useProjectStore.getState().deleteProject(1);
+
+    expect(useProjectStore.getState().projects).toHaveLength(0);
+  });
 });</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> Store tests written</p>
             </div>
             
             <div class="content-section">
-                <h2>📊 Step 3: Enhance Field Metadata</h2>
-                <p>Update the schema analysis to include detailed field information:</p>
-                <pre><code>const getDetailedFieldMetadata = (field: any) => {
-  return {
-    name: field.name,
-    label: field.label,
-    type: field.type,
-    length: field.length,
-    precision: field.precision,
-    scale: field.scale,
-    required: !field.nillable,
-    unique: field.unique,
-    externalId: field.externalId,
-    defaultValue: field.defaultValue,
-    picklistValues: field.picklistValues || [],
-    referenceTo: field.referenceTo || [],
-    relationshipName: field.relationshipName,
-    calculated: field.calculated,
-    customField: field.custom
-  };
-};</code></pre>
+                <h2>▶️ Step 5: Run Tests</h2>
+                <p>Run the test suite:</p>
+                <pre><code>npm test</code></pre>
+                
+                <p><strong>Run with UI:</strong></p>
+                <pre><code>npm run test:ui</code></pre>
+                
+                <p><strong>Run with coverage:</strong></p>
+                <pre><code>npm run test:coverage</code></pre>
+                
+                <p><strong>Expected output:</strong></p>
+                <pre><code>✓ src/components/__tests__/ProjectCard.test.tsx (3 tests) 125ms
+  ✓ ProjectCard (3)
+    ✓ renders project name and description
+    ✓ displays status badge
+    ✓ shows different status colors
+
+✓ src/stores/__tests__/projectStore.test.ts (4 tests) 85ms
+  ✓ ProjectStore (4)
+    ✓ fetches projects successfully
+    ✓ handles fetch error
+    ✓ creates a new project
+    ✓ deletes a project
+
+Test Files  2 passed (2)
+Tests  7 passed (7)
+Duration  210ms</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> All tests passing</p>
             </div>
             
             <div class="content-section">
-                <h2>📈 Step 4: Create Analysis Summary Endpoint</h2>
-                <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
-                <pre><code>router.get('/projects/:id/analyze/summary', async (req, res) => {
-  try {
-    const projectId = parseInt(req.params.id);
-    
-    // Query database for analysis results
-    const summary = {
-      total_objects: 3,
-      custom_objects: 0,
-      total_fields: 45,
-      custom_fields: 12,
-      readiness_score: 0.92,
-      warnings: ['Custom field Product2.Special__c has no target mapping'],
-      analyzed_at: new Date().toISOString()
-    };
-    
-    res.json(summary);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});</code></pre>
+                <h2>✅ Day 5 Checklist</h2>
+                <ul>
+                    <li><input type="checkbox"> Installed Vitest and React Testing Library</li>
+                    <li><input type="checkbox"> Configured Vitest with JSDOM</li>
+                    <li><input type="checkbox"> Created test setup file</li>
+                    <li><input type="checkbox"> Wrote component tests for ProjectCard</li>
+                    <li><input type="checkbox"> Wrote store tests for project store</li>
+                    <li><input type="checkbox"> All tests passing</li>
+                </ul>
+                
+                <p><strong>📌 Git Commit Message:</strong></p>
+                <pre><code>test: add Vitest configuration and frontend tests
+
+- Configured Vitest with JSDOM and React Testing Library
+- Created test setup with cleanup
+- Wrote ProjectCard component tests (render, status badges)
+- Wrote project store tests (fetch, create, delete, error handling)
+- All 7 tests passing
+- Added test UI and coverage scripts</code></pre>
             </div>
             
+            <div class="nav-buttons">
+                <a href="dev3-day04.html" class="btn btn-secondary">Previous: Day 4</a>
+                <a href="dev3-day06.html" class="btn">Next: Day 6</a>
+            </div>
             <div class="content-section">
                 <h2>✅ Step 5: Test All Endpoints</h2>
                 
                 <p><strong>Test job status polling:</strong></p>
                 <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/job_1699632000000</code></pre>
                 
-                <p><strong>Test analysis summary:</strong></p>
-                <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/summary</code></pre>
-                
-                <div class="success-box">
-                    <strong>✓ Expected Response:</strong> Job status should return progress information, and summary should show aggregate statistics.
-                </div>
-            </div>
-            
-            <div class="content-section">
-                <h2>🎯 End of Day Checklist</h2>
-                <ul style="list-style: none; padding-left: 0;">
-                    <li>☐ Redis client installed and connected</li>
-                    <li>☐ Job status endpoint returns job progress</li>
-                    <li>☐ Enhanced metadata includes picklists and lookups</li>
-                    <li>☐ Summary endpoint aggregates analysis results</li>
-                    <li>☐ All endpoints tested and working</li>
-                    <li>☐ Code committed with meaningful message</li>
-                </ul>
-                
-                <p><strong>Commit Message:</strong></p>
-                <code>feat(backend): add job polling, detailed metadata, and Redis caching</code>
-            </div>
             
             <div class="nav-buttons">
                 <a href="dev3-day04.html" class="btn btn-secondary">Previous: Day 4</a>
