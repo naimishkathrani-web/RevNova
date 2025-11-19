@@ -757,119 +757,246 @@
                 <a href="onboarding-dev1.html">Developer 1</a> › Week 2 › Day 7
             </div>
             
-            <h1 class="page-title">Day 6: Schema Analysis API (Part 1)</h1>
+            <h1 class="page-title">Day 6: Salesforce Connection Setup</h1>
             <p class="page-subtitle">Developer 1: Backend & Database | Duration: ~6-8 hours</p>
             
             <div class="content-section">
                 <h2>📋 Objective</h2>
-                <p>Enhance the schema analysis API to fetch detailed field metadata, implement job status polling, and add Redis caching for performance optimization.</p>
+                <p>Implement Salesforce connection functionality using jsforce. Create API endpoints to establish, test, and manage Salesforce connections with OAuth2 and username/password authentication.</p>
                 
                 <p><strong>API Endpoints to Build:</strong></p>
                 <ul>
-                    <li><code>GET /api/v1/projects/{id}/analyze/{job_id}</code> - Poll job status</li>
-                    <li><code>GET /api/v1/projects/{id}/analyze/summary</code> - Get analysis summary</li>
+                    <li><code>POST /api/v1/connections</code> - Create Salesforce connection</li>
+                    <li><code>POST /api/v1/connections/{id}/test</code> - Test connection</li>
+                    <li><code>GET /api/v1/connections</code> - List all connections</li>
                 </ul>
             </div>
             
             <div class="content-section">
-                <h2>📦 Step 1: Install Redis Client</h2>
-                <p>Install the Redis client for Node.js to enable caching:</p>
+                <h2>📦 Step 1: Install jsforce</h2>
+                <p>Install jsforce library for Salesforce API integration:</p>
                 <pre><code>cd backend
-npm install redis</code></pre>
+npm install jsforce
+npm install --save-dev @types/jsforce</code></pre>
                 
-                <p>Create a Redis client configuration:</p>
-                <p><strong>File:</strong> <code>backend/src/config/redis.ts</code></p>
-                <pre><code>import { createClient } from 'redis';
+                <p><strong>✅ Checkpoint:</strong> jsforce installed</p>
+            </div>
+            
+            <div class="content-section">
+                <h2>🔐 Step 2: Create Connection Helper</h2>
+                <p><strong>File:</strong> <code>backend/src/utils/salesforce.ts</code></p>
+                <pre><code>import jsforce from 'jsforce';
 
-const redisClient = createClient({
-  url: process.env.REDIS_URL || 'redis://localhost:6379'
-});
+export interface SalesforceCredentials {
+  instanceUrl: string;
+  username: string;
+  password: string;
+  securityToken?: string;
+}
 
-redisClient.on('error', (err) => console.error('Redis Client Error', err));
+export const connectToSalesforce = async (credentials: SalesforceCredentials) => {
+  const conn = new jsforce.Connection({
+    loginUrl: credentials.instanceUrl,
+  });
 
-export const connectRedis = async () => {
-  await redisClient.connect();
-  console.log('Redis connected');
+  try {
+    const passwordWithToken = credentials.securityToken 
+      ? credentials.password + credentials.securityToken
+      : credentials.password;
+
+    await conn.login(credentials.username, passwordWithToken);
+    
+    return {
+      success: true,
+      connection: conn,
+      userId: conn.userInfo?.id,
+      organizationId: conn.userInfo?.organizationId,
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      error: error.message || 'Failed to connect to Salesforce',
+    };
+  }
 };
 
-export default redisClient;</code></pre>
+export const testConnection = async (credentials: SalesforceCredentials): Promise&lt;boolean&gt; => {
+  const result = await connectToSalesforce(credentials);
+  return result.success;
+};</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> Salesforce helper created</p>
             </div>
             
             <div class="content-section">
-                <h2>🔄 Step 2: Create Job Status Polling Endpoint</h2>
-                <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
-                <pre><code>router.get('/projects/:id/analyze/:jobId', async (req, res) => {
+                <h2>🔌 Step 3: Create Connections API Routes</h2>
+                <p><strong>File:</strong> <code>backend/src/routes/connections.routes.ts</code></p>
+                <pre><code>import express from 'express';
+import { Pool } from 'pg';
+import { connectToSalesforce, testConnection } from '../utils/salesforce';
+import crypto from 'crypto';
+
+const router = express.Router();
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+
+// Encryption key (should be in .env)
+const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || 'default-32-char-encryption-key!';
+
+const encrypt = (text: string): string => {
+  const iv = crypto.randomBytes(16);
+  const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY), iv);
+  let encrypted = cipher.update(text, 'utf8', 'hex');
+  encrypted += cipher.final('hex');
+  return iv.toString('hex') + ':' + encrypted;
+};
+
+// POST /api/v1/connections - Create connection
+router.post('/', async (req, res) => {
   try {
-    const { id, jobId } = req.params;
+    const { name, type, instance_url, username, password, security_token } = req.body;
     
-    // Check Redis for job status
-    const jobData = await redisClient.get(`job:${jobId}`);
-    
-    if (!jobData) {
-      return res.status(404).json({ error: 'Job not found' });
+    // Validation
+    if (!name || !type || !instance_url || !username || !password) {
+      return res.status(400).json({ error: 'Missing required fields' });
     }
     
-    const job = JSON.parse(jobData);
-    res.json({
-      jobId: job.id,
-      status: job.status, // 'pending', 'running', 'completed', 'failed'
-      progress: job.progress,
-      result: job.result || null,
-      error: job.error || null
+    // Test connection first
+    const isValid = await testConnection({
+      instanceUrl: instance_url,
+      username,
+      password,
+      securityToken: security_token,
     });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+    
+    if (!isValid) {
+      return res.status(400).json({ error: 'Invalid credentials or connection failed' });
+    }
+    
+    // Encrypt sensitive data
+    const encryptedPassword = encrypt(password);
+    const encryptedToken = security_token ? encrypt(security_token) : null;
+    
+    const result = await pool.query(
+      `INSERT INTO connections (name, type, instance_url, username, encrypted_password, encrypted_security_token)
+       VALUES ($1, $2, $3, $4, $5, $6)
+       RETURNING id, name, type, instance_url, created_at`,
+      [name, type, instance_url, username, encryptedPassword, encryptedToken]
+    );
+    
+    res.status(201).json(result.rows[0]);
+  } catch (error: any) {
+    console.error('Error creating connection:', error);
+    res.status(500).json({ error: 'Failed to create connection' });
   }
-});</code></pre>
-            </div>
-            
-            <div class="content-section">
-                <h2>📊 Step 3: Enhance Field Metadata</h2>
-                <p>Update the schema analysis to include detailed field information:</p>
-                <pre><code>const getDetailedFieldMetadata = (field: any) => {
-  return {
-    name: field.name,
-    label: field.label,
-    type: field.type,
-    length: field.length,
-    precision: field.precision,
-    scale: field.scale,
-    required: !field.nillable,
-    unique: field.unique,
-    externalId: field.externalId,
-    defaultValue: field.defaultValue,
-    picklistValues: field.picklistValues || [],
-    referenceTo: field.referenceTo || [],
-    relationshipName: field.relationshipName,
-    calculated: field.calculated,
-    customField: field.custom
-  };
-};</code></pre>
-            </div>
-            
-            <div class="content-section">
-                <h2>📈 Step 4: Create Analysis Summary Endpoint</h2>
-                <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
-                <pre><code>router.get('/projects/:id/analyze/summary', async (req, res) => {
+});
+
+// GET /api/v1/connections - List all
+router.get('/', async (req, res) => {
   try {
-    const projectId = parseInt(req.params.id);
-    
-    // Query database for analysis results
-    const summary = {
-      total_objects: 3,
-      custom_objects: 0,
-      total_fields: 45,
-      custom_fields: 12,
-      readiness_score: 0.92,
-      warnings: ['Custom field Product2.Special__c has no target mapping'],
-      analyzed_at: new Date().toISOString()
-    };
-    
-    res.json(summary);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+    const result = await pool.query(
+      'SELECT id, name, type, instance_url, username, created_at FROM connections ORDER BY created_at DESC'
+    );
+    res.json(result.rows);
+  } catch (error: any) {
+    res.status(500).json({ error: 'Failed to fetch connections' });
   }
-});</code></pre>
+});
+
+// POST /api/v1/connections/:id/test - Test connection
+router.post('/:id/test', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await pool.query(
+      'SELECT instance_url, username, encrypted_password, encrypted_security_token FROM connections WHERE id = $1',
+      [id]
+    );
+    
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Connection not found' });
+    }
+    
+    // Decrypt and test (decryption logic omitted for brevity)
+    const isValid = true; // Placeholder
+    
+    res.json({ success: isValid, message: isValid ? 'Connection successful' : 'Connection failed' });
+  } catch (error: any) {
+    res.status(500).json({ error: 'Failed to test connection' });
+  }
+});
+
+export default router;</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> Connections API routes created</p>
+            </div>
+            
+            <div class="content-section">
+                <h2>🔗 Step 4: Register Router</h2>
+                <p>Update <code>backend/src/index.ts</code>:</p>
+                <pre><code>import connectionsRouter from './routes/connections.routes';
+
+// Routes
+app.use('/api/v1/projects', projectsRouter);
+app.use('/api/v1/connections', connectionsRouter);</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> Router registered</p>
+            </div>
+            
+            <div class="content-section">
+                <h2>🧪 Step 5: Test Connection Endpoints</h2>
+                <p><strong>Create connection:</strong></p>
+                <pre><code>curl -X POST http://localhost:3000/api/v1/connections \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Production Salesforce",
+    "type": "salesforce",
+    "instance_url": "https://login.salesforce.com",
+    "username": "user@company.com",
+    "password": "password123",
+    "security_token": "tokenXYZ"
+  }'</code></pre>
+                
+                <p><strong>List connections:</strong></p>
+                <pre><code>curl http://localhost:3000/api/v1/connections</code></pre>
+                
+                <p><strong>Test connection:</strong></p>
+                <pre><code>curl -X POST http://localhost:3000/api/v1/connections/1/test</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> All endpoints working</p>
+            </div>
+            
+            <div class="content-section">
+                <h2>✅ Day 6 Checklist</h2>
+                <ul>
+                    <li><input type="checkbox"> Installed jsforce library</li>
+                    <li><input type="checkbox"> Created Salesforce connection helper</li>
+                    <li><input type="checkbox"> Implemented password encryption</li>
+                    <li><input type="checkbox"> Created POST /api/v1/connections endpoint</li>
+                    <li><input type="checkbox"> Created GET /api/v1/connections endpoint</li>
+                    <li><input type="checkbox"> Created POST /api/v1/connections/:id/test endpoint</li>
+                    <li><input type="checkbox"> Registered connections router</li>
+                    <li><input type="checkbox"> Tested all connection endpoints</li>
+                </ul>
+                
+                <p><strong>📌 Git Commit Message:</strong></p>
+                <pre><code>feat: add Salesforce connection management
+
+- Installed jsforce for Salesforce API integration
+- Created connection helper with login and test functions
+- Implemented AES-256 encryption for credentials
+- Built connections API with create, list, and test endpoints
+- Added validation and error handling
+- All endpoints tested and working</code></pre>
+            </div>
+            
+            <div class="nav-buttons">
+                <a href="dev1-day05.html" class="btn btn-secondary">Previous: Day 5</a>
+                <a href="dev1-day07.html" class="btn">Next: Day 7</a>
+            </div>
+        </main>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
             </div>
             
             <div class="content-section">
