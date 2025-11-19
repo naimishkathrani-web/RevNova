@@ -492,6 +492,84 @@
         <tr><td>Asset</td><td>Custom Flag</td><td>Custom_Flag__c</td><td>Asset</td><td>CustomFlag</td><td>Transform</td><td>Medium</td><td>Generic custom flag</td><td>Optional, Flag for review</td></tr>
         <tr><td>Asset</td><td>Custom Text</td><td>Custom_Text__c</td><td>Asset</td><td>CustomText</td><td>Transform</td><td>Medium</td><td>Generic custom text</td><td>Optional, Flag for review</td></tr>
         <tr><td>Asset</td><td>Custom Numeric</td><td>Custom_Number__c</td><td>Asset</td><td>CustomNumber</td><td>Transform</td><td>Medium</td><td>Generic custom numeric</td><td>Optional, Flag for review</td></tr>
+        
+        <!-- OrderItem to OrderItem -->
+        <tr><td>OrderItem</td><td>Id</td><td>Id</td><td>OrderItem</td><td>Id</td><td>Direct</td><td>Simple</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>OrderItem</td><td>OrderId</td><td>OrderId</td><td>OrderItem</td><td>OrderId</td><td>Structural</td><td>Medium</td><td>Map Order via Id_Mapping</td><td>Required, Reject if blank</td></tr>
+        <tr><td>OrderItem</td><td>Product2Id</td><td>Product2Id</td><td>OrderItem</td><td>ProductId</td><td>Structural</td><td>Medium</td><td>Map Product via Id_Mapping</td><td>Required, Reject if blank</td></tr>
+        <tr><td>OrderItem</td><td>Quantity</td><td>Quantity</td><td>OrderItem</td><td>Quantity</td><td>Direct</td><td>Simple</td><td>Map quantities; preserve units</td><td>Required, Reject if blank</td></tr>
+        <tr><td>OrderItem</td><td>UnitPrice</td><td>UnitPrice</td><td>OrderItem</td><td>UnitPrice</td><td>Transform</td><td>Medium</td><td>Map price to RCA price/charge model</td><td>Required, Reject if blank</td></tr>
+        <tr><td>OrderItem</td><td>TotalPrice</td><td>TotalPrice</td><td>OrderItem</td><td>TotalPrice</td><td>Transform</td><td>Medium</td><td>Recalculate in RCA from unit price * qty plus adjustments</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>OrderItem</td><td>LineNumber</td><td>LineNumber</td><td>OrderItem</td><td>LineNumber</td><td>Direct</td><td>Simple</td><td>Preserve ordering</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>OrderItem</td><td>SubscriptionId</td><td>SubscriptionId</td><td>OrderItem</td><td>SubscriptionId</td><td>Structural</td><td>Medium</td><td>Link to migrated subscription if present</td><td>Optional, Flag for review</td></tr>
+        <tr><td>OrderItem</td><td>StartDate</td><td>StartDate</td><td>OrderItem</td><td>StartDate</td><td>Direct</td><td>Medium</td><td>Preserve service/fulfillment start date</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>OrderItem</td><td>EndDate</td><td>EndDate</td><td>OrderItem</td><td>EndDate</td><td>Direct</td><td>Medium</td><td>Preserve service/fulfillment end date</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>OrderItem</td><td>ChargeType</td><td>ChargeType</td><td>OrderItem</td><td>ChargeType</td><td>Transform</td><td>Medium</td><td>Map charge classification for billing</td><td>Optional, Flag for review</td></tr>
+        <tr><td>OrderItem</td><td>DiscountAmount</td><td>DiscountAmount</td><td>OrderItem</td><td>DiscountAmount</td><td>Transform</td><td>Medium</td><td>Map discount semantics to RCA adjustments</td><td>Optional, Flag for review</td></tr>
+        <tr><td>OrderItem</td><td>TaxCode</td><td>TaxCode</td><td>OrderItem</td><td>TaxCode</td><td>Direct</td><td>Medium</td><td>Map tax codes to target tax objects or external tax engine</td><td>Optional, Flag for review</td></tr>
+        <tr><td>OrderItem</td><td>External Id</td><td>External_OrderItem_Id__c</td><td>OrderItem</td><td>ExternalOrderItemId</td><td>Transform</td><td>Medium</td><td>Use for reconciliation with ERP/legacy</td><td>Optional, Flag for review</td></tr>
+        <tr><td>OrderItem</td><td>Custom Flag</td><td>Custom_Flag__c</td><td>OrderItem</td><td>CustomFlag</td><td>Transform</td><td>Medium</td><td>Generic custom flag</td><td>Optional, Flag for review</td></tr>
+        <tr><td>OrderItem</td><td>Custom Text</td><td>Custom_Text__c</td><td>OrderItem</td><td>CustomText</td><td>Transform</td><td>Medium</td><td>Generic custom text</td><td>Optional, Flag for review</td></tr>
+        <tr><td>OrderItem</td><td>Custom Numeric</td><td>Custom_Number__c</td><td>OrderItem</td><td>CustomNumber</td><td>Transform</td><td>Medium</td><td>Generic custom numeric</td><td>Optional, Flag for review</td></tr>
+        
+        <!-- Invoice to Invoice -->
+        <tr><td>Invoice</td><td>Id</td><td>Id</td><td>Invoice</td><td>Id</td><td>Direct</td><td>Simple</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Invoice</td><td>Invoice Number</td><td>InvoiceNumber</td><td>Invoice</td><td>InvoiceNumber</td><td>Direct</td><td>Simple</td><td>Preserve invoice numbering for audit</td><td>Required, Reject if blank</td></tr>
+        <tr><td>Invoice</td><td>Account</td><td>AccountId</td><td>Invoice</td><td>AccountId</td><td>Structural</td><td>Medium</td><td>Map account via Id_Mapping</td><td>Required, Reject if blank</td></tr>
+        <tr><td>Invoice</td><td>Invoice Date</td><td>InvoiceDate</td><td>Invoice</td><td>InvoiceDate</td><td>Direct</td><td>Medium</td><td>Preserve invoice date for AR</td><td>Required, Reject if blank</td></tr>
+        <tr><td>Invoice</td><td>Due Date</td><td>DueDate</td><td>Invoice</td><td>DueDate</td><td>Direct</td><td>Medium</td><td>Map payment terms into RCA billing schedule if required</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Invoice</td><td>Total Amount</td><td>TotalAmount</td><td>Invoice</td><td>TotalAmount</td><td>Transform</td><td>Medium</td><td>Recalculate or map historic totals; preserve for audit</td><td>Required, Reject if blank</td></tr>
+        <tr><td>Invoice</td><td>CurrencyIsoCode</td><td>CurrencyIsoCode</td><td>Invoice</td><td>CurrencyIsoCode</td><td>Direct</td><td>Medium</td><td>Multi-currency handling required</td><td>Required, Reject if blank</td></tr>
+        <tr><td>Invoice</td><td>Status</td><td>Status</td><td>Invoice</td><td>Status</td><td>Direct</td><td>Medium</td><td>Map invoice statuses (Draft/Posted/Paid) to RCA statuses</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Invoice</td><td>Related Order</td><td>OrderId</td><td>Invoice</td><td>OrderId</td><td>Structural</td><td>Medium</td><td>Link to migrated Order via Id_Mapping</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Invoice</td><td>Billing Account</td><td>BillingAccountId</td><td>Invoice</td><td>BillingAccountId</td><td>Structural</td><td>Medium</td><td>Map billing account if separate</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Invoice</td><td>Tax Total</td><td>TaxTotal</td><td>Invoice</td><td>TaxTotal</td><td>Transform</td><td>Medium</td><td>Ensure tax lines are mapped and reconciled</td><td>Optional, Flag for review</td></tr>
+        <tr><td>Invoice</td><td>Payment Status</td><td>PaymentStatus</td><td>Invoice</td><td>PaymentStatus</td><td>Direct</td><td>Medium</td><td>Map payment states</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Invoice</td><td>External Id</td><td>External_Invoice_Id__c</td><td>Invoice</td><td>ExternalInvoiceId</td><td>Transform</td><td>Medium</td><td>Use for reconciliation with external AR systems</td><td>Optional, Flag for review</td></tr>
+        <tr><td>Invoice</td><td>Custom Flag</td><td>Custom_Flag__c</td><td>Invoice</td><td>CustomFlag</td><td>Transform</td><td>Medium</td><td>Generic custom flag</td><td>Optional, Flag for review</td></tr>
+        <tr><td>Invoice</td><td>Custom Text</td><td>Custom_Text__c</td><td>Invoice</td><td>CustomText</td><td>Transform</td><td>Medium</td><td>Generic custom text</td><td>Optional, Flag for review</td></tr>
+        <tr><td>Invoice</td><td>Custom Numeric</td><td>Custom_Number__c</td><td>Invoice</td><td>CustomNumber</td><td>Transform</td><td>Medium</td><td>Generic custom numeric</td><td>Optional, Flag for review</td></tr>
+        
+        <!-- InvoiceLineItem to InvoiceLineItem -->
+        <tr><td>InvoiceLineItem</td><td>Id</td><td>Id</td><td>InvoiceLineItem</td><td>Id</td><td>Direct</td><td>Simple</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>InvoiceLineItem</td><td>InvoiceId</td><td>InvoiceId</td><td>InvoiceLineItem</td><td>InvoiceId</td><td>Structural</td><td>Medium</td><td>Map parent Invoice via Id_Mapping</td><td>Required, Reject if blank</td></tr>
+        <tr><td>InvoiceLineItem</td><td>Product2Id</td><td>Product2Id</td><td>InvoiceLineItem</td><td>ProductId</td><td>Structural</td><td>Medium</td><td>Map product via Id_Mapping</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>InvoiceLineItem</td><td>Description</td><td>Description</td><td>InvoiceLineItem</td><td>Description</td><td>Direct</td><td>Simple</td><td>Preserve line description for audit</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>InvoiceLineItem</td><td>Quantity</td><td>Quantity</td><td>InvoiceLineItem</td><td>Quantity</td><td>Direct</td><td>Simple</td><td>Map quantities</td><td>Required, Reject if blank</td></tr>
+        <tr><td>InvoiceLineItem</td><td>UnitPrice</td><td>UnitPrice</td><td>InvoiceLineItem</td><td>UnitPrice</td><td>Transform</td><td>Medium</td><td>Ensure currency and pricing dimensions</td><td>Required, Reject if blank</td></tr>
+        <tr><td>InvoiceLineItem</td><td>LineTotal</td><td>LineTotal</td><td>InvoiceLineItem</td><td>LineTotal</td><td>Transform</td><td>Medium</td><td>Ensure sums reconcile to Invoice.TotalAmount</td><td>Required, Reject if mismatch</td></tr>
+        <tr><td>InvoiceLineItem</td><td>TaxAmount</td><td>TaxAmount</td><td>InvoiceLineItem</td><td>TaxAmount</td><td>Direct</td><td>Medium</td><td>Map tax per line</td><td>Optional, Flag for review</td></tr>
+        <tr><td>InvoiceLineItem</td><td>OrderItemId</td><td>OrderItemId</td><td>InvoiceLineItem</td><td>OrderItemId</td><td>Structural</td><td>Medium</td><td>Link to migrated OrderItem via Id_Mapping</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>InvoiceLineItem</td><td>External Id</td><td>External_InvoiceLine_Id__c</td><td>InvoiceLineItem</td><td>ExternalInvoiceLineId</td><td>Transform</td><td>Medium</td><td>Reconciliation id</td><td>Optional, Flag for review</td></tr>
+        <tr><td>InvoiceLineItem</td><td>Custom Flag</td><td>Custom_Flag__c</td><td>InvoiceLineItem</td><td>CustomFlag</td><td>Transform</td><td>Medium</td><td>Generic custom flag</td><td>Optional, Flag for review</td></tr>
+        <tr><td>InvoiceLineItem</td><td>Custom Text</td><td>Custom_Text__c</td><td>InvoiceLineItem</td><td>CustomText</td><td>Transform</td><td>Medium</td><td>Generic custom text</td><td>Optional, Flag for review</td></tr>
+        <tr><td>InvoiceLineItem</td><td>Custom Numeric</td><td>Custom_Number__c</td><td>InvoiceLineItem</td><td>CustomNumber</td><td>Transform</td><td>Medium</td><td>Generic custom numeric</td><td>Optional, Flag for review</td></tr>
+        
+        <!-- BillingSchedule to BillingSchedule -->
+        <tr><td>BillingSchedule</td><td>Id</td><td>Id</td><td>BillingSchedule</td><td>Id</td><td>Direct</td><td>Simple</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>BillingSchedule</td><td>Name</td><td>Name</td><td>BillingSchedule</td><td>Name</td><td>Direct</td><td>Simple</td><td>Human-readable schedule name</td><td>Required, Reject if blank</td></tr>
+        <tr><td>BillingSchedule</td><td>Frequency</td><td>Frequency__c</td><td>BillingSchedule</td><td>Frequency</td><td>Transform</td><td>Medium</td><td>Map cadence to RCA cadence (Value_Maps)</td><td>Required, Reject if blank</td></tr>
+        <tr><td>BillingSchedule</td><td>Start Date</td><td>StartDate__c</td><td>BillingSchedule</td><td>StartDate</td><td>Direct</td><td>Medium</td><td>Preserve billing start</td><td>Required, Reject if blank</td></tr>
+        <tr><td>BillingSchedule</td><td>End Date</td><td>EndDate__c</td><td>BillingSchedule</td><td>EndDate</td><td>Direct</td><td>Medium</td><td>Preserve billing end</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>BillingSchedule</td><td>Billing Account</td><td>BillingAccountId</td><td>BillingSchedule</td><td>BillingAccountId</td><td>Structural</td><td>Medium</td><td>Map billing account via Id_Mapping</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>BillingSchedule</td><td>Next Billing Date</td><td>NextBillingDate__c</td><td>BillingSchedule</td><td>NextBillingDate</td><td>Direct</td><td>Medium</td><td>Used for scheduling future invoices</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>BillingSchedule</td><td>Amount</td><td>Amount__c</td><td>BillingSchedule</td><td>Amount</td><td>Transform</td><td>Medium</td><td>Used for fixed billing schedules; map currency</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>BillingSchedule</td><td>External Id</td><td>External_BillingSchedule_Id__c</td><td>BillingSchedule</td><td>ExternalBillingScheduleId</td><td>Transform</td><td>Medium</td><td>For reconciliation with legacy billing</td><td>Optional, Flag for review</td></tr>
+        <tr><td>BillingSchedule</td><td>Custom Flag</td><td>Custom_Flag__c</td><td>BillingSchedule</td><td>CustomFlag</td><td>Transform</td><td>Medium</td><td>Generic custom flag</td><td>Optional, Flag for review</td></tr>
+        <tr><td>BillingSchedule</td><td>Custom Text</td><td>Custom_Text__c</td><td>BillingSchedule</td><td>CustomText</td><td>Transform</td><td>Medium</td><td>Generic custom text</td><td>Optional, Flag for review</td></tr>
+        <tr><td>BillingSchedule</td><td>Custom Numeric</td><td>Custom_Number__c</td><td>BillingSchedule</td><td>CustomNumber</td><td>Transform</td><td>Medium</td><td>Generic custom numeric</td><td>Optional, Flag for review</td></tr>
+        
+        <!-- Tax to Tax -->
+        <tr><td>Tax</td><td>Id</td><td>Id</td><td>Tax</td><td>Id</td><td>Direct</td><td>Simple</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Tax</td><td>Tax Code</td><td>TaxCode__c</td><td>Tax</td><td>TaxCode</td><td>Direct</td><td>Simple</td><td>Map tax code used for external tax engine or RCA tax config</td><td>Required, Reject if blank</td></tr>
+        <tr><td>Tax</td><td>Rate</td><td>Rate__c</td><td>Tax</td><td>Rate</td><td>Direct</td><td>Simple</td><td>Preserve rate decimal precision</td><td>Required, Reject if blank</td></tr>
+        <tr><td>Tax</td><td>Description</td><td>Description</td><td>Tax</td><td>Description</td><td>Direct</td><td>Simple</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Tax</td><td>Effective Date</td><td>EffectiveDate__c</td><td>Tax</td><td>EffectiveDate</td><td>Direct</td><td>Medium</td><td>Tax jurisdiction effective date</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Tax</td><td>Jurisdiction</td><td>Jurisdiction__c</td><td>Tax</td><td>Jurisdiction</td><td>Direct</td><td>Medium</td><td>Map to RCA tax jurisdiction object if present</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Tax</td><td>External Id</td><td>External_Tax_Id__c</td><td>Tax</td><td>ExternalTaxId</td><td>Transform</td><td>Medium</td><td>Use for reconciliation with tax engine</td><td>Optional, Flag for review</td></tr>
+        <tr><td>Tax</td><td>Custom Flag</td><td>Custom_Flag__c</td><td>Tax</td><td>CustomFlag</td><td>Transform</td><td>Medium</td><td>Generic custom flag</td><td>Optional, Flag for review</td></tr>
+        <tr><td>Tax</td><td>Custom Text</td><td>Custom_Text__c</td><td>Tax</td><td>CustomText</td><td>Transform</td><td>Medium</td><td>Generic custom text</td><td>Optional, Flag for review</td></tr>
+        <tr><td>Tax</td><td>Custom Numeric</td><td>Custom_Number__c</td><td>Tax</td><td>CustomNumber</td><td>Transform</td><td>Medium</td><td>Generic custom numeric</td><td>Optional, Flag for review</td></tr>
       </tbody>
     </table>
 
