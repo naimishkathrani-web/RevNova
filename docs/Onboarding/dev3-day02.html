@@ -757,37 +757,62 @@
                 <a href="onboarding-dev1.html">Developer 1</a> › Week 2 › Day 7
             </div>
             
-            <h1 class="page-title">Day 2: Docker Setup</h1>
-            <p class="page-subtitle">Developer 1: Backend & Database | Duration: ~6-8 hours</p>
+            <h1 class="page-title">Day 2: Docker Compose Setup</h1>
+            <p class="page-subtitle">Developer 3: DevOps & QA | Duration: ~6-8 hours</p>
             
             <div class="content-section">
                 <h2>📋 Objective</h2>
-                <p>Enhance the schema analysis API to fetch detailed field metadata, implement job status polling, and add Redis caching for performance optimization.</p>
+                <p>Create a Docker Compose configuration to run the entire RevNova stack (PostgreSQL, Redis, backend, frontend) in containers. This enables consistent development environments and prepares for production deployment.</p>
                 
-                <p><strong>API Endpoints to Build:</strong></p>
+                <p><strong>What You'll Build:</strong></p>
                 <ul>
-                    <li><code>GET /api/v1/projects/{id}/analyze/{job_id}</code> - Poll job status</li>
-                    <li><code>GET /api/v1/projects/{id}/analyze/summary</code> - Get analysis summary</li>
+                    <li>docker-compose.yml with all services</li>
+                    <li>Dockerfile for backend</li>
+                    <li>Dockerfile for frontend</li>
+                    <li>Docker network configuration</li>
+                    <li>Volume management for data persistence</li>
                 </ul>
             </div>
             
             <div class="content-section">
-                <h2>📦 Step 1: Install Redis Client</h2>
-                <p>Install the Redis client for Node.js to enable caching:</p>
-                <pre><code>cd backend
-npm install redis</code></pre>
+                <h2>🐳 Step 1: Create Backend Dockerfile</h2>
+                <p><strong>File:</strong> <code>backend/Dockerfile</code></p>
+                <pre><code># Use Node.js LTS
+FROM node:18-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm ci --only=production
+
+# Copy source code
+COPY . .
+
+# Build TypeScript
+RUN npm run build
+
+# Expose port
+EXPOSE 3000
+
+# Start server
+CMD ["npm", "start"]</code></pre>
                 
-                <p>Create a Redis client configuration:</p>
-                <p><strong>File:</strong> <code>backend/src/config/redis.ts</code></p>
-                <pre><code>import { createClient } from 'redis';
-
-const redisClient = createClient({
-  url: process.env.REDIS_URL || 'redis://localhost:6379'
-});
-
-redisClient.on('error', (err) => console.error('Redis Client Error', err));
-
-export const connectRedis = async () => {
+                <p><strong>Create .dockerignore:</strong></p>
+                <p><strong>File:</strong> <code>backend/.dockerignore</code></p>
+                <pre><code>node_modules
+npm-debug.log
+.env
+.git
+.gitignore
+README.md
+dist</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> Backend Dockerfile created</p>
+            </div>
   await redisClient.connect();
   console.log('Redis connected');
 };
@@ -822,88 +847,209 @@ export default redisClient;</code></pre>
   }
 });</code></pre>
             </div>
-            
-            <div class="content-section">
-                <h2>📊 Step 3: Enhance Field Metadata</h2>
-                <p>Update the schema analysis to include detailed field information:</p>
-                <pre><code>const getDetailedFieldMetadata = (field: any) => {
-  return {
-    name: field.name,
-    label: field.label,
-    type: field.type,
-    length: field.length,
-    precision: field.precision,
-    scale: field.scale,
-    required: !field.nillable,
-    unique: field.unique,
-    externalId: field.externalId,
-    defaultValue: field.defaultValue,
-    picklistValues: field.picklistValues || [],
-    referenceTo: field.referenceTo || [],
-    relationshipName: field.relationshipName,
-    calculated: field.calculated,
-    customField: field.custom
-  };
-};</code></pre>
             </div>
             
             <div class="content-section">
-                <h2>📈 Step 4: Create Analysis Summary Endpoint</h2>
-                <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
-                <pre><code>router.get('/projects/:id/analyze/summary', async (req, res) => {
-  try {
-    const projectId = parseInt(req.params.id);
-    
-    // Query database for analysis results
-    const summary = {
-      total_objects: 3,
-      custom_objects: 0,
-      total_fields: 45,
-      custom_fields: 12,
-      readiness_score: 0.92,
-      warnings: ['Custom field Product2.Special__c has no target mapping'],
-      analyzed_at: new Date().toISOString()
-    };
-    
-    res.json(summary);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});</code></pre>
+                <h2>⚛️ Step 2: Create Frontend Dockerfile</h2>
+                <p><strong>File:</strong> <code>frontend/Dockerfile</code></p>
+                <pre><code># Build stage
+FROM node:18-alpine AS build
+
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+# Production stage
+FROM nginx:alpine
+COPY --from=build /app/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]</code></pre>
+                
+                <p><strong>Create nginx config:</strong></p>
+                <p><strong>File:</strong> <code>frontend/nginx.conf</code></p>
+                <pre><code>server {
+    listen 80;
+    location / {
+        root /usr/share/nginx/html;
+        index index.html;
+        try_files $uri $uri/ /index.html;
+    }
+}</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> Frontend Dockerfile and nginx config created</p>
             </div>
             
             <div class="content-section">
-                <h2>✅ Step 5: Test All Endpoints</h2>
+                <h2>📦 Step 3: Create Docker Compose File</h2>
+                <p><strong>File:</strong> <code>docker-compose.yml</code> (in root directory)</p>
+                <pre><code>version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: revnova-postgres
+    environment:
+      POSTGRES_DB: revnova_dev
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: revnova-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: revnova-backend
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: revnova_dev
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+
+  # Frontend UI
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: revnova-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+  redis_data:</code></pre>
                 
-                <p><strong>Test job status polling:</strong></p>
-                <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/job_1699632000000</code></pre>
+                <p><strong>✅ Checkpoint:</strong> docker-compose.yml created with all services</p>
+            </div>
+            
+            <div class="content-section">
+                <h2>🚀 Step 4: Start the Stack</h2>
+                <p>Build and start all services:</p>
+                <pre><code>docker-compose up --build</code></pre>
                 
-                <p><strong>Test analysis summary:</strong></p>
-                <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/summary</code></pre>
+                <p>This will:</p>
+                <ul>
+                    <li>Build backend and frontend images</li>
+                    <li>Pull PostgreSQL and Redis images</li>
+                    <li>Start all containers</li>
+                    <li>Create network for inter-container communication</li>
+                </ul>
+                
+                <p>Verify all services are running:</p>
+                <pre><code>docker-compose ps
+
+# Expected output:
+# revnova-postgres   running   0.0.0.0:5432->5432/tcp
+# revnova-redis      running   0.0.0.0:6379->6379/tcp
+# revnova-backend    running   0.0.0.0:3000->3000/tcp
+# revnova-frontend   running   0.0.0.0:80->80/tcp</code></pre>
+                
+                <p><strong>Test services:</strong></p>
+                <ul>
+                    <li>Backend: <a href="http://localhost:3000/api/v1/health" target="_blank">http://localhost:3000/api/v1/health</a></li>
+                    <li>Frontend: <a href="http://localhost" target="_blank">http://localhost</a></li>
+                </ul>
                 
                 <div class="success-box">
-                    <strong>✓ Expected Response:</strong> Job status should return progress information, and summary should show aggregate statistics.
+                    <strong>✓ Success:</strong> Full stack running in Docker!
                 </div>
+            </div>
+            
+            <div class="content-section">
+                <h2>🛠️ Step 5: Learn Docker Commands</h2>
+                <p><strong>Common commands:</strong></p>
+                <pre><code># Start services
+docker-compose up
+
+# Start in detached mode (background)
+docker-compose up -d
+
+# Stop services
+docker-compose down
+
+# View logs
+docker-compose logs backend
+docker-compose logs -f  # follow logs
+
+# Restart a service
+docker-compose restart backend
+
+# Execute command in container
+docker-compose exec backend npm test
+
+# View container stats
+docker stats</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> Understand Docker Compose commands</p>
             </div>
             
             <div class="content-section">
                 <h2>🎯 End of Day Checklist</h2>
                 <ul style="list-style: none; padding-left: 0;">
-                    <li>☐ Redis client installed and connected</li>
-                    <li>☐ Job status endpoint returns job progress</li>
-                    <li>☐ Enhanced metadata includes picklists and lookups</li>
-                    <li>☐ Summary endpoint aggregates analysis results</li>
-                    <li>☐ All endpoints tested and working</li>
-                    <li>☐ Code committed with meaningful message</li>
+                    <li>☐ Backend Dockerfile created</li>
+                    <li>☐ Frontend Dockerfile created</li>
+                    <li>☐ nginx.conf configured for frontend</li>
+                    <li>☐ docker-compose.yml with all 4 services</li>
+                    <li>☐ All containers build successfully</li>
+                    <li>☐ PostgreSQL accessible on 5432</li>
+                    <li>☐ Redis accessible on 6379</li>
+                    <li>☐ Backend API responds on 3000</li>
+                    <li>☐ Frontend loads on port 80</li>
+                    <li>☐ Understand docker-compose commands</li>
                 </ul>
                 
                 <p><strong>Commit Message:</strong></p>
-                <code>feat(backend): add job polling, detailed metadata, and Redis caching</code>
+                <pre><code>git add docker-compose.yml backend/Dockerfile frontend/Dockerfile frontend/nginx.conf
+git commit -m "feat(docker): add Docker Compose setup for full stack"
+git push</code></pre>
             </div>
             
             <div class="nav-buttons">
                 <a href="dev3-day01.html" class="btn btn-secondary">Previous: Day 1</a>
-                <a href="dev3-day03.html" class="btn">Next: Day 3</a>
+                <a href="dev3-day03.html" class="btn">Next: Day 3 - CI/CD Pipeline</a>
             </div>
         </main>
     </div>
