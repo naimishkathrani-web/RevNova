@@ -762,32 +762,54 @@
             
             <div class="content-section">
                 <h2>📋 Objective</h2>
-                <p>Enhance the schema analysis API to fetch detailed field metadata, implement job status polling, and add Redis caching for performance optimization.</p>
+                <p>Complete Week 2 by running comprehensive tests, documenting changes, and submitting a pull request.</p>
                 
-                <p><strong>API Endpoints to Build:</strong></p>
+                <p><strong>Tasks:</strong></p>
                 <ul>
-                    <li><code>GET /api/v1/projects/{id}/analyze/{job_id}</code> - Poll job status</li>
-                    <li><code>GET /api/v1/projects/{id}/analyze/summary</code> - Get analysis summary</li>
+                    <li>Run all backend tests and verify coverage</li>
+                    <li>Document API endpoints and database schema changes</li>
+                    <li>Create PR with Week 2 completion checklist</li>
                 </ul>
             </div>
             
             <div class="content-section">
-                <h2>📦 Step 1: Install Redis Client</h2>
-                <p>Install the Redis client for Node.js to enable caching:</p>
+                <h2>🧪 Step 1: Run Backend Tests</h2>
+                <p>Execute the complete test suite:</p>
                 <pre><code>cd backend
-npm install redis</code></pre>
+npm run test -- --coverage
+
+# Expected output:
+# - Connection tests: PASS
+# - Schema analysis tests: PASS
+# - Field metadata tests: PASS
+# - Relationship detection tests: PASS
+# Coverage: &gt;80% for all modules
+</code></pre>
                 
-                <p>Create a Redis client configuration:</p>
-                <p><strong>File:</strong> <code>backend/src/config/redis.ts</code></p>
-                <pre><code>import { createClient } from 'redis';
+                <p>Fix any failing tests before proceeding.</p>
+            </div>
+            
+            <div class="content-section">
+                <h2>📚 Step 2: Document Changes</h2>
+                <p><strong>File:</strong> <code>docs/API_WEEK2.md</code></p>
+                <pre><code># Week 2 API Documentation
 
-const redisClient = createClient({
-  url: process.env.REDIS_URL || 'redis://localhost:6379'
-});
+## Salesforce Connection Endpoints
+- POST /api/v1/connections - Create connection
+- GET /api/v1/connections - List connections
+- POST /api/v1/connections/:id/test - Test connection
 
-redisClient.on('error', (err) => console.error('Redis Client Error', err));
+## Schema Analysis Endpoints
+- POST /api/v1/analyze/objects - Get all objects
+- GET /api/v1/analyze/objects/:objectName - Get object metadata
+- POST /api/v1/analyze/fields/:objectName - Get field metadata
+- POST /api/v1/analyze/relationships/:objectName - Get relationships
 
-export const connectRedis = async () => {
+## Database Schema
+- salesforce_connections: Stores SF credentials
+- salesforce_objects: Object metadata
+- salesforce_fields: Field details
+- salesforce_relationships: Object relationships
   await redisClient.connect();
   console.log('Redis connected');
 };

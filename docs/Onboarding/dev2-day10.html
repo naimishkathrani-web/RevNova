@@ -758,36 +758,45 @@
             </div>
             
             <h1 class="page-title">Day 10: Week 2 Testing & PR</h1>
-            <p class="page-subtitle">Developer 1: Backend & Database | Duration: ~6-8 hours</p>
+            <p class="page-subtitle">Developer 2: Frontend | Duration: ~6-8 hours</p>
             
             <div class="content-section">
                 <h2>📋 Objective</h2>
-                <p>Enhance the schema analysis API to fetch detailed field metadata, implement job status polling, and add Redis caching for performance optimization.</p>
+                <p>Complete Week 2 frontend by running tests, polishing UI, and ensuring mockup alignment.</p>
                 
-                <p><strong>API Endpoints to Build:</strong></p>
+                <p><strong>Tasks:</strong></p>
                 <ul>
-                    <li><code>GET /api/v1/projects/{id}/analyze/{job_id}</code> - Poll job status</li>
-                    <li><code>GET /api/v1/projects/{id}/analyze/summary</code> - Get analysis summary</li>
+                    <li>Run frontend tests (Vitest)</li>
+                    <li>Verify UI matches mockups from "Login button on home page"</li>
+                    <li>Test all components with real API integration</li>
                 </ul>
             </div>
             
             <div class="content-section">
-                <h2>📦 Step 1: Install Redis Client</h2>
-                <p>Install the Redis client for Node.js to enable caching:</p>
-                <pre><code>cd backend
-npm install redis</code></pre>
-                
-                <p>Create a Redis client configuration:</p>
-                <p><strong>File:</strong> <code>backend/src/config/redis.ts</code></p>
-                <pre><code>import { createClient } from 'redis';
+                <h2>🎨 Step 1: UI Polish</h2>
+                <p>Verify all components match RevNova design:</p>
+                <pre><code># Components to verify:
+- ConnectionForm: Salesforce-inspired blue theme
+- ConnectionList: Card grid layout
+- ObjectList: Table with search/filter
+- FieldList: Badge system for types
+- SchemaAnalysisPage: Two-panel layout
 
-const redisClient = createClient({
-  url: process.env.REDIS_URL || 'redis://localhost:6379'
-});
+# Reference mockups for styling consistency
+</code></pre>
+            </div>
+            
+            <div class="content-section">
+                <h2>🧪 Step 2: Run Frontend Tests</h2>
+                <p>Execute Vitest suite:</p>
+                <pre><code>cd frontend
+npm run test
 
-redisClient.on('error', (err) => console.error('Redis Client Error', err));
+# Expected output:
+# - Component rendering tests: PASS
+# - API integration mocks: PASS
+# - User interaction tests: PASS
 
-export const connectRedis = async () => {
   await redisClient.connect();
   console.log('Redis connected');
 };

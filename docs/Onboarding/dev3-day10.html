@@ -758,36 +758,50 @@
             </div>
             
             <h1 class="page-title">Day 10: Week 2 Testing & PR</h1>
-            <p class="page-subtitle">Developer 1: Backend & Database | Duration: ~6-8 hours</p>
+            <p class="page-subtitle">Developer 3: Testing & QA | Duration: ~6-8 hours</p>
             
             <div class="content-section">
                 <h2>📋 Objective</h2>
-                <p>Enhance the schema analysis API to fetch detailed field metadata, implement job status polling, and add Redis caching for performance optimization.</p>
+                <p>Complete Week 2 by running E2E tests, verifying integration, and preparing PR documentation.</p>
                 
-                <p><strong>API Endpoints to Build:</strong></p>
+                <p><strong>Tasks:</strong></p>
                 <ul>
-                    <li><code>GET /api/v1/projects/{id}/analyze/{job_id}</code> - Poll job status</li>
-                    <li><code>GET /api/v1/projects/{id}/analyze/summary</code> - Get analysis summary</li>
+                    <li>Run full E2E test suite</li>
+                    <li>Verify database integrity and migrations</li>
+                    <li>Create PR checklist and review guide</li>
                 </ul>
             </div>
             
             <div class="content-section">
-                <h2>📦 Step 1: Install Redis Client</h2>
-                <p>Install the Redis client for Node.js to enable caching:</p>
-                <pre><code>cd backend
-npm install redis</code></pre>
-                
-                <p>Create a Redis client configuration:</p>
-                <p><strong>File:</strong> <code>backend/src/config/redis.ts</code></p>
-                <pre><code>import { createClient } from 'redis';
-
-const redisClient = createClient({
-  url: process.env.REDIS_URL || 'redis://localhost:6379'
+                <h2>🔄 Step 1: E2E Integration Tests</h2>
+                <p><strong>File:</strong> <code>backend/tests/e2e/week2-integration.test.ts</code></p>
+                <pre><code>describe('Week 2 E2E Flow', () =&gt; {
+  test('complete Salesforce analysis workflow', async () =&gt; {
+    // 1. Create connection
+    const connection = await request(app)
+      .post('/api/v1/connections')
+      .send({ username: 'test@sf.com', password: 'pass', token: 'token' });
+    
+    // 2. Analyze objects
+    const objects = await request(app)
+      .post('/api/v1/analyze/objects')
+      .send({ connectionId: connection.body.id });
+    
+    // 3. Get field metadata
+    const fields = await request(app)
+      .post('/api/v1/analyze/fields/Account')
+      .send({ connectionId: connection.body.id });
+    
+    // 4. Detect relationships
+    const relationships = await request(app)
+      .post('/api/v1/analyze/relationships/Account')
+      .send({ connectionId: connection.body.id });
+    
+    expect(objects.body).toBeDefined();
+    expect(fields.body.length).toBeGreaterThan(0);
+    expect(relationships.body.length).toBeGreaterThan(0);
+  });
 });
-
-redisClient.on('error', (err) => console.error('Redis Client Error', err));
-
-export const connectRedis = async () => {
   await redisClient.connect();
   console.log('Redis connected');
 };
