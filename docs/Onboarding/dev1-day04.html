@@ -757,148 +757,214 @@
                 <a href="onboarding-dev1.html">Developer 1</a> › Week 2 › Day 7
             </div>
             
-            <h1 class="page-title">Day 4: Database Tables (EAV)</h1>
+            <h1 class="page-title">Day 4: EAV Tables for Flexible Metadata</h1>
             <p class="page-subtitle">Developer 1: Backend & Database | Duration: ~6-8 hours</p>
             
             <div class="content-section">
                 <h2>📋 Objective</h2>
-                <p>Enhance the schema analysis API to fetch detailed field metadata, implement job status polling, and add Redis caching for performance optimization.</p>
+                <p>Create Entity-Attribute-Value (EAV) tables to store flexible, dynamic metadata for objects and fields. This allows storing custom attributes that vary between Salesforce instances without adding new columns.</p>
                 
-                <p><strong>API Endpoints to Build:</strong></p>
+                <p><strong>Tables to Create:</strong></p>
                 <ul>
-                    <li><code>GET /api/v1/projects/{id}/analyze/{job_id}</code> - Poll job status</li>
-                    <li><code>GET /api/v1/projects/{id}/analyze/summary</code> - Get analysis summary</li>
+                    <li><code>object_attributes</code> - Dynamic attributes for source/target objects</li>
+                    <li><code>field_attributes</code> - Dynamic attributes for source/target fields</li>
+                    <li><code>mapping_attributes</code> - Dynamic attributes for field mappings</li>
                 </ul>
             </div>
             
             <div class="content-section">
-                <h2>📦 Step 1: Install Redis Client</h2>
-                <p>Install the Redis client for Node.js to enable caching:</p>
+                <h2>📦 Step 1: Create Object Attributes Table</h2>
+                <p><strong>File:</strong> <code>backend/src/migrations/006_create_object_attributes.sql</code></p>
+                <pre><code>CREATE TABLE object_attributes (
+  id SERIAL PRIMARY KEY,
+  object_id INTEGER NOT NULL,
+  object_type VARCHAR(20) NOT NULL CHECK (object_type IN ('source', 'target')),
+  attribute_key VARCHAR(100) NOT NULL,
+  attribute_value TEXT,
+  data_type VARCHAR(20) DEFAULT 'string' CHECK (data_type IN ('string', 'number', 'boolean', 'json', 'date')),
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW(),
+  
+  CONSTRAINT fk_source_object 
+    FOREIGN KEY (object_id) 
+    REFERENCES source_objects(id) 
+    ON DELETE CASCADE
+    DEFERRABLE INITIALLY DEFERRED,
+  
+  CONSTRAINT fk_target_object 
+    FOREIGN KEY (object_id) 
+    REFERENCES target_objects(id) 
+    ON DELETE CASCADE
+    DEFERRABLE INITIALLY DEFERRED,
+  
+  UNIQUE (object_id, object_type, attribute_key)
+);
+
+CREATE INDEX idx_object_attributes_object 
+  ON object_attributes(object_id, object_type);
+CREATE INDEX idx_object_attributes_key 
+  ON object_attributes(attribute_key);
+
+COMMENT ON TABLE object_attributes IS 'Flexible attributes for source and target objects';
+COMMENT ON COLUMN object_attributes.data_type IS 'Type hint for parsing attribute_value';</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> Object attributes table created</p>
+            </div>
+            
+            <div class="content-section">
+                <h2>🏷️ Step 2: Create Field Attributes Table</h2>
+                <p><strong>File:</strong> <code>backend/src/migrations/007_create_field_attributes.sql</code></p>
+                <pre><code>CREATE TABLE field_attributes (
+  id SERIAL PRIMARY KEY,
+  field_id INTEGER NOT NULL,
+  field_type VARCHAR(20) NOT NULL CHECK (field_type IN ('source', 'target')),
+  attribute_key VARCHAR(100) NOT NULL,
+  attribute_value TEXT,
+  data_type VARCHAR(20) DEFAULT 'string' CHECK (data_type IN ('string', 'number', 'boolean', 'json', 'date')),
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW(),
+  
+  CONSTRAINT fk_source_field 
+    FOREIGN KEY (field_id) 
+    REFERENCES source_fields(id) 
+    ON DELETE CASCADE
+    DEFERRABLE INITIALLY DEFERRED,
+  
+  CONSTRAINT fk_target_field 
+    FOREIGN KEY (field_id) 
+    REFERENCES target_fields(id) 
+    ON DELETE CASCADE
+    DEFERRABLE INITIALLY DEFERRED,
+  
+  UNIQUE (field_id, field_type, attribute_key)
+);
+
+CREATE INDEX idx_field_attributes_field 
+  ON field_attributes(field_id, field_type);
+CREATE INDEX idx_field_attributes_key 
+  ON field_attributes(attribute_key);
+
+COMMENT ON TABLE field_attributes IS 'Flexible attributes for source and target fields';
+COMMENT ON COLUMN field_attributes.data_type IS 'Type hint for parsing attribute_value';</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> Field attributes table created</p>
+            </div>
+            
+            <div class="content-section">
+                <h2>🔗 Step 3: Create Mapping Attributes Table</h2>
+                <p><strong>File:</strong> <code>backend/src/migrations/008_create_mapping_attributes.sql</code></p>
+                <pre><code>CREATE TABLE mapping_attributes (
+  id SERIAL PRIMARY KEY,
+  mapping_id INTEGER NOT NULL REFERENCES field_mappings(id) ON DELETE CASCADE,
+  attribute_key VARCHAR(100) NOT NULL,
+  attribute_value TEXT,
+  data_type VARCHAR(20) DEFAULT 'string' CHECK (data_type IN ('string', 'number', 'boolean', 'json', 'date')),
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW(),
+  
+  UNIQUE (mapping_id, attribute_key)
+);
+
+CREATE INDEX idx_mapping_attributes_mapping 
+  ON mapping_attributes(mapping_id);
+CREATE INDEX idx_mapping_attributes_key 
+  ON mapping_attributes(attribute_key);
+
+COMMENT ON TABLE mapping_attributes IS 'Flexible attributes for field mappings (e.g., AI metadata, user notes)';
+COMMENT ON COLUMN mapping_attributes.attribute_value IS 'Stored as TEXT, parsed based on data_type';</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> Mapping attributes table created</p>
+            </div>
+            
+            <div class="content-section">
+                <h2>📊 Step 4: Run Migrations</h2>
+                <p>Apply all three migrations:</p>
                 <pre><code>cd backend
-npm install redis</code></pre>
-                
-                <p>Create a Redis client configuration:</p>
-                <p><strong>File:</strong> <code>backend/src/config/redis.ts</code></p>
-                <pre><code>import { createClient } from 'redis';
+node -e "
+const { Pool } = require('pg');
+const fs = require('fs');
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
-const redisClient = createClient({
-  url: process.env.REDIS_URL || 'redis://localhost:6379'
-});
-
-redisClient.on('error', (err) => console.error('Redis Client Error', err));
-
-export const connectRedis = async () => {
-  await redisClient.connect();
-  console.log('Redis connected');
-};
-
-export default redisClient;</code></pre>
-            </div>
-            
-            <div class="content-section">
-                <h2>🔄 Step 2: Create Job Status Polling Endpoint</h2>
-                <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
-                <pre><code>router.get('/projects/:id/analyze/:jobId', async (req, res) => {
-  try {
-    const { id, jobId } = req.params;
-    
-    // Check Redis for job status
-    const jobData = await redisClient.get(`job:${jobId}`);
-    
-    if (!jobData) {
-      return res.status(404).json({ error: 'Job not found' });
-    }
-    
-    const job = JSON.parse(jobData);
-    res.json({
-      jobId: job.id,
-      status: job.status, // 'pending', 'running', 'completed', 'failed'
-      progress: job.progress,
-      result: job.result || null,
-      error: job.error || null
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+async function runMigrations() {
+  const migrations = [
+    '006_create_object_attributes.sql',
+    '007_create_field_attributes.sql',
+    '008_create_mapping_attributes.sql'
+  ];
+  
+  for (const file of migrations) {
+    console.log(\`Running \${file}...\`);
+    const sql = fs.readFileSync(\`./src/migrations/\${file}\`, 'utf8');
+    await pool.query(sql);
+    console.log(\`✓ \${file} complete\`);
   }
-});</code></pre>
-            </div>
-            
-            <div class="content-section">
-                <h2>📊 Step 3: Enhance Field Metadata</h2>
-                <p>Update the schema analysis to include detailed field information:</p>
-                <pre><code>const getDetailedFieldMetadata = (field: any) => {
-  return {
-    name: field.name,
-    label: field.label,
-    type: field.type,
-    length: field.length,
-    precision: field.precision,
-    scale: field.scale,
-    required: !field.nillable,
-    unique: field.unique,
-    externalId: field.externalId,
-    defaultValue: field.defaultValue,
-    picklistValues: field.picklistValues || [],
-    referenceTo: field.referenceTo || [],
-    relationshipName: field.relationshipName,
-    calculated: field.calculated,
-    customField: field.custom
-  };
-};</code></pre>
-            </div>
-            
-            <div class="content-section">
-                <h2>📈 Step 4: Create Analysis Summary Endpoint</h2>
-                <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
-                <pre><code>router.get('/projects/:id/analyze/summary', async (req, res) => {
-  try {
-    const projectId = parseInt(req.params.id);
-    
-    // Query database for analysis results
-    const summary = {
-      total_objects: 3,
-      custom_objects: 0,
-      total_fields: 45,
-      custom_fields: 12,
-      readiness_score: 0.92,
-      warnings: ['Custom field Product2.Special__c has no target mapping'],
-      analyzed_at: new Date().toISOString()
-    };
-    
-    res.json(summary);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});</code></pre>
-            </div>
-            
-            <div class="content-section">
-                <h2>✅ Step 5: Test All Endpoints</h2>
+  
+  await pool.end();
+}
+
+runMigrations().catch(console.error);
+"</code></pre>
                 
-                <p><strong>Test job status polling:</strong></p>
-                <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/job_1699632000000</code></pre>
+                <p><strong>Verify tables:</strong></p>
+                <pre><code>psql -U postgres -d revnova -c "\d object_attributes"
+psql -U postgres -d revnova -c "\d field_attributes"
+psql -U postgres -d revnova -c "\d mapping_attributes"</code></pre>
                 
-                <p><strong>Test analysis summary:</strong></p>
-                <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/summary</code></pre>
-                
-                <div class="success-box">
-                    <strong>✓ Expected Response:</strong> Job status should return progress information, and summary should show aggregate statistics.
-                </div>
+                <p><strong>✅ Checkpoint:</strong> All EAV tables created and verified</p>
             </div>
             
             <div class="content-section">
-                <h2>🎯 End of Day Checklist</h2>
-                <ul style="list-style: none; padding-left: 0;">
-                    <li>☐ Redis client installed and connected</li>
-                    <li>☐ Job status endpoint returns job progress</li>
-                    <li>☐ Enhanced metadata includes picklists and lookups</li>
-                    <li>☐ Summary endpoint aggregates analysis results</li>
-                    <li>☐ All endpoints tested and working</li>
-                    <li>☐ Code committed with meaningful message</li>
+                <h2>💡 Step 5: Example Usage Patterns</h2>
+                <p>Insert dynamic attributes:</p>
+                <pre><code>-- Add Salesforce-specific metadata to object
+INSERT INTO object_attributes (object_id, object_type, attribute_key, attribute_value, data_type)
+VALUES (1, 'source', 'deploymentStatus', 'Deployed', 'string');
+
+-- Add field help text
+INSERT INTO field_attributes (field_id, field_type, attribute_key, attribute_value, data_type)
+VALUES (1, 'source', 'inlineHelpText', 'Enter customer email address', 'string');
+
+-- Add AI confidence metadata
+INSERT INTO mapping_attributes (mapping_id, attribute_key, attribute_value, data_type)
+VALUES (1, 'ai_model_version', 'gpt-4-turbo-2024-01', 'string');</code></pre>
+                
+                <p><strong>Query with attributes:</strong></p>
+                <pre><code>-- Get object with all attributes
+SELECT 
+  so.name, 
+  oa.attribute_key, 
+  oa.attribute_value 
+FROM source_objects so
+LEFT JOIN object_attributes oa ON oa.object_id = so.id AND oa.object_type = 'source'
+WHERE so.id = 1;</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> EAV pattern tested</p>
+            </div>
+            
+            <div class="content-section">
+                <h2>✅ Day 4 Checklist</h2>
+                <ul>
+                    <li><input type="checkbox"> Created <code>object_attributes</code> table</li>
+                    <li><input type="checkbox"> Created <code>field_attributes</code> table</li>
+                    <li><input type="checkbox"> Created <code>mapping_attributes</code> table</li>
+                    <li><input type="checkbox"> Ran all three migrations successfully</li>
+                    <li><input type="checkbox"> Verified tables with psql</li>
+                    <li><input type="checkbox"> Tested insert and query patterns</li>
                 </ul>
                 
-                <p><strong>Commit Message:</strong></p>
-                <code>feat(backend): add job polling, detailed metadata, and Redis caching</code>
+                <p><strong>📌 Git Commit Message:</strong></p>
+                <pre><code>feat: add EAV tables for flexible metadata storage
+
+- Created object_attributes for dynamic object metadata
+- Created field_attributes for dynamic field metadata
+- Created mapping_attributes for mapping annotations
+- All tables support string/number/boolean/json/date types
+- Added indexes for performance</code></pre>
+            </div>
+            
+            <div class="nav-buttons">
+                <a href="dev1-day03.html" class="btn btn-secondary">Previous: Day 3</a>
+                <a href="dev1-day05.html" class="btn">Next: Day 5</a>
             </div>
             
             <div class="nav-buttons">
