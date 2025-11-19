@@ -757,37 +757,114 @@
                 <a href="onboarding-dev1.html">Developer 1</a> › Week 2 › Day 7
             </div>
             
-            <h1 class="page-title">Day 7: Backend Tests</h1>
-            <p class="page-subtitle">Developer 1: Backend & Database | Duration: ~6-8 hours</p>
+            <h1 class="page-title">Day 7: Schema Analysis API Tests</h1>
+            <p class="page-subtitle">Developer 3: Testing & DevOps | Duration: ~6-8 hours</p>
             
             <div class="content-section">
                 <h2>📋 Objective</h2>
-                <p>Enhance the schema analysis API to fetch detailed field metadata, implement job status polling, and add Redis caching for performance optimization.</p>
+                <p>Create integration tests for the Salesforce schema analysis API. Test object fetching, field metadata retrieval, and Salesforce API mocking.</p>
                 
-                <p><strong>API Endpoints to Build:</strong></p>
+                <p><strong>Test Coverage:</strong></p>
                 <ul>
-                    <li><code>GET /api/v1/projects/{id}/analyze/{job_id}</code> - Poll job status</li>
-                    <li><code>GET /api/v1/projects/{id}/analyze/summary</code> - Get analysis summary</li>
+                    <li>POST /api/v1/analyze/objects - Fetch all objects</li>
+                    <li>GET /api/v1/analyze/objects/:objectName - Get object metadata</li>
+                    <li>POST /api/v1/analyze/fields/:objectName - Fetch field definitions</li>
                 </ul>
             </div>
             
             <div class="content-section">
-                <h2>📦 Step 1: Install Redis Client</h2>
-                <p>Install the Redis client for Node.js to enable caching:</p>
-                <pre><code>cd backend
-npm install redis</code></pre>
-                
-                <p>Create a Redis client configuration:</p>
-                <p><strong>File:</strong> <code>backend/src/config/redis.ts</code></p>
-                <pre><code>import { createClient } from 'redis';
+                <h2>🧪 Step 1: Test Schema Analysis Service</h2>
+                <p><strong>File:</strong> <code>backend/src/__tests__/schema-analysis.integration.test.ts</code></p>
+                <pre><code>import request from 'supertest';
+import app from '../app';
+import nock from 'nock';
 
-const redisClient = createClient({
-  url: process.env.REDIS_URL || 'redis://localhost:6379'
+describe('Schema Analysis API Tests', () => {
+  let connectionId: number;
+
+  beforeAll(async () => {
+    // Create test connection
+    nock('https://login.salesforce.com')
+      .post('/services/oauth2/token')
+      .reply(200, { access_token: 'test_token', instance_url: 'https://test.my.salesforce.com' });
+
+    const connResponse = await request(app)
+      .post('/api/v1/connections')
+      .send({
+        name: 'Test Org',
+        username: 'test@example.com',
+        password: 'pass',
+        securityToken: 'token',
+        environment: 'production'
+      });
+    connectionId = connResponse.body.id;
+  });
+
+  describe('POST /api/v1/analyze/objects', () => {
+    it('should fetch all Salesforce objects', async () => {
+      nock('https://test.my.salesforce.com')
+        .get('/services/data/v58.0/sobjects')
+        .reply(200, {
+          sobjects: [
+            { name: 'Account', label: 'Account', custom: false, queryable: true, createable: true, updateable: true, deletable: true },
+            { name: 'Contact', label: 'Contact', custom: false, queryable: true, createable: true, updateable: true, deletable: true }
+          ]
+        });
+
+      const response = await request(app)
+        .post('/api/v1/analyze/objects')
+        .send({ connectionId });
+
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(response.body.objects.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('GET /api/v1/analyze/objects/:objectName', () => {
+    it('should get detailed object metadata', async () => {
+      nock('https://test.my.salesforce.com')
+        .get('/services/data/v58.0/sobjects/Account/describe')
+        .reply(200, {
+          name: 'Account',
+          label: 'Account',
+          fields: [{ name: 'Id', label: 'Account ID', type: 'id' }],
+          childRelationships: []
+        });
+
+      const response = await request(app)
+        .get(`/api/v1/analyze/objects/Account?connectionId=${connectionId}`);
+
+      expect(response.status).toBe(200);
+      expect(response.body.object.name).toBe('Account');
+    });
+  });
+
+  describe('POST /api/v1/analyze/fields/:objectName', () => {
+    it('should fetch all fields for an object', async () => {
+      nock('https://test.my.salesforce.com')
+        .get('/services/data/v58.0/sobjects/Account/describe')
+        .reply(200, {
+          fields: [
+            { name: 'Id', label: 'Account ID', type: 'id', length: 18, nillable: false },
+            { name: 'Name', label: 'Account Name', type: 'string', length: 255, nillable: false }
+          ]
+        });
+
+      nock('https://test.my.salesforce.com')
+        .get(/\/services\/data\/v58.0\/query/)
+        .reply(200, { totalSize: 1234 });
+
+      const response = await request(app)
+        .post('/api/v1/analyze/fields/Account')
+        .send({ connectionId });
+
+      expect(response.status).toBe(200);
+      expect(response.body.fields.length).toBeGreaterThan(0);
+      expect(response.body.recordCount).toBeDefined();
+    });
+  });
 });
-
-redisClient.on('error', (err) => console.error('Redis Client Error', err));
-
-export const connectRedis = async () => {
   await redisClient.connect();
   console.log('Redis connected');
 };
@@ -800,53 +877,36 @@ export default redisClient;</code></pre>
                 <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
                 <pre><code>router.get('/projects/:id/analyze/:jobId', async (req, res) => {
   try {
-    const { id, jobId } = req.params;
-    
-    // Check Redis for job status
-    const jobData = await redisClient.get(`job:${jobId}`);
-    
-    if (!jobData) {
-      return res.status(404).json({ error: 'Job not found' });
-    }
-    
-    const job = JSON.parse(jobData);
-    res.json({
-      jobId: job.id,
-      status: job.status, // 'pending', 'running', 'completed', 'failed'
-      progress: job.progress,
-      result: job.result || null,
-      error: job.error || null
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 });</code></pre>
+            </div>
+            
+            <div class="content-section">
+                <h2>✅ Completion Checklist</h2>
+                <ul class="checklist">
+                    <li>✅ Schema analysis API tests created</li>
+                    <li>✅ All endpoints tested with mocked Salesforce responses</li>
+                    <li>✅ Test coverage above 80%</li>
+                </ul>
+            </div>
+            
+            <div class="content-section">
+                <h2>📝 Commit Your Changes</h2>
+                <pre><code>git commit -m "test(backend): add schema analysis API integration tests"</code></pre>
             </div>
             
             <div class="content-section">
                 <h2>📊 Step 3: Enhance Field Metadata</h2>
                 <p>Update the schema analysis to include detailed field information:</p>
-                <pre><code>const getDetailedFieldMetadata = (field: any) => {
-  return {
-    name: field.name,
-    label: field.label,
-    type: field.type,
-    length: field.length,
-    precision: field.precision,
-    scale: field.scale,
-    required: !field.nillable,
-    unique: field.unique,
-    externalId: field.externalId,
-    defaultValue: field.defaultValue,
-    picklistValues: field.picklistValues || [],
-    referenceTo: field.referenceTo || [],
-    relationshipName: field.relationshipName,
-    calculated: field.calculated,
-    customField: field.custom
-  };
-};</code></pre>
+git commit -m "test(backend): add schema analysis API integration tests"</code></pre>
             </div>
             
+            <div class="nav-buttons">
+                <a href="dev3-day06.html" class="btn btn-secondary">Previous: Day 6</a>
+                <a href="dev3-day08.html" class="btn">Next: Day 8</a>
+            </div>
+        </main>
+    </div>
+    
             <div class="content-section">
                 <h2>📈 Step 4: Create Analysis Summary Endpoint</h2>
                 <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
