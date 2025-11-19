@@ -284,30 +284,82 @@
       </tbody>
     </table>
 
-    <h2 class="sheet-title">WS3 — Contracts & Assets (Phase 3)</h2>
+    <h2 class="sheet-title">WS3 — Subscription / Contract / Order / Asset (Phase 3)</h2>
     <table class="mapping-table">
       <thead>
         <tr><th>Source Object</th><th>Source Field</th><th>Source API</th><th>Target Object</th><th>Target Field</th><th>Mapping Type</th><th>Complexity</th><th>Transform Notes</th><th>DQ Check</th></tr>
       </thead>
       <tbody>
-        <!-- SBQQ__Subscription__c to Asset -->
-        <tr><td>SBQQ__Subscription__c</td><td>SBQQ__ProductName__c</td><td>SBQQ__ProductName__c</td><td>Asset</td><td>Name</td><td>Direct</td><td>Simple</td><td>Use product name for asset name</td><td>Required</td></tr>
-        <tr><td>SBQQ__Subscription__c</td><td>SBQQ__Product__c</td><td>SBQQ__Product__c</td><td>Asset</td><td>Product2Id</td><td>ForeignKey</td><td>Medium</td><td>Lookup migrated Product2 ID</td><td>Required</td></tr>
-        <tr><td>SBQQ__Subscription__c</td><td>SBQQ__Account__c</td><td>SBQQ__Account__c</td><td>Asset</td><td>AccountId</td><td>ForeignKey</td><td>Medium</td><td>Lookup Account ID</td><td>Required</td></tr>
-        <tr><td>SBQQ__Subscription__c</td><td>SBQQ__StartDate__c</td><td>SBQQ__StartDate__c</td><td>Asset</td><td>InstallDate</td><td>Direct</td><td>Simple</td><td></td><td>Optional</td></tr>
-        <tr><td>SBQQ__Subscription__c</td><td>SBQQ__EndDate__c</td><td>SBQQ__EndDate__c</td><td>Asset</td><td>UsageEndDate</td><td>Direct</td><td>Simple</td><td></td><td>Optional</td></tr>
-        <tr><td>SBQQ__Subscription__c</td><td>SBQQ__Quantity__c</td><td>SBQQ__Quantity__c</td><td>Asset</td><td>Quantity</td><td>Direct</td><td>Simple</td><td></td><td>Required</td></tr>
-        <tr><td>SBQQ__Subscription__c</td><td>SBQQ__NetPrice__c</td><td>SBQQ__NetPrice__c</td><td>Asset</td><td>Price</td><td>Direct</td><td>Simple</td><td></td><td>Optional</td></tr>
-        <tr><td>SBQQ__Subscription__c</td><td>SBQQ__SubscriptionType__c</td><td>SBQQ__SubscriptionType__c</td><td>Asset</td><td>vlocity_cmt__SubscriptionType__c</td><td>ValueMap</td><td>Medium</td><td>Map One-Time → ONE_TIME, Subscription → RECURRING</td><td>Optional</td></tr>
+        <!-- SBQQ__Subscription__c to Subscription -->
+        <tr><td>SBQQ__Subscription__c</td><td>Id</td><td>Id</td><td>Subscription</td><td>Id</td><td>Direct</td><td>Simple</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>SBQQ__Subscription__c</td><td>Account</td><td>AccountId</td><td>Subscription</td><td>AccountId</td><td>Structural</td><td>Medium</td><td>Map Account via Id_Mapping; create placeholder if missing</td><td>Required, Reject if blank</td></tr>
+        <tr><td>SBQQ__Subscription__c</td><td>Product</td><td>SBQQ__Product__c</td><td>Subscription</td><td>ProductId</td><td>Structural</td><td>Medium</td><td>Map Product2 → EPC Product via Id_Mapping</td><td>Required, Reject if blank</td></tr>
+        <tr><td>SBQQ__Subscription__c</td><td>Start Date</td><td>SBQQ__StartDate__c</td><td>Subscription</td><td>StartDate</td><td>Direct</td><td>Medium</td><td>Preserve timezone & format</td><td>Required, Reject if blank</td></tr>
+        <tr><td>SBQQ__Subscription__c</td><td>End Date</td><td>SBQQ__EndDate__c</td><td>Subscription</td><td>EndDate</td><td>Direct</td><td>Medium</td><td>Preserve termination/expiry</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>SBQQ__Subscription__c</td><td>Term Months</td><td>SBQQ__Term__c</td><td>Subscription</td><td>TermMonths</td><td>Transform</td><td>Medium</td><td>Normalize units (months/years) and map to RCA term fields</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>SBQQ__Subscription__c</td><td>Status</td><td>SBQQ__Status__c</td><td>Subscription</td><td>Status</td><td>Direct</td><td>Medium</td><td>Map CPQ statuses to RCA subscription statuses</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>SBQQ__Subscription__c</td><td>Billing Frequency</td><td>SBQQ__BillingFrequency__c</td><td>Subscription</td><td>BillingFrequency</td><td>Transform</td><td>Medium</td><td>Use Value_Maps to map cadence</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>SBQQ__Subscription__c</td><td>Quantity</td><td>SBQQ__Quantity__c</td><td>Subscription</td><td>Quantity</td><td>Direct</td><td>Simple</td><td>Map quantity; if per-seat reflect in usage model</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>SBQQ__Subscription__c</td><td>Recurring Price</td><td>SBQQ__RecurringPrice__c</td><td>Subscription</td><td>RecurringPrice</td><td>Transform</td><td>Medium</td><td>Map to RCA recurring charge object or Price</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>SBQQ__Subscription__c</td><td>Cancellation Date</td><td>SBQQ__CancellationDate__c</td><td>Subscription</td><td>CancellationDate</td><td>Direct</td><td>Medium</td><td>Preserve cancellation metadata</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>SBQQ__Subscription__c</td><td>Auto Renew</td><td>SBQQ__AutoRenew__c</td><td>Subscription</td><td>AutoRenew</td><td>Direct</td><td>Simple</td><td>Boolean mapping</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>SBQQ__Subscription__c</td><td>Contract Reference</td><td>SBQQ__Contract__c</td><td>Subscription</td><td>ContractId</td><td>Structural</td><td>Medium</td><td>Link to Contract via Id_Mapping if exists</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>SBQQ__Subscription__c</td><td>Original Quote</td><td>SBQQ__OriginatingQuote__c</td><td>Subscription</td><td>SourceQuoteId</td><td>Structural</td><td>Medium</td><td>Preserve link to original quote via Id_Mapping</td><td>Optional, Flag for review</td></tr>
+        <tr><td>SBQQ__Subscription__c</td><td>Next Billing Date</td><td>SBQQ__NextBillingDate__c</td><td>Subscription</td><td>NextBillingDate</td><td>Direct</td><td>Medium</td><td>Used for billing continuity; preserve</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>SBQQ__Subscription__c</td><td>Grace Period Days</td><td>SBQQ__GracePeriod__c</td><td>Subscription</td><td>GracePeriodDays</td><td>Direct</td><td>Simple</td><td>Map grace period settings</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>SBQQ__Subscription__c</td><td>Custom Flag</td><td>Custom_Flag__c</td><td>Subscription</td><td>CustomFlag</td><td>Transform</td><td>Medium</td><td>Generic custom flag</td><td>Optional, Flag for review</td></tr>
+        <tr><td>SBQQ__Subscription__c</td><td>Custom Text</td><td>Custom_Text__c</td><td>Subscription</td><td>CustomText</td><td>Transform</td><td>Medium</td><td>Generic custom text</td><td>Optional, Flag for review</td></tr>
+        <tr><td>SBQQ__Subscription__c</td><td>Custom Numeric</td><td>Custom_Number__c</td><td>Subscription</td><td>CustomNumber</td><td>Transform</td><td>Medium</td><td>Generic custom numeric</td><td>Optional, Flag for review</td></tr>
         
         <!-- Contract to Contract -->
-        <tr><td>Contract</td><td>ContractNumber</td><td>ContractNumber</td><td>Contract</td><td>ContractNumber</td><td>Direct</td><td>Simple</td><td>Preserve existing contract numbers</td><td>Required, Unique</td></tr>
-        <tr><td>Contract</td><td>AccountId</td><td>AccountId</td><td>Contract</td><td>AccountId</td><td>ForeignKey</td><td>Medium</td><td>Lookup Account ID</td><td>Required</td></tr>
-        <tr><td>Contract</td><td>Status</td><td>Status</td><td>Contract</td><td>Status</td><td>ValueMap</td><td>Medium</td><td>Map Draft, In Approval, Activated status values</td><td>Required</td></tr>
-        <tr><td>Contract</td><td>StartDate</td><td>StartDate</td><td>Contract</td><td>StartDate</td><td>Direct</td><td>Simple</td><td></td><td>Required</td></tr>
-        <tr><td>Contract</td><td>EndDate</td><td>EndDate</td><td>Contract</td><td>EndDate</td><td>Direct</td><td>Simple</td><td>Must be after StartDate</td><td>Optional</td></tr>
-        <tr><td>Contract</td><td>ContractTerm</td><td>ContractTerm</td><td>Contract</td><td>ContractTerm</td><td>Direct</td><td>Simple</td><td>Integer number of months</td><td>Optional</td></tr>
-        <tr><td>Contract</td><td>BillingFrequency</td><td>BillingFrequency__c</td><td>Contract</td><td>vlocity_cmt__BillingFrequency__c</td><td>ValueMap</td><td>Medium</td><td>Map Monthly → MONTHLY, Quarterly → QUARTERLY, Annually → YEARLY</td><td>Optional</td></tr>
+        <tr><td>Contract</td><td>Id</td><td>Id</td><td>Contract</td><td>Id</td><td>Direct</td><td>Simple</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Contract</td><td>Contract Number</td><td>ContractNumber</td><td>Contract</td><td>ContractNumber</td><td>Direct</td><td>Simple</td><td>Preserve legal contract reference</td><td>Required, Reject if blank</td></tr>
+        <tr><td>Contract</td><td>Account</td><td>AccountId</td><td>Contract</td><td>AccountId</td><td>Structural</td><td>Medium</td><td>Map Account via Id_Mapping</td><td>Required, Reject if blank</td></tr>
+        <tr><td>Contract</td><td>Status</td><td>Status</td><td>Contract</td><td>Status</td><td>Direct</td><td>Medium</td><td>Map CPQ/Org statuses to RCA contract lifecycle statuses</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Contract</td><td>Start Date</td><td>StartDate</td><td>Contract</td><td>StartDate</td><td>Direct</td><td>Medium</td><td>Preserve effective date for obligations</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Contract</td><td>End Date</td><td>EndDate</td><td>Contract</td><td>EndDate</td><td>Direct</td><td>Medium</td><td>Preserve term expiry</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Contract</td><td>Contract Owner</td><td>OwnerId</td><td>Contract</td><td>OwnerId</td><td>Direct</td><td>Simple</td><td>Map user via Id_Mapping</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Contract</td><td>Original Quote</td><td>SBQQ__OriginatingQuote__c</td><td>Contract</td><td>OriginatingQuoteId</td><td>Structural</td><td>Medium</td><td>Map to migrated quote via Id_Mapping</td><td>Optional, Flag for review</td></tr>
+        <tr><td>Contract</td><td>Billing Account</td><td>BillingAccountId</td><td>Contract</td><td>BillingAccountId</td><td>Structural</td><td>Medium</td><td>If separate billing account exists map accordingly</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Contract</td><td>Auto Renew</td><td>AutoRenew__c</td><td>Contract</td><td>AutoRenew</td><td>Direct</td><td>Simple</td><td>Boolean mapping</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Contract</td><td>Special Terms</td><td>SpecialTerms__c</td><td>Contract</td><td>SpecialTerms</td><td>Direct</td><td>Complex</td><td>Preserve legal terms text</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Contract</td><td>Signed Date</td><td>SignedDate</td><td>Contract</td><td>SignedDate</td><td>Direct</td><td>Medium</td><td>Preserve signature metadata if available</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Contract</td><td>External Id</td><td>External_Contract_Id__c</td><td>Contract</td><td>ExternalContractId</td><td>Transform</td><td>Medium</td><td>Useful for external system reconciliation</td><td>Optional, Flag for review</td></tr>
+        <tr><td>Contract</td><td>Custom Flag</td><td>Custom_Flag__c</td><td>Contract</td><td>CustomFlag</td><td>Transform</td><td>Medium</td><td>Generic custom flag</td><td>Optional, Flag for review</td></tr>
+        <tr><td>Contract</td><td>Custom Text</td><td>Custom_Text__c</td><td>Contract</td><td>CustomText</td><td>Transform</td><td>Medium</td><td>Generic custom text</td><td>Optional, Flag for review</td></tr>
+        <tr><td>Contract</td><td>Custom Numeric</td><td>Custom_Number__c</td><td>Contract</td><td>CustomNumber</td><td>Transform</td><td>Medium</td><td>Generic custom numeric</td><td>Optional, Flag for review</td></tr>
+        
+        <!-- Order to Order -->
+        <tr><td>Order</td><td>Id</td><td>Id</td><td>Order</td><td>Id</td><td>Direct</td><td>Simple</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Order</td><td>Order Number</td><td>OrderNumber</td><td>Order</td><td>OrderNumber</td><td>Direct</td><td>Simple</td><td>Preserve order reference</td><td>Required, Reject if blank</td></tr>
+        <tr><td>Order</td><td>Account</td><td>AccountId</td><td>Order</td><td>AccountId</td><td>Structural</td><td>Medium</td><td>Map Account via Id_Mapping</td><td>Required, Reject if blank</td></tr>
+        <tr><td>Order</td><td>Status</td><td>Status</td><td>Order</td><td>Status</td><td>Direct</td><td>Medium</td><td>Map CPQ/Org order statuses to RCA order statuses</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Order</td><td>Effective Date</td><td>EffectiveDate</td><td>Order</td><td>EffectiveDate</td><td>Direct</td><td>Medium</td><td>Preserve effective date for fulfillment/billing</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Order</td><td>Total Amount</td><td>TotalAmount</td><td>Order</td><td>TotalAmount</td><td>Transform</td><td>Medium</td><td>Recalculate from OrderItems and taxes in RCA</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Order</td><td>Billing Account</td><td>BillingAccountId</td><td>Order</td><td>BillingAccountId</td><td>Structural</td><td>Medium</td><td>Map if separate from Account</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Order</td><td>Contract Reference</td><td>ContractId</td><td>Order</td><td>ContractId</td><td>Structural</td><td>Medium</td><td>Link to migrated contract via Id_Mapping if present</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Order</td><td>PO Number</td><td>PurchaseOrderNumber</td><td>Order</td><td>PO_Number</td><td>Direct</td><td>Simple</td><td>Map PO for ERP reconciliation</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Order</td><td>External System Id</td><td>External_Order_Id__c</td><td>Order</td><td>ExternalOrderId</td><td>Transform</td><td>Medium</td><td>Use for reconciliation with external order systems</td><td>Optional, Flag for review</td></tr>
+        <tr><td>Order</td><td>Custom Flag</td><td>Custom_Flag__c</td><td>Order</td><td>CustomFlag</td><td>Transform</td><td>Medium</td><td>Generic custom flag</td><td>Optional, Flag for review</td></tr>
+        <tr><td>Order</td><td>Custom Text</td><td>Custom_Text__c</td><td>Order</td><td>CustomText</td><td>Transform</td><td>Medium</td><td>Generic custom text</td><td>Optional, Flag for review</td></tr>
+        <tr><td>Order</td><td>Custom Numeric</td><td>Custom_Number__c</td><td>Order</td><td>CustomNumber</td><td>Transform</td><td>Medium</td><td>Generic custom numeric</td><td>Optional, Flag for review</td></tr>
+        
+        <!-- Asset to Asset -->
+        <tr><td>Asset</td><td>Id</td><td>Id</td><td>Asset</td><td>Id</td><td>Direct</td><td>Simple</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Asset</td><td>Asset Name</td><td>Name</td><td>Asset</td><td>Name</td><td>Direct</td><td>Simple</td><td></td><td>Required, Reject if blank</td></tr>
+        <tr><td>Asset</td><td>Account</td><td>AccountId</td><td>Asset</td><td>AccountId</td><td>Structural</td><td>Medium</td><td>Map account via Id_Mapping</td><td>Required, Reject if blank</td></tr>
+        <tr><td>Asset</td><td>Product2Id</td><td>Product2Id</td><td>Asset</td><td>ProductId</td><td>Structural</td><td>Medium</td><td>Map Product2 → RCA Product via Id_Mapping</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Asset</td><td>Install Date</td><td>InstallDate</td><td>Asset</td><td>InstallDate</td><td>Direct</td><td>Medium</td><td>Preserve lifecycle dates</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Asset</td><td>Service Start Date</td><td>ServiceStartDate</td><td>Asset</td><td>ServiceStartDate</td><td>Direct</td><td>Medium</td><td>Used for SLA and billing continuity</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Asset</td><td>Service End Date</td><td>ServiceEndDate</td><td>Asset</td><td>ServiceEndDate</td><td>Direct</td><td>Medium</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Asset</td><td>Warranty Expiration</td><td>WarrantyExpirationDate</td><td>Asset</td><td>WarrantyExpirationDate</td><td>Direct</td><td>Medium</td><td>Map warranty metadata if present</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Asset</td><td>Status</td><td>Status</td><td>Asset</td><td>Status</td><td>Direct</td><td>Medium</td><td>Map lifecycle statuses</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Asset</td><td>Quantity</td><td>Quantity</td><td>Asset</td><td>Quantity</td><td>Direct</td><td>Simple</td><td>Map asset quantity</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Asset</td><td>Location</td><td>Location</td><td>Asset</td><td>Location</td><td>Direct</td><td>Simple</td><td>Map physical location if present</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Asset</td><td>External Id</td><td>External_Asset_Id__c</td><td>Asset</td><td>ExternalAssetId</td><td>Transform</td><td>Medium</td><td>Useful for reconciliation with field-service or ERP systems</td><td>Optional, Flag for review</td></tr>
+        <tr><td>Asset</td><td>Custom Flag</td><td>Custom_Flag__c</td><td>Asset</td><td>CustomFlag</td><td>Transform</td><td>Medium</td><td>Generic custom flag</td><td>Optional, Flag for review</td></tr>
+        <tr><td>Asset</td><td>Custom Text</td><td>Custom_Text__c</td><td>Asset</td><td>CustomText</td><td>Transform</td><td>Medium</td><td>Generic custom text</td><td>Optional, Flag for review</td></tr>
+        <tr><td>Asset</td><td>Custom Numeric</td><td>Custom_Number__c</td><td>Asset</td><td>CustomNumber</td><td>Transform</td><td>Medium</td><td>Generic custom numeric</td><td>Optional, Flag for review</td></tr>
       </tbody>
     </table>
 
