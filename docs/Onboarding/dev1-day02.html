@@ -762,52 +762,74 @@
             
             <div class="content-section">
                 <h2>📋 Objective</h2>
-                <p>Enhance the schema analysis API to fetch detailed field metadata, implement job status polling, and add Redis caching for performance optimization.</p>
+                <p>Create the foundational STG1 database tables for the RevNova migration system. These tables will store project information, Salesforce connections, and source schema data (objects and fields from SFDC).</p>
                 
-                <p><strong>API Endpoints to Build:</strong></p>
+                <p><strong>Tables to Create:</strong></p>
                 <ul>
-                    <li><code>GET /api/v1/projects/{id}/analyze/{job_id}</code> - Poll job status</li>
-                    <li><code>GET /api/v1/projects/{id}/analyze/summary</code> - Get analysis summary</li>
+                    <li><code>projects</code> - Migration project metadata</li>
+                    <li><code>connections</code> - Salesforce connection credentials</li>
+                    <li><code>source_objects</code> - SFDC objects (Product2, PricebookEntry, etc.)</li>
+                    <li><code>source_fields</code> - SFDC fields with full metadata</li>
                 </ul>
             </div>
-            
-            <div class="content-section">
-                <h2>📦 Step 1: Install Redis Client</h2>
-                <p>Install the Redis client for Node.js to enable caching:</p>
-                <pre><code>cd backend
-npm install redis</code></pre>
-                
-                <p>Create a Redis client configuration:</p>
-                <p><strong>File:</strong> <code>backend/src/config/redis.ts</code></p>
-                <pre><code>import { createClient } from 'redis';
-
-const redisClient = createClient({
-  url: process.env.REDIS_URL || 'redis://localhost:6379'
-});
-
-redisClient.on('error', (err) => console.error('Redis Client Error', err));
-
-export const connectRedis = async () => {
-  await redisClient.connect();
-  console.log('Redis connected');
-};
-
-export default redisClient;</code></pre>
             </div>
             
             <div class="content-section">
-                <h2>🔄 Step 2: Create Job Status Polling Endpoint</h2>
-                <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
-                <pre><code>router.get('/projects/:id/analyze/:jobId', async (req, res) => {
-  try {
-    const { id, jobId } = req.params;
-    
-    // Check Redis for job status
-    const jobData = await redisClient.get(`job:${jobId}`);
-    
-    if (!jobData) {
-      return res.status(404).json({ error: 'Job not found' });
-    }
+                <h2>� Step 1: Create Projects Table Migration</h2>
+                <p>Create a new migration file:</p>
+                <pre><code>cd backend
+npm run migration:create -- create-projects-table</code></pre>
+                
+                <p><strong>File:</strong> <code>backend/migrations/001_create_projects_table.sql</code></p>
+                <pre><code>-- Projects table: stores migration project information
+CREATE TABLE projects (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  description TEXT,
+  source_type VARCHAR(50) NOT NULL DEFAULT 'salesforce', -- salesforce, netsuite, etc.
+  target_type VARCHAR(50) NOT NULL DEFAULT 'salesforce',
+  status VARCHAR(50) NOT NULL DEFAULT 'draft', -- draft, analyzing, mapping, ready, executing, completed, failed
+  created_by VARCHAR(255),
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+-- Index for faster queries
+CREATE INDEX idx_projects_status ON projects(status);
+CREATE INDEX idx_projects_created_at ON projects(created_at DESC);</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> Projects table migration file created</p>
+            </div>
+            
+            <div class="content-section">
+                <h2>� Step 2: Create Connections Table Migration</h2>
+                <p><strong>File:</strong> <code>backend/migrations/002_create_connections_table.sql</code></p>
+                <pre><code>-- Connections table: stores Salesforce connection credentials
+CREATE TABLE connections (
+  id SERIAL PRIMARY KEY,
+  project_id INTEGER NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+  name VARCHAR(255) NOT NULL,
+  type VARCHAR(50) NOT NULL DEFAULT 'salesforce', -- salesforce, custom
+  instance_url VARCHAR(500) NOT NULL, -- https://yourorg.my.salesforce.com
+  access_token TEXT, -- encrypted token
+  refresh_token TEXT, -- encrypted token
+  client_id VARCHAR(255),
+  client_secret TEXT, -- encrypted
+  username VARCHAR(255),
+  is_sandbox BOOLEAN DEFAULT true,
+  status VARCHAR(50) NOT NULL DEFAULT 'pending', -- pending, connected, failed
+  last_tested_at TIMESTAMP,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+-- Index for project lookups
+CREATE INDEX idx_connections_project_id ON connections(project_id);
+CREATE INDEX idx_connections_status ON connections(status);</code></pre>
+                
+                <p><strong>⚠️ Security Note:</strong> In production, tokens should be encrypted using a service like AWS KMS or HashiCorp Vault</p>
+                <p><strong>✅ Checkpoint:</strong> Connections table migration created</p>
+            </div>
     
     const job = JSON.parse(jobData);
     res.json({
@@ -825,85 +847,143 @@ export default redisClient;</code></pre>
             
             <div class="content-section">
                 <h2>📊 Step 3: Enhance Field Metadata</h2>
-                <p>Update the schema analysis to include detailed field information:</p>
-                <pre><code>const getDetailedFieldMetadata = (field: any) => {
-  return {
-    name: field.name,
-    label: field.label,
-    type: field.type,
-    length: field.length,
-    precision: field.precision,
-    scale: field.scale,
-    required: !field.nillable,
-    unique: field.unique,
-    externalId: field.externalId,
-    defaultValue: field.defaultValue,
-    picklistValues: field.picklistValues || [],
-    referenceTo: field.referenceTo || [],
-    relationshipName: field.relationshipName,
-    calculated: field.calculated,
-    customField: field.custom
-  };
-};</code></pre>
             </div>
             
             <div class="content-section">
-                <h2>📈 Step 4: Create Analysis Summary Endpoint</h2>
-                <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
-                <pre><code>router.get('/projects/:id/analyze/summary', async (req, res) => {
-  try {
-    const projectId = parseInt(req.params.id);
-    
-    // Query database for analysis results
-    const summary = {
-      total_objects: 3,
-      custom_objects: 0,
-      total_fields: 45,
-      custom_fields: 12,
-      readiness_score: 0.92,
-      warnings: ['Custom field Product2.Special__c has no target mapping'],
-      analyzed_at: new Date().toISOString()
-    };
-    
-    res.json(summary);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});</code></pre>
+                <h2>📦 Step 3: Create Source Objects Table Migration</h2>
+                <p><strong>File:</strong> <code>backend/migrations/003_create_source_objects_table.sql</code></p>
+                <pre><code>-- Source Objects table: stores Salesforce object metadata
+CREATE TABLE source_objects (
+  id SERIAL PRIMARY KEY,
+  connection_id INTEGER NOT NULL REFERENCES connections(id) ON DELETE CASCADE,
+  name VARCHAR(255) NOT NULL, -- e.g., Product2, PricebookEntry
+  label VARCHAR(255) NOT NULL, -- e.g., Product, Pricebook Entry
+  api_name VARCHAR(255) NOT NULL, -- fully qualified API name
+  is_custom BOOLEAN DEFAULT false,
+  is_queryable BOOLEAN DEFAULT true,
+  is_createable BOOLEAN DEFAULT true,
+  is_updateable BOOLEAN DEFAULT true,
+  is_deletable BOOLEAN DEFAULT true,
+  record_count INTEGER DEFAULT 0,
+  key_prefix VARCHAR(10), -- e.g., 01t for Product2
+  description TEXT,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  UNIQUE(connection_id, api_name)
+);
+
+-- Indexes for performance
+CREATE INDEX idx_source_objects_connection_id ON source_objects(connection_id);
+CREATE INDEX idx_source_objects_name ON source_objects(name);
+CREATE INDEX idx_source_objects_is_custom ON source_objects(is_custom);</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> Source objects table migration created</p>
             </div>
             
             <div class="content-section">
-                <h2>✅ Step 5: Test All Endpoints</h2>
+                <h2>📝 Step 4: Create Source Fields Table Migration</h2>
+                <p><strong>File:</strong> <code>backend/migrations/004_create_source_fields_table.sql</code></p>
+                <pre><code>-- Source Fields table: stores Salesforce field metadata
+CREATE TABLE source_fields (
+  id SERIAL PRIMARY KEY,
+  source_object_id INTEGER NOT NULL REFERENCES source_objects(id) ON DELETE CASCADE,
+  name VARCHAR(255) NOT NULL, -- e.g., Name, ProductCode
+  label VARCHAR(255) NOT NULL, -- e.g., Product Name
+  api_name VARCHAR(255) NOT NULL,
+  type VARCHAR(100) NOT NULL, -- string, number, boolean, date, datetime, picklist, reference, etc.
+  length INTEGER,
+  precision_value INTEGER, -- renamed from 'precision' to avoid keyword
+  scale_value INTEGER, -- renamed from 'scale'
+  is_required BOOLEAN DEFAULT false,
+  is_unique BOOLEAN DEFAULT false,
+  is_external_id BOOLEAN DEFAULT false,
+  is_custom BOOLEAN DEFAULT false,
+  default_value TEXT,
+  picklist_values JSONB, -- array of {label, value}
+  reference_to VARCHAR(255), -- referenced object name for lookup fields
+  relationship_name VARCHAR(255),
+  is_calculated BOOLEAN DEFAULT false,
+  formula TEXT,
+  help_text TEXT,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  UNIQUE(source_object_id, api_name)
+);
+
+-- Indexes for queries
+CREATE INDEX idx_source_fields_object_id ON source_fields(source_object_id);
+CREATE INDEX idx_source_fields_name ON source_fields(name);
+CREATE INDEX idx_source_fields_type ON source_fields(type);
+CREATE INDEX idx_source_fields_is_custom ON source_fields(is_custom);</code></pre>
                 
-                <p><strong>Test job status polling:</strong></p>
-                <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/job_1699632000000</code></pre>
+                <p><strong>✅ Checkpoint:</strong> Source fields table migration created</p>
+            </div>
+            
+            <div class="content-section">
+                <h2>🚀 Step 5: Run All Migrations</h2>
+                <p>Execute all migration files:</p>
+                <pre><code>npm run migrate
+
+# Output should show:
+# Running migration: 001_create_projects_table.sql
+# Running migration: 002_create_connections_table.sql
+# Running migration: 003_create_source_objects_table.sql
+# Running migration: 004_create_source_fields_table.sql
+# ✅ All migrations completed successfully</code></pre>
                 
-                <p><strong>Test analysis summary:</strong></p>
-                <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/summary</code></pre>
+                <p>Verify tables in PostgreSQL:</p>
+                <pre><code>psql -U postgres -d revnova_dev
+\dt
+# Should list: projects, connections, source_objects, source_fields
+\d projects
+# Should show projects table structure
+\q</code></pre>
                 
                 <div class="success-box">
-                    <strong>✓ Expected Response:</strong> Job status should return progress information, and summary should show aggregate statistics.
+                    <strong>✓ Success:</strong> All STG1 tables created successfully!
                 </div>
+            </div>
+            
+            <div class="content-section">
+                <h2>🧪 Step 6: Insert Test Data</h2>
+                <p>Create seed data for testing:</p>
+                <p><strong>File:</strong> <code>backend/seeds/001_test_data.sql</code></p>
+                <pre><code>-- Insert test project
+INSERT INTO projects (name, description, source_type, target_type, status)
+VALUES ('SFDC CPQ Migration', 'Migrate Salesforce CPQ data to custom objects', 'salesforce', 'salesforce', 'draft');
+
+-- Insert test connection
+INSERT INTO connections (project_id, name, type, instance_url, is_sandbox, status)
+VALUES (1, 'Production Org', 'salesforce', 'https://myorg.my.salesforce.com', false, 'pending');</code></pre>
+                
+                <p>Run seed script:</p>
+                <pre><code>psql -U postgres -d revnova_dev &lt; backend/seeds/001_test_data.sql</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> Test data inserted</p>
             </div>
             
             <div class="content-section">
                 <h2>🎯 End of Day Checklist</h2>
                 <ul style="list-style: none; padding-left: 0;">
-                    <li>☐ Redis client installed and connected</li>
-                    <li>☐ Job status endpoint returns job progress</li>
-                    <li>☐ Enhanced metadata includes picklists and lookups</li>
-                    <li>☐ Summary endpoint aggregates analysis results</li>
-                    <li>☐ All endpoints tested and working</li>
-                    <li>☐ Code committed with meaningful message</li>
+                    <li>☐ Projects table created</li>
+                    <li>☐ Connections table created</li>
+                    <li>☐ Source_objects table created</li>
+                    <li>☐ Source_fields table created</li>
+                    <li>☐ All migrations run successfully</li>
+                    <li>☐ Tables verified in PostgreSQL</li>
+                    <li>☐ Test data inserted</li>
+                    <li>☐ Can query all tables successfully</li>
                 </ul>
                 
                 <p><strong>Commit Message:</strong></p>
-                <code>feat(backend): add job polling, detailed metadata, and Redis caching</code>
+                <pre><code>git add backend/migrations backend/seeds
+git commit -m "feat(database): create STG1 tables for projects, connections, and source schema"
+git push</code></pre>
             </div>
             
             <div class="nav-buttons">
                 <a href="dev1-day01.html" class="btn btn-secondary">Previous: Day 1</a>
-                <a href="dev1-day03.html" class="btn">Next: Day 3</a>
+                <a href="dev1-day03.html" class="btn">Next: Day 3 - Database Tables (STG2)</a>
             </div>
         </main>
     </div>
