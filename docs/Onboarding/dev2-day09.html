@@ -469,21 +469,7 @@
                     </div>
                 </div>
                 
-                <!-- 8-Week Timeline Section -->
-                <div class="nav-section">
-                    <button class="nav-section-header">
-                        <svg class="nav-section-icon" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M6 6L14 10L6 14V6Z"/>
-                        </svg>
-                        8-Week Timeline
-                    </button>
-                    <div class="nav-section-content">
-                        <a href="../RevNovaRequirements/requirements-home.html" class="nav-link">Project Timeline</a>
-                        <a href="onboarding-dev1-phase1.html" class="nav-link">Phase 1: SFDC CPQ Migration</a>
-                    </div>
-                </div>
-                
-                                                                <!-- Developer 1: Daily Tasks Section -->
+                <!-- Developer 1: Daily Tasks Section -->
                 <div class="nav-section">
                     <button class="nav-section-header">
                         <svg class="nav-section-icon" fill="currentColor" viewBox="0 0 20 20">
@@ -979,13 +965,22 @@ export default redisClient;</code></pre>
         </main>
     </div>
     
-    <script>
+        <script>
         // Collapsible navigation functionality
         document.addEventListener('DOMContentLoaded', function() {
-            // Handle section headers
+            // Handle section headers - single click toggle
             const sectionHeaders = document.querySelectorAll('.nav-section-header');
             sectionHeaders.forEach(header => {
-                header.addEventListener('click', function() {
+                // Remove any existing listeners by cloning
+                const newHeader = header.cloneNode(true);
+                header.parentNode.replaceChild(newHeader, header);
+            });
+            
+            // Now add listeners to fresh elements
+            document.querySelectorAll('.nav-section-header').forEach(header => {
+                header.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
                     const content = this.nextElementSibling;
                     const isExpanded = this.classList.contains('expanded');
                     
@@ -999,10 +994,19 @@ export default redisClient;</code></pre>
                 });
             });
             
-            // Handle subsection headers
+            // Handle subsection headers - single click toggle
             const subsectionHeaders = document.querySelectorAll('.nav-subsection-header');
             subsectionHeaders.forEach(header => {
-                header.addEventListener('click', function() {
+                // Remove any existing listeners by cloning
+                const newHeader = header.cloneNode(true);
+                header.parentNode.replaceChild(newHeader, header);
+            });
+            
+            // Now add listeners to fresh elements
+            document.querySelectorAll('.nav-subsection-header').forEach(header => {
+                header.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
                     const content = this.nextElementSibling;
                     const isExpanded = this.classList.contains('expanded');
                     
@@ -1016,7 +1020,7 @@ export default redisClient;</code></pre>
                 });
             });
             
-            // Auto-expand ONLY Developer section and Week, NOT Getting Started or Developer Guides
+            // Auto-expand ONLY the current developer section and week
             const activeLinks = document.querySelectorAll('.nav-subsection-link.active');
             activeLinks.forEach(link => {
                 // Expand parent developer section (only if it contains "Daily Tasks")
