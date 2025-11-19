@@ -1605,6 +1605,206 @@ footer {
     gap: var(--space-xs);
 }
 
+/* Mapping Table Styles */
+.object-selection {
+    margin-bottom: var(--space-lg);
+    padding: var(--space-md);
+    background: white;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.object-tabs {
+    display: flex;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+    margin-top: var(--space-md);
+}
+
+.object-tab {
+    padding: var(--space-sm) var(--space-md);
+    background: var(--background-light);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+    transition: all 0.2s;
+}
+
+.object-tab:hover {
+    background: var(--salesforce-light-blue);
+    border-color: var(--salesforce-blue);
+}
+
+.object-tab.active {
+    background: var(--salesforce-blue);
+    color: white;
+    border-color: var(--salesforce-blue);
+}
+
+.mapping-interface {
+    background: white;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-lg);
+}
+
+.mapping-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-md);
+    flex-wrap: wrap;
+    gap: var(--space-md);
+}
+
+.filter-controls {
+    display: flex;
+    gap: var(--space-sm);
+}
+
+.filter-controls select {
+    padding: var(--space-sm);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-sm);
+}
+
+.mapping-table-container {
+    overflow-x: auto;
+    margin-top: var(--space-md);
+}
+
+.mapping-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--font-size-sm);
+}
+
+.mapping-table thead {
+    background: var(--background-light);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.mapping-table th {
+    padding: var(--space-sm);
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-dark);
+    border-bottom: 2px solid var(--border-medium);
+    white-space: nowrap;
+}
+
+.mapping-table td {
+    padding: var(--space-sm);
+    border-bottom: 1px solid var(--border-light);
+    vertical-align: top;
+}
+
+.mapping-table tbody tr:hover {
+    background: var(--background-light);
+}
+
+.mapping-table code {
+    background: var(--background-light);
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-family: 'Courier New', monospace;
+    color: var(--salesforce-dark-blue);
+}
+
+.mapping-table small {
+    font-size: var(--font-size-xs);
+    color: var(--text-light);
+}
+
+/* Badge Styles */
+.badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.badge-direct {
+    background: #E1F5FE;
+    color: #0288D1;
+}
+
+.badge-transform {
+    background: #FFF3E0;
+    color: #E65100;
+}
+
+.badge-structural {
+    background: #F3E5F5;
+    color: #7B1FA2;
+}
+
+.badge-simple {
+    background: #E8F5E9;
+    color: #2E7D32;
+}
+
+.badge-medium {
+    background: #FFF8E1;
+    color: #F57C00;
+}
+
+.badge-complex {
+    background: #FFEBEE;
+    color: #C62828;
+}
+
+.badge-required {
+    background: #FFEBEE;
+    color: #C62828;
+    font-weight: 700;
+}
+
+.badge-optional {
+    background: #E8F5E9;
+    color: #388E3C;
+}
+
+.mapping-overview {
+    margin-bottom: var(--space-lg);
+}
+
+.mapping-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+}
+
+.stat-card {
+    background: white;
+    padding: var(--space-lg);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    text-align: center;
+}
+
+.stat-number {
+    font-size: var(--font-size-3xl);
+    font-weight: 700;
+    color: var(--salesforce-blue);
+    margin-bottom: var(--space-xs);
+}
+
+.stat-label {
+    font-size: var(--font-size-sm);
+    color: var(--text-light);
+}
+
 /* Transform Page Styles */
 .transform-container {
     padding: var(--space-lg);

@@ -101,80 +101,66 @@
                         <h4><i class="fas fa-cube"></i> Select Object to Map</h4>
                         <div class="object-tabs">
                             <button class="object-tab active" data-object="Product2">Product2</button>
+                            <button class="object-tab" data-object="Pricebook2">Pricebook2</button>
+                            <button class="object-tab" data-object="PricebookEntry">PricebookEntry</button>
+                            <button class="object-tab" data-object="SBQQ__ProductOption__c">ProductOption</button>
+                            <button class="object-tab" data-object="SBQQ__Feature__c">Feature</button>
+                            <button class="object-tab" data-object="SBQQ__ConfigurationAttribute__c">ConfigAttribute</button>
                             <button class="object-tab" data-object="SBQQ__Quote__c">Quote</button>
                             <button class="object-tab" data-object="SBQQ__Subscription__c">Subscription</button>
                             <button class="object-tab" data-object="Contract">Contract</button>
-                            <button class="object-tab" data-object="Pricebook2">Pricebook</button>
                         </div>
                     </div>
 
                     <!-- Mapping Interface -->
                     <div class="mapping-interface">
-                        <div class="mapping-grid">
-                            <!-- Field Mapping Rows -->
-                            <div class="mapping-row">
-                                <div class="source-object">
-                                    <div class="object-header">
-                                        <span class="object-name">Product2</span>
-                                        <span class="object-count">18 fields</span>
-                                    </div>
-                                    <div class="object-fields">
-                                        <div class="field-item">
-                                            <span class="field-name">Name</span>
-                                            <span class="field-type">Text(255)</span>
-                                        </div>
-                                        <div class="field-item">
-                                            <span class="field-name">ProductCode</span>
-                                            <span class="field-type">Text(255)</span>
-                                        </div>
-                                        <div class="field-item">
-                                            <span class="field-name">CustomRegion__c</span>
-                                            <span class="field-type">Picklist</span>
-                                        </div>
-                                        <div class="field-item">
-                                            <span class="field-name">LegacySKU__c</span>
-                                            <span class="field-type">Text(100)</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="mapping-arrow">
-                                    <i class="fas fa-arrow-right"></i>
-                                    <div class="mapping-actions">
-                                        <button class="btn btn-xs btn-light" title="Auto-map">
-                                            <i class="fas fa-robot"></i>
-                                        </button>
-                                        <button class="btn btn-xs btn-light" title="Manual map">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                
-                                <div class="target-object">
-                                    <div class="object-header">
-                                        <span class="object-name">Product2</span>
-                                        <span class="object-count">18 fields</span>
-                                    </div>
-                                    <div class="object-fields">
-                                        <div class="field-item">
-                                            <span class="field-name">Name</span>
-                                            <span class="field-type">Text(255)</span>
-                                        </div>
-                                        <div class="field-item">
-                                            <span class="field-name">ProductCode</span>
-                                            <span class="field-type">Text(255)</span>
-                                        </div>
-                                        <div class="field-item">
-                                            <span class="field-name">Region__c</span>
-                                            <span class="field-type">Picklist</span>
-                                        </div>
-                                        <div class="field-item">
-                                            <span class="field-name">ExternalId__c</span>
-                                            <span class="field-type">Text(100)</span>
-                                        </div>
-                                    </div>
-                                </div>
+                        <div class="mapping-controls">
+                            <button class="btn btn-sm btn-primary" onclick="addNewMapping()">
+                                <i class="fas fa-plus"></i> Add Mapping
+                            </button>
+                            <button class="btn btn-sm btn-secondary" onclick="importCSV()">
+                                <i class="fas fa-file-import"></i> Import CSV
+                            </button>
+                            <button class="btn btn-sm btn-secondary" onclick="exportCSV()">
+                                <i class="fas fa-file-export"></i> Export CSV
+                            </button>
+                            <div class="filter-controls">
+                                <select id="complexityFilter" onchange="filterMappings()">
+                                    <option value="">All Complexity</option>
+                                    <option value="Simple">Simple</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="Complex">Complex</option>
+                                </select>
+                                <select id="mappingTypeFilter" onchange="filterMappings()">
+                                    <option value="">All Types</option>
+                                    <option value="Direct">Direct</option>
+                                    <option value="Transform">Transform</option>
+                                    <option value="Structural">Structural</option>
+                                </select>
                             </div>
+                        </div>
+
+                        <div class="mapping-table-container">
+                            <table class="mapping-table" id="mappingTable">
+                                <thead>
+                                    <tr>
+                                        <th>Source Field Label</th>
+                                        <th>Source API Name</th>
+                                        <th>Target Object</th>
+                                        <th>Target Field Label</th>
+                                        <th>Target API Name</th>
+                                        <th>Mapping Type</th>
+                                        <th>Complexity</th>
+                                        <th>Transform Rule / Notes</th>
+                                        <th>Data Quality</th>
+                                        <th>DQ Rule / Action</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="mappingTableBody">
+                                    <!-- Rows will be dynamically populated -->
+                                </tbody>
+                            </table>
                         </div>
                     </div>
 
@@ -277,18 +263,281 @@
     </footer>
 
     <script>
+        // Comprehensive mapping data structure
+        const MAPPING_DATA = {
+            'Product2': [
+                {sourceLabel: 'Id', sourceAPI: 'Id', targetObject: 'vlocity_cmt__Product__c', targetLabel: 'Id', targetAPI: 'Id', mappingType: 'Direct', complexity: 'Simple', transformRule: '', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Name', sourceAPI: 'Name', targetObject: 'vlocity_cmt__Product__c', targetLabel: 'Name', targetAPI: 'Name', mappingType: 'Direct', complexity: 'Simple', transformRule: '', dataQuality: 'Required', dqRule: 'Reject if blank'},
+                {sourceLabel: 'Product Code', sourceAPI: 'ProductCode', targetObject: 'vlocity_cmt__Product__c', targetLabel: 'ProductCode', targetAPI: 'vlocity_cmt__ProductCode__c', mappingType: 'Direct', complexity: 'Simple', transformRule: 'Ensure SKU uniqueness across catalogs', dataQuality: 'Required', dqRule: 'Reject if blank'},
+                {sourceLabel: 'Description', sourceAPI: 'Description', targetObject: 'vlocity_cmt__Product__c', targetLabel: 'Description', targetAPI: 'Description', mappingType: 'Direct', complexity: 'Simple', transformRule: '', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Is Active', sourceAPI: 'IsActive', targetObject: 'vlocity_cmt__Product__c', targetLabel: 'IsActive', targetAPI: 'vlocity_cmt__IsActive__c', mappingType: 'Direct', complexity: 'Simple', transformRule: '', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Family', sourceAPI: 'Family', targetObject: 'vlocity_cmt__Product__c', targetLabel: 'Family', targetAPI: 'vlocity_cmt__Family__c', mappingType: 'Direct', complexity: 'Medium', transformRule: 'Map ProductFamily → GroupType value map', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Currency', sourceAPI: 'CurrencyIsoCode', targetObject: 'vlocity_cmt__Product__c', targetLabel: 'CurrencyIsoCode', targetAPI: 'CurrencyIsoCode', mappingType: 'Direct', complexity: 'Medium', transformRule: 'Multi-currency: ensure target org currency handling', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Created Date', sourceAPI: 'CreatedDate', targetObject: 'vlocity_cmt__Product__c', targetLabel: 'CreatedDate', targetAPI: 'CreatedDate', mappingType: 'Direct', complexity: 'Simple', transformRule: 'Preserve audit history if required', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Created By', sourceAPI: 'CreatedById', targetObject: 'vlocity_cmt__Product__c', targetLabel: 'CreatedById', targetAPI: 'CreatedById', mappingType: 'Direct', complexity: 'Simple', transformRule: 'Map to user Id mapping if migrating users', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Last Modified Date', sourceAPI: 'LastModifiedDate', targetObject: 'vlocity_cmt__Product__c', targetLabel: 'LastModifiedDate', targetAPI: 'LastModifiedDate', mappingType: 'Direct', complexity: 'Simple', transformRule: 'Preserve audit history if required', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Last Modified By', sourceAPI: 'LastModifiedById', targetObject: 'vlocity_cmt__Product__c', targetLabel: 'LastModifiedById', targetAPI: 'LastModifiedById', mappingType: 'Direct', complexity: 'Simple', transformRule: 'Map user Ids via Id_Mapping', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Last Referenced Date', sourceAPI: 'LastReferencedDate', targetObject: 'vlocity_cmt__Product__c', targetLabel: 'LastReferencedDate', targetAPI: 'LastReferencedDate', mappingType: 'Direct', complexity: 'Simple', transformRule: '', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Last Viewed Date', sourceAPI: 'LastViewedDate', targetObject: 'vlocity_cmt__Product__c', targetLabel: 'LastViewedDate', targetAPI: 'LastViewedDate', mappingType: 'Direct', complexity: 'Simple', transformRule: '', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Quantity Unit of Measure', sourceAPI: 'QuantityUnitOfMeasure', targetObject: 'vlocity_cmt__Product__c', targetLabel: 'QuantityUnitOfMeasure', targetAPI: 'QuantityUnitOfMeasure', mappingType: 'Direct', complexity: 'Simple', transformRule: 'If blank set to default unit', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Is Archived', sourceAPI: 'IsArchived', targetObject: 'vlocity_cmt__Product__c', targetLabel: 'IsArchived', targetAPI: 'IsArchived', mappingType: 'Direct', complexity: 'Simple', transformRule: 'Map archived → retired flag in EPC', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Stock Keeping Unit (SKU)', sourceAPI: 'StockKeepingUnit', targetObject: 'vlocity_cmt__Product__c', targetLabel: 'SKU', targetAPI: 'vlocity_cmt__SKU__c', mappingType: 'Direct', complexity: 'Simple', transformRule: 'If present map to ProductCode or SKU', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Standard Price', sourceAPI: 'SBQQ__ListPrice__c', targetObject: 'vlocity_cmt__Price__c', targetLabel: 'ListPrice', targetAPI: 'vlocity_cmt__ListPrice__c', mappingType: 'Transform', complexity: 'Medium', transformRule: 'Map to RCA price object; preserve currency & dimensions', dataQuality: 'Required', dqRule: 'Reject if blank'},
+                {sourceLabel: 'Default Price List', sourceAPI: 'SBQQ__PriceList__c', targetObject: 'vlocity_cmt__Price__c', targetLabel: 'DefaultPriceList', targetAPI: 'vlocity_cmt__PriceList__c', mappingType: 'Direct', complexity: 'Medium', transformRule: 'Map Pricebook/PricebookEntry → EPC price model', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Billing Frequency', sourceAPI: 'SBQQ__BillingFrequency__c', targetObject: 'vlocity_cmt__Product__c', targetLabel: 'BillingFrequency', targetAPI: 'vlocity_cmt__BillingFrequency__c', mappingType: 'Transform', complexity: 'Medium', transformRule: 'Map CPQ cadence to RCA cadence (use Value_Maps)', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Subscription Type', sourceAPI: 'SBQQ__SubscriptionType__c', targetObject: 'vlocity_cmt__Product__c', targetLabel: 'SubscriptionType', targetAPI: 'vlocity_cmt__SubscriptionType__c', mappingType: 'Transform', complexity: 'Medium', transformRule: 'Map subscription types (one-time vs recurring)', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Billing Period (Months)', sourceAPI: 'SBQQ__BillingPeriod__c', targetObject: 'vlocity_cmt__Product__c', targetLabel: 'BillingPeriodMonths', targetAPI: 'vlocity_cmt__BillingPeriodMonths__c', mappingType: 'Transform', complexity: 'Medium', transformRule: 'Normalize period units (months/years) as numeric', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Billing Frequency Label', sourceAPI: 'SBQQ__BillingFrequencyLabel__c', targetObject: 'vlocity_cmt__Product__c', targetLabel: 'BillingFrequencyLabel', targetAPI: 'vlocity_cmt__BillingFrequencyLabel__c', mappingType: 'Direct', complexity: 'Medium', transformRule: 'Human-readable cadence label', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Subscription Term', sourceAPI: 'SBQQ__SubscriptionTerm__c', targetObject: 'vlocity_cmt__Product__c', targetLabel: 'SubscriptionTerm', targetAPI: 'vlocity_cmt__SubscriptionTerm__c', mappingType: 'Transform', complexity: 'Medium', transformRule: 'Map term units and lengths using value map', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Recurring Revenue Indicator', sourceAPI: 'SBQQ__IsRecurring__c', targetObject: 'vlocity_cmt__Product__c', targetLabel: 'IsRecurring', targetAPI: 'vlocity_cmt__IsRecurring__c', mappingType: 'Direct', complexity: 'Simple', transformRule: 'Boolean mapping', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Taxable Indicator', sourceAPI: 'SBQQ__Taxable__c', targetObject: 'vlocity_cmt__Product__c', targetLabel: 'IsTaxable', targetAPI: 'vlocity_cmt__IsTaxable__c', mappingType: 'Direct', complexity: 'Simple', transformRule: 'Map tax code if used', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Charge Type', sourceAPI: 'SBQQ__ChargeType__c', targetObject: 'vlocity_cmt__Product__c', targetLabel: 'ChargeType', targetAPI: 'vlocity_cmt__ChargeType__c', mappingType: 'Transform', complexity: 'Medium', transformRule: 'Map charge type → RCA charge model', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Bundling Behavior', sourceAPI: 'SBQQ__BundlingBehavior__c', targetObject: 'vlocity_cmt__Product__c', targetLabel: 'BundlingBehavior', targetAPI: 'vlocity_cmt__BundlingBehavior__c', mappingType: 'Transform', complexity: 'Complex', transformRule: 'Map bundle type and option rules; requires rework for complex bundles', dataQuality: 'Optional', dqRule: 'Flag for review'},
+                {sourceLabel: 'Feature Set', sourceAPI: 'SBQQ__FeatureSet__c', targetObject: 'vlocity_cmt__Product__c', targetLabel: 'FeatureSet', targetAPI: 'vlocity_cmt__FeatureSet__c', mappingType: 'Direct', complexity: 'Medium', transformRule: 'Map features to EPC feature list', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Configuration Attributes', sourceAPI: 'SBQQ__ConfigurationAttributes__c', targetObject: 'vlocity_cmt__Product__c', targetLabel: 'ConfigAttributes', targetAPI: 'vlocity_cmt__ConfigAttributes__c', mappingType: 'Structural', complexity: 'Complex', transformRule: 'Translate SBQQ attributes → RCA config attributes (preserve names & allowed values)', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Default Quantity', sourceAPI: 'SBQQ__DefaultQuantity__c', targetObject: 'vlocity_cmt__Product__c', targetLabel: 'DefaultQuantity', targetAPI: 'DefaultQuantity', mappingType: 'Direct', complexity: 'Simple', transformRule: 'If blank set to 1', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Minimum Quantity', sourceAPI: 'SBQQ__MinQuantity__c', targetObject: 'vlocity_cmt__Product__c', targetLabel: 'MinQuantity', targetAPI: 'MinQuantity', mappingType: 'Direct', complexity: 'Medium', transformRule: 'Map min/max constraints', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Maximum Quantity', sourceAPI: 'SBQQ__MaxQuantity__c', targetObject: 'vlocity_cmt__Product__c', targetLabel: 'MaxQuantity', targetAPI: 'MaxQuantity', mappingType: 'Direct', complexity: 'Medium', transformRule: 'Map min/max constraints', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Allow Quantity Edit', sourceAPI: 'SBQQ__AllowQuantityEdit__c', targetObject: 'vlocity_cmt__Product__c', targetLabel: 'AllowQuantityEdit', targetAPI: 'AllowQuantityEdit', mappingType: 'Direct', complexity: 'Simple', transformRule: 'Boolean mapping', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Image URL', sourceAPI: 'SBQQ__ImageURL__c', targetObject: 'vlocity_cmt__Product__c', targetLabel: 'ImageURL', targetAPI: 'ImageURL', mappingType: 'Direct', complexity: 'Simple', transformRule: 'Preserve attachments or migrate to CDN', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Active Effective Date', sourceAPI: 'SBQQ__ActiveEffectiveDate__c', targetObject: 'vlocity_cmt__Product__c', targetLabel: 'ActiveEffectiveDate', targetAPI: 'ActiveEffectiveDate', mappingType: 'Direct', complexity: 'Medium', transformRule: 'Preserve lifecycle dates', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Active Expiration Date', sourceAPI: 'SBQQ__ActiveExpirationDate__c', targetObject: 'vlocity_cmt__Product__c', targetLabel: 'ActiveExpirationDate', targetAPI: 'ActiveExpirationDate', mappingType: 'Direct', complexity: 'Medium', transformRule: 'Preserve lifecycle dates', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'External Id (Legacy)', sourceAPI: 'External_Id__c', targetObject: 'vlocity_cmt__Product__c', targetLabel: 'ExternalId', targetAPI: 'ExternalId', mappingType: 'Transform', complexity: 'Medium', transformRule: 'Use for reconciliation only; do not overwrite Target Ids', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Custom Flag', sourceAPI: 'Custom_Flag__c', targetObject: 'vlocity_cmt__Product__c', targetLabel: 'Custom Flag', targetAPI: 'Custom_Flag__c', mappingType: 'Transform', complexity: 'Medium', transformRule: 'Generic custom flag for business use', dataQuality: 'Optional', dqRule: 'Flag for review'},
+                {sourceLabel: 'Custom Text', sourceAPI: 'Custom_Text__c', targetObject: 'vlocity_cmt__Product__c', targetLabel: 'Custom Text', targetAPI: 'Custom_Text__c', mappingType: 'Transform', complexity: 'Medium', transformRule: 'Generic custom text field', dataQuality: 'Optional', dqRule: 'Flag for review'},
+                {sourceLabel: 'Custom Numeric', sourceAPI: 'Custom_Number__c', targetObject: 'vlocity_cmt__Product__c', targetLabel: 'Custom Numeric', targetAPI: 'Custom_Number__c', mappingType: 'Transform', complexity: 'Medium', transformRule: 'Generic custom numeric field', dataQuality: 'Optional', dqRule: 'Flag for review'}
+            ],
+            'Pricebook2': [
+                {sourceLabel: 'Id', sourceAPI: 'Id', targetObject: 'vlocity_cmt__PriceList__c', targetLabel: 'Id', targetAPI: 'Id', mappingType: 'Direct', complexity: 'Simple', transformRule: '', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Name', sourceAPI: 'Name', targetObject: 'vlocity_cmt__PriceList__c', targetLabel: 'Name', targetAPI: 'Name', mappingType: 'Direct', complexity: 'Simple', transformRule: 'Primary identifier of price list; keep naming consistent', dataQuality: 'Required', dqRule: 'Reject if blank'},
+                {sourceLabel: 'Is Active', sourceAPI: 'IsActive', targetObject: 'vlocity_cmt__PriceList__c', targetLabel: 'IsActive', targetAPI: 'IsActive', mappingType: 'Direct', complexity: 'Simple', transformRule: '', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Description', sourceAPI: 'Description', targetObject: 'vlocity_cmt__PriceList__c', targetLabel: 'Description', targetAPI: 'Description', mappingType: 'Direct', complexity: 'Simple', transformRule: '', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Currency', sourceAPI: 'CurrencyIsoCode', targetObject: 'vlocity_cmt__PriceList__c', targetLabel: 'CurrencyIsoCode', targetAPI: 'CurrencyIsoCode', mappingType: 'Direct', complexity: 'Medium', transformRule: 'Verify multi-currency activation in RCA environment', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Is Standard Price Book', sourceAPI: 'IsStandardPricebook', targetObject: 'vlocity_cmt__PriceList__c', targetLabel: 'IsStandardPriceList', targetAPI: 'IsStandardPriceList', mappingType: 'Transform', complexity: 'Medium', transformRule: 'RCA may support multiple standard catalogs; confirm design', dataQuality: 'Optional', dqRule: 'Flag for review'},
+                {sourceLabel: 'Created Date', sourceAPI: 'CreatedDate', targetObject: 'vlocity_cmt__PriceList__c', targetLabel: 'CreatedDate', targetAPI: 'CreatedDate', mappingType: 'Direct', complexity: 'Simple', transformRule: 'Preserve audit data if migrating history', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Last Modified Date', sourceAPI: 'LastModifiedDate', targetObject: 'vlocity_cmt__PriceList__c', targetLabel: 'LastModifiedDate', targetAPI: 'LastModifiedDate', mappingType: 'Direct', complexity: 'Simple', transformRule: '', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Owner', sourceAPI: 'OwnerId', targetObject: 'vlocity_cmt__PriceList__c', targetLabel: 'OwnerId', targetAPI: 'OwnerId', mappingType: 'Direct', complexity: 'Simple', transformRule: 'Map user IDs using user Id_Mapping table', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'External System Code', sourceAPI: 'External_Code__c', targetObject: 'vlocity_cmt__PriceList__c', targetLabel: 'ExternalCode', targetAPI: 'ExternalCode', mappingType: 'Transform', complexity: 'Medium', transformRule: 'Useful for ERP or legacy integration reconciliation', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Effective Start Date', sourceAPI: 'EffectiveStartDate__c', targetObject: 'vlocity_cmt__PriceList__c', targetLabel: 'EffectiveStartDate', targetAPI: 'EffectiveStartDate__c', mappingType: 'Direct', complexity: 'Medium', transformRule: 'Ensure EPC price list dates match CPQ validity periods', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Effective End Date', sourceAPI: 'EffectiveEndDate__c', targetObject: 'vlocity_cmt__PriceList__c', targetLabel: 'EffectiveEndDate', targetAPI: 'EffectiveEndDate__c', mappingType: 'Direct', complexity: 'Medium', transformRule: '', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Custom Flag', sourceAPI: 'Custom_Flag__c', targetObject: 'vlocity_cmt__PriceList__c', targetLabel: 'CustomFlag', targetAPI: 'Custom_Flag__c', mappingType: 'Transform', complexity: 'Medium', transformRule: 'Generic business-specific classification flag', dataQuality: 'Optional', dqRule: 'Flag for review'},
+                {sourceLabel: 'Custom Text', sourceAPI: 'Custom_Text__c', targetObject: 'vlocity_cmt__PriceList__c', targetLabel: 'CustomText', targetAPI: 'Custom_Text__c', mappingType: 'Transform', complexity: 'Medium', transformRule: '', dataQuality: 'Optional', dqRule: 'Flag for review'},
+                {sourceLabel: 'Custom Numeric', sourceAPI: 'Custom_Number__c', targetObject: 'vlocity_cmt__PriceList__c', targetLabel: 'CustomNumber', targetAPI: 'Custom_Number__c', mappingType: 'Transform', complexity: 'Medium', transformRule: '', dataQuality: 'Optional', dqRule: 'Flag for review'}
+            ],
+            'PricebookEntry': [
+                {sourceLabel: 'Id', sourceAPI: 'Id', targetObject: 'vlocity_cmt__Price__c', targetLabel: 'Id', targetAPI: 'Id', mappingType: 'Direct', complexity: 'Simple', transformRule: '', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Pricebook2Id', sourceAPI: 'Pricebook2Id', targetObject: 'vlocity_cmt__Price__c', targetLabel: 'PriceListId', targetAPI: 'vlocity_cmt__PriceListId__c', mappingType: 'Direct', complexity: 'Medium', transformRule: 'Use Id_Mapping to link Pricebook2 → PriceList', dataQuality: 'Required', dqRule: 'Reject if blank'},
+                {sourceLabel: 'Product2Id', sourceAPI: 'Product2Id', targetObject: 'vlocity_cmt__Price__c', targetLabel: 'ProductId', targetAPI: 'vlocity_cmt__ProductId__c', mappingType: 'Direct', complexity: 'Medium', transformRule: 'Map Product2 → EPC Product via Id_Mapping', dataQuality: 'Required', dqRule: 'Reject if blank'},
+                {sourceLabel: 'Unit Price', sourceAPI: 'UnitPrice', targetObject: 'vlocity_cmt__Price__c', targetLabel: 'PriceValue', targetAPI: 'vlocity_cmt__PriceValue__c', mappingType: 'Transform', complexity: 'Medium', transformRule: 'Ensure correct price dimension; multi-currency impact', dataQuality: 'Required', dqRule: 'Reject if price missing'},
+                {sourceLabel: 'Use Standard Price', sourceAPI: 'UseStandardPrice', targetObject: 'vlocity_cmt__Price__c', targetLabel: 'UseStandardPrice', targetAPI: 'UseStandardPrice', mappingType: 'Direct', complexity: 'Simple', transformRule: '', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Is Active', sourceAPI: 'IsActive', targetObject: 'vlocity_cmt__Price__c', targetLabel: 'IsActive', targetAPI: 'IsActive', mappingType: 'Direct', complexity: 'Simple', transformRule: '', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Currency', sourceAPI: 'CurrencyIsoCode', targetObject: 'vlocity_cmt__Price__c', targetLabel: 'CurrencyIsoCode', targetAPI: 'CurrencyIsoCode', mappingType: 'Direct', complexity: 'Medium', transformRule: 'Requires multi-currency config in RCA', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Price Effective Date', sourceAPI: 'EffectiveDate', targetObject: 'vlocity_cmt__Price__c', targetLabel: 'EffectiveDate', targetAPI: 'EffectiveDate__c', mappingType: 'Direct', complexity: 'Medium', transformRule: 'Map pricing validity date ranges', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Price Expiration Date', sourceAPI: 'ExpirationDate', targetObject: 'vlocity_cmt__Price__c', targetLabel: 'ExpirationDate', targetAPI: 'ExpirationDate__c', mappingType: 'Direct', complexity: 'Medium', transformRule: '', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Discount Percentage', sourceAPI: 'Discount__c', targetObject: 'vlocity_cmt__Price__c', targetLabel: 'DiscountPercent', targetAPI: 'DiscountPercent__c', mappingType: 'Transform', complexity: 'Medium', transformRule: 'May need migration to RCA discounting model', dataQuality: 'Optional', dqRule: 'Flag for review'},
+                {sourceLabel: 'Price Category', sourceAPI: 'PriceCategory__c', targetObject: 'vlocity_cmt__Price__c', targetLabel: 'PriceCategory', targetAPI: 'PriceCategory__c', mappingType: 'Direct', complexity: 'Simple', transformRule: 'Category helps align EPC price dimensions', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'External Id (Legacy)', sourceAPI: 'External_Id__c', targetObject: 'vlocity_cmt__Price__c', targetLabel: 'ExternalId', targetAPI: 'ExternalId', mappingType: 'Transform', complexity: 'Medium', transformRule: 'Useful for reconciliation with ERP pricing', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Custom Flag', sourceAPI: 'Custom_Flag__c', targetObject: 'vlocity_cmt__Price__c', targetLabel: 'CustomFlag', targetAPI: 'Custom_Flag__c', mappingType: 'Transform', complexity: 'Medium', transformRule: '', dataQuality: 'Optional', dqRule: 'Flag for review'},
+                {sourceLabel: 'Custom Text', sourceAPI: 'Custom_Text__c', targetObject: 'vlocity_cmt__Price__c', targetLabel: 'CustomText', targetAPI: 'Custom_Text__c', mappingType: 'Transform', complexity: 'Medium', transformRule: '', dataQuality: 'Optional', dqRule: 'Flag for review'},
+                {sourceLabel: 'Custom Numeric', sourceAPI: 'Custom_Number__c', targetObject: 'vlocity_cmt__Price__c', targetLabel: 'CustomNumber', targetAPI: 'Custom_Number__c', mappingType: 'Transform', complexity: 'Medium', transformRule: '', dataQuality: 'Optional', dqRule: 'Flag for review'}
+            ],
+            'SBQQ__ProductOption__c': [
+                {sourceLabel: 'Id', sourceAPI: 'Id', targetObject: 'vlocity_cmt__ProductChildItem__c', targetLabel: 'Id', targetAPI: 'Id', mappingType: 'Direct', complexity: 'Simple', transformRule: '', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Parent Product', sourceAPI: 'SBQQ__Product__c', targetObject: 'vlocity_cmt__ProductChildItem__c', targetLabel: 'ParentProductId', targetAPI: 'vlocity_cmt__ParentProductId__c', mappingType: 'Structural', complexity: 'Complex', transformRule: 'Create parent products first and map via Id_Mapping', dataQuality: 'Required', dqRule: 'Reject if blank'},
+                {sourceLabel: 'Optional SKU', sourceAPI: 'SBQQ__OptionalSKU__c', targetObject: 'vlocity_cmt__ProductChildItem__c', targetLabel: 'ChildProductId', targetAPI: 'vlocity_cmt__ChildProductId__c', mappingType: 'Direct', complexity: 'Medium', transformRule: 'Verify SKU → Product mapping; create placeholder if missing', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Quantity', sourceAPI: 'SBQQ__Quantity__c', targetObject: 'vlocity_cmt__ProductChildItem__c', targetLabel: 'Quantity', targetAPI: 'vlocity_cmt__Quantity__c', mappingType: 'Direct', complexity: 'Simple', transformRule: 'If dynamic quantity, mark as configurable attribute', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Default Selected', sourceAPI: 'SBQQ__DefaultSelected__c', targetObject: 'vlocity_cmt__ProductChildItem__c', targetLabel: 'DefaultSelected', targetAPI: 'DefaultSelected', mappingType: 'Direct', complexity: 'Simple', transformRule: '', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Optional Price', sourceAPI: 'SBQQ__OptionalPrice__c', targetObject: 'vlocity_cmt__Price__c', targetLabel: 'OptionalPrice', targetAPI: 'vlocity_cmt__OptionalPrice__c', mappingType: 'Transform', complexity: 'Medium', transformRule: 'Map option-level price entries to RCA price object', dataQuality: 'Optional', dqRule: 'Flag for review'},
+                {sourceLabel: 'Sequence', sourceAPI: 'SBQQ__Sequence__c', targetObject: 'vlocity_cmt__ProductChildItem__c', targetLabel: 'Sequence', targetAPI: 'Sequence', mappingType: 'Direct', complexity: 'Simple', transformRule: 'Preserve UI order', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Is Active', sourceAPI: 'IsActive', targetObject: 'vlocity_cmt__ProductChildItem__c', targetLabel: 'IsActive', targetAPI: 'IsActive', mappingType: 'Direct', complexity: 'Simple', transformRule: '', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Visibility Rules', sourceAPI: 'VisibilityRules__c', targetObject: 'vlocity_cmt__ProductChildItem__c', targetLabel: 'VisibilityRules', targetAPI: 'VisibilityRules', mappingType: 'Transform', complexity: 'Complex', transformRule: 'Translate UI visibility expressions to target qualifications', dataQuality: 'Optional', dqRule: 'Flag for review'},
+                {sourceLabel: 'Option Type', sourceAPI: 'Option_Type__c', targetObject: 'vlocity_cmt__ProductChildItem__c', targetLabel: 'OptionType', targetAPI: 'OptionType', mappingType: 'Transform', complexity: 'Medium', transformRule: 'Map option type (add-on vs dependent) to RCA semantics', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Custom Flag', sourceAPI: 'Custom_Flag__c', targetObject: 'vlocity_cmt__ProductChildItem__c', targetLabel: 'CustomFlag', targetAPI: 'Custom_Flag__c', mappingType: 'Transform', complexity: 'Medium', transformRule: 'Generic custom flag', dataQuality: 'Optional', dqRule: 'Flag for review'},
+                {sourceLabel: 'Custom Text', sourceAPI: 'Custom_Text__c', targetObject: 'vlocity_cmt__ProductChildItem__c', targetLabel: 'CustomText', targetAPI: 'Custom_Text__c', mappingType: 'Transform', complexity: 'Medium', transformRule: 'Generic custom text field', dataQuality: 'Optional', dqRule: 'Flag for review'},
+                {sourceLabel: 'Custom Numeric', sourceAPI: 'Custom_Number__c', targetObject: 'vlocity_cmt__ProductChildItem__c', targetLabel: 'CustomNumber', targetAPI: 'Custom_Number__c', mappingType: 'Transform', complexity: 'Medium', transformRule: 'Generic custom numeric field', dataQuality: 'Optional', dqRule: 'Flag for review'}
+            ],
+            'SBQQ__Feature__c': [
+                {sourceLabel: 'Id', sourceAPI: 'Id', targetObject: 'Feature', targetLabel: 'Id', targetAPI: 'Id', mappingType: 'Direct', complexity: 'Simple', transformRule: '', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Name', sourceAPI: 'Name', targetObject: 'Feature', targetLabel: 'Name', targetAPI: 'Name', mappingType: 'Direct', complexity: 'Simple', transformRule: '', dataQuality: 'Required', dqRule: 'Reject if blank'},
+                {sourceLabel: 'Feature Code', sourceAPI: 'SBQQ__FeatureCode__c', targetObject: 'Feature', targetLabel: 'FeatureCode', targetAPI: 'FeatureCode', mappingType: 'Direct', complexity: 'Simple', transformRule: 'Use as internal reference code', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Description', sourceAPI: 'Description', targetObject: 'Feature', targetLabel: 'Description', targetAPI: 'Description', mappingType: 'Direct', complexity: 'Simple', transformRule: '', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Feature Group', sourceAPI: 'Feature_Group__c', targetObject: 'Feature', targetLabel: 'FeatureGroup', targetAPI: 'FeatureGroup', mappingType: 'Transform', complexity: 'Medium', transformRule: 'Map grouping semantics to RCA feature groups', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'UI Order', sourceAPI: 'UI_Order__c', targetObject: 'Feature', targetLabel: 'UIOrder', targetAPI: 'UIOrder', mappingType: 'Direct', complexity: 'Simple', transformRule: 'Preserve display order in configurator', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Is Required', sourceAPI: 'IsRequired__c', targetObject: 'Feature', targetLabel: 'IsRequired', targetAPI: 'IsRequired', mappingType: 'Direct', complexity: 'Simple', transformRule: 'Boolean mapping; impacts configuration validation', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Selection Rule', sourceAPI: 'SelectionRule__c', targetObject: 'Feature', targetLabel: 'SelectionRule', targetAPI: 'SelectionRule', mappingType: 'Transform', complexity: 'Complex', transformRule: 'Translate selection logic into RCA ProductConfigurationRule or qualification', dataQuality: 'Optional', dqRule: 'Flag for review'},
+                {sourceLabel: 'Custom Flag', sourceAPI: 'Custom_Flag__c', targetObject: 'Feature', targetLabel: 'CustomFlag', targetAPI: 'Custom_Flag__c', mappingType: 'Transform', complexity: 'Medium', transformRule: 'Generic custom flag', dataQuality: 'Optional', dqRule: 'Flag for review'},
+                {sourceLabel: 'Custom Text', sourceAPI: 'Custom_Text__c', targetObject: 'Feature', targetLabel: 'CustomText', targetAPI: 'Custom_Text__c', mappingType: 'Transform', complexity: 'Medium', transformRule: 'Generic custom text field', dataQuality: 'Optional', dqRule: 'Flag for review'},
+                {sourceLabel: 'Custom Numeric', sourceAPI: 'Custom_Number__c', targetObject: 'Feature', targetLabel: 'CustomNumber', targetAPI: 'Custom_Number__c', mappingType: 'Transform', complexity: 'Medium', transformRule: 'Generic custom numeric field', dataQuality: 'Optional', dqRule: 'Flag for review'}
+            ],
+            'SBQQ__ConfigurationAttribute__c': [
+                {sourceLabel: 'Id', sourceAPI: 'Id', targetObject: 'ConfigAttribute', targetLabel: 'Id', targetAPI: 'Id', mappingType: 'Direct', complexity: 'Simple', transformRule: '', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Attribute Name', sourceAPI: 'SBQQ__Attribute__c', targetObject: 'ConfigAttribute', targetLabel: 'AttributeName', targetAPI: 'AttributeName', mappingType: 'Direct', complexity: 'Simple', transformRule: '', dataQuality: 'Required', dqRule: 'Reject if blank'},
+                {sourceLabel: 'Attribute API Name', sourceAPI: 'SBQQ__AttributeAPI__c', targetObject: 'ConfigAttribute', targetLabel: 'AttributeAPIName', targetAPI: 'AttributeAPIName', mappingType: 'Direct', complexity: 'Simple', transformRule: 'Preserve API name for runtime mapping', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Attribute Value', sourceAPI: 'SBQQ__Value__c', targetObject: 'ConfigAttribute', targetLabel: 'AttributeValue', targetAPI: 'AttributeValue', mappingType: 'Direct', complexity: 'Simple', transformRule: '', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Data Type', sourceAPI: 'SBQQ__DataType__c', targetObject: 'ConfigAttribute', targetLabel: 'DataType', targetAPI: 'DataType', mappingType: 'Direct', complexity: 'Medium', transformRule: 'Map CPQ data type → RCA supported types (string, number, boolean)', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Allowed Values', sourceAPI: 'SBQQ__AllowedValues__c', targetObject: 'ConfigAttribute', targetLabel: 'AllowedValues', targetAPI: 'AllowedValues', mappingType: 'Structural', complexity: 'Medium', transformRule: 'Transform semi-colon separated values into target picklist entries', dataQuality: 'Optional', dqRule: 'Flag for review'},
+                {sourceLabel: 'Default Value', sourceAPI: 'SBQQ__DefaultValue__c', targetObject: 'ConfigAttribute', targetLabel: 'DefaultValue', targetAPI: 'DefaultValue', mappingType: 'Direct', complexity: 'Simple', transformRule: 'Set defaults in RCA if allowed', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Display Label', sourceAPI: 'SBQQ__DisplayLabel__c', targetObject: 'ConfigAttribute', targetLabel: 'DisplayLabel', targetAPI: 'DisplayLabel', mappingType: 'Direct', complexity: 'Simple', transformRule: 'Preserve friendly label for configurator UI', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Required Flag', sourceAPI: 'SBQQ__IsRequired__c', targetObject: 'ConfigAttribute', targetLabel: 'IsRequired', targetAPI: 'IsRequired', mappingType: 'Direct', complexity: 'Simple', transformRule: 'Boolean mapping; enforce in config rules', dataQuality: 'Optional', dqRule: 'Flag if blank'},
+                {sourceLabel: 'Custom Flag', sourceAPI: 'Custom_Flag__c', targetObject: 'ConfigAttribute', targetLabel: 'CustomFlag', targetAPI: 'Custom_Flag__c', mappingType: 'Transform', complexity: 'Medium', transformRule: 'Generic custom flag', dataQuality: 'Optional', dqRule: 'Flag for review'},
+                {sourceLabel: 'Custom Text', sourceAPI: 'Custom_Text__c', targetObject: 'ConfigAttribute', targetLabel: 'CustomText', targetAPI: 'Custom_Text__c', mappingType: 'Transform', complexity: 'Medium', transformRule: 'Generic custom text field', dataQuality: 'Optional', dqRule: 'Flag for review'},
+                {sourceLabel: 'Custom Numeric', sourceAPI: 'Custom_Number__c', targetObject: 'ConfigAttribute', targetLabel: 'CustomNumber', targetAPI: 'Custom_Number__c', mappingType: 'Transform', complexity: 'Medium', transformRule: 'Generic custom numeric field', dataQuality: 'Optional', dqRule: 'Flag for review'}
+            ]
+        };
+
+        let currentObject = 'Product2';
+        let currentFilter = { complexity: '', mappingType: '' };
+
+        function renderMappingTable() {
+            const tbody = document.getElementById('mappingTableBody');
+            tbody.innerHTML = '';
+            
+            const mappings = MAPPING_DATA[currentObject] || [];
+            const filtered = mappings.filter(m => {
+                if (currentFilter.complexity && m.complexity !== currentFilter.complexity) return false;
+                if (currentFilter.mappingType && m.mappingType !== currentFilter.mappingType) return false;
+                return true;
+            });
+
+            filtered.forEach((mapping, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${mapping.sourceLabel}</td>
+                    <td><code>${mapping.sourceAPI}</code></td>
+                    <td>${mapping.targetObject}</td>
+                    <td>${mapping.targetLabel}</td>
+                    <td><code>${mapping.targetAPI}</code></td>
+                    <td><span class="badge badge-${mapping.mappingType.toLowerCase()}">${mapping.mappingType}</span></td>
+                    <td><span class="badge badge-${mapping.complexity.toLowerCase()}">${mapping.complexity}</span></td>
+                    <td><small>${mapping.transformRule}</small></td>
+                    <td><span class="badge badge-${mapping.dataQuality.toLowerCase()}">${mapping.dataQuality}</span></td>
+                    <td><small>${mapping.dqRule}</small></td>
+                    <td>
+                        <button class="btn btn-xs btn-primary" onclick="editMapping(${index})" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-xs btn-danger" onclick="deleteMapping(${index})" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            updateStats();
+        }
+
+        function updateStats() {
+            const mappings = MAPPING_DATA[currentObject] || [];
+            const totalFields = mappings.length;
+            const mapped = mappings.filter(m => m.targetAPI).length;
+            const required = mappings.filter(m => m.dataQuality === 'Required').length;
+            const complex = mappings.filter(m => m.complexity === 'Complex').length;
+            
+            document.querySelector('.stat-card:nth-child(1) .stat-number').textContent = totalFields;
+            document.querySelector('.stat-card:nth-child(3) .stat-number').textContent = complex;
+            document.querySelector('.stat-card:nth-child(4) .stat-number').textContent = 
+                Math.round((mapped / totalFields) * 100) + '%';
+        }
+
+        function filterMappings() {
+            currentFilter.complexity = document.getElementById('complexityFilter').value;
+            currentFilter.mappingType = document.getElementById('mappingTypeFilter').value;
+            renderMappingTable();
+        }
+
+        function addNewMapping() {
+            RevNova.showToast('Add mapping functionality - coming soon', 'info');
+        }
+
+        function editMapping(index) {
+            RevNova.showToast(`Edit mapping for ${MAPPING_DATA[currentObject][index].sourceLabel}`, 'info');
+        }
+
+        function deleteMapping(index) {
+            if (confirm(`Delete mapping for ${MAPPING_DATA[currentObject][index].sourceLabel}?`)) {
+                MAPPING_DATA[currentObject].splice(index, 1);
+                renderMappingTable();
+                RevNova.showToast('Mapping deleted', 'success');
+            }
+        }
+
+        function importCSV() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.csv';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    parseCSVAndMerge(event.target.result);
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        function parseCSVAndMerge(csvText) {
+            const lines = csvText.split('\n').filter(l => l.trim());
+            const headers = lines[0].split(',').map(h => h.trim());
+            
+            for (let i = 1; i < lines.length; i++) {
+                const values = lines[i].split(',').map(v => v.trim());
+                const mapping = {
+                    sourceLabel: values[1],
+                    sourceAPI: values[2],
+                    targetObject: values[3],
+                    targetLabel: values[4],
+                    targetAPI: values[5],
+                    mappingType: values[6],
+                    complexity: values[7],
+                    transformRule: values[8],
+                    dataQuality: values[9],
+                    dqRule: values[10]
+                };
+                
+                const existing = MAPPING_DATA[currentObject].findIndex(
+                    m => m.sourceAPI === mapping.sourceAPI
+                );
+                
+                if (existing >= 0) {
+                    MAPPING_DATA[currentObject][existing] = mapping; // Upsert
+                } else {
+                    MAPPING_DATA[currentObject].push(mapping);
+                }
+            }
+            
+            renderMappingTable();
+            RevNova.showToast('CSV imported and merged successfully!', 'success');
+        }
+
+        function exportCSV() {
+            const mappings = MAPPING_DATA[currentObject] || [];
+            let csv = 'Source Object,Source Field Label,Source API Name,Target Object,Target Field Label,Target API Name,Mapping Type,Complexity,Transform Rule / Notes,Data Quality Check,DQ Rule / Action\n';
+            
+            mappings.forEach(m => {
+                csv += `${currentObject},${m.sourceLabel},${m.sourceAPI},${m.targetObject},${m.targetLabel},${m.targetAPI},${m.mappingType},${m.complexity},"${m.transformRule}",${m.dataQuality},${m.dqRule}\n`;
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${currentObject}_Mapping.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+            
+            RevNova.showToast('CSV exported successfully!', 'success');
+        }
+
         function proceedToTransform() {
             const projectId = new URLSearchParams(window.location.search).get('projectId') || 'pricing-rules-migration';
             
-            // TODO: Show processing overlay here
             RevNova.showProcessing('Validating mappings...');
             
-            // Save mapping data to localStorage
             const mappingData = {
                 projectId: projectId,
-                fieldsMapped: 45,
-                totalFields: 245,
-                confidenceScore: 89,
+                mappings: MAPPING_DATA,
                 timestamp: new Date().toISOString()
             };
             
@@ -296,7 +545,6 @@
             localStorage.setItem(`migration_${projectId}_currentStep`, 'transform');
             
             setTimeout(() => {
-                // TODO: Hide processing overlay here
                 RevNova.hideProcessing();
                 window.location.href = `migration-transform.html?projectId=${projectId}`;
             }, 1500);
@@ -323,31 +571,36 @@
         function saveMappings() {
             RevNova.showProcessing('Saving mapping progress...');
             
+            const projectId = new URLSearchParams(window.location.search).get('projectId') || 'current-migration';
+            localStorage.setItem(`migration_${projectId}_mapping`, JSON.stringify(MAPPING_DATA));
+            
             setTimeout(() => {
                 RevNova.hideProcessing();
                 RevNova.showToast('Mapping progress saved successfully!', 'success');
             }, 1000);
         }
 
-        // Object tab switching
         document.querySelectorAll('.object-tab').forEach(tab => {
             tab.addEventListener('click', function() {
                 document.querySelectorAll('.object-tab').forEach(t => t.classList.remove('active'));
                 this.classList.add('active');
-                // In real implementation, this would load the selected object's fields
-                RevNova.showToast(`Loading ${this.dataset.object} fields...`, 'info');
+                currentObject = this.dataset.object;
+                renderMappingTable();
             });
         });
 
-        // Load project data
         document.addEventListener('DOMContentLoaded', function() {
+            renderMappingTable();
+            
             const projectId = new URLSearchParams(window.location.search).get('projectId');
             if (projectId) {
-                // Load saved analysis data
-                const savedData = localStorage.getItem(`migration_${projectId}_analysis`);
+                const savedData = localStorage.getItem(`migration_${projectId}_mapping`);
                 if (savedData) {
-                    const analysisData = JSON.parse(savedData);
-                    // Could display analysis insights
+                    const saved = JSON.parse(savedData);
+                    if (saved.mappings) {
+                        Object.assign(MAPPING_DATA, saved.mappings);
+                        renderMappingTable();
+                    }
                 }
             }
         });
