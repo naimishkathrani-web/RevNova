@@ -757,110 +757,870 @@
                 <a href="onboarding-dev1.html">Developer 1</a> › Week 2 › Day 7
             </div>
             
-            <h1 class="page-title">Day 6: Dashboard Page</h1>
-            <p class="page-subtitle">Developer 1: Backend & Database | Duration: ~6-8 hours</p>
+            <h1 class="page-title">Day 6: Salesforce Connections UI</h1>
+            <p class="page-subtitle">Developer 2: Frontend | Duration: ~6-8 hours</p>
             
             <div class="content-section">
                 <h2>📋 Objective</h2>
-                <p>Enhance the schema analysis API to fetch detailed field metadata, implement job status polling, and add Redis caching for performance optimization.</p>
+                <p>Build the Salesforce connection management interface for RevNova. Users will be able to create new Salesforce connections, view existing connections, and test connectivity before saving.</p>
                 
-                <p><strong>API Endpoints to Build:</strong></p>
+                <p><strong>UI Components to Build:</strong></p>
                 <ul>
-                    <li><code>GET /api/v1/projects/{id}/analyze/{job_id}</code> - Poll job status</li>
-                    <li><code>GET /api/v1/projects/{id}/analyze/summary</code> - Get analysis summary</li>
+                    <li>Connection form with authentication fields (username, password, security token, environment)</li>
+                    <li>Connection list view showing all saved connections with status indicators</li>
+                    <li>Test connection button with real-time validation feedback</li>
+                    <li>Error handling and success notifications</li>
                 </ul>
-            </div>
-            
-            <div class="content-section">
-                <h2>📦 Step 1: Install Redis Client</h2>
-                <p>Install the Redis client for Node.js to enable caching:</p>
-                <pre><code>cd backend
-npm install redis</code></pre>
                 
-                <p>Create a Redis client configuration:</p>
-                <p><strong>File:</strong> <code>backend/src/config/redis.ts</code></p>
-                <pre><code>import { createClient } from 'redis';
-
-const redisClient = createClient({
-  url: process.env.REDIS_URL || 'redis://localhost:6379'
-});
-
-redisClient.on('error', (err) => console.error('Redis Client Error', err));
-
-export const connectRedis = async () => {
-  await redisClient.connect();
-  console.log('Redis connected');
-};
-
-export default redisClient;</code></pre>
+                <p><strong>Design Reference:</strong> Follow RevNova's Salesforce-inspired design system from <code>docs/styles.css</code> and form patterns from <code>docs/login.html</code>.</p>
             </div>
             
             <div class="content-section">
-                <h2>🔄 Step 2: Create Job Status Polling Endpoint</h2>
-                <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
-                <pre><code>router.get('/projects/:id/analyze/:jobId', async (req, res) => {
-  try {
-    const { id, jobId } = req.params;
-    
-    // Check Redis for job status
-    const jobData = await redisClient.get(`job:${jobId}`);
-    
-    if (!jobData) {
-      return res.status(404).json({ error: 'Job not found' });
-    }
-    
-    const job = JSON.parse(jobData);
-    res.json({
-      jobId: job.id,
-      status: job.status, // 'pending', 'running', 'completed', 'failed'
-      progress: job.progress,
-      result: job.result || null,
-      error: job.error || null
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});</code></pre>
-            </div>
-            
-            <div class="content-section">
-                <h2>📊 Step 3: Enhance Field Metadata</h2>
-                <p>Update the schema analysis to include detailed field information:</p>
-                <pre><code>const getDetailedFieldMetadata = (field: any) => {
-  return {
-    name: field.name,
-    label: field.label,
-    type: field.type,
-    length: field.length,
-    precision: field.precision,
-    scale: field.scale,
-    required: !field.nillable,
-    unique: field.unique,
-    externalId: field.externalId,
-    defaultValue: field.defaultValue,
-    picklistValues: field.picklistValues || [],
-    referenceTo: field.referenceTo || [],
-    relationshipName: field.relationshipName,
-    calculated: field.calculated,
-    customField: field.custom
+                <h2>📦 Step 1: Create Connection Form Component</h2>
+                <p>Create a React component for the connection form with validation and state management:</p>
+                
+                <p><strong>File:</strong> <code>frontend/src/components/connections/ConnectionForm.tsx</code></p>
+                <pre><code>import React, { useState } from 'react';
+import axios from 'axios';
+import './ConnectionForm.css';
+
+interface ConnectionFormData {
+  name: string;
+  username: string;
+  password: string;
+  securityToken: string;
+  environment: 'production' | 'sandbox';
+}
+
+interface ConnectionFormProps {
+  onSuccess: () => void;
+}
+
+export const ConnectionForm: React.FC&lt;ConnectionFormProps&gt; = ({ onSuccess }) => {
+  const [formData, setFormData] = useState&lt;ConnectionFormData&gt;({
+    name: '',
+    username: '',
+    password: '',
+    securityToken: '',
+    environment: 'production'
+  });
+  const [testing, setTesting] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [testResult, setTestResult] = useState&lt;{ success: boolean; message: string } | null&gt;(null);
+  const [error, setError] = useState&lt;string | null&gt;(null);
+
+  const handleChange = (e: React.ChangeEvent&lt;HTMLInputElement | HTMLSelectElement&gt;) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+    setTestResult(null); // Clear test result when form changes
   };
+
+  const handleTestConnection = async () => {
+    setTesting(true);
+    setTestResult(null);
+    setError(null);
+
+    try {
+      const response = await axios.post('/api/v1/connections/test', {
+        username: formData.username,
+        password: formData.password,
+        securityToken: formData.securityToken,
+        environment: formData.environment
+      });
+
+      setTestResult({
+        success: true,
+        message: `Connected successfully! Organization: ${response.data.organizationId}`
+      });
+    } catch (err: any) {
+      setTestResult({
+        success: false,
+        message: err.response?.data?.error || 'Connection test failed'
+      });
+    } finally {
+      setTesting(false);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaving(true);
+    setError(null);
+
+    try {
+      await axios.post('/api/v1/connections', formData);
+      onSuccess();
+      // Reset form
+      setFormData({
+        name: '',
+        username: '',
+        password: '',
+        securityToken: '',
+        environment: 'production'
+      });
+      setTestResult(null);
+    } catch (err: any) {
+      setError(err.response?.data?.error || 'Failed to save connection');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    &lt;div className="connection-form-container"&gt;
+      &lt;h2&gt;New Salesforce Connection&lt;/h2&gt;
+      
+      &lt;form onSubmit={handleSubmit} className="connection-form"&gt;
+        &lt;div className="form-group"&gt;
+          &lt;label htmlFor="name"&gt;Connection Name&lt;/label&gt;
+          &lt;input
+            type="text"
+            id="name"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            placeholder="e.g., Production Org"
+            required
+          /&gt;
+        &lt;/div&gt;
+
+        &lt;div className="form-group"&gt;
+          &lt;label htmlFor="environment"&gt;Environment&lt;/label&gt;
+          &lt;select
+            id="environment"
+            name="environment"
+            value={formData.environment}
+            onChange={handleChange}
+            required
+          &gt;
+            &lt;option value="production"&gt;Production&lt;/option&gt;
+            &lt;option value="sandbox"&gt;Sandbox&lt;/option&gt;
+          &lt;/select&gt;
+        &lt;/div&gt;
+
+        &lt;div className="form-group"&gt;
+          &lt;label htmlFor="username"&gt;Salesforce Username&lt;/label&gt;
+          &lt;div className="input-with-icon"&gt;
+            &lt;i className="fas fa-user"&gt;&lt;/i&gt;
+            &lt;input
+              type="text"
+              id="username"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              placeholder="user@example.com"
+              required
+            /&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;div className="form-group"&gt;
+          &lt;label htmlFor="password"&gt;Password&lt;/label&gt;
+          &lt;div className="input-with-icon"&gt;
+            &lt;i className="fas fa-lock"&gt;&lt;/i&gt;
+            &lt;input
+              type="password"
+              id="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="Enter password"
+              required
+            /&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;div className="form-group"&gt;
+          &lt;label htmlFor="securityToken"&gt;Security Token&lt;/label&gt;
+          &lt;div className="input-with-icon"&gt;
+            &lt;i className="fas fa-key"&gt;&lt;/i&gt;
+            &lt;input
+              type="text"
+              id="securityToken"
+              name="securityToken"
+              value={formData.securityToken}
+              onChange={handleChange}
+              placeholder="Enter security token"
+              required
+            /&gt;
+          &lt;/div&gt;
+          &lt;small className="form-hint"&gt;
+            Don't have your security token? 
+            &lt;a href="https://help.salesforce.com/s/articleView?id=sf.user_security_token.htm" target="_blank" rel="noopener noreferrer"&gt;
+              Learn how to reset it
+            &lt;/a&gt;
+          &lt;/small&gt;
+        &lt;/div&gt;
+
+        {testResult && (
+          &lt;div className={`test-result ${testResult.success ? 'success' : 'error'}`}&gt;
+            &lt;i className={`fas ${testResult.success ? 'fa-check-circle' : 'fa-exclamation-circle'}`}&gt;&lt;/i&gt;
+            {testResult.message}
+          &lt;/div&gt;
+        )}
+
+        {error && (
+          &lt;div className="error-message"&gt;
+            &lt;i className="fas fa-exclamation-triangle"&gt;&lt;/i&gt;
+            {error}
+          &lt;/div&gt;
+        )}
+
+        &lt;div className="form-actions"&gt;
+          &lt;button
+            type="button"
+            className="btn btn-secondary"
+            onClick={handleTestConnection}
+            disabled={testing || !formData.username || !formData.password}
+          &gt;
+            {testing ? (
+              &lt;&gt;
+                &lt;i className="fas fa-spinner fa-spin"&gt;&lt;/i&gt; Testing...
+              &lt;/&gt;
+            ) : (
+              &lt;&gt;
+                &lt;i className="fas fa-plug"&gt;&lt;/i&gt; Test Connection
+              &lt;/&gt;
+            )}
+          &lt;/button&gt;
+
+          &lt;button
+            type="submit"
+            className="btn btn-primary"
+            disabled={saving || !testResult?.success}
+          &gt;
+            {saving ? (
+              &lt;&gt;
+                &lt;i className="fas fa-spinner fa-spin"&gt;&lt;/i&gt; Saving...
+              &lt;/&gt;
+            ) : (
+              &lt;&gt;
+                &lt;i className="fas fa-save"&gt;&lt;/i&gt; Save Connection
+              &lt;/&gt;
+            )}
+          &lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/form&gt;
+    &lt;/div&gt;
+  );
 };</code></pre>
             </div>
             
             <div class="content-section">
-                <h2>📈 Step 4: Create Analysis Summary Endpoint</h2>
-                <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
-                <pre><code>router.get('/projects/:id/analyze/summary', async (req, res) => {
-  try {
-    const projectId = parseInt(req.params.id);
+                <h2>🎨 Step 2: Style the Connection Form</h2>
+                <p>Create styles following RevNova's design system:</p>
+                <p><strong>File:</strong> <code>frontend/src/components/connections/ConnectionForm.css</code></p>
+                <pre><code>.connection-form-container {
+  background: var(--background-white);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  margin-bottom: var(--space-xl);
+  box-shadow: var(--shadow-sm);
+}
+
+.connection-form-container h2 {
+  color: var(--text-dark);
+  font-size: var(--font-size-2xl);
+  margin-bottom: var(--space-lg);
+  font-weight: 600;
+}
+
+.connection-form .form-group {
+  margin-bottom: var(--space-lg);
+}
+
+.connection-form label {
+  display: block;
+  color: var(--text-dark);
+  font-weight: 600;
+  margin-bottom: var(--space-sm);
+  font-size: var(--font-size-sm);
+}
+
+.connection-form input,
+.connection-form select {
+  width: 100%;
+  padding: var(--space-md);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  transition: all 0.2s;
+}
+
+.connection-form input:focus,
+.connection-form select:focus {
+  outline: none;
+  border-color: var(--salesforce-blue);
+  box-shadow: 0 0 0 3px rgba(0, 161, 224, 0.1);
+}
+
+.input-with-icon {
+  position: relative;
+}
+
+.input-with-icon i {
+  position: absolute;
+  left: var(--space-md);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-lighter);
+}
+
+.input-with-icon input {
+  padding-left: 2.5rem;
+}
+
+.form-hint {
+  display: block;
+  color: var(--text-light);
+  font-size: var(--font-size-xs);
+  margin-top: var(--space-xs);
+}
+
+.form-hint a {
+  color: var(--salesforce-blue);
+  text-decoration: none;
+}
+
+.form-hint a:hover {
+  text-decoration: underline;
+}
+
+.test-result {
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: var(--font-size-sm);
+}
+
+.test-result.success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.test-result.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.error-message {
+  padding: var(--space-md);
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.form-actions {
+  display: flex;
+  gap: var(--space-md);
+  justify-content: flex-end;
+  margin-top: var(--space-xl);
+}
+
+.btn {
+  padding: var(--space-md) var(--space-xl);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  transition: all 0.2s;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background-color: var(--salesforce-blue);
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: #0089c2;
+  box-shadow: var(--shadow-md);
+}
+
+.btn-secondary {
+  background-color: white;
+  color: var(--text-dark);
+  border: 1px solid var(--border-medium);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: var(--background-light);
+  border-color: var(--text-light);
+}</code></pre>
+            </div>
+            
+            <div class="content-section">
+                <h2>📋 Step 3: Create Connection List Component</h2>
+                <p>Display all saved connections with status indicators:</p>
+                <p><strong>File:</strong> <code>frontend/src/components/connections/ConnectionList.tsx</code></p>
+                <pre><code>import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import './ConnectionList.css';
+
+interface Connection {
+  id: string;
+  name: string;
+  username: string;
+  environment: 'production' | 'sandbox';
+  createdAt: string;
+}
+
+export const ConnectionList: React.FC = () => {
+  const [connections, setConnections] = useState&lt;Connection[]&gt;([]);
+  const [loading, setLoading] = useState(true);
+  const [testingId, setTestingId] = useState&lt;string | null&gt;(null);
+  const [testResults, setTestResults] = useState&lt;Record&lt;string, { success: boolean; message: string }&gt;&gt;({});
+
+  useEffect(() => {
+    fetchConnections();
+  }, []);
+
+  const fetchConnections = async () => {
+    try {
+      const response = await axios.get('/api/v1/connections');
+      setConnections(response.data.connections);
+    } catch (error) {
+      console.error('Failed to fetch connections:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleTestConnection = async (connectionId: string) => {
+    setTestingId(connectionId);
     
-    // Query database for analysis results
-    const summary = {
-      total_objects: 3,
-      custom_objects: 0,
-      total_fields: 45,
-      custom_fields: 12,
-      readiness_score: 0.92,
+    try {
+      const response = await axios.post(`/api/v1/connections/${connectionId}/test`);
+      setTestResults(prev => ({
+        ...prev,
+        [connectionId]: {
+          success: true,
+          message: 'Connection successful'
+        }
+      }));
+    } catch (error: any) {
+      setTestResults(prev => ({
+        ...prev,
+        [connectionId]: {
+          success: false,
+          message: error.response?.data?.error || 'Test failed'
+        }
+      }));
+    } finally {
+      setTestingId(null);
+    }
+  };
+
+  if (loading) {
+    return (
+      &lt;div className="connection-list-container"&gt;
+        &lt;div className="loading-spinner"&gt;
+          &lt;i className="fas fa-spinner fa-spin"&gt;&lt;/i&gt; Loading connections...
+        &lt;/div&gt;
+      &lt;/div&gt;
+    );
+  }
+
+  if (connections.length === 0) {
+    return (
+      &lt;div className="connection-list-container"&gt;
+        &lt;div className="empty-state"&gt;
+          &lt;i className="fas fa-plug fa-3x"&gt;&lt;/i&gt;
+          &lt;h3&gt;No connections yet&lt;/h3&gt;
+          &lt;p&gt;Create your first Salesforce connection to get started&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    );
+  }
+
+  return (
+    &lt;div className="connection-list-container"&gt;
+      &lt;h2&gt;Saved Connections&lt;/h2&gt;
+      
+      &lt;div className="connection-grid"&gt;
+        {connections.map(connection => (
+          &lt;div key={connection.id} className="connection-card"&gt;
+            &lt;div className="connection-header"&gt;
+              &lt;div className="connection-icon"&gt;
+                &lt;i className="fas fa-cloud"&gt;&lt;/i&gt;
+              &lt;/div&gt;
+              &lt;div className="connection-info"&gt;
+                &lt;h3&gt;{connection.name}&lt;/h3&gt;
+                &lt;span className={`env-badge ${connection.environment}`}&gt;
+                  {connection.environment}
+                &lt;/span&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+
+            &lt;div className="connection-details"&gt;
+              &lt;div className="detail-row"&gt;
+                &lt;span className="detail-label"&gt;Username:&lt;/span&gt;
+                &lt;span className="detail-value"&gt;{connection.username}&lt;/span&gt;
+              &lt;/div&gt;
+              &lt;div className="detail-row"&gt;
+                &lt;span className="detail-label"&gt;Created:&lt;/span&gt;
+                &lt;span className="detail-value"&gt;
+                  {new Date(connection.createdAt).toLocaleDateString()}
+                &lt;/span&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+
+            {testResults[connection.id] && (
+              &lt;div className={`connection-test-result ${testResults[connection.id].success ? 'success' : 'error'}`}&gt;
+                &lt;i className={`fas ${testResults[connection.id].success ? 'fa-check-circle' : 'fa-times-circle'}`}&gt;&lt;/i&gt;
+                {testResults[connection.id].message}
+              &lt;/div&gt;
+            )}
+
+            &lt;div className="connection-actions"&gt;
+              &lt;button
+                className="btn btn-test"
+                onClick={() => handleTestConnection(connection.id)}
+                disabled={testingId === connection.id}
+              &gt;
+                {testingId === connection.id ? (
+                  &lt;&gt;
+                    &lt;i className="fas fa-spinner fa-spin"&gt;&lt;/i&gt; Testing...
+                  &lt;/&gt;
+                ) : (
+                  &lt;&gt;
+                    &lt;i className="fas fa-plug"&gt;&lt;/i&gt; Test
+                  &lt;/&gt;
+                )}
+              &lt;/button&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        ))}
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+};</code></pre>
+            </div>
+            
+            <div class="content-section">
+                <h2>🎨 Step 4: Style the Connection List</h2>
+                <p><strong>File:</strong> <code>frontend/src/components/connections/ConnectionList.css</code></p>
+                <pre><code>.connection-list-container {
+  background: var(--background-white);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  box-shadow: var(--shadow-sm);
+}
+
+.connection-list-container h2 {
+  color: var(--text-dark);
+  font-size: var(--font-size-2xl);
+  margin-bottom: var(--space-xl);
+  font-weight: 600;
+}
+
+.loading-spinner {
+  text-align: center;
+  padding: var(--space-2xl);
+  color: var(--text-light);
+  font-size: var(--font-size-lg);
+}
+
+.empty-state {
+  text-align: center;
+  padding: var(--space-2xl);
+  color: var(--text-light);
+}
+
+.empty-state i {
+  color: var(--text-lighter);
+  margin-bottom: var(--space-lg);
+}
+
+.empty-state h3 {
+  color: var(--text-dark);
+  margin-bottom: var(--space-sm);
+}
+
+.connection-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--space-lg);
+}
+
+.connection-card {
+  background: white;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  transition: all 0.2s;
+}
+
+.connection-card:hover {
+  border-color: var(--salesforce-blue);
+  box-shadow: var(--shadow-md);
+}
+
+.connection-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.connection-icon {
+  width: 48px;
+  height: 48px;
+  background: var(--salesforce-light-blue);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--salesforce-blue);
+  font-size: var(--font-size-xl);
+}
+
+.connection-info h3 {
+  color: var(--text-dark);
+  font-size: var(--font-size-lg);
+  margin-bottom: var(--space-xs);
+}
+
+.env-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.env-badge.production {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.env-badge.sandbox {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.connection-details {
+  margin-bottom: var(--space-lg);
+  padding: var(--space-md) 0;
+  border-top: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--space-sm);
+}
+
+.detail-row:last-child {
+  margin-bottom: 0;
+}
+
+.detail-label {
+  color: var(--text-light);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+.detail-value {
+  color: var(--text-dark);
+  font-size: var(--font-size-sm);
+}
+
+.connection-test-result {
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--space-md);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: var(--font-size-sm);
+}
+
+.connection-test-result.success {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.connection-test-result.error {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.connection-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-test {
+  padding: var(--space-sm) var(--space-lg);
+  background-color: white;
+  color: var(--salesforce-blue);
+  border: 1px solid var(--salesforce-blue);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  transition: all 0.2s;
+}
+
+.btn-test:hover:not(:disabled) {
+  background-color: var(--salesforce-blue);
+  color: white;
+}
+
+.btn-test:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}</code></pre>
+            </div>
+            
+            <div class="content-section">
+                <h2>🔗 Step 5: Create Connections Page Container</h2>
+                <p>Combine the form and list into a complete page:</p>
+                <p><strong>File:</strong> <code>frontend/src/pages/ConnectionsPage.tsx</code></p>
+                <pre><code>import React, { useState } from 'react';
+import { ConnectionForm } from '../components/connections/ConnectionForm';
+import { ConnectionList } from '../components/connections/ConnectionList';
+import './ConnectionsPage.css';
+
+export const ConnectionsPage: React.FC = () => {
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const handleConnectionCreated = () => {
+    // Trigger refresh of connection list
+    setRefreshKey(prev => prev + 1);
+  };
+
+  return (
+    &lt;div className="connections-page"&gt;
+      &lt;div className="page-header"&gt;
+        &lt;h1&gt;Salesforce Connections&lt;/h1&gt;
+        &lt;p&gt;Manage your Salesforce organization connections for data migration&lt;/p&gt;
+      &lt;/div&gt;
+
+      &lt;div className="connections-layout"&gt;
+        &lt;div className="connections-form-section"&gt;
+          &lt;ConnectionForm onSuccess={handleConnectionCreated} /&gt;
+        &lt;/div&gt;
+
+        &lt;div className="connections-list-section" key={refreshKey}&gt;
+          &lt;ConnectionList /&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+};</code></pre>
+
+                <p><strong>File:</strong> <code>frontend/src/pages/ConnectionsPage.css</code></p>
+                <pre><code>.connections-page {
+  padding: var(--space-2xl);
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.page-header {
+  margin-bottom: var(--space-2xl);
+}
+
+.page-header h1 {
+  color: var(--text-dark);
+  font-size: var(--font-size-3xl);
+  margin-bottom: var(--space-sm);
+}
+
+.page-header p {
+  color: var(--text-light);
+  font-size: var(--font-size-lg);
+}
+
+.connections-layout {
+  display: grid;
+  gap: var(--space-2xl);
+}
+
+@media (min-width: 1024px) {
+  .connections-layout {
+    grid-template-columns: 1fr 1fr;
+  }
+}</code></pre>
+            </div>
+            
+            <div class="content-section">
+                <h2>✅ Completion Checklist</h2>
+                <p>Verify all components are working:</p>
+                <ul class="checklist">
+                    <li>✅ ConnectionForm component created with validation</li>
+                    <li>✅ ConnectionForm.css styled following RevNova design system</li>
+                    <li>✅ Test connection button working with real-time feedback</li>
+                    <li>✅ ConnectionList component displays saved connections</li>
+                    <li>✅ ConnectionList.css with card grid layout</li>
+                    <li>✅ Connection test functionality in list view</li>
+                    <li>✅ ConnectionsPage container component created</li>
+                    <li>✅ Responsive layout for desktop and mobile</li>
+                    <li>✅ All API calls using axios with error handling</li>
+                    <li>✅ Success/error notifications displaying properly</li>
+                </ul>
+            </div>
+            
+            <div class="content-section">
+                <h2>🧪 Testing the UI</h2>
+                <p>Manual testing steps:</p>
+                <ol>
+                    <li>Navigate to <code>http://localhost:5173/connections</code></li>
+                    <li>Fill out the connection form with valid Salesforce credentials</li>
+                    <li>Click "Test Connection" and verify success/error feedback</li>
+                    <li>After successful test, click "Save Connection"</li>
+                    <li>Verify connection appears in the list view</li>
+                    <li>Test the connection from the list view</li>
+                    <li>Verify responsive layout on mobile viewport</li>
+                    <li>Test error scenarios (invalid credentials, network errors)</li>
+                </ol>
+                
+                <p><strong>Expected Results:</strong></p>
+                <ul>
+                    <li>Form validation prevents submission without test</li>
+                    <li>Loading states show during async operations</li>
+                    <li>Success/error messages display appropriately</li>
+                    <li>Connection list updates immediately after creation</li>
+                    <li>Design matches RevNova Salesforce-inspired theme</li>
+                </ul>
+            </div>
+            
+            <div class="content-section">
+                <h2>📝 Commit Your Changes</h2>
+                <pre><code>git add frontend/src/components/connections/ frontend/src/pages/ConnectionsPage.*
+git commit -m "feat(frontend): add Salesforce connections UI
+
+- Created ConnectionForm component with validation
+- Implemented ConnectionList with test functionality
+- Added ConnectionsPage container component
+- Styled components following RevNova design system
+- Integrated with backend connections API endpoints"
       warnings: ['Custom field Product2.Special__c has no target mapping'],
       analyzed_at: new Date().toISOString()
     };
@@ -877,28 +1637,13 @@ export default redisClient;</code></pre>
                 
                 <p><strong>Test job status polling:</strong></p>
                 <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/job_1699632000000</code></pre>
-                
-                <p><strong>Test analysis summary:</strong></p>
-                <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/summary</code></pre>
-                
-                <div class="success-box">
-                    <strong>✓ Expected Response:</strong> Job status should return progress information, and summary should show aggregate statistics.
-                </div>
-            </div>
-            
-            <div class="content-section">
-                <h2>🎯 End of Day Checklist</h2>
-                <ul style="list-style: none; padding-left: 0;">
-                    <li>☐ Redis client installed and connected</li>
-                    <li>☐ Job status endpoint returns job progress</li>
-                    <li>☐ Enhanced metadata includes picklists and lookups</li>
-                    <li>☐ Summary endpoint aggregates analysis results</li>
-                    <li>☐ All endpoints tested and working</li>
-                    <li>☐ Code committed with meaningful message</li>
-                </ul>
-                
-                <p><strong>Commit Message:</strong></p>
-                <code>feat(backend): add job polling, detailed metadata, and Redis caching</code>
+git commit -m "feat(frontend): add Salesforce connections UI
+
+- Created ConnectionForm component with validation
+- Implemented ConnectionList with test functionality
+- Added ConnectionsPage container component
+- Styled components following RevNova design system
+- Integrated with backend connections API endpoints"</code></pre>
             </div>
             
             <div class="nav-buttons">
