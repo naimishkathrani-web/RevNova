@@ -415,5 +415,76 @@
             });
         });
     </script>
+
+    <script>
+        // Wait for DOM to be ready
+        document.addEventListener('DOMContentLoaded', function() {
+            // Clone all section headers to remove any duplicate event listeners
+            const sectionHeaders = document.querySelectorAll('.nav-section-header');
+            sectionHeaders.forEach(header => {
+                const newHeader = header.cloneNode(true);
+                header.parentNode.replaceChild(newHeader, header);
+            });
+            
+            // Clone all subsection headers
+            const subsectionHeaders = document.querySelectorAll('.nav-subsection-header');
+            subsectionHeaders.forEach(header => {
+                const newHeader = header.cloneNode(true);
+                header.parentNode.replaceChild(newHeader, header);
+            });
+            
+            // Add click handlers to main section headers
+            document.querySelectorAll('.nav-section-header').forEach(header => {
+                header.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const content = this.nextElementSibling;
+                    const isExpanded = this.classList.contains('expanded');
+                    
+                    if (isExpanded) {
+                        this.classList.remove('expanded');
+                        content.classList.remove('expanded');
+                    } else {
+                        this.classList.add('expanded');
+                        content.classList.add('expanded');
+                    }
+                });
+            });
+            
+            // Add click handlers to subsection headers
+            document.querySelectorAll('.nav-subsection-header').forEach(header => {
+                header.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const content = this.nextElementSibling;
+                    const isExpanded = this.classList.contains('expanded');
+                    
+                    if (isExpanded) {
+                        this.classList.remove('expanded');
+                        content.classList.remove('expanded');
+                    } else {
+                        this.classList.add('expanded');
+                        content.classList.add('expanded');
+                    }
+                });
+            });
+            
+            // Auto-expand section containing active link
+            const activeLink = document.querySelector('.nav-link.active, .nav-subsection-link.active');
+            if (activeLink) {
+                let parent = activeLink.parentElement;
+                while (parent && !parent.classList.contains('sidebar')) {
+                    if (parent.classList.contains('nav-section-content') || parent.classList.contains('nav-subsection-content')) {
+                        parent.classList.add('expanded');
+                        const header = parent.previousElementSibling;
+                        if (header) {
+                            header.classList.add('expanded');
+                        }
+                    }
+                    parent = parent.parentElement;
+                }
+            }
+        });
+    </script>
 </body>
 </html>

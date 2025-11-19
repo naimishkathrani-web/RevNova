@@ -1,11 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Phase 1 - Migration Execution | RevNova Requirements</title>
-    <link rel="stylesheet" href="../styles.css">
-        <style>
+#!/usr/bin/env python3
+"""
+Standardize all requirements pages with Salesforce-style collapsible sidebar.
+This ensures consistency across all requirement pages matching onboarding style.
+"""
+
+import os
+import re
+from pathlib import Path
+
+# Complete CSS matching onboarding style exactly
+STANDARD_CSS = """    <style>
         .requirements-layout{display:flex;min-height:calc(100vh - 80px);margin-top:80px}
         .sidebar{width:280px;background:#f4f6f9;border-right:1px solid #c9c9c9;position:fixed;height:calc(100vh - 80px);overflow-y:auto;top:80px;left:0;z-index:100}
         .sidebar::-webkit-scrollbar{width:8px}
@@ -37,42 +41,10 @@
         .nav-subsection-link:hover{background:#e5e5e5;text-decoration:underline}
         .nav-subsection-link.active{background:#1589ee;color:#fff;font-weight:600}
         .nav-subsection-link.active:hover{background:#0b5cab;text-decoration:none}
-        .main-content{flex:1;margin-left:280px;padding:2rem 3rem;background:#fff}
-        
-        .page-header{background:linear-gradient(135deg,#11998e 0%,#38ef7d 100%);color:#fff;padding:3rem;border-radius:12px;margin-bottom:3rem}
-        .section-box{background:#fff;border:2px solid #e0e0e0;padding:2.5rem;margin:2rem 0;border-radius:12px}
-        .section-box h3{color:#11998e;margin-top:0;border-bottom:2px solid #38ef7d;padding-bottom:0.5rem}
-        table{width:100%;border-collapse:collapse;margin:1.5rem 0}
-        th,td{border:1px solid #ddd;padding:12px;text-align:left}
-        th{background:linear-gradient(135deg,#11998e 0%,#38ef7d 100%);color:#fff;font-weight:600;font-size:0.85rem}
-        .badge-functional{background:#11998e;color:#fff;padding:0.3rem 0.6rem;border-radius:12px;font-size:0.75rem;font-weight:600}
-        .badge-technical{background:#e74c3c;color:#fff;padding:0.3rem 0.6rem;border-radius:12px;font-size:0.75rem;font-weight:600}
-    </style>
-</head>
-<body>
-    <header>
-        <div class="container header-container">
-            <div class="nav-left">
-                <a href="../index.html" class="logo"><div class="logo-box">RevNova</div></a>
-                <nav class="main-nav">
-                    <ul>
-                        <li><a href="../about-revnova.html">About RevNova</a></li>
-                        <li><a href="../features.html">Features</a></li>
-                        <li><a href="../pricing.html">Pricing</a></li>
-                        <li><a href="requirements-home.html" class="active">RevNova Requirements</a></li>
-                        <li><a href="../contact.html">Contact</a></li>
-                    </ul>
-                </nav>
-            </div>
-            <div class="header-right">
-                <div class="country-selector"><span class="fi fi-us"></span></div>
-                <a href="../login.html" class="btn btn-login">Login</a>
-            </div>
-        </div>
-    </header>
+        .main-content{flex:1;margin-left:280px;padding:2rem 3rem;background:#fff}"""
 
-    <div class="requirements-layout">
-                        <aside class="sidebar">
+# Standard sidebar HTML structure
+STANDARD_SIDEBAR = """        <aside class="sidebar">
             <nav class="sidebar-nav">
                 <!-- Platform Vision Section -->
                 <div class="nav-section">
@@ -212,177 +184,10 @@
                     </div>
                 </div>
             </nav>
-        </aside>
+        </aside>"""
 
-        <main class="main-content">
-            <div class="page-header">
-                <h1>🚀 Page 6: Migration Execution</h1>
-                <p>Execute migration with configurable batch processing, parallel workers, real-time monitoring, pause/resume capabilities</p>
-            </div>
-
-            <section class="section-box">
-                <h3><span class="badge-functional">Functional</span> Execution Configuration</h3>
-                <table>
-                    <tr><th>Configuration</th><th>Options</th><th>Recommended Value</th></tr>
-                    <tr><td><strong>Batch Size</strong></td><td>200 / 500 / 1000 / 2000 / 5000 / 10000</td><td>2000 (balance speed vs API limits)</td></tr>
-                    <tr><td><strong>Parallel Workers</strong></td><td>1 / 2 / 4 / 8 / 16</td><td>4 workers (max throughput without overwhelming target)</td></tr>
-                    <tr><td><strong>Retry Strategy</strong></td><td>None / Auto-retry transient errors / Retry all failures</td><td>Auto-retry transient errors (3 attempts)</td></tr>
-                    <tr><td><strong>Error Handling</strong></td><td>Stop on first error / Continue with errors</td><td>Continue with errors (log and proceed)</td></tr>
-                    <tr><td><strong>Execution Mode</strong></td><td>Full Migration / Test Run (100 records)</td><td>Test Run first, then Full Migration</td></tr>
-                </table>
-            </section>
-
-            <section class="section-box">
-                <h3><span class="badge-functional">Functional</span> Real-Time Monitoring Dashboard</h3>
-                <table>
-                    <tr><th>Requirement ID</th><th>Description</th></tr>
-                    <tr><td>FR-EXEC-001</td><td>Display progress bar: "Migrating 12,450 / 50,000 records (24.9%)"</td></tr>
-                    <tr><td>FR-EXEC-002</td><td>Show per-batch status: Batch #12 - Success (2000 records), Batch #13 - In Progress (1,234 / 2000)</td></tr>
-                    <tr><td>FR-EXEC-003</td><td>Display worker status: Worker 1 (Active), Worker 2 (Active), Worker 3 (Idle), Worker 4 (Error - retrying)</td></tr>
-                    <tr><td>FR-EXEC-004</td><td>Show success/failure counters: ✅ 12,000 success | ❌ 450 failed | ⏳ 37,550 pending</td></tr>
-                    <tr><td>FR-EXEC-005</td><td>Display estimated time remaining: "2 hours 15 minutes remaining (based on current throughput)"</td></tr>
-                    <tr><td>FR-EXEC-006</td><td>Show throughput: "Current speed: 2,340 records/minute | Peak: 2,890 records/minute"</td></tr>
-                </table>
-            </section>
-
-            <section class="section-box">
-                <h3><span class="badge-functional">Functional</span> Pause/Resume & Rollback</h3>
-                <table>
-                    <tr><th>Feature</th><th>Description</th></tr>
-                    <tr><td><strong>Pause</strong></td><td>Click "Pause" button → current batches complete → migration stops → resume later from last checkpoint</td></tr>
-                    <tr><td><strong>Resume</strong></td><td>Click "Resume" → picks up from last successful batch → continues with same configuration</td></tr>
-                    <tr><td><strong>Rollback</strong></td><td>Click "Rollback" → delete all migrated records from target → restore to pre-migration state (requires backup)</td></tr>
-                    <tr><td><strong>Auto-Checkpoint</strong></td><td>Save progress every 10 batches → allows recovery from server crashes</td></tr>
-                </table>
-            </section>
-
-            <section class="section-box">
-                <h3><span class="badge-technical">Technical</span> Batch Processing Architecture</h3>
-                <pre style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:8px;overflow-x:auto">
-// Bull Queue for parallel batch processing
-const migrationQueue = new Bull('migration-queue', {
-    redis: { host: 'redis', port: 6379 },
-    settings: {
-        maxStalledCount: 3, // Retry stalled jobs 3 times
-        stalledInterval: 30000 // Check for stalled jobs every 30s
-    }
-});
-
-// Add batches to queue
-async function enqueueBatches(migrationId, totalRecords, batchSize, workerCount) {
-    const batchCount = Math.ceil(totalRecords / batchSize);
-    
-    for (let i = 0; i < batchCount; i++) {
-        await migrationQueue.add('process-batch', {
-            migrationId,
-            batchNumber: i + 1,
-            offset: i * batchSize,
-            limit: batchSize
-        }, {
-            attempts: 3, // Retry failed jobs 3 times
-            backoff: { type: 'exponential', delay: 2000 }
-        });
-    }
-}
-
-// Worker processes batches
-migrationQueue.process('process-batch', workerCount, async (job) => {
-    const { migrationId, batchNumber, offset, limit } = job.data;
-    
-    // Fetch records from STG2
-    const records = await fetchFromStaging(migrationId, offset, limit);
-    
-    // Load to target via Salesforce Bulk API
-    const result = await salesforce.bulk.load('Product2', 'insert', records);
-    
-    // Update progress
-    await updateMigrationProgress(migrationId, batchNumber, result);
-    
-    return result;
-});
-                </pre>
-            </section>
-
-            <section>
-                <h2>Navigation</h2>
-                <ul style="line-height:2">
-                    <li><strong>Previous:</strong> <a href="requirements-phase1-validate.html">Page 5: Validation</a></li>
-                    <li><strong>Next:</strong> <a href="requirements-phase1-test.html">Page 7: Post-Migration Testing</a></li>
-                </ul>
-            </section>
-        </main>
-    </div>
-    <script>
-        // Collapsible navigation functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            // Handle section headers - single click toggle
-            const sectionHeaders = document.querySelectorAll('.nav-section-header');
-            sectionHeaders.forEach(header => {
-                const newHeader = header.cloneNode(true);
-                header.parentNode.replaceChild(newHeader, header);
-            });
-            
-            document.querySelectorAll('.nav-section-header').forEach(header => {
-                header.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    const content = this.nextElementSibling;
-                    const isExpanded = this.classList.contains('expanded');
-                    
-                    if (isExpanded) {
-                        this.classList.remove('expanded');
-                        content.classList.remove('expanded');
-                    } else {
-                        this.classList.add('expanded');
-                        content.classList.add('expanded');
-                    }
-                });
-            });
-            
-            // Handle subsection headers - single click toggle
-            const subsectionHeaders = document.querySelectorAll('.nav-subsection-header');
-            subsectionHeaders.forEach(header => {
-                const newHeader = header.cloneNode(true);
-                header.parentNode.replaceChild(newHeader, header);
-            });
-            
-            document.querySelectorAll('.nav-subsection-header').forEach(header => {
-                header.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    const content = this.nextElementSibling;
-                    const isExpanded = this.classList.contains('expanded');
-                    
-                    if (isExpanded) {
-                        this.classList.remove('expanded');
-                        content.classList.remove('expanded');
-                    } else {
-                        this.classList.add('expanded');
-                        content.classList.add('expanded');
-                    }
-                });
-            });
-            
-            // Auto-expand section containing active link
-            const activeLinks = document.querySelectorAll('.nav-link.active, .nav-subsection-link.active');
-            activeLinks.forEach(link => {
-                // Expand parent section
-                let section = link.closest('.nav-section-content');
-                if (section) {
-                    section.classList.add('expanded');
-                    section.previousElementSibling.classList.add('expanded');
-                }
-                
-                // Expand parent subsection if exists
-                let subsection = link.closest('.nav-subsection-content');
-                if (subsection) {
-                    subsection.classList.add('expanded');
-                    subsection.previousElementSibling.classList.add('expanded');
-                }
-            });
-        });
-    </script>
-
+# Collapsible navigation JavaScript
+COLLAPSIBLE_SCRIPT = """
     <script>
         // Wait for DOM to be ready
         document.addEventListener('DOMContentLoaded', function() {
@@ -452,6 +257,82 @@ migrationQueue.process('process-batch', workerCount, async (job) => {
                 }
             }
         });
-    </script>
-</body>
-</html>
+    </script>"""
+
+
+def fix_requirements_file(file_path):
+    """Fix a single requirements HTML file."""
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        original_content = content
+        
+        # Step 1: Replace the entire <style> block with standard CSS
+        # Match from <style> to </style> including any content before main-content class
+        style_pattern = r'<style>.*?\.main-content\{[^}]*\}'
+        if re.search(style_pattern, content, re.DOTALL):
+            content = re.sub(style_pattern, STANDARD_CSS + '\n        ', content, flags=re.DOTALL)
+        
+        # Step 2: Replace sidebar HTML structure
+        # Match entire sidebar from <aside class="sidebar"> to </aside>
+        sidebar_pattern = r'<aside class="sidebar">.*?</aside>'
+        if re.search(sidebar_pattern, content, re.DOTALL):
+            content = re.sub(sidebar_pattern, STANDARD_SIDEBAR, content, flags=re.DOTALL)
+        
+        # Step 3: Ensure collapsible script is present
+        if COLLAPSIBLE_SCRIPT.strip() not in content:
+            # Remove old script if exists
+            script_pattern = r'<script>.*?// Wait for DOM to be ready.*?</script>'
+            content = re.sub(script_pattern, '', content, flags=re.DOTALL)
+            
+            # Add new script before closing </body>
+            if '</body>' in content:
+                content = content.replace('</body>', f'{COLLAPSIBLE_SCRIPT}\n</body>')
+        
+        # Only write if changes were made
+        if content != original_content:
+            with open(file_path, 'w', encoding='utf-8') as f:
+                f.write(content)
+            return True
+        return False
+        
+    except Exception as e:
+        print(f"Error processing {file_path}: {e}")
+        return False
+
+
+def main():
+    """Process all requirements HTML files."""
+    requirements_dir = Path(__file__).parent.parent / 'docs' / 'RevNovaRequirements'
+    
+    if not requirements_dir.exists():
+        print(f"Requirements directory not found: {requirements_dir}")
+        return
+    
+    html_files = sorted(requirements_dir.glob('*.html'))
+    
+    if not html_files:
+        print("No HTML files found in requirements directory")
+        return
+    
+    print(f"Processing {len(html_files)} requirements files...")
+    print("-" * 60)
+    
+    fixed_count = 0
+    unchanged_count = 0
+    
+    for html_file in html_files:
+        if fix_requirements_file(html_file):
+            print(f"✅ Fixed: {html_file.name}")
+            fixed_count += 1
+        else:
+            print(f"⏭  No changes: {html_file.name}")
+            unchanged_count += 1
+    
+    print("-" * 60)
+    print(f"📊 Summary: {fixed_count} files updated, {unchanged_count} files unchanged")
+
+
+if __name__ == '__main__':
+    main()
