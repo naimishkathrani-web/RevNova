@@ -354,6 +354,32 @@
             border-radius: 4px;
         }
         
+        /* GitHub Copilot Prompt Box */
+        .copilot-prompt {
+            background: #f3f2ff;
+            border-left: 4px solid #8b5cf6;
+            padding: 1rem;
+            margin: 1rem 0 1.5rem 0;
+            border-radius: 4px;
+        }
+        
+        .copilot-prompt h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #6d28d9;
+            margin-bottom: 0.5rem;
+        }
+        
+        .copilot-prompt pre {
+            background: #ffffff;
+            border: 1px solid #e0e7ff;
+            margin: 0;
+        }
+        
+        .copilot-prompt code {
+            color: #6d28d9;
+        }
+        
         .nav-buttons {
             display: flex;
             justify-content: space-between;
@@ -774,6 +800,13 @@
             
             <div class="content-section">
                 <h2>📦 Step 1: Install jsforce</h2>
+                
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Install jsforce for Salesforce API integration in Node.js/TypeScript backend
+# Include TypeScript type definitions for jsforce</code></pre>
+                </div>
+                
                 <p>Install jsforce library for Salesforce API integration:</p>
                 <pre><code>cd backend
 npm install jsforce
@@ -784,6 +817,16 @@ npm install --save-dev @types/jsforce</code></pre>
             
             <div class="content-section">
                 <h2>🔐 Step 2: Create Connection Helper</h2>
+                
+                <div class="copilot-prompt">
+                    <h3>💬 GitHub Copilot Prompt:</h3>
+                    <pre><code># Create a TypeScript helper function to connect to Salesforce using jsforce
+# Function should accept credentials (instanceUrl, username, password, securityToken)
+# Return connection object with success status and access token
+# Handle security token concatenation with password
+# Include proper error handling for failed connections</code></pre>
+                </div>
+                
                 <p><strong>File:</strong> <code>backend/src/utils/salesforce.ts</code></p>
                 <pre><code>import jsforce from 'jsforce';
 

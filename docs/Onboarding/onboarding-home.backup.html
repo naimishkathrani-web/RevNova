@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>RevNova Developer Onboarding - Step by Step Guide</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
+        
+        .onboarding-layout {
+            display: flex;
+            min-height: calc(100vh - 80px);
+            margin-top: 80px;
+        }
+        
+        .sidebar {
+            width: 280px;
+            background: #f8f9fa;
+            border-right: 1px solid #e0e0e0;
+            padding: 2rem 0;
+            position: fixed;
+            left: 0;
+            top: 80px;
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+            z-index: 100;
+        }
+        
+        .sidebar h3 {
+            padding: 0 1.5rem;
+            font-size: 0.85rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 1.5rem 0 0.5rem;
+        }
+        
+        .sidebar h3:first-child { margin-top: 0; }
+        
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .sidebar ul li a {
+            display: block;
+            padding: 0.6rem 1.5rem;
+            color: #333;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+        
+        .sidebar ul li a:hover {
+            background: #e9ecef;
+            color: #667eea;
+        }
+        
+        .sidebar ul li a.active {
+            background: #667eea;
+            color: #fff;
+            font-weight: 500;
+        }
+        
+        .sidebar ul ul {
+            padding-left: 0;
+        }
+        
+        .sidebar ul ul li a {
+            padding-left: 2.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 3rem;
+            background: #fff;
+            min-width: 0;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            padding: 3rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+        
+        .hero h1 {
+            margin: 0 0 1rem 0;
+            font-size: 2.5rem;
+        }
+        
+        .hero p {
+            margin: 0;
+            font-size: 1.2rem;
+            opacity: 0.95;
+        }
+        
+        .card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card h2 {
+            color: #667eea;
+            margin: 0 0 1rem 0;
+        }
+        
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #0066cc;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 4px;
+        }
+        
+        .dev-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .dev-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: #fff;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .dev-card.dev1 {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .dev-card.dev2 {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+        
+        .dev-card.dev3 {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+        
+        .dev-card h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.5rem;
+        }
+        
+        .dev-card p {
+            margin: 0.5rem 0;
+            opacity: 0.95;
+        }
+        
+        .dev-card .btn {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.75rem 1.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .dev-card .btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="nav-left">
+                <a href="../index.html" class="logo"><div class="logo-box">RevNova</div></a>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="onboarding-home.html" class="active">Onboarding</a></li>
+                        <li><a href="../about-revnova.html">About RevNova</a></li>
+                        <li><a href="../features.html">Features</a></li>
+                        <li><a href="../pricing.html">Pricing</a></li>
+                        <li><a href="../RevNovaRequirements/requirements-home.html">RevNova Requirements</a></li>
+                        <li><a href="../contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header-right">
+                <div class="country-selector"><span class="fi fi-us"></span></div>
+                <a href="../login.html" class="btn btn-login">Login</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="onboarding-layout">
+        <!-- Left Sidebar Navigation -->
+        <aside class="sidebar">
+            <h3>Getting Started</h3>
+            <ul>
+                <li><a href="onboarding-home.html" class="active">Onboarding Home</a></li>
+                <li><a href="onboarding-overview.html">Project Overview</a></li>
+                <li><a href="manual-repo-setup.html">Manual Repository Setup</a></li>
+                <li><a href="repo-setup-guide.html">Automated Setup Guide</a></li>
+            </ul>
+            
+            <h3>Developer 1: Backend & Database</h3>
+            <ul>
+                <li><a href="dev1-week1.html">Week 1: Setup & Database Foundation</a>
+                    <ul>
+                        <li><a href="dev1-day01.html">Day 1: Workstation Setup</a></li>
+                        <li><a href="dev1-day02.html">Day 2: Database Tables (STG1)</a></li>
+                        <li><a href="dev1-day03.html">Day 3: Database Tables (STG2)</a></li>
+                        <li><a href="dev1-day04.html">Day 4: Database Tables (EAV)</a></li>
+                        <li><a href="dev1-day05.html">Day 5: First API Endpoint</a></li>
+                    </ul>
+                </li>
+                <li><a href="dev1-week2.html">Week 2: Schema Analysis APIs</a>
+                    <ul>
+                        <li><a href="dev1-day06.html">Day 6: Schema Analysis API (Part 1)</a></li>
+                        <li><a href="dev1-day07.html">Day 7: Schema Analysis API (Part 2)</a></li>
+                        <li><a href="dev1-day08.html">Day 8: Metadata Extraction</a></li>
+                        <li><a href="dev1-day09.html">Day 9: Relationship Detection</a></li>
+                        <li><a href="dev1-day10.html">Day 10: Week 2 Testing & PR</a></li>
+                    </ul>
+                </li>
+                <li><a href="dev1-week3.html">Week 3: Field Mapping & AI</a>
+                    <ul>
+                        <li><a href="dev1-day11.html">Day 11: Field Mapping API (Part 1)</a></li>
+                        <li><a href="dev1-day12.html">Day 12: Field Mapping API (Part 2)</a></li>
+                        <li><a href="dev1-day13.html">Day 13: AI Mapping Integration</a></li>
+                        <li><a href="dev1-day14.html">Day 14: Mapping Validation</a></li>
+                        <li><a href="dev1-day15.html">Day 15: Week 3 Testing & PR</a></li>
+                    </ul>
+                </li>
+                <li><a href="dev1-week4.html">Week 4: Data Transformation & Queue</a>
+                    <ul>
+                        <li><a href="dev1-day16.html">Day 16: Transformation API (Part 1)</a></li>
+                        <li><a href="dev1-day17.html">Day 17: Transformation API (Part 2)</a></li>
+                        <li><a href="dev1-day18.html">Day 18: Bull Queue Setup</a></li>
+                        <li><a href="dev1-day19.html">Day 19: ETL Job Processing</a></li>
+                        <li><a href="dev1-day20.html">Day 20: Week 4 Testing & PR</a></li>
+                    </ul>
+                </li>
+                <li><a href="dev1-week5.html">Week 5: Migration Execution & Testing</a>
+                    <ul>
+                        <li><a href="dev1-day21.html">Day 21: Migration Execution API</a></li>
+                        <li><a href="dev1-day22.html">Day 22: Error Handling & Rollback</a></li>
+                        <li><a href="dev1-day23.html">Day 23: Testing Reports API</a></li>
+                        <li><a href="dev1-day24.html">Day 24: Integration Testing</a></li>
+                        <li><a href="dev1-day25.html">Day 25: Final Testing & Documentation</a></li>
+                    </ul>
+                </li>
+            </ul>
+            
+            <h3>Developer 2: Frontend & React</h3>
+            <ul>
+                <li><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 1: React Setup & Components</span>
+                    <ul>
+                        <li><a href="dev2-day01.html">Day 1: React Setup</a></li>
+                        <li><a href="dev2-day02.html">Day 2: Component Library</a></li>
+                        <li><a href="dev2-day03.html">Day 3: Wizard Layout & Routing</a></li>
+                        <li><a href="dev2-day04.html">Day 4: State Management</a></li>
+                        <li><a href="dev2-day05.html">Day 5: API Client & Week 1 PR</a></li>
+                    </ul>
+                </li>
+                <li><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 2: Connection Wizard Page</span>
+                    <ul>
+                        <li><a href="dev2-day06.html">Day 6: Connection Form UI</a></li>
+                        <li><a href="dev2-day07.html">Day 7: OAuth Integration</a></li>
+                        <li><a href="dev2-day08.html">Day 8: Connection Testing</a></li>
+                        <li><a href="dev2-day09.html">Day 9: Error Handling</a></li>
+                        <li><a href="dev2-day10.html">Day 10: Week 2 Testing & PR</a></li>
+                    </ul>
+                </li>
+                <li><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 3: Field Mapping UI</span>
+                    <ul>
+                        <li><a href="dev2-day11.html">Day 11: Mapping Table UI</a></li>
+                        <li><a href="dev2-day12.html">Day 12: AI Suggestions Display</a></li>
+                        <li><a href="dev2-day13.html">Day 13: Drag & Drop Mapping</a></li>
+                        <li><a href="dev2-day14.html">Day 14: Bulk Operations</a></li>
+                        <li><a href="dev2-day15.html">Day 15: Week 3 Testing & PR</a></li>
+                    </ul>
+                </li>
+                <li><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 4: Transformation & Validation UI</span>
+                    <ul>
+                        <li><a href="dev2-day16.html">Day 16: Transformation Preview UI</a></li>
+                        <li><a href="dev2-day17.html">Day 17: Data Tables & Pagination</a></li>
+                        <li><a href="dev2-day18.html">Day 18: Validation Results Display</a></li>
+                        <li><a href="dev2-day19.html">Day 19: Error Display</a></li>
+                        <li><a href="dev2-day20.html">Day 20: Week 4 Testing & PR</a></li>
+                    </ul>
+                </li>
+                <li><span style="font-weight:600;color:#333;cursor:default;display:block;padding:0.6rem 0;">Week 5: Execution & Test Reports</span>
+                    <ul>
+                        <li><a href="dev2-day21.html">Day 21: Execution Progress UI</a></li>
+                        <li><a href="dev2-day22.html">Day 22: Real-time Updates</a></li>
+                        <li><a href="dev2-day23.html">Day 23: Test Reports & Comparison</a></li>
+                        <li><a href="dev2-day24.html">Day 24: Export & UI Testing</a></li>
+                        <li><a href="dev2-day25.html">Day 25: Final Polish & Documentation</a></li>
+                    </ul>
+                </li>
+            </ul>
+            
+            <h3>Developer 3: DevOps & QA</h3>
+            <ul>
+                <li><a href="dev3-week1.html">Week 1: CI/CD Pipeline & Docker</a>
+                    <ul>
+                        <li><a href="dev3-day01.html">Day 1: GitHub Actions Setup</a></li>
+                        <li><a href="dev3-day02.html">Day 2: CI Pipeline (Lint & Test)</a></li>
+                        <li><a href="dev3-day03.html">Day 3: Docker for Backend</a></li>
+                        <li><a href="dev3-day04.html">Day 4: Docker for Frontend</a></li>
+                        <li><a href="dev3-day05.html">Day 5: Code Coverage & Week 1 PR</a></li>
+                    </ul>
+                </li>
+                <li><a href="dev3-week2.html">Week 2: Local Dev Environment</a>
+                    <ul>
+                        <li><a href="dev3-day06.html">Day 6: Docker Compose Setup</a></li>
+                        <li><a href="dev3-day07.html">Day 7: PostgreSQL & Redis</a></li>
+                        <li><a href="dev3-day08.html">Day 8: Database Migrations</a></li>
+                        <li><a href="dev3-day09.html">Day 9: Seed Data Scripts</a></li>
+                        <li><a href="dev3-day10.html">Day 10: Bull Queue & Week 2 PR</a></li>
+                    </ul>
+                </li>
+                <li><a href="dev3-week3.html">Week 3: Integration & E2E Testing</a>
+                    <ul>
+                        <li><a href="dev3-day11.html">Day 11: API Integration Tests (Part 1)</a></li>
+                        <li><a href="dev3-day12.html">Day 12: API Integration Tests (Part 2)</a></li>
+                        <li><a href="dev3-day13.html">Day 13: Test Database Setup</a></li>
+                        <li><a href="dev3-day14.html">Day 14: Playwright Setup</a></li>
+                        <li><a href="dev3-day15.html">Day 15: E2E Tests & Week 3 PR</a></li>
+                    </ul>
+                </li>
+                <li><a href="dev3-week4.html">Week 4: Deployment Automation</a>
+                    <ul>
+                        <li><a href="dev3-day16.html">Day 16: Deploy to Dev Workflow</a></li>
+                        <li><a href="dev3-day17.html">Day 17: Secrets Management</a></li>
+                        <li><a href="dev3-day18.html">Day 18: Health Checks</a></li>
+                        <li><a href="dev3-day19.html">Day 19: Deploy to Test Workflow</a></li>
+                        <li><a href="dev3-day20.html">Day 20: Week 4 Testing & PR</a></li>
+                    </ul>
+                </li>
+                <li><a href="dev3-week5.html">Week 5: Production Ready & Testing</a>
+                    <ul>
+                        <li><a href="dev3-day21.html">Day 21: Smoke Tests</a></li>
+                        <li><a href="dev3-day22.html">Day 22: Environment Promotion</a></li>
+                        <li><a href="dev3-day23.html">Day 23: Rollback Procedures</a></li>
+                        <li><a href="dev3-day24.html">Day 24: Full System Testing</a></li>
+                        <li><a href="dev3-day25.html">Day 25: Documentation & Handoff</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="hero">
+                <h1>Welcome to RevNova!</h1>
+                <p>Your step-by-step guide to building the RevNova migration platform</p>
+            </div>
+
+            <section class="card">
+                <h2>Getting Started</h2>
+                <p>Welcome to the team! This onboarding guide will take you through <strong>everything you need to do, day by day</strong>, to build the RevNova platform.</p>
+                
+                <div class="info-box">
+                    <strong>📅 Project Duration:</strong> 25 working days (5 weeks)<br>
+                    <strong>🎯 Goal:</strong> Build Phase 1 - SFDC CPQ Migration wizard<br>
+                    <strong>👥 Team:</strong> 3 developers working together<br>
+                    <strong>📚 Approach:</strong> Follow daily step-by-step instructions
+                </div>
+                
+                <h3>How to Use This Guide</h3>
+                <ol>
+                    <li><strong>Pick your role:</strong> Backend, Frontend, or DevOps</li>
+                    <li><strong>Follow the days:</strong> Start with Day 1 and work through each day in order</li>
+                    <li><strong>Complete each step:</strong> Every day has clear tasks - just follow them</li>
+                    <li><strong>Use the buttons:</strong> Click "Next" at the bottom of each page to continue</li>
+                    <li><strong>Ask for help:</strong> If you're stuck, ask your team or team lead</li>
+                </ol>
+            </section>
+
+            <section class="card">
+                <h2>Choose Your Role</h2>
+                <p>Select your developer role to start your onboarding journey:</p>
+                
+                <div class="dev-cards">
+                    <div class="dev-card dev1">
+                        <h3>Developer 1</h3>
+                        <p><strong>Backend & Database</strong></p>
+                        <p>Build APIs, database schemas, and business logic</p>
+                        <p>Technologies: Node.js, PostgreSQL, TypeScript</p>
+                        <a href="dev1-day01.html" class="btn">Start Day 1 →</a>
+                    </div>
+                    
+                    <div class="dev-card dev2">
+                        <h3>Developer 2</h3>
+                        <p><strong>Frontend & React</strong></p>
+                        <p>Build user interfaces and wizard pages</p>
+                        <p>Technologies: React, TypeScript, TailwindCSS</p>
+                        <a href="dev2-day01.html" class="btn">Start Day 1 →</a>
+                    </div>
+                    
+                    <div class="dev-card dev3">
+                        <h3>Developer 3</h3>
+                        <p><strong>DevOps & QA</strong></p>
+                        <p>Set up CI/CD, Docker, and testing automation</p>
+                        <p>Technologies: GitHub Actions, Docker, Playwright</p>
+                        <a href="dev3-day01.html" class="btn">Start Day 1 →</a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card">
+                <h2>Before You Start</h2>
+                <p>Make sure you have completed these setup steps:</p>
+                <ul>
+                    <li>✅ Read the <a href="onboarding-overview.html">Project Overview</a></li>
+                    <li>✅ Set up your GitHub account and access</li>
+                    <li>✅ Follow either the <a href="manual-repo-setup.html">Manual Repository Setup</a> or <a href="repo-setup-guide.html">Automated Setup Guide</a></li>
+                    <li>✅ Install required software (listed in your Day 1 guide)</li>
+                </ul>
+            </section>
+        </main>
+    </div>
+    <script src="../script.js"></script>
+</body>
+</html>
