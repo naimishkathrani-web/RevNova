@@ -758,26 +758,49 @@
             </div>
             
             <h1 class="page-title">Day 12: Field Mapping UI (Part 2)</h1>
-            <p class="page-subtitle">Developer 1: Backend & Database | Duration: ~6-8 hours</p>
+            <p class="page-subtitle">Developer 2: Frontend | Duration: ~6-8 hours</p>
             
             <div class="content-section">
                 <h2>📋 Objective</h2>
-                <p>Enhance the schema analysis API to fetch detailed field metadata, implement job status polling, and add Redis caching for performance optimization.</p>
+                <p>Complete mapping UI with save/load, visual connections, and mapping details panel.</p>
                 
-                <p><strong>API Endpoints to Build:</strong></p>
+                <p><strong>Features:</strong></p>
                 <ul>
-                    <li><code>GET /api/v1/projects/{id}/analyze/{job_id}</code> - Poll job status</li>
-                    <li><code>GET /api/v1/projects/{id}/analyze/summary</code> - Get analysis summary</li>
+                    <li>Visual connection lines between fields</li>
+                    <li>Mapping details sidebar</li>
+                    <li>Save/Load mapping configurations</li>
                 </ul>
             </div>
             
             <div class="content-section">
-                <h2>📦 Step 1: Install Redis Client</h2>
-                <p>Install the Redis client for Node.js to enable caching:</p>
-                <pre><code>cd backend
-npm install redis</code></pre>
-                
-                <p>Create a Redis client configuration:</p>
+                <h2>🎨 Step 1: Connection Lines</h2>
+                <p><strong>File:</strong> <code>frontend/src/components/mapping/ConnectionLines.tsx</code></p>
+                <pre><code>export const ConnectionLines: React.FC&lt;{ mappings: Mapping[] }&gt; = ({ mappings }) =&gt; {
+  return (
+    &lt;svg className="connection-svg"&gt;
+      {mappings.map((mapping, idx) =&gt; {
+        const sourceEl = document.getElementById(`source-${mapping.sourceField}`);
+        const targetEl = document.getElementById(`target-${mapping.targetField}`);
+        
+        if (!sourceEl || !targetEl) return null;
+        
+        const x1 = sourceEl.offsetLeft + sourceEl.offsetWidth;
+        const y1 = sourceEl.offsetTop + (sourceEl.offsetHeight / 2);
+        const x2 = targetEl.offsetLeft;
+        const y2 = targetEl.offsetTop + (targetEl.offsetHeight / 2);
+        
+        return (
+          &lt;line 
+            key={idx}
+            x1={x1} y1={y1} x2={x2} y2={y2}
+            stroke="#0176d3" 
+            strokeWidth="2"
+          /&gt;
+        );
+      })}
+    &lt;/svg&gt;
+  );
+};
                 <p><strong>File:</strong> <code>backend/src/config/redis.ts</code></p>
                 <pre><code>import { createClient } from 'redis';
 

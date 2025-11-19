@@ -758,26 +758,62 @@
             </div>
             
             <h1 class="page-title">Day 12: E2E Test Setup</h1>
-            <p class="page-subtitle">Developer 1: Backend & Database | Duration: ~6-8 hours</p>
+            <p class="page-subtitle">Developer 3: Testing & QA | Duration: ~6-8 hours</p>
             
             <div class="content-section">
                 <h2>📋 Objective</h2>
-                <p>Enhance the schema analysis API to fetch detailed field metadata, implement job status polling, and add Redis caching for performance optimization.</p>
+                <p>Set up Playwright for end-to-end testing across the full application flow.</p>
                 
-                <p><strong>API Endpoints to Build:</strong></p>
+                <p><strong>Setup Tasks:</strong></p>
                 <ul>
-                    <li><code>GET /api/v1/projects/{id}/analyze/{job_id}</code> - Poll job status</li>
-                    <li><code>GET /api/v1/projects/{id}/analyze/summary</code> - Get analysis summary</li>
+                    <li>Install Playwright</li>
+                    <li>Configure test environment</li>
+                    <li>Write first E2E test for connection flow</li>
                 </ul>
             </div>
             
             <div class="content-section">
-                <h2>📦 Step 1: Install Redis Client</h2>
-                <p>Install the Redis client for Node.js to enable caching:</p>
-                <pre><code>cd backend
-npm install redis</code></pre>
-                
-                <p>Create a Redis client configuration:</p>
+                <h2>🎭 Step 1: Install Playwright</h2>
+                <pre><code>cd frontend
+npm install -D @playwright/test
+npx playwright install
+
+# Create config
+# File: playwright.config.ts
+import { defineConfig } from '@playwright/test';
+
+export default defineConfig({
+  testDir: './e2e',
+  use: {
+    baseURL: 'http://localhost:5173',
+    screenshot: 'only-on-failure',
+  },
+  webServer: {
+    command: 'npm run dev',
+    port: 5173,
+  },
+});
+</code></pre>
+            </div>
+            
+            <div class="content-section">
+                <h2>🧪 Step 2: First E2E Test</h2>
+                <p><strong>File:</strong> <code>frontend/e2e/connection-flow.spec.ts</code></p>
+                <pre><code>import { test, expect } from '@playwright/test';
+
+test('create Salesforce connection', async ({ page }) =&gt; {
+  await page.goto('/connections');
+  
+  await page.fill('[name="username"]', 'test@salesforce.com');
+  await page.fill('[name="password"]', 'password123');
+  await page.fill('[name="token"]', 'token456');
+  
+  await page.click('button:has-text("Test Connection")');
+  await expect(page.locator('.success-message')).toBeVisible();
+  
+  await page.click('button:has-text("Save")');
+  await expect(page.locator('.connection-card')).toBeVisible();
+});
                 <p><strong>File:</strong> <code>backend/src/config/redis.ts</code></p>
                 <pre><code>import { createClient } from 'redis';
 

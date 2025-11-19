@@ -762,22 +762,36 @@
             
             <div class="content-section">
                 <h2>📋 Objective</h2>
-                <p>Enhance the schema analysis API to fetch detailed field metadata, implement job status polling, and add Redis caching for performance optimization.</p>
+                <p>Add bulk operations and validation to field mapping API.</p>
                 
-                <p><strong>API Endpoints to Build:</strong></p>
+                <p><strong>Endpoints:</strong></p>
                 <ul>
-                    <li><code>GET /api/v1/projects/{id}/analyze/{job_id}</code> - Poll job status</li>
-                    <li><code>GET /api/v1/projects/{id}/analyze/summary</code> - Get analysis summary</li>
+                    <li>POST /api/v1/mappings/bulk - Bulk create mappings</li>
+                    <li>PUT /api/v1/mappings/:id - Update mapping</li>
+                    <li>DELETE /api/v1/mappings/:id - Delete mapping</li>
                 </ul>
             </div>
             
             <div class="content-section">
-                <h2>📦 Step 1: Install Redis Client</h2>
-                <p>Install the Redis client for Node.js to enable caching:</p>
-                <pre><code>cd backend
-npm install redis</code></pre>
-                
-                <p>Create a Redis client configuration:</p>
+                <h2>📝 Step 1: Bulk Operations</h2>
+                <p><strong>File:</strong> <code>backend/src/routes/mappings.routes.ts</code></p>
+                <pre><code>router.post('/bulk', async (req, res) =&gt; {
+  const { projectId, mappings } = req.body;
+  
+  const values = mappings.map(m =&gt; 
+    `(${projectId}, '${m.sourceObject}', '${m.sourceField}', '${m.targetObject}', '${m.targetField}', '${m.mappingType}')`
+  ).join(',');
+  
+  await pool.query(`
+    INSERT INTO field_mappings 
+    (project_id, source_object, source_field, target_object, target_field, mapping_type)
+    VALUES ${values}
+    ON CONFLICT (project_id, source_object, source_field, target_object, target_field) 
+    DO UPDATE SET mapping_type = EXCLUDED.mapping_type
+  `);
+  
+  res.json({ created: mappings.length });
+});
                 <p><strong>File:</strong> <code>backend/src/config/redis.ts</code></p>
                 <pre><code>import { createClient } from 'redis';
 
