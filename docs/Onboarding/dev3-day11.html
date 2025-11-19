@@ -758,36 +758,45 @@
             </div>
             
             <h1 class="page-title">Day 11: Frontend Testing</h1>
-            <p class="page-subtitle">Developer 1: Backend & Database | Duration: ~6-8 hours</p>
+            <p class="page-subtitle">Developer 3: Testing & QA | Duration: ~6-8 hours</p>
             
             <div class="content-section">
                 <h2>📋 Objective</h2>
-                <p>Enhance the schema analysis API to fetch detailed field metadata, implement job status polling, and add Redis caching for performance optimization.</p>
+                <p>Write comprehensive tests for Week 2 frontend components (connections, schema analysis, field lists).</p>
                 
-                <p><strong>API Endpoints to Build:</strong></p>
+                <p><strong>Tests to Write:</strong></p>
                 <ul>
-                    <li><code>GET /api/v1/projects/{id}/analyze/{job_id}</code> - Poll job status</li>
-                    <li><code>GET /api/v1/projects/{id}/analyze/summary</code> - Get analysis summary</li>
+                    <li>ConnectionForm rendering and validation</li>
+                    <li>ObjectList search and filtering</li>
+                    <li>FieldList display and interactions</li>
                 </ul>
             </div>
             
             <div class="content-section">
-                <h2>📦 Step 1: Install Redis Client</h2>
-                <p>Install the Redis client for Node.js to enable caching:</p>
-                <pre><code>cd backend
-npm install redis</code></pre>
-                
-                <p>Create a Redis client configuration:</p>
-                <p><strong>File:</strong> <code>backend/src/config/redis.ts</code></p>
-                <pre><code>import { createClient } from 'redis';
+                <h2>🧪 Step 1: ConnectionForm Tests</h2>
+                <p><strong>File:</strong> <code>frontend/tests/ConnectionForm.test.tsx</code></p>
+                <pre><code>import { render, screen, fireEvent } from '@testing-library/react';
+import { ConnectionForm } from '../components/ConnectionForm';
 
-const redisClient = createClient({
-  url: process.env.REDIS_URL || 'redis://localhost:6379'
+describe('ConnectionForm', () =&gt; {
+  test('renders all form fields', () =&gt; {
+    render(&lt;ConnectionForm /&gt;);
+    
+    expect(screen.getByLabelText(/username/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/security token/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /test connection/i })).toBeInTheDocument();
+  });
+  
+  test('validates required fields', async () =&gt; {
+    render(&lt;ConnectionForm /&gt;);
+    
+    const submitBtn = screen.getByRole('button', { name: /save/i });
+    fireEvent.click(submitBtn);
+    
+    expect(await screen.findByText(/username is required/i)).toBeInTheDocument();
+  });
 });
-
-redisClient.on('error', (err) => console.error('Redis Client Error', err));
-
-export const connectRedis = async () => {
   await redisClient.connect();
   console.log('Redis connected');
 };

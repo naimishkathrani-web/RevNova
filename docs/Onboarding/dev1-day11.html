@@ -762,32 +762,33 @@
             
             <div class="content-section">
                 <h2>📋 Objective</h2>
-                <p>Enhance the schema analysis API to fetch detailed field metadata, implement job status polling, and add Redis caching for performance optimization.</p>
+                <p>Create field mapping database tables and API for storing source-to-target field mappings.</p>
                 
-                <p><strong>API Endpoints to Build:</strong></p>
+                <p><strong>Tasks:</strong></p>
                 <ul>
-                    <li><code>GET /api/v1/projects/{id}/analyze/{job_id}</code> - Poll job status</li>
-                    <li><code>GET /api/v1/projects/{id}/analyze/summary</code> - Get analysis summary</li>
+                    <li>Create field_mappings table</li>
+                    <li>POST /api/v1/mappings - Create mapping</li>
+                    <li>GET /api/v1/mappings/:projectId - List mappings</li>
                 </ul>
             </div>
             
             <div class="content-section">
-                <h2>📦 Step 1: Install Redis Client</h2>
-                <p>Install the Redis client for Node.js to enable caching:</p>
-                <pre><code>cd backend
-npm install redis</code></pre>
-                
-                <p>Create a Redis client configuration:</p>
-                <p><strong>File:</strong> <code>backend/src/config/redis.ts</code></p>
-                <pre><code>import { createClient } from 'redis';
-
-const redisClient = createClient({
-  url: process.env.REDIS_URL || 'redis://localhost:6379'
-});
-
-redisClient.on('error', (err) => console.error('Redis Client Error', err));
-
-export const connectRedis = async () => {
+                <h2>🗄️ Step 1: Field Mappings Table</h2>
+                <p><strong>File:</strong> <code>backend/migrations/004_create_mappings.sql</code></p>
+                <pre><code>CREATE TABLE field_mappings (
+  id SERIAL PRIMARY KEY,
+  project_id INTEGER NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+  source_object VARCHAR(255) NOT NULL,
+  source_field VARCHAR(255) NOT NULL,
+  target_object VARCHAR(255) NOT NULL,
+  target_field VARCHAR(255) NOT NULL,
+  mapping_type VARCHAR(50) DEFAULT 'direct', -- direct, formula, lookup
+  transformation_rule TEXT,
+  confidence_score DECIMAL(5,2) DEFAULT 0.00,
+  is_verified BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(project_id, source_object, source_field, target_object, target_field)
+);
   await redisClient.connect();
   console.log('Redis connected');
 };
