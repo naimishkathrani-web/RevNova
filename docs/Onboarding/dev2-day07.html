@@ -757,37 +757,204 @@
                 <a href="onboarding-dev1.html">Developer 1</a> › Week 2 › Day 7
             </div>
             
-            <h1 class="page-title">Day 7: Project Creation</h1>
-            <p class="page-subtitle">Developer 1: Backend & Database | Duration: ~6-8 hours</p>
+            <h1 class="page-title">Day 7: Object List UI</h1>
+            <p class="page-subtitle">Developer 2: Frontend | Duration: ~6-8 hours</p>
             
             <div class="content-section">
                 <h2>📋 Objective</h2>
-                <p>Enhance the schema analysis API to fetch detailed field metadata, implement job status polling, and add Redis caching for performance optimization.</p>
+                <p>Build the UI for displaying Salesforce objects fetched from the schema analysis API. Show object lists with filtering, selection, and detailed metadata views.</p>
                 
-                <p><strong>API Endpoints to Build:</strong></p>
+                <p><strong>UI Components to Build:</strong></p>
                 <ul>
-                    <li><code>GET /api/v1/projects/{id}/analyze/{job_id}</code> - Poll job status</li>
-                    <li><code>GET /api/v1/projects/{id}/analyze/summary</code> - Get analysis summary</li>
+                    <li>Object selection page with connection dropdown</li>
+                    <li>Searchable and filterable object list table</li>
+                    <li>Object detail modal showing fields and relationships</li>
+                    <li>Loading states and error handling</li>
                 </ul>
             </div>
             
             <div class="content-section">
-                <h2>📦 Step 1: Install Redis Client</h2>
-                <p>Install the Redis client for Node.js to enable caching:</p>
-                <pre><code>cd backend
-npm install redis</code></pre>
-                
-                <p>Create a Redis client configuration:</p>
-                <p><strong>File:</strong> <code>backend/src/config/redis.ts</code></p>
-                <pre><code>import { createClient } from 'redis';
+                <h2>📦 Step 1: Create Object List Component</h2>
+                <p><strong>File:</strong> <code>frontend/src/components/objects/ObjectList.tsx</code></p>
+                <pre><code>import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import './ObjectList.css';
 
-const redisClient = createClient({
-  url: process.env.REDIS_URL || 'redis://localhost:6379'
-});
+interface SalesforceObject {
+  name: string;
+  label: string;
+  custom: boolean;
+  queryable: boolean;
+  createable: boolean;
+  updateable: boolean;
+  deletable: boolean;
+}
 
-redisClient.on('error', (err) => console.error('Redis Client Error', err));
+interface ObjectListProps {
+  connectionId: number;
+  onObjectSelect: (objectName: string) => void;
+}
 
-export const connectRedis = async () => {
+export const ObjectList: React.FC&lt;ObjectListProps&gt; = ({ connectionId, onObjectSelect }) => {
+  const [objects, setObjects] = useState&lt;SalesforceObject[]&gt;([]);
+  const [filteredObjects, setFilteredObjects] = useState&lt;SalesforceObject[]&gt;([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState&lt;string | null&gt;(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterType, setFilterType] = useState&lt;'all' | 'standard' | 'custom'&gt;('all');
+
+  useEffect(() => {
+    if (connectionId) {
+      fetchObjects();
+    }
+  }, [connectionId]);
+
+  useEffect(() => {
+    filterObjects();
+  }, [objects, searchTerm, filterType]);
+
+  const fetchObjects = async () => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const response = await axios.post('/api/v1/analyze/objects', {
+        connectionId
+      });
+
+      setObjects(response.data.objects);
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Failed to fetch objects');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filterObjects = () => {
+    let filtered = [...objects];
+
+    // Apply type filter
+    if (filterType === 'custom') {
+      filtered = filtered.filter(obj => obj.custom);
+    } else if (filterType === 'standard') {
+      filtered = filtered.filter(obj => !obj.custom);
+    }
+
+    // Apply search filter
+    if (searchTerm) {
+      filtered = filtered.filter(obj =>
+        obj.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        obj.label.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    setFilteredObjects(filtered);
+  };
+
+  if (loading) {
+    return (
+      &lt;div className="object-list-loading"&gt;
+        &lt;i className="fas fa-spinner fa-spin fa-3x"&gt;&lt;/i&gt;
+        &lt;p&gt;Fetching Salesforce objects...&lt;/p&gt;
+      &lt;/div&gt;
+    );
+  }
+
+  if (error) {
+    return (
+      &lt;div className="object-list-error"&gt;
+        &lt;i className="fas fa-exclamation-circle fa-3x"&gt;&lt;/i&gt;
+        &lt;p&gt;{error}&lt;/p&gt;
+        &lt;button className="btn btn-primary" onClick={fetchObjects}&gt;Retry&lt;/button&gt;
+      &lt;/div&gt;
+    );
+  }
+
+  return (
+    &lt;div className="object-list-container"&gt;
+      &lt;div className="object-list-header"&gt;
+        &lt;h2&gt;Salesforce Objects ({filteredObjects.length})&lt;/h2&gt;
+        &lt;div className="object-list-controls"&gt;
+          &lt;div className="search-box"&gt;
+            &lt;i className="fas fa-search"&gt;&lt;/i&gt;
+            &lt;input
+              type="text"
+              placeholder="Search objects..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            /&gt;
+          &lt;/div&gt;
+
+          &lt;div className="filter-buttons"&gt;
+            &lt;button
+              className={`filter-btn ${filterType === 'all' ? 'active' : ''}`}
+              onClick={() => setFilterType('all')}
+            &gt;
+              All
+            &lt;/button&gt;
+            &lt;button
+              className={`filter-btn ${filterType === 'standard' ? 'active' : ''}`}
+              onClick={() => setFilterType('standard')}
+            &gt;
+              Standard
+            &lt;/button&gt;
+            &lt;button
+              className={`filter-btn ${filterType === 'custom' ? 'active' : ''}`}
+              onClick={() => setFilterType('custom')}
+            &gt;
+              Custom
+            &lt;/button&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div className="object-table-container"&gt;
+        &lt;table className="object-table"&gt;
+          &lt;thead&gt;
+            &lt;tr&gt;
+              &lt;th&gt;API Name&lt;/th&gt;
+              &lt;th&gt;Label&lt;/th&gt;
+              &lt;th&gt;Type&lt;/th&gt;
+              &lt;th&gt;Permissions&lt;/th&gt;
+              &lt;th&gt;Actions&lt;/th&gt;
+            &lt;/tr&gt;
+          &lt;/thead&gt;
+          &lt;tbody&gt;
+            {filteredObjects.map(obj => (
+              &lt;tr key={obj.name}&gt;
+                &lt;td&gt;
+                  &lt;code&gt;{obj.name}&lt;/code&gt;
+                &lt;/td&gt;
+                &lt;td&gt;{obj.label}&lt;/td&gt;
+                &lt;td&gt;
+                  &lt;span className={`badge ${obj.custom ? 'badge-custom' : 'badge-standard'}`}&gt;
+                    {obj.custom ? 'Custom' : 'Standard'}
+                  &lt;/span&gt;
+                &lt;/td&gt;
+                &lt;td&gt;
+                  &lt;div className="permissions"&gt;
+                    {obj.createable && &lt;span className="perm-icon" title="Createable"&gt;&lt;i className="fas fa-plus-circle"&gt;&lt;/i&gt;&lt;/span&gt;}
+                    {obj.updateable && &lt;span className="perm-icon" title="Updateable"&gt;&lt;i className="fas fa-edit"&gt;&lt;/i&gt;&lt;/span&gt;}
+                    {obj.deletable && &lt;span className="perm-icon" title="Deletable"&gt;&lt;i className="fas fa-trash"&gt;&lt;/i&gt;&lt;/span&gt;}
+                    {obj.queryable && &lt;span className="perm-icon" title="Queryable"&gt;&lt;i className="fas fa-search"&gt;&lt;/i&gt;&lt;/span&gt;}
+                  &lt;/div&gt;
+                &lt;/td&gt;
+                &lt;td&gt;
+                  &lt;button
+                    className="btn-view-details"
+                    onClick={() => onObjectSelect(obj.name)}
+                  &gt;
+                    &lt;i className="fas fa-eye"&gt;&lt;/i&gt; View Details
+                  &lt;/button&gt;
+                &lt;/td&gt;
+              &lt;/tr&gt;
+            ))}
+          &lt;/tbody&gt;
+        &lt;/table&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+};
   await redisClient.connect();
   console.log('Redis connected');
 };
@@ -800,37 +967,28 @@ export default redisClient;</code></pre>
                 <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
                 <pre><code>router.get('/projects/:id/analyze/:jobId', async (req, res) => {
   try {
-    const { id, jobId } = req.params;
-    
-    // Check Redis for job status
-    const jobData = await redisClient.get(`job:${jobId}`);
-    
-    if (!jobData) {
-      return res.status(404).json({ error: 'Job not found' });
-    }
-    
-    const job = JSON.parse(jobData);
-    res.json({
-      jobId: job.id,
-      status: job.status, // 'pending', 'running', 'completed', 'failed'
-      progress: job.progress,
-      result: job.result || null,
-      error: job.error || null
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});</code></pre>
+  );
+};</code></pre>
             </div>
             
             <div class="content-section">
-                <h2>📊 Step 3: Enhance Field Metadata</h2>
-                <p>Update the schema analysis to include detailed field information:</p>
-                <pre><code>const getDetailedFieldMetadata = (field: any) => {
-  return {
-    name: field.name,
-    label: field.label,
-    type: field.type,
+                <h2>🎨 Step 2: Style the Object List</h2>
+                <p><strong>File:</strong> <code>frontend/src/components/objects/ObjectList.css</code> - Add RevNova styling for table, search, filters, and badges.</p>
+            </div>
+            
+            <div class="content-section">
+                <h2>✅ Completion Checklist</h2>
+                <ul class="checklist">
+                    <li>✅ ObjectList component fetches objects from API</li>
+                    <li>✅ Search and filter functionality working</li>
+                    <li>✅ Table displays objects with permissions</li>
+                    <li>✅ Styled following RevNova design system</li>
+                </ul>
+            </div>
+            
+            <div class="content-section">
+                <h2>📝 Commit Your Changes</h2>
+                <pre><code>git commit -m "feat(frontend): add Salesforce object list UI"
     length: field.length,
     precision: field.precision,
     scale: field.scale,
@@ -839,27 +997,16 @@ export default redisClient;</code></pre>
     externalId: field.externalId,
     defaultValue: field.defaultValue,
     picklistValues: field.picklistValues || [],
-    referenceTo: field.referenceTo || [],
-    relationshipName: field.relationshipName,
-    calculated: field.calculated,
-    customField: field.custom
-  };
-};</code></pre>
+git commit -m "feat(frontend): add Salesforce object list UI"</code></pre>
             </div>
             
-            <div class="content-section">
-                <h2>📈 Step 4: Create Analysis Summary Endpoint</h2>
-                <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
-                <pre><code>router.get('/projects/:id/analyze/summary', async (req, res) => {
-  try {
-    const projectId = parseInt(req.params.id);
+            <div class="nav-buttons">
+                <a href="dev2-day06.html" class="btn btn-secondary">Previous: Day 6</a>
+                <a href="dev2-day08.html" class="btn">Next: Day 8</a>
+            </div>
+        </main>
+    </div>
     
-    // Query database for analysis results
-    const summary = {
-      total_objects: 3,
-      custom_objects: 0,
-      total_fields: 45,
-      custom_fields: 12,
       readiness_score: 0.92,
       warnings: ['Custom field Product2.Special__c has no target mapping'],
       analyzed_at: new Date().toISOString()
