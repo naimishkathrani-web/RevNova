@@ -1,11 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Phase 1 - Data Transformation | RevNova Requirements</title>
-    <link rel="stylesheet" href="../styles.css">
-                <style>
+#!/usr/bin/env python3
+"""
+FINAL FIX: Replace ALL sidebar CSS and HTML in requirements pages to match Salesforce style exactly.
+This script will properly replace the entire <style> block keeping only page-specific styles.
+"""
+
+import os
+import re
+from pathlib import Path
+
+# Standard Salesforce-style CSS for requirements pages
+STANDARD_SIDEBAR_CSS = """    <style>
         body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
         
         .requirements-layout {
@@ -168,45 +172,10 @@
             background: #fff;
             min-width: 0;
         }
+"""
 
-        
-        
-        .page-header{background:linear-gradient(135deg,#11998e 0%,#38ef7d 100%);color:#fff;padding:3rem;border-radius:12px;margin-bottom:3rem;box-shadow:0 4px 15px rgba(17,153,142,0.2)}
-        .page-header h1{margin:0 0 1rem 0;font-size:2.5rem;font-weight:700}
-        .section-box{background:#fff;border:2px solid #e0e0e0;padding:2.5rem;margin:2rem 0;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.05)}
-        .section-box h3{color:#11998e;margin-top:0;border-bottom:2px solid #38ef7d;padding-bottom:0.5rem}
-        table{width:100%;border-collapse:collapse;margin:1.5rem 0;background:#fff;border-radius:8px;overflow:hidden}
-        th,td{border:1px solid #ddd;padding:12px;text-align:left}
-        th{background:linear-gradient(135deg,#11998e 0%,#38ef7d 100%);color:#fff;font-weight:600;text-transform:uppercase;font-size:0.85rem}
-        .badge{display:inline-block;background:#667eea;color:#fff;padding:0.3rem 0.6rem;border-radius:12px;font-size:0.75rem;font-weight:600;margin:0.2rem}
-        .badge-functional{background:#11998e}
-        .badge-technical{background:#e74c3c}
-    </style>
-</head>
-<body>
-    <header>
-        <div class="container header-container">
-            <div class="nav-left">
-                <a href="../index.html" class="logo"><div class="logo-box">RevNova</div></a>
-                <nav class="main-nav">
-                    <ul>
-                        <li><a href="../about-revnova.html">About RevNova</a></li>
-                        <li><a href="../features.html">Features</a></li>
-                        <li><a href="../pricing.html">Pricing</a></li>
-                        <li><a href="requirements-home.html" class="active">RevNova Requirements</a></li>
-                        <li><a href="../contact.html">Contact</a></li>
-                    </ul>
-                </nav>
-            </div>
-            <div class="header-right">
-                <div class="country-selector"><span class="fi fi-us"></span></div>
-                <a href="../login.html" class="btn btn-login">Login</a>
-            </div>
-        </div>
-    </header>
-
-    <div class="requirements-layout">
-                                        <aside class="sidebar">
+# Standard sidebar HTML
+STANDARD_SIDEBAR_HTML = """        <aside class="sidebar">
             <nav class="sidebar-nav">
                 <!-- Platform Vision Section -->
                 <div class="nav-section">
@@ -346,156 +315,10 @@
                     </div>
                 </div>
             </nav>
-        </aside>
+        </aside>"""
 
-        <main class="main-content">
-            <div class="page-header">
-                <h1>⚙️ Page 4: Data Transformation Rules</h1>
-                <p>Define transformation rules for data normalization, calculation, concatenation, and conditional logic</p>
-            </div>
-
-            <section class="section-box">
-                <h3><span class="badge badge-functional">Functional</span> Overview</h3>
-                <p><strong>Purpose:</strong> Configure transformation rules to normalize, calculate, concatenate, split, or apply conditional logic to data before migration.</p>
-                
-                <h4>Transformation Types Supported</h4>
-                <table>
-                    <tr><th>Type</th><th>Description</th><th>Example</th></tr>
-                    <tr><td><strong>Concatenate</strong></td><td>Combine multiple fields</td><td>FirstName + " " + LastName → FullName</td></tr>
-                    <tr><td><strong>Split</strong></td><td>Extract substring/pattern</td><td>Email → extract username (before @)</td></tr>
-                    <tr><td><strong>Normalize</strong></td><td>Format dates, currencies, phone</td><td>MM/DD/YYYY → YYYY-MM-DD</td></tr>
-                    <tr><td><strong>Calculate</strong></td><td>Math formulas</td><td>Quantity * UnitPrice → TotalPrice</td></tr>
-                    <tr><td><strong>Default Value</strong></td><td>Set value if null</td><td>Status = null → "Draft"</td></tr>
-                    <tr><td><strong>Conditional</strong></td><td>IF/THEN/ELSE logic</td><td>IF Amount &gt; 1000 THEN "High" ELSE "Low"</td></tr>
-                    <tr><td><strong>Lookup/Replace</strong></td><td>Value substitution table</td><td>"NY" → "New York"</td></tr>
-                </table>
-            </section>
-
-            <section class="section-box">
-                <h3><span class="badge badge-functional">Functional</span> Formula Builder UI</h3>
-                <p><strong>FR-TRANS-001:</strong> Drag-drop formula builder with field picker, function library (30+ functions), and live preview</p>
-                <table>
-                    <tr><th>Requirement ID</th><th>Description</th></tr>
-                    <tr><td>FR-TRANS-001.1</td><td>Formula builder supports text functions: CONCATENATE, SUBSTRING, UPPER, LOWER, TRIM, REPLACE</td></tr>
-                    <tr><td>FR-TRANS-001.2</td><td>Formula builder supports date functions: DATE, DATEVALUE, YEAR, MONTH, DAY, ADDMONTHS</td></tr>
-                    <tr><td>FR-TRANS-001.3</td><td>Formula builder supports math functions: SUM, MULTIPLY, DIVIDE, ROUND, ABS, MAX, MIN</td></tr>
-                    <tr><td>FR-TRANS-001.4</td><td>Formula builder supports conditional logic: IF, AND, OR, NOT, ISBLANK, ISNULL</td></tr>
-                    <tr><td>FR-TRANS-001.5</td><td>Live preview shows formula output for sample records (5 records displayed)</td></tr>
-                    <tr><td>FR-TRANS-001.6</td><td>Validation checks for syntax errors, highlights errors in red with tooltip explanation</td></tr>
-                </table>
-            </section>
-
-            <section class="section-box">
-                <h3><span class="badge badge-technical">Technical</span> Transformation Engine</h3>
-                <pre style="background:#2d2d2d;color:#f8f8f2;padding:1rem;border-radius:8px;overflow-x:auto">
-CREATE TABLE transformation_rules (
-    rule_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    migration_id UUID NOT NULL REFERENCES migrations(migration_id),
-    target_field VARCHAR(255) NOT NULL,
-    transformation_type VARCHAR(50) NOT NULL,
-    formula TEXT, -- Salesforce-like formula syntax
-    lookup_table JSONB, -- For lookup/replace transformations
-    is_active BOOLEAN DEFAULT true,
-    execution_order INT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Example transformation execution
-function applyTransformation(record, rule) {
-    switch(rule.transformation_type) {
-        case 'concatenate':
-            return eval(rule.formula); // CONCATENATE(FirstName, " ", LastName)
-        case 'normalize_date':
-            return moment(record.date_field).format('YYYY-MM-DD');
-        case 'conditional':
-            return evaluateFormula(rule.formula, record);
-        case 'lookup':
-            return rule.lookup_table[record.source_value] || record.source_value;
-    }
-}
-                </pre>
-            </section>
-
-            <section>
-                <h2>Navigation</h2>
-                <ul style="line-height:2">
-                    <li><strong>Previous:</strong> <a href="requirements-phase1-mapping.html">Page 3: Field Mapping</a></li>
-                    <li><strong>Next:</strong> <a href="requirements-phase1-validate.html">Page 5: Validation</a></li>
-                </ul>
-            </section>
-        </main>
-    </div>
-    <script>
-        // Collapsible navigation functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            // Handle section headers - single click toggle
-            const sectionHeaders = document.querySelectorAll('.nav-section-header');
-            sectionHeaders.forEach(header => {
-                const newHeader = header.cloneNode(true);
-                header.parentNode.replaceChild(newHeader, header);
-            });
-            
-            document.querySelectorAll('.nav-section-header').forEach(header => {
-                header.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    const content = this.nextElementSibling;
-                    const isExpanded = this.classList.contains('expanded');
-                    
-                    if (isExpanded) {
-                        this.classList.remove('expanded');
-                        content.classList.remove('expanded');
-                    } else {
-                        this.classList.add('expanded');
-                        content.classList.add('expanded');
-                    }
-                });
-            });
-            
-            // Handle subsection headers - single click toggle
-            const subsectionHeaders = document.querySelectorAll('.nav-subsection-header');
-            subsectionHeaders.forEach(header => {
-                const newHeader = header.cloneNode(true);
-                header.parentNode.replaceChild(newHeader, header);
-            });
-            
-            document.querySelectorAll('.nav-subsection-header').forEach(header => {
-                header.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    const content = this.nextElementSibling;
-                    const isExpanded = this.classList.contains('expanded');
-                    
-                    if (isExpanded) {
-                        this.classList.remove('expanded');
-                        content.classList.remove('expanded');
-                    } else {
-                        this.classList.add('expanded');
-                        content.classList.add('expanded');
-                    }
-                });
-            });
-            
-            // Auto-expand section containing active link
-            const activeLinks = document.querySelectorAll('.nav-link.active, .nav-subsection-link.active');
-            activeLinks.forEach(link => {
-                // Expand parent section
-                let section = link.closest('.nav-section-content');
-                if (section) {
-                    section.classList.add('expanded');
-                    section.previousElementSibling.classList.add('expanded');
-                }
-                
-                // Expand parent subsection if exists
-                let subsection = link.closest('.nav-subsection-content');
-                if (subsection) {
-                    subsection.classList.add('expanded');
-                    subsection.previousElementSibling.classList.add('expanded');
-                }
-            });
-        });
-    </script>
-
+# Collapsible JavaScript
+COLLAPSIBLE_SCRIPT = """
     <script>
         // Wait for DOM to be ready
         document.addEventListener('DOMContentLoaded', function() {
@@ -565,6 +388,88 @@ function applyTransformation(record, rule) {
                 }
             }
         });
-    </script>
-</body>
-</html>
+    </script>"""
+
+
+def fix_requirements_file(file_path):
+    """Fix a single requirements HTML file with proper CSS and HTML replacement."""
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        original_content = content
+        
+        # Step 1: Replace everything from <style> to .main-content{...} with standard CSS
+        # Then preserve everything after .main-content style
+        style_pattern = r'(<style>.*?)(\.main-content\s*\{[^}]*\})(.*?)(</style>)'
+        match = re.search(style_pattern, content, re.DOTALL)
+        
+        if match:
+            # Get the page-specific styles that come after .main-content
+            page_specific_styles = match.group(3)
+            closing_tag = match.group(4)
+            
+            # Replace with standard sidebar CSS + page-specific styles
+            new_style_block = STANDARD_SIDEBAR_CSS + page_specific_styles + closing_tag
+            content = re.sub(style_pattern, new_style_block, content, flags=re.DOTALL)
+        
+        # Step 2: Replace sidebar HTML (from <aside class="sidebar"> to </aside>)
+        sidebar_pattern = r'<aside class="sidebar">.*?</aside>'
+        content = re.sub(sidebar_pattern, STANDARD_SIDEBAR_HTML, content, flags=re.DOTALL)
+        
+        # Step 3: Ensure collapsible script exists before </body>
+        if COLLAPSIBLE_SCRIPT.strip() not in content:
+            # Remove any old script
+            old_script_pattern = r'<script>.*?DOMContentLoaded.*?</script>'
+            content = re.sub(old_script_pattern, '', content, flags=re.DOTALL)
+            
+            # Add new script before </body>
+            if '</body>' in content:
+                content = content.replace('</body>', f'{COLLAPSIBLE_SCRIPT}\n</body>')
+        
+        # Only write if changes were made
+        if content != original_content:
+            with open(file_path, 'w', encoding='utf-8') as f:
+                f.write(content)
+            return True
+        return False
+        
+    except Exception as e:
+        print(f"Error processing {file_path}: {e}")
+        return False
+
+
+def main():
+    """Process all requirements HTML files."""
+    requirements_dir = Path(__file__).parent.parent / 'docs' / 'RevNovaRequirements'
+    
+    if not requirements_dir.exists():
+        print(f"Requirements directory not found: {requirements_dir}")
+        return
+    
+    html_files = sorted(requirements_dir.glob('*.html'))
+    
+    if not html_files:
+        print("No HTML files found in requirements directory")
+        return
+    
+    print(f"Processing {len(html_files)} requirements files...")
+    print("-" * 60)
+    
+    fixed_count = 0
+    unchanged_count = 0
+    
+    for html_file in html_files:
+        if fix_requirements_file(html_file):
+            print(f"✅ Fixed: {html_file.name}")
+            fixed_count += 1
+        else:
+            print(f"⏭  No changes: {html_file.name}")
+            unchanged_count += 1
+    
+    print("-" * 60)
+    print(f"📊 Summary: {fixed_count} files updated, {unchanged_count} files unchanged")
+
+
+if __name__ == '__main__':
+    main()
