@@ -1,54 +1,58 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Phase 1 - Post-Migration Testing | RevNova Requirements</title>
-    <link rel="stylesheet" href="../styles.css">
-    <style>
-        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
-        .requirements-layout{display:flex;min-height:calc(100vh - 80px);margin-top:80px}
-        .sidebar{width:280px;background:#f8f9fa;border-right:1px solid #e0e0e0;padding:2rem 0;position:fixed;left:0;top:80px;height:calc(100vh - 80px);overflow-y:auto;z-index:100}
-        .sidebar h3{padding:0 1.5rem;font-size:0.85rem;color:#666;text-transform:uppercase;letter-spacing:0.5px;margin:1.5rem 0 0.5rem}
-        .sidebar ul{list-style:none;padding:0;margin:0}
-        .sidebar ul li a{display:block;padding:0.6rem 1.5rem;color:#333;text-decoration:none;font-size:0.95rem;transition:all 0.2s}
-        .sidebar ul li a:hover{background:#e9ecef;color:#11998e}
-        .sidebar ul li a.active{background:#11998e;color:#fff;font-weight:500}
-        .sidebar ul ul li a{padding-left:2.5rem;font-size:0.9rem}
-        .main-content{flex:1;margin-left:280px;padding:3rem;background:#fff;min-width:0}
-        .page-header{background:linear-gradient(135deg,#11998e 0%,#38ef7d 100%);color:#fff;padding:3rem;border-radius:12px;margin-bottom:3rem}
-        .section-box{background:#fff;border:2px solid #e0e0e0;padding:2.5rem;margin:2rem 0;border-radius:12px}
-        .section-box h3{color:#11998e;margin-top:0;border-bottom:2px solid #38ef7d;padding-bottom:0.5rem}
-        table{width:100%;border-collapse:collapse;margin:1.5rem 0}
-        th,td{border:1px solid #ddd;padding:12px;text-align:left}
-        th{background:linear-gradient(135deg,#11998e 0%,#38ef7d 100%);color:#fff;font-weight:600;font-size:0.85rem}
-        .badge-functional{background:#11998e;color:#fff;padding:0.3rem 0.6rem;border-radius:12px;font-size:0.75rem;font-weight:600}
-    </style>
-</head>
-<body>
-    <header>
-        <div class="container header-container">
-            <div class="nav-left">
-                <a href="../index.html" class="logo"><div class="logo-box">RevNova</div></a>
-                <nav class="main-nav">
-                    <ul>
-                        <li><a href="../about-revnova.html">About RevNova</a></li>
-                        <li><a href="../features.html">Features</a></li>
-                        <li><a href="../pricing.html">Pricing</a></li>
-                        <li><a href="requirements-home.html" class="active">RevNova Requirements</a></li>
-                        <li><a href="../contact.html">Contact</a></li>
-                    </ul>
-                </nav>
-            </div>
-            <div class="header-right">
-                <div class="country-selector"><span class="fi fi-us"></span></div>
-                <a href="../login.html" class="btn btn-login">Login</a>
-            </div>
-        </div>
-    </header>
+#!/usr/bin/env python3
+"""
+Fix requirements page issues:
+1. Convert static h3/ul sidebar to collapsible sections like onboarding
+2. Remove extra space between header and content (reduce margin-top)
+"""
 
-    <div class="requirements-layout">
-                <aside class="sidebar">
+import os
+import re
+from pathlib import Path
+
+# Get the docs/RevNovaRequirements directory
+requirements_dir = Path(__file__).parent.parent / 'docs' / 'RevNovaRequirements'
+
+# New collapsible sidebar styles
+NEW_SIDEBAR_STYLES = """    .requirements-layout{display:flex;min-height:calc(100vh - 80px);margin-top:80px}
+    .sidebar{width:280px;background:#f4f6f9;border-right:1px solid #c9c9c9;padding:0;position:fixed;height:calc(100vh - 80px);overflow-y:auto;top:80px;left:0;z-index:100}
+    .sidebar::-webkit-scrollbar{width:8px}
+    .sidebar::-webkit-scrollbar-track{background:#f4f6f9}
+    .sidebar::-webkit-scrollbar-thumb{background:#c9c9c9;border-radius:4px}
+    .sidebar::-webkit-scrollbar-thumb:hover{background:#a8a8a8}
+    .sidebar-nav{padding:1rem 0}
+    .nav-section{margin-bottom:0.25rem}
+    .nav-section-header{display:flex;align-items:center;padding:0.5rem 1rem;font-size:13px;font-weight:600;color:#181818;background:none;border:none;width:100%;text-align:left;cursor:pointer;transition:background 0.15s}
+    .nav-section-header:hover{background:#e5e5e5}
+    .nav-section-header.expanded{background:#e5e5e5}
+    .nav-section-icon{width:16px;height:16px;margin-right:0.5rem;transition:transform 0.2s;flex-shrink:0}
+    .nav-section-header.expanded .nav-section-icon{transform:rotate(90deg)}
+    .nav-section-content{max-height:0;overflow:hidden;transition:max-height 0.3s ease-out}
+    .nav-section-content.expanded{max-height:2000px}
+    .nav-link{display:block;padding:0.5rem 1rem 0.5rem 2.5rem;color:#006dcc;text-decoration:none;font-size:13px;transition:background 0.15s}
+    .nav-link:hover{background:#e5e5e5;text-decoration:underline}
+    .nav-link.active{background:#1589ee;color:#fff;font-weight:600}
+    .nav-link.active:hover{background:#0b5cab;text-decoration:none}
+    .nav-subsection{margin:0.25rem 0}
+    .nav-subsection-header{display:flex;align-items:center;padding:0.5rem 1rem 0.5rem 2.5rem;font-size:13px;font-weight:500;color:#181818;background:none;border:none;width:100%;text-align:left;cursor:pointer;transition:background 0.15s}
+    .nav-subsection-header:hover{background:#e5e5e5}
+    .nav-subsection-header.expanded{background:#e5e5e5}
+    .nav-subsection-icon{width:12px;height:12px;margin-right:0.5rem;transition:transform 0.2s;flex-shrink:0}
+    .nav-subsection-header.expanded .nav-subsection-icon{transform:rotate(90deg)}
+    .nav-subsection-content{max-height:0;overflow:hidden;transition:max-height 0.3s ease-out}
+    .nav-subsection-content.expanded{max-height:1000px}
+    .nav-subsection-link{display:block;padding:0.4rem 1rem 0.4rem 3.5rem;color:#006dcc;text-decoration:none;font-size:13px;transition:background 0.15s}
+    .nav-subsection-link:hover{background:#e5e5e5;text-decoration:underline}
+    .nav-subsection-link.active{background:#1589ee;color:#fff;font-weight:600}
+    .nav-subsection-link.active:hover{background:#0b5cab;text-decoration:none}
+    .main-content{flex:1;margin-left:280px;padding:2rem 3rem;background:#fff}
+    .mapping-table{width:100%;border-collapse:collapse;margin-bottom:1.5rem}
+    .mapping-table th,.mapping-table td{border:1px solid #ddd;padding:8px;font-size:13px}
+    .mapping-table th{background:#f0f6fb}
+    .sheet-title{margin-top:1.5rem;color:#11998e;border-bottom:2px solid #38ef7d;padding-bottom:0.5rem}
+    @media (max-width:768px){.sidebar{position:relative;width:100%;height:auto;top:0}.main-content{margin-left:0}.requirements-layout{flex-direction:column}}"""
+
+# New collapsible sidebar HTML structure
+NEW_SIDEBAR_HTML = """    <aside class="sidebar">
         <nav class="sidebar-nav">
             <!-- Platform Vision Section -->
             <div class="nav-section">
@@ -174,60 +178,10 @@
                 </div>
             </div>
         </nav>
-    </aside>
+    </aside>"""
 
-        <main class="main-content">
-            <div class="page-header">
-                <h1>🧪 Page 7: Post-Migration Testing</h1>
-                <p>Verify migration success with record count validation, data integrity sampling, side-by-side comparison</p>
-            </div>
-
-            <section class="section-box">
-                <h3><span class="badge-functional">Functional</span> Testing & Verification</h3>
-                <table>
-                    <tr><th>Test Type</th><th>Description</th><th>Pass Criteria</th></tr>
-                    <tr><td><strong>Record Count</strong></td><td>Compare source vs target record counts per object</td><td>100% match (or explained variance)</td></tr>
-                    <tr><td><strong>Data Integrity Sampling</strong></td><td>Random sample 100 records, compare field-by-field</td><td>≥99% field accuracy</td></tr>
-                    <tr><td><strong>Side-by-Side Comparison</strong></td><td>View source and target records in split screen</td><td>Manual user verification</td></tr>
-                    <tr><td><strong>Lookup Relationships</strong></td><td>Verify foreign keys resolve correctly</td><td>0 broken lookups</td></tr>
-                    <tr><td><strong>Business Rules</strong></td><td>Validate workflows, validation rules still work</td><td>All rules functional</td></tr>
-                </table>
-            </section>
-
-            <section class="section-box">
-                <h3><span class="badge-functional">Functional</span> Discrepancy Analysis</h3>
-                <table>
-                    <tr><th>Requirement ID</th><th>Description</th></tr>
-                    <tr><td>FR-TEST-001</td><td>Display record count comparison: Source (50,000) vs Target (49,950) → 50 missing records</td></tr>
-                    <tr><td>FR-TEST-002</td><td>Generate discrepancy report: List missing records with IDs and reason (failed validation, API error, etc.)</td></tr>
-                    <tr><td>FR-TEST-003</td><td>Field-level diff: Highlight fields that differ between source and target (Name: "Product A" → "Product_A")</td></tr>
-                    <tr><td>FR-TEST-004</td><td>Export test results to CSV: Columns (Record ID, Field, Source Value, Target Value, Match Status)</td></tr>
-                    <tr><td>FR-TEST-005</td><td>Migration certification: Sign-off checkbox "I certify this migration is complete and accurate"</td></tr>
-                </table>
-            </section>
-
-            <section>
-                <h2>🎉 Migration Complete!</h2>
-                <p>Congratulations! Your SFDC CPQ → Revenue Cloud migration is complete. Review the test results and certify the migration.</p>
-                <ul style="line-height:2">
-                    <li>✅ <strong>Records Migrated:</strong> 49,950 / 50,000 (99.9%)</li>
-                    <li>✅ <strong>Data Accuracy:</strong> 99.7% (sampled 100 records)</li>
-                    <li>✅ <strong>Lookup Integrity:</strong> 100% (0 broken relationships)</li>
-                    <li>⚠️ <strong>Minor Issues:</strong> 50 records skipped (see discrepancy report)</li>
-                </ul>
-                <p><strong>Next Steps:</strong> Download migration report, certify completion, or rollback if issues detected.</p>
-            </section>
-
-            <section>
-                <h2>Navigation</h2>
-                <ul style="line-height:2">
-                    <li><strong>Previous:</strong> <a href="requirements-phase1-execute.html">Page 6: Migration Execution</a></li>
-                    <li><strong>Back to:</strong> <a href="requirements-home.html">Requirements Home</a></li>
-                </ul>
-            </section>
-        </main>
-    </div>
-    <script>
+# JavaScript for collapsible functionality
+COLLAPSIBLE_SCRIPT = """    <script>
         // Collapsible navigation functionality
         document.addEventListener('DOMContentLoaded', function() {
             // Handle section headers - single click toggle
@@ -296,6 +250,66 @@
                 }
             });
         });
-    </script>
-</body>
-</html>
+    </script>"""
+
+def fix_requirements_file(file_path):
+    """Fix issues in a single requirements HTML file."""
+    with open(file_path, 'r', encoding='utf-8') as f:
+        content = f.read()
+    
+    original_content = content
+    
+    # Issue 1: Replace old sidebar styles with new collapsible styles
+    # Find the style block and replace it
+    style_pattern = r'<style>.*?\.requirements-layout\{.*?@media.*?\}</style>'
+    if re.search(style_pattern, content, re.DOTALL):
+        new_style_block = f"<style>\n{NEW_SIDEBAR_STYLES}\n  </style>"
+        content = re.sub(style_pattern, new_style_block, content, flags=re.DOTALL)
+    
+    # Issue 2: Replace old sidebar HTML with new collapsible structure
+    sidebar_pattern = r'<aside class="sidebar">.*?</aside>'
+    if re.search(sidebar_pattern, content, re.DOTALL):
+        content = re.sub(sidebar_pattern, NEW_SIDEBAR_HTML, content, flags=re.DOTALL)
+    
+    # Issue 3: Add collapsible JavaScript if not present
+    if '<script>' not in content or 'Collapsible navigation' not in content:
+        # Insert before closing </body> tag
+        content = content.replace('</body>', f'{COLLAPSIBLE_SCRIPT}\n</body>')
+    
+    # Only write if changes were made
+    if content != original_content:
+        with open(file_path, 'w', encoding='utf-8') as f:
+            f.write(content)
+        return True
+    return False
+
+def main():
+    """Process all requirements HTML files."""
+    if not requirements_dir.exists():
+        print(f"❌ Requirements directory not found: {requirements_dir}")
+        return
+    
+    # Find all HTML files in requirements directory
+    html_files = sorted(requirements_dir.glob('*.html'))
+    
+    if not html_files:
+        print(f"❌ No HTML files found in {requirements_dir}")
+        return
+    
+    print(f"🔧 Processing {len(html_files)} requirements files...\n")
+    
+    updated_count = 0
+    for file_path in html_files:
+        try:
+            if fix_requirements_file(file_path):
+                print(f"✅ Fixed: {file_path.name}")
+                updated_count += 1
+            else:
+                print(f"⏭  No changes: {file_path.name}")
+        except Exception as e:
+            print(f"❌ Error processing {file_path.name}: {e}")
+    
+    print(f"\n📊 Summary: {updated_count} files updated, {len(html_files) - updated_count} files unchanged")
+
+if __name__ == '__main__':
+    main()

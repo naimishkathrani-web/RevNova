@@ -219,5 +219,75 @@
     <hr>
     <p><em>For complete field mapping (source → target), see <a href="requirements-mapping.html#WS2">WS2 — Quotes mapping</a>.</em></p>
   </div>
+    <script>
+        // Collapsible navigation functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle section headers - single click toggle
+            const sectionHeaders = document.querySelectorAll('.nav-section-header');
+            sectionHeaders.forEach(header => {
+                const newHeader = header.cloneNode(true);
+                header.parentNode.replaceChild(newHeader, header);
+            });
+            
+            document.querySelectorAll('.nav-section-header').forEach(header => {
+                header.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const content = this.nextElementSibling;
+                    const isExpanded = this.classList.contains('expanded');
+                    
+                    if (isExpanded) {
+                        this.classList.remove('expanded');
+                        content.classList.remove('expanded');
+                    } else {
+                        this.classList.add('expanded');
+                        content.classList.add('expanded');
+                    }
+                });
+            });
+            
+            // Handle subsection headers - single click toggle
+            const subsectionHeaders = document.querySelectorAll('.nav-subsection-header');
+            subsectionHeaders.forEach(header => {
+                const newHeader = header.cloneNode(true);
+                header.parentNode.replaceChild(newHeader, header);
+            });
+            
+            document.querySelectorAll('.nav-subsection-header').forEach(header => {
+                header.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const content = this.nextElementSibling;
+                    const isExpanded = this.classList.contains('expanded');
+                    
+                    if (isExpanded) {
+                        this.classList.remove('expanded');
+                        content.classList.remove('expanded');
+                    } else {
+                        this.classList.add('expanded');
+                        content.classList.add('expanded');
+                    }
+                });
+            });
+            
+            // Auto-expand section containing active link
+            const activeLinks = document.querySelectorAll('.nav-link.active, .nav-subsection-link.active');
+            activeLinks.forEach(link => {
+                // Expand parent section
+                let section = link.closest('.nav-section-content');
+                if (section) {
+                    section.classList.add('expanded');
+                    section.previousElementSibling.classList.add('expanded');
+                }
+                
+                // Expand parent subsection if exists
+                let subsection = link.closest('.nav-subsection-content');
+                if (subsection) {
+                    subsection.classList.add('expanded');
+                    subsection.previousElementSibling.classList.add('expanded');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
