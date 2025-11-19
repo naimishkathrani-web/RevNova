@@ -757,149 +757,336 @@
                 <a href="onboarding-dev1.html">Developer 1</a> › Week 2 › Day 7
             </div>
             
-            <h1 class="page-title">Day 5: UI Component Library</h1>
-            <p class="page-subtitle">Developer 1: Backend & Database | Duration: ~6-8 hours</p>
+            <h1 class="page-title">Day 5: State Management with Zustand</h1>
+            <p class="page-subtitle">Developer 2: Frontend | Duration: ~6-8 hours</p>
             
             <div class="content-section">
                 <h2>📋 Objective</h2>
-                <p>Enhance the schema analysis API to fetch detailed field metadata, implement job status polling, and add Redis caching for performance optimization.</p>
+                <p>Implement global state management using Zustand. Create stores for projects, connections, and user state. Replace local component state with centralized store management.</p>
                 
-                <p><strong>API Endpoints to Build:</strong></p>
+                <p><strong>Stores to Create:</strong></p>
                 <ul>
-                    <li><code>GET /api/v1/projects/{id}/analyze/{job_id}</code> - Poll job status</li>
-                    <li><code>GET /api/v1/projects/{id}/analyze/summary</code> - Get analysis summary</li>
+                    <li><code>stores/projectStore.ts</code> - Project state and actions</li>
+                    <li><code>stores/connectionStore.ts</code> - Connection state and actions</li>
+                    <li><code>stores/userStore.ts</code> - User authentication state</li>
                 </ul>
             </div>
             
             <div class="content-section">
-                <h2>📦 Step 1: Install Redis Client</h2>
-                <p>Install the Redis client for Node.js to enable caching:</p>
-                <pre><code>cd backend
-npm install redis</code></pre>
+                <h2>📦 Step 1: Install Zustand</h2>
+                <p>Install Zustand for state management:</p>
+                <pre><code>cd frontend
+npm install zustand</code></pre>
                 
-                <p>Create a Redis client configuration:</p>
-                <p><strong>File:</strong> <code>backend/src/config/redis.ts</code></p>
-                <pre><code>import { createClient } from 'redis';
-
-const redisClient = createClient({
-  url: process.env.REDIS_URL || 'redis://localhost:6379'
-});
-
-redisClient.on('error', (err) => console.error('Redis Client Error', err));
-
-export const connectRedis = async () => {
-  await redisClient.connect();
-  console.log('Redis connected');
-};
-
-export default redisClient;</code></pre>
+                <p><strong>✅ Checkpoint:</strong> Zustand installed</p>
             </div>
             
             <div class="content-section">
-                <h2>🔄 Step 2: Create Job Status Polling Endpoint</h2>
-                <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
-                <pre><code>router.get('/projects/:id/analyze/:jobId', async (req, res) => {
-  try {
-    const { id, jobId } = req.params;
-    
-    // Check Redis for job status
-    const jobData = await redisClient.get(`job:${jobId}`);
-    
-    if (!jobData) {
-      return res.status(404).json({ error: 'Job not found' });
+                <h2>🗂️ Step 2: Create Project Store</h2>
+                <p><strong>File:</strong> <code>frontend/src/stores/projectStore.ts</code></p>
+                <pre><code>import { create } from 'zustand';
+import { projectsApi } from '../api/projects';
+import type { Project } from '../types/api';
+
+interface ProjectState {
+  projects: Project[];
+  selectedProject: Project | null;
+  loading: boolean;
+  error: string | null;
+  
+  // Actions
+  fetchProjects: () => Promise&lt;void&gt;;
+  selectProject: (id: number) => Promise&lt;void&gt;;
+  createProject: (data: { name: string; description?: string }) => Promise&lt;Project&gt;;
+  updateProject: (id: number, data: Partial&lt;Project&gt;) => Promise&lt;void&gt;;
+  deleteProject: (id: number) => Promise&lt;void&gt;;
+  clearError: () => void;
+}
+
+export const useProjectStore = create&lt;ProjectState&gt;((set, get) => ({
+  projects: [],
+  selectedProject: null,
+  loading: false,
+  error: null,
+  
+  fetchProjects: async () => {
+    set({ loading: true, error: null });
+    try {
+      const projects = await projectsApi.getAll();
+      set({ projects, loading: false });
+    } catch (error: any) {
+      set({ error: error.message || 'Failed to fetch projects', loading: false });
     }
-    
-    const job = JSON.parse(jobData);
-    res.json({
-      jobId: job.id,
-      status: job.status, // 'pending', 'running', 'completed', 'failed'
-      progress: job.progress,
-      result: job.result || null,
-      error: job.error || null
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});</code></pre>
+  },
+  
+  selectProject: async (id: number) => {
+    set({ loading: true, error: null });
+    try {
+      const project = await projectsApi.getById(id);
+      set({ selectedProject: project, loading: false });
+    } catch (error: any) {
+      set({ error: error.message || 'Failed to fetch project', loading: false });
+    }
+  },
+  
+  createProject: async (data) => {
+    set({ loading: true, error: null });
+    try {
+      const newProject = await projectsApi.create(data);
+      set((state) => ({
+        projects: [...state.projects, newProject],
+        loading: false,
+      }));
+      return newProject;
+    } catch (error: any) {
+      set({ error: error.message || 'Failed to create project', loading: false });
+      throw error;
+    }
+  },
+  
+  updateProject: async (id, data) => {
+    set({ loading: true, error: null });
+    try {
+      const updatedProject = await projectsApi.update(id, data);
+      set((state) => ({
+        projects: state.projects.map((p) => (p.id === id ? updatedProject : p)),
+        selectedProject: state.selectedProject?.id === id ? updatedProject : state.selectedProject,
+        loading: false,
+      }));
+    } catch (error: any) {
+      set({ error: error.message || 'Failed to update project', loading: false });
+      throw error;
+    }
+  },
+  
+  deleteProject: async (id) => {
+    set({ loading: true, error: null });
+    try {
+      await projectsApi.delete(id);
+      set((state) => ({
+        projects: state.projects.filter((p) => p.id !== id),
+        selectedProject: state.selectedProject?.id === id ? null : state.selectedProject,
+        loading: false,
+      }));
+    } catch (error: any) {
+      set({ error: error.message || 'Failed to delete project', loading: false });
+      throw error;
+    }
+  },
+  
+  clearError: () => set({ error: null }),
+}));</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> Project store created</p>
             </div>
             
             <div class="content-section">
-                <h2>📊 Step 3: Enhance Field Metadata</h2>
-                <p>Update the schema analysis to include detailed field information:</p>
-                <pre><code>const getDetailedFieldMetadata = (field: any) => {
-  return {
-    name: field.name,
-    label: field.label,
-    type: field.type,
-    length: field.length,
-    precision: field.precision,
-    scale: field.scale,
-    required: !field.nillable,
-    unique: field.unique,
-    externalId: field.externalId,
-    defaultValue: field.defaultValue,
-    picklistValues: field.picklistValues || [],
-    referenceTo: field.referenceTo || [],
-    relationshipName: field.relationshipName,
-    calculated: field.calculated,
-    customField: field.custom
-  };
-};</code></pre>
+                <h2>🔗 Step 3: Create Connection Store</h2>
+                <p><strong>File:</strong> <code>frontend/src/stores/connectionStore.ts</code></p>
+                <pre><code>import { create } from 'zustand';
+import { connectionsApi } from '../api/connections';
+import type { Connection } from '../types/api';
+
+interface ConnectionState {
+  connections: Connection[];
+  loading: boolean;
+  error: string | null;
+  
+  fetchConnections: () => Promise&lt;void&gt;;
+  createConnection: (data: any) => Promise&lt;Connection&gt;;
+  testConnection: (id: number) => Promise&lt;boolean&gt;;
+  deleteConnection: (id: number) => Promise&lt;void&gt;;
+  clearError: () => void;
+}
+
+export const useConnectionStore = create&lt;ConnectionState&gt;((set) => ({
+  connections: [],
+  loading: false,
+  error: null,
+  
+  fetchConnections: async () => {
+    set({ loading: true, error: null });
+    try {
+      const connections = await connectionsApi.getAll();
+      set({ connections, loading: false });
+    } catch (error: any) {
+      set({ error: error.message || 'Failed to fetch connections', loading: false });
+    }
+  },
+  
+  createConnection: async (data) => {
+    set({ loading: true, error: null });
+    try {
+      const newConnection = await connectionsApi.create(data);
+      set((state) => ({
+        connections: [...state.connections, newConnection],
+        loading: false,
+      }));
+      return newConnection;
+    } catch (error: any) {
+      set({ error: error.message || 'Failed to create connection', loading: false });
+      throw error;
+    }
+  },
+  
+  testConnection: async (id) => {
+    set({ loading: true, error: null });
+    try {
+      const result = await connectionsApi.test(id);
+      set({ loading: false });
+      return result.success;
+    } catch (error: any) {
+      set({ error: error.message || 'Connection test failed', loading: false });
+      return false;
+    }
+  },
+  
+  deleteConnection: async (id) => {
+    set({ loading: true, error: null });
+    try {
+      await connectionsApi.delete(id);
+      set((state) => ({
+        connections: state.connections.filter((c) => c.id !== id),
+        loading: false,
+      }));
+    } catch (error: any) {
+      set({ error: error.message || 'Failed to delete connection', loading: false });
+      throw error;
+    }
+  },
+  
+  clearError: () => set({ error: null }),
+}));</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> Connection store created</p>
             </div>
             
             <div class="content-section">
-                <h2>📈 Step 4: Create Analysis Summary Endpoint</h2>
-                <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
-                <pre><code>router.get('/projects/:id/analyze/summary', async (req, res) => {
-  try {
-    const projectId = parseInt(req.params.id);
-    
-    // Query database for analysis results
-    const summary = {
-      total_objects: 3,
-      custom_objects: 0,
-      total_fields: 45,
-      custom_fields: 12,
-      readiness_score: 0.92,
-      warnings: ['Custom field Product2.Special__c has no target mapping'],
-      analyzed_at: new Date().toISOString()
-    };
-    
-    res.json(summary);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});</code></pre>
+                <h2>� Step 4: Create User Store</h2>
+                <p><strong>File:</strong> <code>frontend/src/stores/userStore.ts</code></p>
+                <pre><code>import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+
+interface User {
+  id: number;
+  email: string;
+  name: string;
+}
+
+interface UserState {
+  user: User | null;
+  token: string | null;
+  isAuthenticated: boolean;
+  
+  login: (email: string, password: string) => Promise&lt;void&gt;;
+  logout: () => void;
+  setUser: (user: User, token: string) => void;
+}
+
+export const useUserStore = create&lt;UserState&gt;()(
+  persist(
+    (set) => ({
+      user: null,
+      token: null,
+      isAuthenticated: false,
+      
+      login: async (email, password) => {
+        // TODO: Implement actual login API call
+        const mockUser = { id: 1, email, name: 'Test User' };
+        const mockToken = 'mock-jwt-token';
+        
+        localStorage.setItem('authToken', mockToken);
+        set({ user: mockUser, token: mockToken, isAuthenticated: true });
+      },
+      
+      logout: () => {
+        localStorage.removeItem('authToken');
+        set({ user: null, token: null, isAuthenticated: false });
+      },
+      
+      setUser: (user, token) => {
+        localStorage.setItem('authToken', token);
+        set({ user, token, isAuthenticated: true });
+      },
+    }),
+    {
+      name: 'user-storage',
+      partialize: (state) => ({ user: state.user, token: state.token, isAuthenticated: state.isAuthenticated }),
+    }
+  )
+);</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> User store with persistence created</p>
+            </div>
+            
+            <div class="content-section">
+                <h2>🔄 Step 5: Update Dashboard to Use Store</h2>
+                <p><strong>File:</strong> <code>frontend/src/pages/Dashboard.tsx</code></p>
+                <pre><code>import { useEffect } from 'react';
+import { useProjectStore } from '../stores/projectStore';
+import ProjectCard from '../components/ProjectCard';
+
+function Dashboard() {
+  const { projects, loading, error, fetchProjects } = useProjectStore();
+
+  useEffect(() => {
+    fetchProjects();
+  }, [fetchProjects]);
+
+  if (loading) return &lt;div&gt;Loading...&lt;/div&gt;;
+  if (error) return &lt;div className="error"&gt;{error}&lt;/div&gt;;
+
+  return (
+    &lt;div className="dashboard"&gt;
+      &lt;h1&gt;My Projects&lt;/h1&gt;
+      {projects.length === 0 ? (
+        &lt;div className="empty-state"&gt;
+          &lt;p&gt;No projects yet. Create your first migration project!&lt;/p&gt;
+        &lt;/div&gt;
+      ) : (
+        &lt;div className="projects-grid"&gt;
+          {projects.map((project) => (
+            &lt;ProjectCard key={project.id} project={project} /&gt;
+          ))}
+        &lt;/div&gt;
+      )}
+    &lt;/div&gt;
+  );
+}
+
+export default Dashboard;</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> Dashboard using Zustand store</p>
+            </div>
+            
+            <div class="content-section">
+                <h2>✅ Day 5 Checklist</h2>
+                <ul>
+                    <li><input type="checkbox"> Installed Zustand</li>
+                    <li><input type="checkbox"> Created project store with full CRUD actions</li>
+                    <li><input type="checkbox"> Created connection store</li>
+                    <li><input type="checkbox"> Created user store with persistence</li>
+                    <li><input type="checkbox"> Updated Dashboard to use project store</li>
+                    <li><input type="checkbox"> Tested state management flow</li>
+                </ul>
+                
+                <p><strong>📌 Git Commit Message:</strong></p>
+                <pre><code>feat: add Zustand state management
+
+- Created project store with fetchProjects, createProject, updateProject, deleteProject
+- Created connection store with CRUD and test methods
+- Created user store with authentication and localStorage persistence
+- Updated Dashboard to use Zustand instead of local state
+- Centralized error handling in stores</code></pre>
+            </div>
+            
+            <div class="nav-buttons">
+                <a href="dev2-day04.html" class="btn btn-secondary">Previous: Day 4</a>
+                <a href="dev2-day06.html" class="btn">Next: Day 6</a>
             </div>
             
             <div class="content-section">
                 <h2>✅ Step 5: Test All Endpoints</h2>
-                
-                <p><strong>Test job status polling:</strong></p>
-                <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/job_1699632000000</code></pre>
-                
-                <p><strong>Test analysis summary:</strong></p>
-                <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/summary</code></pre>
-                
-                <div class="success-box">
-                    <strong>✓ Expected Response:</strong> Job status should return progress information, and summary should show aggregate statistics.
-                </div>
-            </div>
-            
-            <div class="content-section">
-                <h2>🎯 End of Day Checklist</h2>
-                <ul style="list-style: none; padding-left: 0;">
-                    <li>☐ Redis client installed and connected</li>
-                    <li>☐ Job status endpoint returns job progress</li>
-                    <li>☐ Enhanced metadata includes picklists and lookups</li>
-                    <li>☐ Summary endpoint aggregates analysis results</li>
-                    <li>☐ All endpoints tested and working</li>
-                    <li>☐ Code committed with meaningful message</li>
-                </ul>
-                
-                <p><strong>Commit Message:</strong></p>
-                <code>feat(backend): add job polling, detailed metadata, and Redis caching</code>
-            </div>
             
             <div class="nav-buttons">
                 <a href="dev2-day04.html" class="btn btn-secondary">Previous: Day 4</a>
