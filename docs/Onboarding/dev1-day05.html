@@ -757,148 +757,252 @@
                 <a href="onboarding-dev1.html">Developer 1</a> › Week 2 › Day 7
             </div>
             
-            <h1 class="page-title">Day 5: First API Endpoint</h1>
+            <h1 class="page-title">Day 5: First API Endpoint (/api/v1/projects)</h1>
             <p class="page-subtitle">Developer 1: Backend & Database | Duration: ~6-8 hours</p>
             
             <div class="content-section">
                 <h2>📋 Objective</h2>
-                <p>Enhance the schema analysis API to fetch detailed field metadata, implement job status polling, and add Redis caching for performance optimization.</p>
+                <p>Build the first complete REST API endpoint for projects. This includes all CRUD operations (Create, Read, Update, Delete) with proper validation, error handling, and database integration.</p>
                 
-                <p><strong>API Endpoints to Build:</strong></p>
+                <p><strong>Endpoints to Build:</strong></p>
                 <ul>
-                    <li><code>GET /api/v1/projects/{id}/analyze/{job_id}</code> - Poll job status</li>
-                    <li><code>GET /api/v1/projects/{id}/analyze/summary</code> - Get analysis summary</li>
+                    <li><code>GET /api/v1/projects</code> - List all projects</li>
+                    <li><code>GET /api/v1/projects/:id</code> - Get single project</li>
+                    <li><code>POST /api/v1/projects</code> - Create new project</li>
+                    <li><code>PUT /api/v1/projects/:id</code> - Update project</li>
+                    <li><code>DELETE /api/v1/projects/:id</code> - Delete project</li>
                 </ul>
             </div>
             
             <div class="content-section">
-                <h2>📦 Step 1: Install Redis Client</h2>
-                <p>Install the Redis client for Node.js to enable caching:</p>
-                <pre><code>cd backend
-npm install redis</code></pre>
-                
-                <p>Create a Redis client configuration:</p>
-                <p><strong>File:</strong> <code>backend/src/config/redis.ts</code></p>
-                <pre><code>import { createClient } from 'redis';
+                <h2>� Step 1: Set Up Express Router</h2>
+                <p><strong>File:</strong> <code>backend/src/routes/projects.routes.ts</code></p>
+                <pre><code>import express from 'express';
+import { Pool } from 'pg';
 
-const redisClient = createClient({
-  url: process.env.REDIS_URL || 'redis://localhost:6379'
+const router = express.Router();
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
 });
 
-redisClient.on('error', (err) => console.error('Redis Client Error', err));
-
-export const connectRedis = async () => {
-  await redisClient.connect();
-  console.log('Redis connected');
-};
-
-export default redisClient;</code></pre>
+export default router;</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> Router file created</p>
             </div>
             
             <div class="content-section">
-                <h2>🔄 Step 2: Create Job Status Polling Endpoint</h2>
-                <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
-                <pre><code>router.get('/projects/:id/analyze/:jobId', async (req, res) => {
+                <h2>📋 Step 2: GET /api/v1/projects (List All)</h2>
+                <p>Add to <code>backend/src/routes/projects.routes.ts</code>:</p>
+                <pre><code>// GET /api/v1/projects - List all projects
+router.get('/', async (req, res) => {
   try {
-    const { id, jobId } = req.params;
+    const result = await pool.query(
+      'SELECT id, name, description, status, created_at, updated_at FROM projects ORDER BY created_at DESC'
+    );
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Error fetching projects:', error);
+    res.status(500).json({ error: 'Failed to fetch projects' });
+  }
+});</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> List endpoint complete</p>
+            </div>
+            
+            <div class="content-section">
+                <h2>🔍 Step 3: GET /api/v1/projects/:id (Get Single)</h2>
+                <pre><code>// GET /api/v1/projects/:id - Get single project
+router.get('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await pool.query(
+      'SELECT id, name, description, status, created_at, updated_at FROM projects WHERE id = $1',
+      [id]
+    );
     
-    // Check Redis for job status
-    const jobData = await redisClient.get(`job:${jobId}`);
-    
-    if (!jobData) {
-      return res.status(404).json({ error: 'Job not found' });
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Project not found' });
     }
     
-    const job = JSON.parse(jobData);
-    res.json({
-      jobId: job.id,
-      status: job.status, // 'pending', 'running', 'completed', 'failed'
-      progress: job.progress,
-      result: job.result || null,
-      error: job.error || null
-    });
+    res.json(result.rows[0]);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Error fetching project:', error);
+    res.status(500).json({ error: 'Failed to fetch project' });
   }
 });</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> Get single endpoint complete</p>
             </div>
             
             <div class="content-section">
-                <h2>📊 Step 3: Enhance Field Metadata</h2>
-                <p>Update the schema analysis to include detailed field information:</p>
-                <pre><code>const getDetailedFieldMetadata = (field: any) => {
-  return {
-    name: field.name,
-    label: field.label,
-    type: field.type,
-    length: field.length,
-    precision: field.precision,
-    scale: field.scale,
-    required: !field.nillable,
-    unique: field.unique,
-    externalId: field.externalId,
-    defaultValue: field.defaultValue,
-    picklistValues: field.picklistValues || [],
-    referenceTo: field.referenceTo || [],
-    relationshipName: field.relationshipName,
-    calculated: field.calculated,
-    customField: field.custom
-  };
-};</code></pre>
-            </div>
-            
-            <div class="content-section">
-                <h2>📈 Step 4: Create Analysis Summary Endpoint</h2>
-                <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
-                <pre><code>router.get('/projects/:id/analyze/summary', async (req, res) => {
+                <h2>➕ Step 4: POST /api/v1/projects (Create)</h2>
+                <pre><code>// POST /api/v1/projects - Create new project
+router.post('/', async (req, res) => {
   try {
-    const projectId = parseInt(req.params.id);
+    const { name, description, source_connection_id, target_connection_id } = req.body;
     
-    // Query database for analysis results
-    const summary = {
-      total_objects: 3,
-      custom_objects: 0,
-      total_fields: 45,
-      custom_fields: 12,
-      readiness_score: 0.92,
-      warnings: ['Custom field Product2.Special__c has no target mapping'],
-      analyzed_at: new Date().toISOString()
-    };
+    // Validation
+    if (!name || name.trim().length === 0) {
+      return res.status(400).json({ error: 'Name is required' });
+    }
     
-    res.json(summary);
+    if (name.length < 3) {
+      return res.status(400).json({ error: 'Name must be at least 3 characters' });
+    }
+    
+    const result = await pool.query(
+      `INSERT INTO projects (name, description, status, source_connection_id, target_connection_id)
+       VALUES ($1, $2, 'draft', $3, $4)
+       RETURNING id, name, description, status, created_at, updated_at`,
+      [name, description || null, source_connection_id || null, target_connection_id || null]
+    );
+    
+    res.status(201).json(result.rows[0]);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Error creating project:', error);
+    res.status(500).json({ error: 'Failed to create project' });
   }
 });</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> Create endpoint complete</p>
             </div>
             
             <div class="content-section">
-                <h2>✅ Step 5: Test All Endpoints</h2>
+                <h2>✏️ Step 5: PUT /api/v1/projects/:id (Update)</h2>
+                <pre><code>// PUT /api/v1/projects/:id - Update project
+router.put('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, description, status } = req.body;
+    
+    // Check if project exists
+    const checkResult = await pool.query('SELECT id FROM projects WHERE id = $1', [id]);
+    if (checkResult.rows.length === 0) {
+      return res.status(404).json({ error: 'Project not found' });
+    }
+    
+    // Validation
+    if (name && name.length < 3) {
+      return res.status(400).json({ error: 'Name must be at least 3 characters' });
+    }
+    
+    const result = await pool.query(
+      `UPDATE projects 
+       SET name = COALESCE($1, name),
+           description = COALESCE($2, description),
+           status = COALESCE($3, status),
+           updated_at = NOW()
+       WHERE id = $4
+       RETURNING id, name, description, status, created_at, updated_at`,
+      [name || null, description || null, status || null, id]
+    );
+    
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error('Error updating project:', error);
+    res.status(500).json({ error: 'Failed to update project' });
+  }
+});</code></pre>
                 
-                <p><strong>Test job status polling:</strong></p>
-                <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/job_1699632000000</code></pre>
-                
-                <p><strong>Test analysis summary:</strong></p>
-                <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/summary</code></pre>
-                
-                <div class="success-box">
-                    <strong>✓ Expected Response:</strong> Job status should return progress information, and summary should show aggregate statistics.
-                </div>
+                <p><strong>✅ Checkpoint:</strong> Update endpoint complete</p>
             </div>
             
             <div class="content-section">
-                <h2>🎯 End of Day Checklist</h2>
-                <ul style="list-style: none; padding-left: 0;">
-                    <li>☐ Redis client installed and connected</li>
-                    <li>☐ Job status endpoint returns job progress</li>
-                    <li>☐ Enhanced metadata includes picklists and lookups</li>
-                    <li>☐ Summary endpoint aggregates analysis results</li>
-                    <li>☐ All endpoints tested and working</li>
-                    <li>☐ Code committed with meaningful message</li>
+                <h2>🗑️ Step 6: DELETE /api/v1/projects/:id</h2>
+                <pre><code>// DELETE /api/v1/projects/:id - Delete project
+router.delete('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const result = await pool.query('DELETE FROM projects WHERE id = $1 RETURNING id', [id]);
+    
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Project not found' });
+    }
+    
+    res.status(204).send();
+  } catch (error) {
+    console.error('Error deleting project:', error);
+    res.status(500).json({ error: 'Failed to delete project' });
+  }
+});</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> Delete endpoint complete</p>
+            </div>
+            
+            <div class="content-section">
+                <h2>🔗 Step 7: Register Router in Main App</h2>
+                <p><strong>File:</strong> <code>backend/src/index.ts</code></p>
+                <pre><code>import express from 'express';
+import cors from 'cors';
+import projectsRouter from './routes/projects.routes';
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+
+// Routes
+app.use('/api/v1/projects', projectsRouter);
+
+// Start server
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> Router registered</p>
+            </div>
+            
+            <div class="content-section">
+                <h2>🧪 Step 8: Test All Endpoints</h2>
+                <p><strong>List projects:</strong></p>
+                <pre><code>curl http://localhost:3000/api/v1/projects</code></pre>
+                
+                <p><strong>Create project:</strong></p>
+                <pre><code>curl -X POST http://localhost:3000/api/v1/projects \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Test Project","description":"Test Description"}'</code></pre>
+                
+                <p><strong>Get single project:</strong></p>
+                <pre><code>curl http://localhost:3000/api/v1/projects/1</code></pre>
+                
+                <p><strong>Update project:</strong></p>
+                <pre><code>curl -X PUT http://localhost:3000/api/v1/projects/1 \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Updated Project"}'</code></pre>
+                
+                <p><strong>Delete project:</strong></p>
+                <pre><code>curl -X DELETE http://localhost:3000/api/v1/projects/1</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> All CRUD operations working</p>
+            </div>
+            
+            <div class="content-section">
+                <h2>✅ Day 5 Checklist</h2>
+                <ul>
+                    <li><input type="checkbox"> Created projects router file</li>
+                    <li><input type="checkbox"> Implemented GET /api/v1/projects (list all)</li>
+                    <li><input type="checkbox"> Implemented GET /api/v1/projects/:id (get single)</li>
+                    <li><input type="checkbox"> Implemented POST /api/v1/projects (create)</li>
+                    <li><input type="checkbox"> Implemented PUT /api/v1/projects/:id (update)</li>
+                    <li><input type="checkbox"> Implemented DELETE /api/v1/projects/:id</li>
+                    <li><input type="checkbox"> Registered router in main app</li>
+                    <li><input type="checkbox"> Tested all endpoints with curl</li>
                 </ul>
                 
-                <p><strong>Commit Message:</strong></p>
-                <code>feat(backend): add job polling, detailed metadata, and Redis caching</code>
+                <p><strong>📌 Git Commit Message:</strong></p>
+                <pre><code>feat: add complete CRUD API for projects
+
+- Implemented GET /api/v1/projects (list all)
+- Implemented GET /api/v1/projects/:id (get single)
+- Implemented POST /api/v1/projects (create with validation)
+- Implemented PUT /api/v1/projects/:id (update)
+- Implemented DELETE /api/v1/projects/:id
+- Added proper error handling and status codes
+- Registered router in main Express app</code></pre>
+- Registered router in main Express app</code></pre>
             </div>
             
             <div class="nav-buttons">
