@@ -757,76 +757,476 @@
                 <a href="onboarding-dev1.html">Developer 1</a> › Week 2 › Day 7
             </div>
             
-            <h1 class="page-title">Day 7: Schema Analysis API (Part 2)</h1>
+            <h1 class="page-title">Day 7: Salesforce Schema Analysis API</h1>
             <p class="page-subtitle">Developer 1: Backend & Database | Duration: ~6-8 hours</p>
             
             <div class="content-section">
                 <h2>📋 Objective</h2>
-                <p>Enhance the schema analysis API to fetch detailed field metadata, implement job status polling, and add Redis caching for performance optimization.</p>
+                <p>Build the schema analysis API that uses jsforce to fetch Salesforce object metadata. Retrieve all standard and custom objects, their fields, data types, and relationships for migration analysis.</p>
                 
                 <p><strong>API Endpoints to Build:</strong></p>
                 <ul>
-                    <li><code>GET /api/v1/projects/{id}/analyze/{job_id}</code> - Poll job status</li>
-                    <li><code>GET /api/v1/projects/{id}/analyze/summary</code> - Get analysis summary</li>
+                    <li><code>POST /api/v1/analyze/objects</code> - Fetch all Salesforce objects</li>
+                    <li><code>GET /api/v1/analyze/objects/:objectName</code> - Get detailed object metadata</li>
+                    <li><code>POST /api/v1/analyze/fields/:objectName</code> - Fetch all fields for an object</li>
                 </ul>
             </div>
             
             <div class="content-section">
-                <h2>📦 Step 1: Install Redis Client</h2>
-                <p>Install the Redis client for Node.js to enable caching:</p>
-                <pre><code>cd backend
-npm install redis</code></pre>
+                <h2>📦 Step 1: Create Schema Analysis Service</h2>
+                <p>Create a service to interact with Salesforce metadata API:</p>
                 
-                <p>Create a Redis client configuration:</p>
-                <p><strong>File:</strong> <code>backend/src/config/redis.ts</code></p>
-                <pre><code>import { createClient } from 'redis';
+                <p><strong>File:</strong> <code>backend/src/services/schema-analysis.service.ts</code></p>
+                <pre><code>import jsforce from 'jsforce';
+import { connectToSalesforce } from '../utils/salesforce';
 
-const redisClient = createClient({
-  url: process.env.REDIS_URL || 'redis://localhost:6379'
+export interface SalesforceObject {
+  name: string;
+  label: string;
+  custom: boolean;
+  queryable: boolean;
+  createable: boolean;
+  updateable: boolean;
+  deletable: boolean;
+  recordCount?: number;
+}
+
+export interface SalesforceField {
+  name: string;
+  label: string;
+  type: string;
+  length: number | null;
+  precision: number | null;
+  scale: number | null;
+  required: boolean;
+  unique: boolean;
+  externalId: boolean;
+  defaultValue: any;
+  picklistValues: Array&lt;{ label: string; value: string; active: boolean }&gt;;
+  referenceTo: string[];
+  relationshipName: string | null;
+  calculated: boolean;
+  custom: boolean;
+}
+
+export class SchemaAnalysisService {
+  /**
+   * Fetch all Salesforce objects from an org
+   */
+  async fetchAllObjects(connectionId: number): Promise&lt;SalesforceObject[]&gt; {
+    const conn = await this.getConnection(connectionId);
+    
+    // Describe global to get all objects
+    const describe = await conn.describeGlobal();
+    
+    const objects: SalesforceObject[] = describe.sobjects
+      .filter(obj => obj.queryable) // Only include queryable objects
+      .map(obj => ({
+        name: obj.name,
+        label: obj.label,
+        custom: obj.custom,
+        queryable: obj.queryable,
+        createable: obj.createable,
+        updateable: obj.updateable,
+        deletable: obj.deletable
+      }));
+
+    return objects;
+  }
+
+  /**
+   * Get detailed metadata for a specific object
+   */
+  async describeObject(
+    connectionId: number,
+    objectName: string
+  ): Promise&lt;any&gt; {
+    const conn = await this.getConnection(connectionId);
+    const metadata = await conn.describe(objectName);
+
+    return {
+      name: metadata.name,
+      label: metadata.label,
+      custom: metadata.custom,
+      queryable: metadata.queryable,
+      createable: metadata.createable,
+      updateable: metadata.updateable,
+      deletable: metadata.deletable,
+      recordTypeInfos: metadata.recordTypeInfos,
+      childRelationships: metadata.childRelationships.map(rel => ({
+        childSObject: rel.childSObject,
+        field: rel.field,
+        relationshipName: rel.relationshipName
+      })),
+      fieldCount: metadata.fields.length
+    };
+  }
+
+  /**
+   * Fetch all fields for a specific object
+   */
+  async fetchObjectFields(
+    connectionId: number,
+    objectName: string
+  ): Promise&lt;SalesforceField[]&gt; {
+    const conn = await this.getConnection(connectionId);
+    const metadata = await conn.describe(objectName);
+
+    const fields: SalesforceField[] = metadata.fields.map(field => ({
+      name: field.name,
+      label: field.label,
+      type: field.type,
+      length: field.length || null,
+      precision: field.precision || null,
+      scale: field.scale || null,
+      required: !field.nillable &amp;&amp; !field.defaultedOnCreate,
+      unique: field.unique || false,
+      externalId: field.externalId || false,
+      defaultValue: field.defaultValue,
+      picklistValues: field.picklistValues || [],
+      referenceTo: field.referenceTo || [],
+      relationshipName: field.relationshipName || null,
+      calculated: field.calculated || false,
+      custom: field.custom
+    }));
+
+    return fields;
+  }
+
+  /**
+   * Get row count for an object
+   */
+  async getObjectRowCount(
+    connectionId: number,
+    objectName: string
+  ): Promise&lt;number&gt; {
+    const conn = await this.getConnection(connectionId);
+    
+    try {
+      const result = await conn.query(`SELECT COUNT() FROM ${objectName}`);
+      return result.totalSize;
+    } catch (error) {
+      console.error(`Failed to get row count for ${objectName}:`, error);
+      return 0;
+    }
+  }
+
+  /**
+   * Helper to establish Salesforce connection
+   */
+  private async getConnection(connectionId: number): Promise&lt;jsforce.Connection&gt; {
+    // Fetch connection from database
+    const pool = require('../config/database').default;
+    const result = await pool.query(
+      `SELECT username, encrypted_password, password_iv, 
+              encrypted_security_token, token_iv, environment
+       FROM salesforce_connections 
+       WHERE id = $1`,
+      [connectionId]
+    );
+
+    if (result.rows.length === 0) {
+      throw new Error('Connection not found');
+    }
+
+    const connData = result.rows[0];
+    
+    // Decrypt credentials
+    const crypto = require('crypto');
+    const key = Buffer.from(process.env.ENCRYPTION_KEY!, 'hex');
+    
+    const decryptPassword = (encrypted: string, iv: string): string => {
+      const decipher = crypto.createDecipheriv(
+        'aes-256-cbc',
+        key,
+        Buffer.from(iv, 'hex')
+      );
+      let decrypted = decipher.update(encrypted, 'hex', 'utf8');
+      decrypted += decipher.final('utf8');
+      return decrypted;
+    };
+
+    const password = decryptPassword(connData.encrypted_password, connData.password_iv);
+    const securityToken = decryptPassword(connData.encrypted_security_token, connData.token_iv);
+
+    // Connect to Salesforce
+    const { conn } = await connectToSalesforce(
+      connData.username,
+      password,
+      securityToken,
+      connData.environment
+    );
+
+    return conn;
+  }
+}</code></pre>
+            </div>
+            
+            <div class="content-section">
+                <h2>🛣️ Step 2: Create Analyze API Routes</h2>
+                <p>Create REST API endpoints for schema analysis:</p>
+                <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
+                <pre><code>import { Router } from 'express';
+import { SchemaAnalysisService } from '../services/schema-analysis.service';
+
+const router = Router();
+const schemaService = new SchemaAnalysisService();
+
+/**
+ * POST /api/v1/analyze/objects
+ * Fetch all Salesforce objects for a connection
+ */
+router.post('/objects', async (req, res) => {
+  try {
+    const { connectionId } = req.body;
+
+    if (!connectionId) {
+      return res.status(400).json({ error: 'connectionId is required' });
+    }
+
+    const objects = await schemaService.fetchAllObjects(connectionId);
+
+    res.json({
+      success: true,
+      count: objects.length,
+      objects: objects
+    });
+  } catch (error: any) {
+    console.error('Failed to fetch objects:', error);
+    res.status(500).json({ 
+      error: 'Failed to fetch Salesforce objects',
+      message: error.message 
+    });
+  }
 });
 
-redisClient.on('error', (err) => console.error('Redis Client Error', err));
-
-export const connectRedis = async () => {
-  await redisClient.connect();
-  console.log('Redis connected');
-};
-
-export default redisClient;</code></pre>
-            </div>
-            
-            <div class="content-section">
-                <h2>🔄 Step 2: Create Job Status Polling Endpoint</h2>
-                <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
-                <pre><code>router.get('/projects/:id/analyze/:jobId', async (req, res) => {
+/**
+ * GET /api/v1/analyze/objects/:objectName
+ * Get detailed metadata for a specific object
+ */
+router.get('/objects/:objectName', async (req, res) => {
   try {
-    const { id, jobId } = req.params;
-    
-    // Check Redis for job status
-    const jobData = await redisClient.get(`job:${jobId}`);
-    
-    if (!jobData) {
-      return res.status(404).json({ error: 'Job not found' });
+    const { objectName } = req.params;
+    const { connectionId } = req.query;
+
+    if (!connectionId) {
+      return res.status(400).json({ error: 'connectionId query parameter is required' });
     }
-    
-    const job = JSON.parse(jobData);
+
+    const metadata = await schemaService.describeObject(
+      parseInt(connectionId as string),
+      objectName
+    );
+
     res.json({
-      jobId: job.id,
-      status: job.status, // 'pending', 'running', 'completed', 'failed'
-      progress: job.progress,
-      result: job.result || null,
-      error: job.error || null
+      success: true,
+      object: metadata
     });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch (error: any) {
+    console.error(`Failed to describe object ${req.params.objectName}:`, error);
+    res.status(500).json({ 
+      error: 'Failed to fetch object metadata',
+      message: error.message 
+    });
   }
-});</code></pre>
+});
+
+/**
+ * POST /api/v1/analyze/fields/:objectName
+ * Fetch all fields for a specific object
+ */
+router.post('/fields/:objectName', async (req, res) => {
+  try {
+    const { objectName } = req.params;
+    const { connectionId } = req.body;
+
+    if (!connectionId) {
+      return res.status(400).json({ error: 'connectionId is required' });
+    }
+
+    const fields = await schemaService.fetchObjectFields(connectionId, objectName);
+    const rowCount = await schemaService.getObjectRowCount(connectionId, objectName);
+
+    res.json({
+      success: true,
+      objectName: objectName,
+      recordCount: rowCount,
+      fieldCount: fields.length,
+      fields: fields
+    });
+  } catch (error: any) {
+    console.error(`Failed to fetch fields for ${req.params.objectName}:`, error);
+    res.status(500).json({ 
+      error: 'Failed to fetch field metadata',
+      message: error.message 
+    });
+  }
+});
+
+export default router;</code></pre>
             </div>
             
             <div class="content-section">
-                <h2>📊 Step 3: Enhance Field Metadata</h2>
-                <p>Update the schema analysis to include detailed field information:</p>
-                <pre><code>const getDetailedFieldMetadata = (field: any) => {
+                <h2>🔌 Step 3: Register Routes in Express App</h2>
+                <p>Add the analyze routes to your main Express application:</p>
+                <p><strong>File:</strong> <code>backend/src/app.ts</code></p>
+                <pre><code>import analyzeRoutes from './routes/analyze.routes';
+
+// ... existing middleware ...
+
+// Register routes
+app.use('/api/v1/analyze', analyzeRoutes);
+
+export default app;</code></pre>
+            </div>
+            
+            <div class="content-section">
+                <h2>🧪 Step 4: Test the Schema Analysis API</h2>
+                <p>Test all three endpoints using curl:</p>
+                
+                <p><strong>1. Fetch all objects:</strong></p>
+                <pre><code>curl -X POST http://localhost:3000/api/v1/analyze/objects \
+  -H "Content-Type: application/json" \
+  -d '{
+    "connectionId": 1
+  }'</code></pre>
+                
+                <p><strong>Expected Response:</strong></p>
+                <pre><code>{
+  "success": true,
+  "count": 142,
+  "objects": [
+    {
+      "name": "Account",
+      "label": "Account",
+      "custom": false,
+      "queryable": true,
+      "createable": true,
+      "updateable": true,
+      "deletable": true
+    },
+    {
+      "name": "Contact",
+      "label": "Contact",
+      "custom": false,
+      "queryable": true,
+      "createable": true,
+      "updateable": true,
+      "deletable": true
+    },
+    ...
+  ]
+}</code></pre>
+
+                <p><strong>2. Get detailed object metadata:</strong></p>
+                <pre><code>curl "http://localhost:3000/api/v1/analyze/objects/Account?connectionId=1"</code></pre>
+                
+                <p><strong>Expected Response:</strong></p>
+                <pre><code>{
+  "success": true,
+  "object": {
+    "name": "Account",
+    "label": "Account",
+    "custom": false,
+    "queryable": true,
+    "createable": true,
+    "updateable": true,
+    "deletable": true,
+    "recordTypeInfos": [...],
+    "childRelationships": [
+      {
+        "childSObject": "Contact",
+        "field": "AccountId",
+        "relationshipName": "Contacts"
+      },
+      ...
+    ],
+    "fieldCount": 47
+  }
+}</code></pre>
+
+                <p><strong>3. Fetch all fields for an object:</strong></p>
+                <pre><code>curl -X POST http://localhost:3000/api/v1/analyze/fields/Account \
+  -H "Content-Type: application/json" \
+  -d '{
+    "connectionId": 1
+  }'</code></pre>
+                
+                <p><strong>Expected Response:</strong></p>
+                <pre><code>{
+  "success": true,
+  "objectName": "Account",
+  "recordCount": 1253,
+  "fieldCount": 47,
+  "fields": [
+    {
+      "name": "Id",
+      "label": "Account ID",
+      "type": "id",
+      "length": 18,
+      "precision": null,
+      "scale": null,
+      "required": false,
+      "unique": true,
+      "externalId": false,
+      "defaultValue": null,
+      "picklistValues": [],
+      "referenceTo": [],
+      "relationshipName": null,
+      "calculated": false,
+      "custom": false
+    },
+    {
+      "name": "Name",
+      "label": "Account Name",
+      "type": "string",
+      "length": 255,
+      "precision": null,
+      "scale": null,
+      "required": true,
+      "unique": false,
+      "externalId": false,
+      "defaultValue": null,
+      "picklistValues": [],
+      "referenceTo": [],
+      "relationshipName": null,
+      "calculated": false,
+      "custom": false
+    },
+    ...
+  ]
+}</code></pre>
+            </div>
+            
+            <div class="content-section">
+                <h2>✅ Completion Checklist</h2>
+                <p>Verify all schema analysis functionality:</p>
+                <ul class="checklist">
+                    <li>✅ SchemaAnalysisService created with jsforce integration</li>
+                    <li>✅ fetchAllObjects() method retrieves all queryable objects</li>
+                    <li>✅ describeObject() method gets detailed object metadata</li>
+                    <li>✅ fetchObjectFields() method retrieves all fields with types</li>
+                    <li>✅ getObjectRowCount() method returns record counts</li>
+                    <li>✅ Encryption/decryption working for stored credentials</li>
+                    <li>✅ POST /api/v1/analyze/objects endpoint working</li>
+                    <li>✅ GET /api/v1/analyze/objects/:objectName endpoint working</li>
+                    <li>✅ POST /api/v1/analyze/fields/:objectName endpoint working</li>
+                    <li>✅ All endpoints tested with curl</li>
+                </ul>
+            </div>
+            
+            <div class="content-section">
+                <h2>📝 Commit Your Changes</h2>
+                <pre><code>git add backend/src/services/schema-analysis.service.ts backend/src/routes/analyze.routes.ts
+git commit -m "feat(backend): add Salesforce schema analysis API
+
+- Created SchemaAnalysisService with jsforce integration
+- Implemented fetchAllObjects to retrieve all Salesforce objects
+- Added describeObject for detailed object metadata
+- Built fetchObjectFields to get all field definitions
+- Implemented getObjectRowCount for record counting
+- Created analyze API routes (objects, fields, metadata)
+- Integrated with encrypted connection credentials"
   return {
     name: field.name,
     label: field.label,
@@ -862,38 +1262,24 @@ export default redisClient;</code></pre>
       custom_fields: 12,
       readiness_score: 0.92,
       warnings: ['Custom field Product2.Special__c has no target mapping'],
-      analyzed_at: new Date().toISOString()
-    };
-    
-    res.json(summary);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});</code></pre>
+git commit -m "feat(backend): add Salesforce schema analysis API
+
+- Created SchemaAnalysisService with jsforce integration
+- Implemented fetchAllObjects to retrieve all Salesforce objects
+- Added describeObject for detailed object metadata
+- Built fetchObjectFields to get all field definitions
+- Implemented getObjectRowCount for record counting
+- Created analyze API routes (objects, fields, metadata)
+- Integrated with encrypted connection credentials"</code></pre>
             </div>
             
-            <div class="content-section">
-                <h2>✅ Step 5: Test All Endpoints</h2>
-                
-                <p><strong>Test job status polling:</strong></p>
-                <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/job_1699632000000</code></pre>
-                
-                <p><strong>Test analysis summary:</strong></p>
-                <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/summary</code></pre>
-                
-                <div class="success-box">
-                    <strong>✓ Expected Response:</strong> Job status should return progress information, and summary should show aggregate statistics.
-                </div>
+            <div class="nav-buttons">
+                <a href="dev1-day06.html" class="btn btn-secondary">Previous: Day 6</a>
+                <a href="dev1-day08.html" class="btn">Next: Day 8</a>
             </div>
-            
-            <div class="content-section">
-                <h2>🎯 End of Day Checklist</h2>
-                <ul style="list-style: none; padding-left: 0;">
-                    <li>☐ Redis client installed and connected</li>
-                    <li>☐ Job status endpoint returns job progress</li>
-                    <li>☐ Enhanced metadata includes picklists and lookups</li>
-                    <li>☐ Summary endpoint aggregates analysis results</li>
-                    <li>☐ All endpoints tested and working</li>
+        </main>
+    </div>
+                        <li>☐ All endpoints tested and working</li>
                     <li>☐ Code committed with meaningful message</li>
                 </ul>
                 
