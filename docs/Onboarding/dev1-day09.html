@@ -762,32 +762,40 @@
             
             <div class="content-section">
                 <h2>📋 Objective</h2>
-                <p>Enhance the schema analysis API to fetch detailed field metadata, implement job status polling, and add Redis caching for performance optimization.</p>
+                <p>Detect and store relationships between Salesforce objects, including lookup and master-detail relationships.</p>
                 
-                <p><strong>API Endpoints to Build:</strong></p>
+                <p><strong>Tasks:</strong></p>
                 <ul>
-                    <li><code>GET /api/v1/projects/{id}/analyze/{job_id}</code> - Poll job status</li>
-                    <li><code>GET /api/v1/projects/{id}/analyze/summary</code> - Get analysis summary</li>
+                    <li>Parse childRelationships from object metadata</li>
+                    <li>Store relationships in salesforce_relationships table</li>
+                    <li>API endpoint: <code>POST /api/v1/analyze/relationships/:objectName</code></li>
                 </ul>
             </div>
             
             <div class="content-section">
-                <h2>📦 Step 1: Install Redis Client</h2>
-                <p>Install the Redis client for Node.js to enable caching:</p>
-                <pre><code>cd backend
-npm install redis</code></pre>
-                
-                <p>Create a Redis client configuration:</p>
-                <p><strong>File:</strong> <code>backend/src/config/redis.ts</code></p>
-                <pre><code>import { createClient } from 'redis';
-
-const redisClient = createClient({
-  url: process.env.REDIS_URL || 'redis://localhost:6379'
-});
-
-redisClient.on('error', (err) => console.error('Redis Client Error', err));
-
-export const connectRedis = async () => {
+                <h2>� Step 1: Relationship Detection Service</h2>
+                <p><strong>File:</strong> <code>backend/src/services/relationshipDetection.ts</code></p>
+                <pre><code>export class RelationshipDetectionService {
+  async detectRelationships(connectionId: number, objectName: string) {
+    const metadata = await this.schemaService.describeObject(connectionId, objectName);
+    
+    // Parse childRelationships
+    const relationships = metadata.childRelationships.map(rel =&gt; ({
+      parentObjectId: objectId,
+      childObject: rel.childSObject,
+      fieldName: rel.field,
+      relationshipName: rel.relationshipName
+    }));
+    
+    // Store in database
+    await pool.query(
+      'INSERT INTO salesforce_relationships (parent_object_id, child_object, field_name, relationship_name) VALUES ($1, $2, $3, $4)',
+      [objectId, rel.childObject, rel.fieldName, rel.relationshipName]
+    );
+    
+    return relationships;
+  }
+}
   await redisClient.connect();
   console.log('Redis connected');
 };

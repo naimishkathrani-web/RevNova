@@ -758,36 +758,46 @@
             </div>
             
             <h1 class="page-title">Day 9: Schema Analysis UI</h1>
-            <p class="page-subtitle">Developer 1: Backend & Database | Duration: ~6-8 hours</p>
+            <p class="page-subtitle">Developer 2: Frontend | Duration: ~6-8 hours</p>
             
             <div class="content-section">
                 <h2>📋 Objective</h2>
-                <p>Enhance the schema analysis API to fetch detailed field metadata, implement job status polling, and add Redis caching for performance optimization.</p>
+                <p>Build a comprehensive schema analysis page integrating ObjectList and FieldList components with relationship visualization.</p>
                 
-                <p><strong>API Endpoints to Build:</strong></p>
+                <p><strong>Components to Build:</strong></p>
                 <ul>
-                    <li><code>GET /api/v1/projects/{id}/analyze/{job_id}</code> - Poll job status</li>
-                    <li><code>GET /api/v1/projects/{id}/analyze/summary</code> - Get analysis summary</li>
+                    <li>SchemaAnalysisPage - Container with two-panel layout</li>
+                    <li>RelationshipDiagram - Visual display of object relationships</li>
+                    <li>Integration with mockup styling from "Login button on home page"</li>
                 </ul>
             </div>
             
             <div class="content-section">
-                <h2>📦 Step 1: Install Redis Client</h2>
-                <p>Install the Redis client for Node.js to enable caching:</p>
-                <pre><code>cd backend
-npm install redis</code></pre>
-                
-                <p>Create a Redis client configuration:</p>
-                <p><strong>File:</strong> <code>backend/src/config/redis.ts</code></p>
-                <pre><code>import { createClient } from 'redis';
-
-const redisClient = createClient({
-  url: process.env.REDIS_URL || 'redis://localhost:6379'
-});
-
-redisClient.on('error', (err) => console.error('Redis Client Error', err));
-
-export const connectRedis = async () => {
+                <h2>🎨 Step 1: Schema Analysis Page</h2>
+                <p><strong>File:</strong> <code>frontend/src/pages/SchemaAnalysisPage.tsx</code></p>
+                <pre><code>export const SchemaAnalysisPage: React.FC = () =&gt; {
+  const [selectedObject, setSelectedObject] = useState&lt;string | null&gt;(null);
+  const [connectionId, setConnectionId] = useState&lt;number&gt;(1);
+  
+  return (
+    &lt;div className="schema-analysis-container"&gt;
+      &lt;div className="left-panel"&gt;
+        &lt;ObjectList 
+          connectionId={connectionId}
+          onObjectSelect={(objName) =&gt; setSelectedObject(objName)}
+        /&gt;
+      &lt;/div&gt;
+      &lt;div className="right-panel"&gt;
+        {selectedObject &amp;&amp; (
+          &lt;&gt;
+            &lt;FieldList objectName={selectedObject} connectionId={connectionId} /&gt;
+            &lt;RelationshipDiagram objectName={selectedObject} /&gt;
+          &lt;/&gt;
+        )}
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+};
   await redisClient.connect();
   console.log('Redis connected');
 };
