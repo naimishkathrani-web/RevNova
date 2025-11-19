@@ -757,70 +757,366 @@
                 <a href="onboarding-dev1.html">Developer 1</a> › Week 2 › Day 7
             </div>
             
-            <h1 class="page-title">Day 3: Routing & Navigation</h1>
-            <p class="page-subtitle">Developer 1: Backend & Database | Duration: ~6-8 hours</p>
+            <h1 class="page-title">Day 3: New Migration Form</h1>
+            <p class="page-subtitle">Developer 2: Frontend & React | Duration: ~6-8 hours</p>
             
             <div class="content-section">
                 <h2>📋 Objective</h2>
-                <p>Enhance the schema analysis API to fetch detailed field metadata, implement job status polling, and add Redis caching for performance optimization.</p>
+                <p>Build the New Migration form page where users create new migration projects. Implement form validation, API integration to create projects, and navigation to the connection page after successful creation.</p>
                 
-                <p><strong>API Endpoints to Build:</strong></p>
+                <p><strong>What You'll Build:</strong></p>
                 <ul>
-                    <li><code>GET /api/v1/projects/{id}/analyze/{job_id}</code> - Poll job status</li>
-                    <li><code>GET /api/v1/projects/{id}/analyze/summary</code> - Get analysis summary</li>
+                    <li>New Migration form component</li>
+                    <li>Form validation (client-side)</li>
+                    <li>API service to create projects</li>
+                    <li>Success/error handling</li>
+                    <li>Navigation to connection setup</li>
                 </ul>
             </div>
             
             <div class="content-section">
-                <h2>📦 Step 1: Install Redis Client</h2>
-                <p>Install the Redis client for Node.js to enable caching:</p>
-                <pre><code>cd backend
-npm install redis</code></pre>
+                <h2>📝 Step 1: Create Form Component</h2>
+                <p><strong>File:</strong> <code>src/pages/NewMigration.tsx</code></p>
+                <pre><code>import { useState, FormEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './NewMigration.css';
+
+interface FormData {
+  name: string;
+  description: string;
+  source_type: string;
+  target_type: string;
+}
+
+export default function NewMigration() {
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState&lt;FormData&gt;({
+    name: '',
+    description: '',
+    source_type: 'salesforce',
+    target_type: 'salesforce'
+  });
+  const [errors, setErrors] = useState&lt;Record&lt;string, string&gt;&gt;({});
+  const [loading, setLoading] = useState(false);
+
+  const validateForm = (): boolean => {
+    const newErrors: Record&lt;string, string&gt; = {};
+    
+    if (!formData.name.trim()) {
+      newErrors.name = 'Project name is required';
+    } else if (formData.name.length &lt; 3) {
+      newErrors.name = 'Project name must be at least 3 characters';
+    }
+    
+    if (formData.description && formData.description.length &gt; 500) {
+      newErrors.description = 'Description must be less than 500 characters';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    
+    if (!validateForm()) return;
+    
+    setLoading(true);
+    try {
+      // TODO: Replace with actual API call
+      // const response = await fetch('http://localhost:3000/api/v1/projects', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify(formData)
+      // });
+      // const project = await response.json();
+      
+      // Mock success for now
+      setTimeout(() => {
+        console.log('Creating project:', formData);
+        navigate('/dashboard');
+      }, 1000);
+    } catch (error) {
+      console.error('Failed to create project:', error);
+      setErrors({ submit: 'Failed to create project. Please try again.' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent&lt;HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement&gt;) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+    // Clear error when user types
+    if (errors[name]) {
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
+  };
+
+  return (
+    &lt;div className="new-migration"&gt;
+      &lt;h1&gt;Create New Migration Project&lt;/h1&gt;
+      
+      &lt;form onSubmit={handleSubmit} className="migration-form"&gt;
+        &lt;div className="form-group"&gt;
+          &lt;label htmlFor="name"&gt;Project Name *&lt;/label&gt;
+          &lt;input
+            type="text"
+            id="name"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            className={errors.name ? 'error' : ''}
+            placeholder="e.g., SFDC CPQ Migration"
+          /&gt;
+          {errors.name && &lt;span className="error-message"&gt;{errors.name}&lt;/span&gt;}
+        &lt;/div&gt;
+
+        &lt;div className="form-group"&gt;
+          &lt;label htmlFor="description"&gt;Description&lt;/label&gt;
+          &lt;textarea
+            id="description"
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            rows={4}
+            placeholder="Describe your migration project..."
+          /&gt;
+          {errors.description && &lt;span className="error-message"&gt;{errors.description}&lt;/span&gt;}
+        &lt;/div&gt;
+
+        &lt;div className="form-row"&gt;
+          &lt;div className="form-group"&gt;
+            &lt;label htmlFor="source_type"&gt;Source System&lt;/label&gt;
+            &lt;select
+              id="source_type"
+              name="source_type"
+              value={formData.source_type}
+              onChange={handleChange}
+            &gt;
+              &lt;option value="salesforce"&gt;Salesforce&lt;/option&gt;
+              &lt;option value="netsuite"&gt;NetSuite&lt;/option&gt;
+              &lt;option value="other"&gt;Other&lt;/option&gt;
+            &lt;/select&gt;
+          &lt;/div&gt;
+
+          &lt;div className="form-group"&gt;
+            &lt;label htmlFor="target_type"&gt;Target System&lt;/label&gt;
+            &lt;select
+              id="target_type"
+              name="target_type"
+              value={formData.target_type}
+              onChange={handleChange}
+            &gt;
+              &lt;option value="salesforce"&gt;Salesforce&lt;/option&gt;
+              &lt;option value="custom"&gt;Custom Objects&lt;/option&gt;
+            &lt;/select&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+
+        {errors.submit && (
+          &lt;div className="alert alert-error"&gt;{errors.submit}&lt;/div&gt;
+        )}
+
+        &lt;div className="form-actions"&gt;
+          &lt;button 
+            type="button" 
+            onClick={() => navigate('/dashboard')}
+            className="btn btn-secondary"
+          &gt;
+            Cancel
+          &lt;/button&gt;
+          &lt;button 
+            type="submit" 
+            className="btn btn-primary"
+            disabled={loading}
+          &gt;
+            {loading ? 'Creating...' : 'Create Project'}
+          &lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/form&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
                 
-                <p>Create a Redis client configuration:</p>
-                <p><strong>File:</strong> <code>backend/src/config/redis.ts</code></p>
-                <pre><code>import { createClient } from 'redis';
-
-const redisClient = createClient({
-  url: process.env.REDIS_URL || 'redis://localhost:6379'
-});
-
-redisClient.on('error', (err) => console.error('Redis Client Error', err));
-
-export const connectRedis = async () => {
-  await redisClient.connect();
-  console.log('Redis connected');
-};
-
-export default redisClient;</code></pre>
+                <p><strong>✅ Checkpoint:</strong> Form component created with validation</p>
             </div>
             
             <div class="content-section">
-                <h2>🔄 Step 2: Create Job Status Polling Endpoint</h2>
-                <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
-                <pre><code>router.get('/projects/:id/analyze/:jobId', async (req, res) => {
-  try {
-    const { id, jobId } = req.params;
+                <h2>💅 Step 2: Style the Form</h2>
+                <p><strong>File:</strong> <code>src/pages/NewMigration.css</code></p>
+                <pre><code>.new-migration {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.new-migration h1 {
+  margin-bottom: 2rem;
+  color: #202124;
+}
+
+.migration-form {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #202124;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #dadce0;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #1a73e8;
+  box-shadow: 0 0 0 3px rgba(26,115,232,0.1);
+}
+
+.form-group input.error {
+  border-color: #d93025;
+}
+
+.error-message {
+  display: block;
+  margin-top: 0.5rem;
+  color: #d93025;
+  font-size: 0.875rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.alert {
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.alert-error {
+  background: #fce8e6;
+  color: #d93025;
+  border: 1px solid #d93025;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e0e0e0;
+}
+
+.btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: #1a73e8;
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #1557b0;
+}
+
+.btn-secondary {
+  background: white;
+  color: #5f6368;
+  border: 1px solid #dadce0;
+}
+
+.btn-secondary:hover {
+  background: #f1f3f4;
+}</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> Form styling complete</p>
+            </div>
+            
+            <div class="content-section">
+                <h2>🚀 Step 3: Test the Form</h2>
+                <p>Start development server:</p>
+                <pre><code>npm run dev</code></pre>
+                
+                <p>Navigate to <a href="http://localhost:5173/new-migration" target="_blank">http://localhost:5173/new-migration</a></p>
+                
+                <p><strong>Test scenarios:</strong></p>
+                <ul>
+                    <li>Submit empty form → See "Project name is required" error</li>
+                    <li>Enter 1 character name → See "must be at least 3 characters" error</li>
+                    <li>Enter valid data → Form submits, redirects to dashboard</li>
+                    <li>Click Cancel → Redirects to dashboard</li>
+                </ul>
+                
+                <div class="success-box">
+                    <strong>✓ Success:</strong> Form validates and handles submission correctly!
+                </div>
+            </div>
+            
+            <div class="content-section">
+                <h2>🎯 End of Day Checklist</h2>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li>☐ NewMigration form component created</li>
+                    <li>☐ Form validation implemented</li>
+                    <li>☐ Error messages display correctly</li>
+                    <li>☐ Form styling matches design</li>
+                    <li>☐ Source/Target dropdowns work</li>
+                    <li>☐ Cancel button navigates to dashboard</li>
+                    <li>☐ Submit button shows loading state</li>
+                    <li>☐ Form redirects after success</li>
+                </ul>
+                
+                <p><strong>Commit Message:</strong></p>
+                <pre><code>git add src/pages/NewMigration.*
+git commit -m "feat(frontend): add new migration form with validation"
+git push</code></pre>
+            </div>
+            
+            <div class="nav-buttons">
+                <a href="dev2-day02.html" class="btn btn-secondary">Previous: Day 2</a>
+                <a href="dev2-day04.html" class="btn">Next: Day 4 - API Integration</a>
+            </div>
+        </main>
+    </div>
     
-    // Check Redis for job status
-    const jobData = await redisClient.get(`job:${jobId}`);
-    
-    if (!jobData) {
-      return res.status(404).json({ error: 'Job not found' });
-    }
-    
-    const job = JSON.parse(jobData);
-    res.json({
-      jobId: job.id,
-      status: job.status, // 'pending', 'running', 'completed', 'failed'
-      progress: job.progress,
-      result: job.result || null,
-      error: job.error || null
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});</code></pre>
+    <script>
             </div>
             
             <div class="content-section">
