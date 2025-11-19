@@ -757,37 +757,51 @@
                 <a href="onboarding-dev1.html">Developer 1</a> › Week 2 › Day 7
             </div>
             
-            <h1 class="page-title">Day 8: Integration Tests</h1>
-            <p class="page-subtitle">Developer 1: Backend & Database | Duration: ~6-8 hours</p>
+            <h1 class="page-title">Day 8: Field Metadata Tests</h1>
+            <p class="page-subtitle">Developer 3: Testing & DevOps | Duration: ~6-8 hours</p>
             
             <div class="content-section">
                 <h2>📋 Objective</h2>
-                <p>Enhance the schema analysis API to fetch detailed field metadata, implement job status polling, and add Redis caching for performance optimization.</p>
+                <p>Test database persistence of field metadata and ensure data integrity.</p>
                 
-                <p><strong>API Endpoints to Build:</strong></p>
+                <p><strong>Test Coverage:</strong></p>
                 <ul>
-                    <li><code>GET /api/v1/projects/{id}/analyze/{job_id}</code> - Poll job status</li>
-                    <li><code>GET /api/v1/projects/{id}/analyze/summary</code> - Get analysis summary</li>
+                    <li>Database table creation and constraints</li>
+                    <li>Metadata storage and retrieval</li>
+                    <li>Relationship mapping accuracy</li>
                 </ul>
             </div>
             
             <div class="content-section">
-                <h2>📦 Step 1: Install Redis Client</h2>
-                <p>Install the Redis client for Node.js to enable caching:</p>
-                <pre><code>cd backend
-npm install redis</code></pre>
-                
-                <p>Create a Redis client configuration:</p>
-                <p><strong>File:</strong> <code>backend/src/config/redis.ts</code></p>
-                <pre><code>import { createClient } from 'redis';
+                <h2>📦 Step 1: Test Metadata Persistence</h2>
+                <p><strong>File:</strong> <code>backend/src/__tests__/metadata-persistence.test.ts</code></p>
+                <pre><code>import { Pool } from 'pg';
 
-const redisClient = createClient({
-  url: process.env.REDIS_URL || 'redis://localhost:6379'
+describe('Metadata Persistence Tests', () => {
+  let pool: Pool;
+
+  beforeAll(() => {
+    pool = new Pool({ connectionString: process.env.TEST_DB_URL });
+  });
+
+  it('should store object metadata', async () => {
+    const result = await pool.query(
+      `INSERT INTO salesforce_objects (connection_id, name, label, is_custom)
+       VALUES ($1, $2, $3, $4) RETURNING id`,
+      [1, 'Account', 'Account', false]
+    );
+    expect(result.rows[0].id).toBeDefined();
+  });
+
+  it('should store field metadata', async () => {
+    const result = await pool.query(
+      `INSERT INTO salesforce_fields (object_id, name, label, field_type, is_required)
+       VALUES ($1, $2, $3, $4, $5) RETURNING id`,
+      [1, 'Name', 'Account Name', 'string', true]
+    );
+    expect(result.rows[0].id).toBeDefined();
+  });
 });
-
-redisClient.on('error', (err) => console.error('Redis Client Error', err));
-
-export const connectRedis = async () => {
   await redisClient.connect();
   console.log('Redis connected');
 };
@@ -815,11 +829,6 @@ export default redisClient;</code></pre>
       status: job.status, // 'pending', 'running', 'completed', 'failed'
       progress: job.progress,
       result: job.result || null,
-      error: job.error || null
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 });</code></pre>
             </div>
             

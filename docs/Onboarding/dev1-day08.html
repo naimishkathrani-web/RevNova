@@ -757,37 +757,69 @@
                 <a href="onboarding-dev1.html">Developer 1</a> › Week 2 › Day 7
             </div>
             
-            <h1 class="page-title">Day 8: Metadata Extraction</h1>
+            <h1 class="page-title">Day 8: Field Metadata Persistence</h1>
             <p class="page-subtitle">Developer 1: Backend & Database | Duration: ~6-8 hours</p>
             
             <div class="content-section">
                 <h2>📋 Objective</h2>
-                <p>Enhance the schema analysis API to fetch detailed field metadata, implement job status polling, and add Redis caching for performance optimization.</p>
+                <p>Store analyzed Salesforce field metadata in PostgreSQL database for migration analysis. Create tables for objects, fields, and relationships.</p>
                 
-                <p><strong>API Endpoints to Build:</strong></p>
+                <p><strong>Database Tables to Create:</strong></p>
                 <ul>
-                    <li><code>GET /api/v1/projects/{id}/analyze/{job_id}</code> - Poll job status</li>
-                    <li><code>GET /api/v1/projects/{id}/analyze/summary</code> - Get analysis summary</li>
+                    <li>salesforce_objects - Store object metadata</li>
+                    <li>salesforce_fields - Store field definitions</li>
+                    <li>salesforce_relationships - Store object relationships</li>
                 </ul>
             </div>
             
             <div class="content-section">
-                <h2>📦 Step 1: Install Redis Client</h2>
-                <p>Install the Redis client for Node.js to enable caching:</p>
-                <pre><code>cd backend
-npm install redis</code></pre>
-                
-                <p>Create a Redis client configuration:</p>
-                <p><strong>File:</strong> <code>backend/src/config/redis.ts</code></p>
-                <pre><code>import { createClient } from 'redis';
+                <h2>📦 Step 1: Create Database Migration</h2>
+                <p><strong>File:</strong> <code>backend/migrations/003_create_metadata_tables.sql</code></p>
+                <pre><code>CREATE TABLE salesforce_objects (
+  id SERIAL PRIMARY KEY,
+  connection_id INTEGER REFERENCES salesforce_connections(id) ON DELETE CASCADE,
+  name VARCHAR(255) NOT NULL,
+  label VARCHAR(255) NOT NULL,
+  is_custom BOOLEAN DEFAULT false,
+  is_queryable BOOLEAN DEFAULT true,
+  is_createable BOOLEAN DEFAULT false,
+  is_updateable BOOLEAN DEFAULT false,
+  is_deletable BOOLEAN DEFAULT false,
+  record_count INTEGER DEFAULT 0,
+  field_count INTEGER DEFAULT 0,
+  analyzed_at TIMESTAMP DEFAULT NOW(),
+  UNIQUE(connection_id, name)
+);
 
-const redisClient = createClient({
-  url: process.env.REDIS_URL || 'redis://localhost:6379'
-});
+CREATE TABLE salesforce_fields (
+  id SERIAL PRIMARY KEY,
+  object_id INTEGER REFERENCES salesforce_objects(id) ON DELETE CASCADE,
+  name VARCHAR(255) NOT NULL,
+  label VARCHAR(255) NOT NULL,
+  field_type VARCHAR(100) NOT NULL,
+  length INTEGER,
+  precision_value INTEGER,
+  scale_value INTEGER,
+  is_required BOOLEAN DEFAULT false,
+  is_unique BOOLEAN DEFAULT false,
+  is_external_id BOOLEAN DEFAULT false,
+  default_value TEXT,
+  picklist_values JSONB,
+  reference_to VARCHAR(255)[],
+  relationship_name VARCHAR(255),
+  is_calculated BOOLEAN DEFAULT false,
+  is_custom BOOLEAN DEFAULT false,
+  UNIQUE(object_id, name)
+);
 
-redisClient.on('error', (err) => console.error('Redis Client Error', err));
-
-export const connectRedis = async () => {
+CREATE TABLE salesforce_relationships (
+  id SERIAL PRIMARY KEY,
+  parent_object_id INTEGER REFERENCES salesforce_objects(id) ON DELETE CASCADE,
+  child_object VARCHAR(255) NOT NULL,
+  field_name VARCHAR(255) NOT NULL,
+  relationship_name VARCHAR(255),
+  created_at TIMESTAMP DEFAULT NOW()
+);
   await redisClient.connect();
   console.log('Redis connected');
 };
@@ -815,12 +847,7 @@ export default redisClient;</code></pre>
       status: job.status, // 'pending', 'running', 'completed', 'failed'
       progress: job.progress,
       result: job.result || null,
-      error: job.error || null
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});</code></pre>
+);</code></pre>
             </div>
             
             <div class="content-section">

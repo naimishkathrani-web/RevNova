@@ -757,37 +757,68 @@
                 <a href="onboarding-dev1.html">Developer 1</a> › Week 2 › Day 7
             </div>
             
-            <h1 class="page-title">Day 8: Connection Setup UI</h1>
-            <p class="page-subtitle">Developer 1: Backend & Database | Duration: ~6-8 hours</p>
+            <h1 class="page-title">Day 8: Field List UI</h1>
+            <p class="page-subtitle">Developer 2: Frontend | Duration: ~6-8 hours</p>
             
             <div class="content-section">
                 <h2>📋 Objective</h2>
-                <p>Enhance the schema analysis API to fetch detailed field metadata, implement job status polling, and add Redis caching for performance optimization.</p>
+                <p>Build UI to display detailed field metadata for selected Salesforce objects. Show field types, properties, and relationships.</p>
                 
-                <p><strong>API Endpoints to Build:</strong></p>
+                <p><strong>UI Components:</strong></p>
                 <ul>
-                    <li><code>GET /api/v1/projects/{id}/analyze/{job_id}</code> - Poll job status</li>
-                    <li><code>GET /api/v1/projects/{id}/analyze/summary</code> - Get analysis summary</li>
+                    <li>Field list table with search and filter</li>
+                    <li>Field detail modal showing all properties</li>
+                    <li>Type badges and property icons</li>
                 </ul>
             </div>
             
             <div class="content-section">
-                <h2>📦 Step 1: Install Redis Client</h2>
-                <p>Install the Redis client for Node.js to enable caching:</p>
-                <pre><code>cd backend
-npm install redis</code></pre>
-                
-                <p>Create a Redis client configuration:</p>
-                <p><strong>File:</strong> <code>backend/src/config/redis.ts</code></p>
-                <pre><code>import { createClient } from 'redis';
+                <h2>📦 Step 1: Create Field List Component</h2>
+                <p><strong>File:</strong> <code>frontend/src/components/fields/FieldList.tsx</code></p>
+                <pre><code>import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
-const redisClient = createClient({
-  url: process.env.REDIS_URL || 'redis://localhost:6379'
-});
+export const FieldList: React.FC&lt;{ objectName: string; connectionId: number }&gt; = ({ objectName, connectionId }) => {
+  const [fields, setFields] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-redisClient.on('error', (err) => console.error('Redis Client Error', err));
+  useEffect(() => {
+    fetchFields();
+  }, [objectName]);
 
-export const connectRedis = async () => {
+  const fetchFields = async () => {
+    setLoading(true);
+    const response = await axios.post(`/api/v1/analyze/fields/${objectName}`, { connectionId });
+    setFields(response.data.fields);
+    setLoading(false);
+  };
+
+  return (
+    &lt;div className="field-list"&gt;
+      &lt;h3&gt;{objectName} Fields ({fields.length})&lt;/h3&gt;
+      &lt;table&gt;
+        &lt;thead&gt;
+          &lt;tr&gt;
+            &lt;th&gt;Field Name&lt;/th&gt;
+            &lt;th&gt;Type&lt;/th&gt;
+            &lt;th&gt;Required&lt;/th&gt;
+            &lt;th&gt;Properties&lt;/th&gt;
+          &lt;/tr&gt;
+        &lt;/thead&gt;
+        &lt;tbody&gt;
+          {fields.map(field => (
+            &lt;tr key={field.name}&gt;
+              &lt;td&gt;&lt;code&gt;{field.name}&lt;/code&gt;&lt;/td&gt;
+              &lt;td&gt;&lt;span className="badge"&gt;{field.type}&lt;/span&gt;&lt;/td&gt;
+              &lt;td&gt;{field.required ? '✓' : ''}&lt;/td&gt;
+              &lt;td&gt;{field.unique && '🔑'} {field.externalId && '🌐'}&lt;/td&gt;
+            &lt;/tr&gt;
+          ))}
+        &lt;/tbody&gt;
+      &lt;/table&gt;
+    &lt;/div&gt;
+  );
+};
   await redisClient.connect();
   console.log('Redis connected');
 };
@@ -815,12 +846,7 @@ export default redisClient;</code></pre>
       status: job.status, // 'pending', 'running', 'completed', 'failed'
       progress: job.progress,
       result: job.result || null,
-      error: job.error || null
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});</code></pre>
+};</code></pre>
             </div>
             
             <div class="content-section">
