@@ -754,7 +754,7 @@
         <main class="main-content">
             <div class="breadcrumb">
                 <a href="onboarding-home.html">Home</a> › 
-                <a href="onboarding-dev1.html">Developer 1</a> › Week 2 › Day 7
+                <a href="onboarding-dev1.html">Developer 1</a> › Week 1 › Day 1
             </div>
             
             <h1 class="page-title">Day 1: Workstation Setup</h1>
@@ -762,148 +762,236 @@
             
             <div class="content-section">
                 <h2>📋 Objective</h2>
-                <p>Enhance the schema analysis API to fetch detailed field metadata, implement job status polling, and add Redis caching for performance optimization.</p>
+                <p>Set up your development workstation with all required tools and services for backend development. By the end of this day, you'll have Node.js, PostgreSQL, Redis, and the RevNova backend running locally.</p>
                 
-                <p><strong>API Endpoints to Build:</strong></p>
+                <p><strong>What You'll Accomplish:</strong></p>
                 <ul>
-                    <li><code>GET /api/v1/projects/{id}/analyze/{job_id}</code> - Poll job status</li>
-                    <li><code>GET /api/v1/projects/{id}/analyze/summary</code> - Get analysis summary</li>
+                    <li>Install Node.js LTS (v18+) and npm</li>
+                    <li>Install and configure PostgreSQL 16</li>
+                    <li>Install and configure Redis 7</li>
+                    <li>Clone the repository and install dependencies</li>
+                    <li>Set up environment variables</li>
+                    <li>Run database migrations</li>
+                    <li>Start the backend server successfully</li>
                 </ul>
             </div>
             
             <div class="content-section">
-                <h2>📦 Step 1: Install Redis Client</h2>
-                <p>Install the Redis client for Node.js to enable caching:</p>
-                <pre><code>cd backend
-npm install redis</code></pre>
+                <h2>💻 Step 1: Install Node.js and npm</h2>
+                <p>Download and install Node.js LTS from <a href="https://nodejs.org" target="_blank">nodejs.org</a></p>
                 
-                <p>Create a Redis client configuration:</p>
-                <p><strong>File:</strong> <code>backend/src/config/redis.ts</code></p>
-                <pre><code>import { createClient } from 'redis';
+                <p>Verify installation:</p>
+                <pre><code>node --version
+# Should show v18.x.x or higher
 
-const redisClient = createClient({
-  url: process.env.REDIS_URL || 'redis://localhost:6379'
-});
-
-redisClient.on('error', (err) => console.error('Redis Client Error', err));
-
-export const connectRedis = async () => {
-  await redisClient.connect();
-  console.log('Redis connected');
-};
-
-export default redisClient;</code></pre>
+npm --version
+# Should show 9.x.x or higher</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> Node.js and npm are installed and accessible from command line</p>
             </div>
             
             <div class="content-section">
-                <h2>🔄 Step 2: Create Job Status Polling Endpoint</h2>
-                <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
-                <pre><code>router.get('/projects/:id/analyze/:jobId', async (req, res) => {
-  try {
-    const { id, jobId } = req.params;
-    
-    // Check Redis for job status
-    const jobData = await redisClient.get(`job:${jobId}`);
-    
-    if (!jobData) {
-      return res.status(404).json({ error: 'Job not found' });
-    }
-    
-    const job = JSON.parse(jobData);
-    res.json({
-      jobId: job.id,
-      status: job.status, // 'pending', 'running', 'completed', 'failed'
-      progress: job.progress,
-      result: job.result || null,
-      error: job.error || null
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+                <h2>🐘 Step 2: Install PostgreSQL</h2>
+                <p>Download PostgreSQL 16 from <a href="https://www.postgresql.org/download/" target="_blank">postgresql.org</a></p>
+                
+                <p>During installation:</p>
+                <ul>
+                    <li>Set superuser password (remember this!)</li>
+                    <li>Use default port 5432</li>
+                    <li>Include pgAdmin 4 and Stack Builder</li>
+                </ul>
+                
+                <p>Verify PostgreSQL is running:</p>
+                <pre><code># Windows
+netstat -ano | findstr :5432
+
+# macOS/Linux
+lsof -i :5432</code></pre>
+                
+                <p><strong>Create RevNova database:</strong></p>
+                <pre><code>psql -U postgres
+CREATE DATABASE revnova_dev;
+\q</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> PostgreSQL is running on port 5432, revnova_dev database created</p>
+            </div>
+            
+            <div class="content-section">
+                <h2>⚡ Step 3: Install Redis</h2>
+                <p><strong>Windows:</strong> Download from <a href="https://github.com/microsoftarchive/redis/releases" target="_blank">GitHub</a> or use WSL</p>
+                <p><strong>macOS:</strong> <code>brew install redis</code></p>
+                <p><strong>Linux:</strong> <code>sudo apt-get install redis-server</code></p>
+                
+                <p>Start Redis:</p>
+                <pre><code># Windows (if installed directly)
+redis-server
+
+# macOS
+brew services start redis
+
+# Linux
+sudo systemctl start redis</code></pre>
+                
+                <p>Verify Redis is running:</p>
+                <pre><code># Test connection
+redis-cli ping
+# Should return: PONG</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> Redis is running on port 6379</p>
+            </div>
+            
+            <div class="content-section">
+                <h2>📁 Step 4: Clone Repository and Install Dependencies</h2>
+                <p>Clone the RevNova repository:</p>
+                <pre><code>git clone https://github.com/naimishkathrani-web/RevNova.git
+cd RevNova/backend</code></pre>
+                
+                <p>Install backend dependencies:</p>
+                <pre><code>npm install</code></pre>
+                
+                <p>This will install all required packages including:</p>
+                <ul>
+                    <li>Express - Web framework</li>
+                    <li>TypeScript - Type safety</li>
+                    <li>pg (node-postgres) - PostgreSQL client</li>
+                    <li>redis - Redis client</li>
+                    <li>jsforce - Salesforce API client</li>
+                    <li>And many more...</li>
+                </ul>
+                
+                <p><strong>✅ Checkpoint:</strong> All npm packages installed successfully, node_modules folder created</p>
+            </div>
+            
+            <div class="content-section">
+                <h2>⚙️ Step 5: Configure Environment Variables</h2>
+                <p>Create a <code>.env</code> file in the backend directory:</p>
+                <p><strong>File:</strong> <code>backend/.env</code></p>
+                <pre><code>NODE_ENV=development
+PORT=3000
+
+# PostgreSQL
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=revnova_dev
+DB_USER=postgres
+DB_PASSWORD=your_postgres_password
+
+# Redis
+REDIS_HOST=localhost
+REDIS_PORT=6379
+
+# Salesforce (will configure later)
+SF_CLIENT_ID=
+SF_CLIENT_SECRET=
+SF_CALLBACK_URL=http://localhost:3000/api/v1/auth/callback
+
+# JWT Secret
+JWT_SECRET=your_random_secret_key_here</code></pre>
+                
+                <p><strong>⚠️ Important:</strong> Replace <code>your_postgres_password</code> with your actual PostgreSQL password</p>
+                <p><strong>✅ Checkpoint:</strong> .env file created with all required variables</p>
+            </div>
+            
+            <div class="content-section">
+                <h2>�️ Step 6: Run Database Migrations</h2>
+                <p>Run the database migrations to create all tables:</p>
+                <pre><code>npm run migrate</code></pre>
+                
+                <p>This will create the following tables:</p>
+                <ul>
+                    <li><code>projects</code> - Migration projects</li>
+                    <li><code>connections</code> - Salesforce connections</li>
+                    <li><code>source_objects</code> - SFDC source objects</li>
+                    <li><code>source_fields</code> - SFDC source fields</li>
+                    <li><code>target_objects</code> - Target custom objects</li>
+                    <li><code>target_fields</code> - Target custom fields</li>
+                    <li><code>field_mappings</code> - Field mapping definitions</li>
+                </ul>
+                
+                <p>Verify tables were created:</p>
+                <pre><code>psql -U postgres -d revnova_dev
+\dt
+# Should list all tables
+\q</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> All database tables created successfully</p>
+            </div>
+            
+            <div class="content-section">
+                <h2>🚀 Step 7: Start the Backend Server</h2>
+                <p>Start the development server:</p>
+                <pre><code>npm run dev</code></pre>
+                
+                <p>You should see output like:</p>
+                <pre><code>🚀 Server running on port 3000
+✅ PostgreSQL connected
+✅ Redis connected</code></pre>
+                
+                <p>Test the health check endpoint:</p>
+                <pre><code>curl http://localhost:3000/api/v1/health</code></pre>
+                
+                <p>Expected response:</p>
+                <pre><code>{
+  "status": "ok",
+  "timestamp": "2025-11-19T10:30:00.000Z",
+  "services": {
+    "database": "connected",
+    "redis": "connected"
   }
-});</code></pre>
-            </div>
-            
-            <div class="content-section">
-                <h2>📊 Step 3: Enhance Field Metadata</h2>
-                <p>Update the schema analysis to include detailed field information:</p>
-                <pre><code>const getDetailedFieldMetadata = (field: any) => {
-  return {
-    name: field.name,
-    label: field.label,
-    type: field.type,
-    length: field.length,
-    precision: field.precision,
-    scale: field.scale,
-    required: !field.nillable,
-    unique: field.unique,
-    externalId: field.externalId,
-    defaultValue: field.defaultValue,
-    picklistValues: field.picklistValues || [],
-    referenceTo: field.referenceTo || [],
-    relationshipName: field.relationshipName,
-    calculated: field.calculated,
-    customField: field.custom
-  };
-};</code></pre>
-            </div>
-            
-            <div class="content-section">
-                <h2>📈 Step 4: Create Analysis Summary Endpoint</h2>
-                <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
-                <pre><code>router.get('/projects/:id/analyze/summary', async (req, res) => {
-  try {
-    const projectId = parseInt(req.params.id);
-    
-    // Query database for analysis results
-    const summary = {
-      total_objects: 3,
-      custom_objects: 0,
-      total_fields: 45,
-      custom_fields: 12,
-      readiness_score: 0.92,
-      warnings: ['Custom field Product2.Special__c has no target mapping'],
-      analyzed_at: new Date().toISOString()
-    };
-    
-    res.json(summary);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});</code></pre>
-            </div>
-            
-            <div class="content-section">
-                <h2>✅ Step 5: Test All Endpoints</h2>
-                
-                <p><strong>Test job status polling:</strong></p>
-                <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/job_1699632000000</code></pre>
-                
-                <p><strong>Test analysis summary:</strong></p>
-                <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/summary</code></pre>
+}</code></pre>
                 
                 <div class="success-box">
-                    <strong>✓ Expected Response:</strong> Job status should return progress information, and summary should show aggregate statistics.
+                    <strong>✓ Success:</strong> If you see the health check response, your backend is running correctly!
                 </div>
             </div>
             
             <div class="content-section">
                 <h2>🎯 End of Day Checklist</h2>
                 <ul style="list-style: none; padding-left: 0;">
-                    <li>☐ Redis client installed and connected</li>
-                    <li>☐ Job status endpoint returns job progress</li>
-                    <li>☐ Enhanced metadata includes picklists and lookups</li>
-                    <li>☐ Summary endpoint aggregates analysis results</li>
-                    <li>☐ All endpoints tested and working</li>
-                    <li>☐ Code committed with meaningful message</li>
+                    <li>☐ Node.js v18+ and npm installed</li>
+                    <li>☐ PostgreSQL 16 running on port 5432</li>
+                    <li>☐ Redis 7 running on port 6379</li>
+                    <li>☐ Repository cloned successfully</li>
+                    <li>☐ Backend dependencies installed (node_modules exists)</li>
+                    <li>☐ .env file configured with correct credentials</li>
+                    <li>☐ Database migrations completed</li>
+                    <li>☐ Backend server starts on port 3000</li>
+                    <li>☐ Health check endpoint returns success</li>
                 </ul>
                 
-                <p><strong>Commit Message:</strong></p>
-                <code>feat(backend): add job polling, detailed metadata, and Redis caching</code>
+                <div class="info-box">
+                    <strong>📝 Note:</strong> Keep the server running in one terminal. Tomorrow you'll build your first API endpoint!
+                </div>
+            </div>
+            
+            <div class="content-section">
+                <h2>🐛 Troubleshooting</h2>
+                
+                <p><strong>Issue: PostgreSQL connection error</strong></p>
+                <ul>
+                    <li>Verify PostgreSQL is running: <code>netstat -ano | findstr :5432</code></li>
+                    <li>Check credentials in .env file</li>
+                    <li>Ensure revnova_dev database exists</li>
+                </ul>
+                
+                <p><strong>Issue: Redis connection error</strong></p>
+                <ul>
+                    <li>Verify Redis is running: <code>redis-cli ping</code></li>
+                    <li>Check port 6379 is not blocked</li>
+                    <li>On Windows, may need to install via WSL</li>
+                </ul>
+                
+                <p><strong>Issue: npm install fails</strong></p>
+                <ul>
+                    <li>Clear npm cache: <code>npm cache clean --force</code></li>
+                    <li>Delete node_modules and package-lock.json</li>
+                    <li>Run <code>npm install</code> again</li>
+                </ul>
             </div>
             
             <div class="nav-buttons">
                 <a href="onboarding-dev1.html" class="btn btn-secondary">Back to Overview</a>
-                <a href="dev1-day02.html" class="btn">Next: Day 2</a>
+                <a href="dev1-day02.html" class="btn">Next: Day 2 - Database Tables (STG1)</a>
             </div>
         </main>
     </div>
