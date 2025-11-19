@@ -757,37 +757,86 @@
                 <a href="onboarding-dev1.html">Developer 1</a> › Week 2 › Day 7
             </div>
             
-            <h1 class="page-title">Day 1: AWS & Infrastructure</h1>
-            <p class="page-subtitle">Developer 1: Backend & Database | Duration: ~6-8 hours</p>
+            <h1 class="page-title">Day 1: Repository & Git Setup</h1>
+            <p class="page-subtitle">Developer 3: DevOps & QA | Duration: ~6-8 hours</p>
             
             <div class="content-section">
                 <h2>📋 Objective</h2>
-                <p>Enhance the schema analysis API to fetch detailed field metadata, implement job status polling, and add Redis caching for performance optimization.</p>
+                <p>Set up your development environment for DevOps work. Learn the repository structure, Git workflows, and install Docker. By the end of this day, you'll understand the codebase and have all tools ready for CI/CD work.</p>
                 
-                <p><strong>API Endpoints to Build:</strong></p>
+                <p><strong>What You'll Accomplish:</strong></p>
                 <ul>
-                    <li><code>GET /api/v1/projects/{id}/analyze/{job_id}</code> - Poll job status</li>
-                    <li><code>GET /api/v1/projects/{id}/analyze/summary</code> - Get analysis summary</li>
+                    <li>Clone the RevNova repository</li>
+                    <li>Understand project structure (backend, frontend, docs)</li>
+                    <li>Set up Git workflows (branches, commits, PRs)</li>
+                    <li>Install Docker Desktop</li>
+                    <li>Run backend and frontend locally</li>
+                    <li>Install VS Code extensions for DevOps</li>
+                    <li>Create your first test script</li>
                 </ul>
             </div>
             
             <div class="content-section">
-                <h2>📦 Step 1: Install Redis Client</h2>
-                <p>Install the Redis client for Node.js to enable caching:</p>
-                <pre><code>cd backend
-npm install redis</code></pre>
+                <h2>📁 Step 1: Clone Repository and Explore Structure</h2>
+                <p>Clone the RevNova repository:</p>
+                <pre><code>git clone https://github.com/naimishkathrani-web/RevNova.git
+cd RevNova</code></pre>
                 
-                <p>Create a Redis client configuration:</p>
-                <p><strong>File:</strong> <code>backend/src/config/redis.ts</code></p>
-                <pre><code>import { createClient } from 'redis';
+                <p><strong>Repository Structure:</strong></p>
+                <pre><code>RevNova/
+├── backend/               # Node.js + TypeScript backend
+│   ├── src/
+│   │   ├── routes/       # API endpoints
+│   │   ├── models/       # Database models
+│   │   ├── services/     # Business logic
+│   │   └── utils/        # Helper functions
+│   ├── tests/            # Backend tests
+│   └── package.json
+├── frontend/             # React + Vite frontend
+│   ├── src/
+│   │   ├── components/   # React components
+│   │   ├── pages/        # Route pages
+│   │   └── services/     # API calls
+│   └── package.json
+├── docs/                 # Documentation
+├── .github/              # CI/CD workflows
+│   └── workflows/
+└── docker-compose.yml    # Docker configuration</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> Repository cloned, you understand the folder structure</p>
+            </div>
+            
+            <div class="content-section">
+                <h2>🌿 Step 2: Learn Git Workflows</h2>
+                <p><strong>Branch Strategy:</strong></p>
+                <ul>
+                    <li><code>main</code> - Production-ready code</li>
+                    <li><code>develop</code> - Integration branch for features</li>
+                    <li><code>feature/*</code> - Feature branches (e.g., feature/user-auth)</li>
+                    <li><code>fix/*</code> - Bug fix branches</li>
+                </ul>
+                
+                <p><strong>Create your first branch:</strong></p>
+                <pre><code>git checkout -b feature/dev3-setup
+git status</code></pre>
+                
+                <p><strong>Commit Guidelines:</strong></p>
+                <pre><code># Format: type(scope): description
+# Types: feat, fix, docs, test, chore, refactor
 
-const redisClient = createClient({
-  url: process.env.REDIS_URL || 'redis://localhost:6379'
-});
-
-redisClient.on('error', (err) => console.error('Redis Client Error', err));
-
-export const connectRedis = async () => {
+# Examples:
+feat(backend): add health check endpoint
+fix(frontend): resolve routing issue
+test(api): add connection tests
+docs(readme): update setup instructions</code></pre>
+                
+                <p><strong>Make a test commit:</strong></p>
+                <pre><code>echo "# Dev3 Setup Notes" &gt; dev3-notes.md
+git add dev3-notes.md
+git commit -m "docs(dev3): add setup notes file"</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> You understand Git workflows and can create branches/commits</p>
+            </div>
   await redisClient.connect();
   console.log('Redis connected');
 };
@@ -798,107 +847,190 @@ export default redisClient;</code></pre>
             <div class="content-section">
                 <h2>🔄 Step 2: Create Job Status Polling Endpoint</h2>
                 <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
-                <pre><code>router.get('/projects/:id/analyze/:jobId', async (req, res) => {
-  try {
-    const { id, jobId } = req.params;
-    
-    // Check Redis for job status
-    const jobData = await redisClient.get(`job:${jobId}`);
-    
-    if (!jobData) {
-      return res.status(404).json({ error: 'Job not found' });
-    }
-    
-    const job = JSON.parse(jobData);
-    res.json({
-      jobId: job.id,
-      status: job.status, // 'pending', 'running', 'completed', 'failed'
-      progress: job.progress,
-      result: job.result || null,
-      error: job.error || null
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});</code></pre>
             </div>
             
             <div class="content-section">
-                <h2>📊 Step 3: Enhance Field Metadata</h2>
-                <p>Update the schema analysis to include detailed field information:</p>
-                <pre><code>const getDetailedFieldMetadata = (field: any) => {
-  return {
-    name: field.name,
-    label: field.label,
-    type: field.type,
-    length: field.length,
-    precision: field.precision,
-    scale: field.scale,
-    required: !field.nillable,
-    unique: field.unique,
-    externalId: field.externalId,
-    defaultValue: field.defaultValue,
-    picklistValues: field.picklistValues || [],
-    referenceTo: field.referenceTo || [],
-    relationshipName: field.relationshipName,
-    calculated: field.calculated,
-    customField: field.custom
-  };
-};</code></pre>
-            </div>
-            
-            <div class="content-section">
-                <h2>📈 Step 4: Create Analysis Summary Endpoint</h2>
-                <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
-                <pre><code>router.get('/projects/:id/analyze/summary', async (req, res) => {
-  try {
-    const projectId = parseInt(req.params.id);
-    
-    // Query database for analysis results
-    const summary = {
-      total_objects: 3,
-      custom_objects: 0,
-      total_fields: 45,
-      custom_fields: 12,
-      readiness_score: 0.92,
-      warnings: ['Custom field Product2.Special__c has no target mapping'],
-      analyzed_at: new Date().toISOString()
-    };
-    
-    res.json(summary);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});</code></pre>
-            </div>
-            
-            <div class="content-section">
-                <h2>✅ Step 5: Test All Endpoints</h2>
+                <h2>🐳 Step 3: Install Docker Desktop</h2>
+                <p>Download Docker Desktop from <a href="https://www.docker.com/products/docker-desktop/" target="_blank">docker.com</a></p>
                 
-                <p><strong>Test job status polling:</strong></p>
-                <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/job_1699632000000</code></pre>
+                <p><strong>Installation steps:</strong></p>
+                <ul>
+                    <li>Download for your OS (Windows/macOS/Linux)</li>
+                    <li>Run installer and follow prompts</li>
+                    <li>Restart computer if prompted</li>
+                    <li>Open Docker Desktop and complete setup</li>
+                </ul>
                 
-                <p><strong>Test analysis summary:</strong></p>
-                <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/summary</code></pre>
+                <p>Verify Docker is installed:</p>
+                <pre><code>docker --version
+# Should show Docker version 24.x.x or higher
+
+docker-compose --version
+# Should show docker-compose version 2.x.x</code></pre>
+                
+                <p>Test Docker with hello-world:</p>
+                <pre><code>docker run hello-world</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> Docker Desktop installed and running</p>
+            </div>
+            
+            <div class="content-section">
+                <h2>🚀 Step 4: Run Backend and Frontend Locally</h2>
+                <p><strong>Terminal 1 - Backend:</strong></p>
+                <pre><code>cd backend
+npm install
+npm run dev
+# Should start on port 3000</code></pre>
+                
+                <p><strong>Terminal 2 - Frontend:</strong></p>
+                <pre><code>cd frontend
+npm install
+npm run dev
+# Should start on port 5173</code></pre>
+                
+                <p><strong>Verify services:</strong></p>
+                <ul>
+                    <li>Backend: <a href="http://localhost:3000/api/v1/health" target="_blank">http://localhost:3000/api/v1/health</a></li>
+                    <li>Frontend: <a href="http://localhost:5173" target="_blank">http://localhost:5173</a></li>
+                </ul>
+                
+                <p><strong>✅ Checkpoint:</strong> Both backend and frontend running successfully</p>
+            </div>
+            
+            <div class="content-section">
+                <h2>🔧 Step 5: Install VS Code Extensions</h2>
+                <p>Install these essential extensions in VS Code:</p>
+                
+                <p><strong>Docker Extensions:</strong></p>
+                <ul>
+                    <li><strong>Docker</strong> (ms-azuretools.vscode-docker) - Manage containers</li>
+                    <li><strong>Docker Compose</strong> - docker-compose.yml support</li>
+                </ul>
+                
+                <p><strong>Testing Extensions:</strong></p>
+                <ul>
+                    <li><strong>Jest</strong> - Test runner integration</li>
+                    <li><strong>Playwright Test for VS Code</strong> - E2E test runner</li>
+                </ul>
+                
+                <p><strong>DevOps Extensions:</strong></p>
+                <ul>
+                    <li><strong>GitHub Actions</strong> - Workflow syntax highlighting</li>
+                    <li><strong>YAML</strong> - YAML file support</li>
+                </ul>
+                
+                <p>Install from command palette (Ctrl+Shift+P):</p>
+                <pre><code>Extensions: Install Extensions
+# Search and install each extension</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> All DevOps extensions installed</p>
+            </div>
+            
+            <div class="content-section">
+                <h2>🧪 Step 6: Create Your First Test Script</h2>
+                <p>Create a simple health check test:</p>
+                <p><strong>File:</strong> <code>backend/tests/health.test.ts</code></p>
+                <pre><code>import request from 'supertest';
+import app from '../src/app';
+
+describe('Health Check', () => {
+  it('should return 200 OK', async () => {
+    const response = await request(app)
+      .get('/api/v1/health')
+      .expect(200);
+    
+    expect(response.body).toHaveProperty('status', 'ok');
+    expect(response.body).toHaveProperty('timestamp');
+  });
+  
+  it('should report database connection', async () => {
+    const response = await request(app)
+      .get('/api/v1/health')
+      .expect(200);
+    
+    expect(response.body.services).toHaveProperty('database');
+    expect(response.body.services).toHaveProperty('redis');
+  });
+});</code></pre>
+                
+                <p>Run the test:</p>
+                <pre><code>cd backend
+npm test</code></pre>
                 
                 <div class="success-box">
-                    <strong>✓ Expected Response:</strong> Job status should return progress information, and summary should show aggregate statistics.
+                    <strong>✓ Success:</strong> If tests pass, you've created your first test!
                 </div>
+            </div>
+            
+            <div class="content-section">
+                <h2>📚 Step 7: Understand CI/CD Basics</h2>
+                <p><strong>What is CI/CD?</strong></p>
+                <ul>
+                    <li><strong>CI (Continuous Integration)</strong> - Automatically test code changes</li>
+                    <li><strong>CD (Continuous Deployment)</strong> - Automatically deploy passing code</li>
+                </ul>
+                
+                <p><strong>RevNova CI/CD Pipeline (will build later):</strong></p>
+                <pre><code>1. Developer pushes code
+2. GitHub Actions triggered
+3. Run linting (ESLint, TypeScript check)
+4. Run tests (Jest, Playwright)
+5. Build Docker images
+6. Deploy to staging (if tests pass)
+7. Deploy to production (manual approval)</code></pre>
+                
+                <p>Explore existing workflow:</p>
+                <pre><code>cat .github/workflows/ci.yml</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> You understand CI/CD concepts</p>
             </div>
             
             <div class="content-section">
                 <h2>🎯 End of Day Checklist</h2>
                 <ul style="list-style: none; padding-left: 0;">
-                    <li>☐ Redis client installed and connected</li>
-                    <li>☐ Job status endpoint returns job progress</li>
-                    <li>☐ Enhanced metadata includes picklists and lookups</li>
-                    <li>☐ Summary endpoint aggregates analysis results</li>
-                    <li>☐ All endpoints tested and working</li>
-                    <li>☐ Code committed with meaningful message</li>
+                    <li>☐ Repository cloned successfully</li>
+                    <li>☐ Understand project folder structure</li>
+                    <li>☐ Know Git workflow (branches, commits, PRs)</li>
+                    <li>☐ Created test branch and made first commit</li>
+                    <li>☐ Docker Desktop installed and verified</li>
+                    <li>☐ Backend running on port 3000</li>
+                    <li>☐ Frontend running on port 5173</li>
+                    <li>☐ VS Code DevOps extensions installed</li>
+                    <li>☐ Created and ran first test</li>
+                    <li>☐ Understand CI/CD basics</li>
                 </ul>
                 
-                <p><strong>Commit Message:</strong></p>
-                <code>feat(backend): add job polling, detailed metadata, and Redis caching</code>
+                <div class="info-box">
+                    <strong>📝 Note:</strong> Tomorrow you'll set up Docker Compose for the full stack!
+                </div>
+            </div>
+            
+            <div class="content-section">
+                <h2>🐛 Troubleshooting</h2>
+                
+                <p><strong>Issue: Docker Desktop won't start</strong></p>
+                <ul>
+                    <li>Windows: Enable Hyper-V and WSL 2 in Windows Features</li>
+                    <li>macOS: Allow Docker in System Preferences → Security</li>
+                    <li>Check if virtualization is enabled in BIOS</li>
+                </ul>
+                
+                <p><strong>Issue: npm install fails</strong></p>
+                <ul>
+                    <li>Clear cache: <code>npm cache clean --force</code></li>
+                    <li>Delete node_modules and try again</li>
+                    <li>Check Node.js version (need v18+)</li>
+                </ul>
+            </div>
+            
+            <div class="nav-buttons">
+                <a href="onboarding-dev3.html" class="btn btn-secondary">Back to Overview</a>
+                <a href="dev3-day02.html" class="btn">Next: Day 2 - Docker Compose Setup</a>
+            </div>
+        </main>
+    </div>
+    
+    <script>
             </div>
             
             <div class="nav-buttons">
