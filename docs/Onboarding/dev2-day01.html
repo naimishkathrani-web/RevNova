@@ -758,152 +758,291 @@
             </div>
             
             <h1 class="page-title">Day 1: React & Vite Setup</h1>
-            <p class="page-subtitle">Developer 1: Backend & Database | Duration: ~6-8 hours</p>
+            <p class="page-subtitle">Developer 2: Frontend & React | Duration: ~6-8 hours</p>
             
             <div class="content-section">
                 <h2>📋 Objective</h2>
-                <p>Enhance the schema analysis API to fetch detailed field metadata, implement job status polling, and add Redis caching for performance optimization.</p>
+                <p>Set up your frontend development environment with React and Vite. By the end of this day, you'll have a modern React application running locally with proper project structure and routing configured.</p>
                 
-                <p><strong>API Endpoints to Build:</strong></p>
+                <p><strong>What You'll Accomplish:</strong></p>
                 <ul>
-                    <li><code>GET /api/v1/projects/{id}/analyze/{job_id}</code> - Poll job status</li>
-                    <li><code>GET /api/v1/projects/{id}/analyze/summary</code> - Get analysis summary</li>
+                    <li>Install Node.js LTS (v18+) and npm</li>
+                    <li>Create a new Vite + React project</li>
+                    <li>Set up project folder structure</li>
+                    <li>Install essential dependencies (React Router, Axios, Zustand)</li>
+                    <li>Configure basic routing</li>
+                    <li>Create a layout component</li>
+                    <li>Test the development server</li>
                 </ul>
             </div>
             
             <div class="content-section">
-                <h2>📦 Step 1: Install Redis Client</h2>
-                <p>Install the Redis client for Node.js to enable caching:</p>
-                <pre><code>cd backend
-npm install redis</code></pre>
+                <h2>� Step 1: Install Node.js and npm</h2>
+                <p>Download and install Node.js LTS from <a href="https://nodejs.org" target="_blank">nodejs.org</a></p>
                 
-                <p>Create a Redis client configuration:</p>
-                <p><strong>File:</strong> <code>backend/src/config/redis.ts</code></p>
-                <pre><code>import { createClient } from 'redis';
+                <p>Verify installation:</p>
+                <pre><code>node --version
+# Should show v18.x.x or higher
 
-const redisClient = createClient({
-  url: process.env.REDIS_URL || 'redis://localhost:6379'
-});
-
-redisClient.on('error', (err) => console.error('Redis Client Error', err));
-
-export const connectRedis = async () => {
-  await redisClient.connect();
-  console.log('Redis connected');
-};
-
-export default redisClient;</code></pre>
+npm --version
+# Should show 9.x.x or higher</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> Node.js and npm are installed and accessible from command line</p>
             </div>
             
             <div class="content-section">
-                <h2>🔄 Step 2: Create Job Status Polling Endpoint</h2>
-                <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
-                <pre><code>router.get('/projects/:id/analyze/:jobId', async (req, res) => {
-  try {
-    const { id, jobId } = req.params;
-    
-    // Check Redis for job status
-    const jobData = await redisClient.get(`job:${jobId}`);
-    
-    if (!jobData) {
-      return res.status(404).json({ error: 'Job not found' });
-    }
+                <h2>⚡ Step 2: Create Vite + React Project</h2>
+                <p>Create a new Vite project with React template:</p>
+                <pre><code>npm create vite@latest revnova-frontend -- --template react-ts
+cd revnova-frontend
+npm install</code></pre>
+                
+                <p><strong>Why Vite?</strong></p>
+                <ul>
+                    <li>⚡ Extremely fast hot module replacement (HMR)</li>
+                    <li>📦 Optimized build with Rollup</li>
+                    <li>🎯 Native ESM support</li>
+                    <li>🛠️ Built-in TypeScript support</li>
+                </ul>
+                
+                <p>Test the development server:</p>
+                <pre><code>npm run dev</code></pre>
+                
+                <p>Open <a href="http://localhost:5173" target="_blank">http://localhost:5173</a> - you should see the Vite + React welcome page!</p>
+                
+                <p><strong>✅ Checkpoint:</strong> Vite dev server running on port 5173</p>
+            </div>
+            
+            <div class="content-section">
+                <h2>� Step 3: Set Up Project Structure</h2>
+                <p>Create the following folder structure inside <code>src/</code>:</p>
+                <pre><code>src/
+├── components/        # Reusable UI components
+│   ├── common/       # Buttons, inputs, modals
+│   └── layout/       # Header, sidebar, footer
+├── pages/            # Route pages
+│   ├── Dashboard.tsx
+│   ├── NewMigration.tsx
+│   └── Home.tsx
+├── services/         # API calls
+│   └── api.ts
+├── stores/           # Zustand state management
+│   └── useAuthStore.ts
+├── types/            # TypeScript types
+│   └── index.ts
+├── utils/            # Helper functions
+│   └── helpers.ts
+├── styles/           # Global styles
+│   └── global.css
+├── App.tsx
+└── main.tsx</code></pre>
+                
+                <p>Create these folders:</p>
+                <pre><code>mkdir src/components src/components/common src/components/layout
+mkdir src/pages src/services src/stores src/types src/utils src/styles</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> All folders created in src/</p>
+            </div>
     
     const job = JSON.parse(jobData);
     res.json({
       jobId: job.id,
-      status: job.status, // 'pending', 'running', 'completed', 'failed'
-      progress: job.progress,
-      result: job.result || null,
-      error: job.error || null
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});</code></pre>
             </div>
             
             <div class="content-section">
-                <h2>📊 Step 3: Enhance Field Metadata</h2>
-                <p>Update the schema analysis to include detailed field information:</p>
-                <pre><code>const getDetailedFieldMetadata = (field: any) => {
-  return {
-    name: field.name,
-    label: field.label,
-    type: field.type,
-    length: field.length,
-    precision: field.precision,
-    scale: field.scale,
-    required: !field.nillable,
-    unique: field.unique,
-    externalId: field.externalId,
-    defaultValue: field.defaultValue,
-    picklistValues: field.picklistValues || [],
-    referenceTo: field.referenceTo || [],
-    relationshipName: field.relationshipName,
-    calculated: field.calculated,
-    customField: field.custom
-  };
-};</code></pre>
-            </div>
-            
-            <div class="content-section">
-                <h2>📈 Step 4: Create Analysis Summary Endpoint</h2>
-                <p><strong>File:</strong> <code>backend/src/routes/analyze.routes.ts</code></p>
-                <pre><code>router.get('/projects/:id/analyze/summary', async (req, res) => {
-  try {
-    const projectId = parseInt(req.params.id);
-    
-    // Query database for analysis results
-    const summary = {
-      total_objects: 3,
-      custom_objects: 0,
-      total_fields: 45,
-      custom_fields: 12,
-      readiness_score: 0.92,
-      warnings: ['Custom field Product2.Special__c has no target mapping'],
-      analyzed_at: new Date().toISOString()
-    };
-    
-    res.json(summary);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});</code></pre>
-            </div>
-            
-            <div class="content-section">
-                <h2>✅ Step 5: Test All Endpoints</h2>
+                <h2>📦 Step 4: Install Essential Dependencies</h2>
+                <p>Install React Router for navigation:</p>
+                <pre><code>npm install react-router-dom</code></pre>
                 
-                <p><strong>Test job status polling:</strong></p>
-                <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/job_1699632000000</code></pre>
+                <p>Install Axios for API calls:</p>
+                <pre><code>npm install axios</code></pre>
                 
-                <p><strong>Test analysis summary:</strong></p>
-                <pre><code>curl http://localhost:3000/api/v1/projects/1/analyze/summary</code></pre>
+                <p>Install Zustand for state management:</p>
+                <pre><code>npm install zustand</code></pre>
+                
+                <p>Install additional utilities:</p>
+                <pre><code>npm install clsx</code></pre>
+                
+                <p><strong>Why these libraries?</strong></p>
+                <ul>
+                    <li><strong>React Router</strong> - Client-side routing</li>
+                    <li><strong>Axios</strong> - Promise-based HTTP client</li>
+                    <li><strong>Zustand</strong> - Lightweight state management (simpler than Redux)</li>
+                    <li><strong>clsx</strong> - Conditional className utility</li>
+                </ul>
+                
+                <p><strong>✅ Checkpoint:</strong> All dependencies installed successfully</p>
+            </div>
+            
+            <div class="content-section">
+                <h2>🗺️ Step 5: Configure React Router</h2>
+                <p><strong>File:</strong> <code>src/App.tsx</code></p>
+                <pre><code>import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Layout from './components/layout/Layout';
+import Home from './pages/Home';
+import Dashboard from './pages/Dashboard';
+import NewMigration from './pages/NewMigration';
+
+function App() {
+  return (
+    &lt;BrowserRouter&gt;
+      &lt;Routes&gt;
+        &lt;Route path="/" element={&lt;Layout /&gt;}&gt;
+          &lt;Route index element={&lt;Home /&gt;} /&gt;
+          &lt;Route path="dashboard" element={&lt;Dashboard /&gt;} /&gt;
+          &lt;Route path="new-migration" element={&lt;NewMigration /&gt;} /&gt;
+        &lt;/Route&gt;
+      &lt;/Routes&gt;
+    &lt;/BrowserRouter&gt;
+  );
+}
+
+export default App;</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> React Router configured with basic routes</p>
+            </div>
+            
+            <div class="content-section">
+                <h2>🎨 Step 6: Create Layout Component</h2>
+                <p><strong>File:</strong> <code>src/components/layout/Layout.tsx</code></p>
+                <pre><code>import { Outlet, Link } from 'react-router-dom';
+import './Layout.css';
+
+export default function Layout() {
+  return (
+    &lt;div className="app-layout"&gt;
+      &lt;header className="app-header"&gt;
+        &lt;h1&gt;RevNova&lt;/h1&gt;
+        &lt;nav&gt;
+          &lt;Link to="/"&gt;Home&lt;/Link&gt;
+          &lt;Link to="/dashboard"&gt;Dashboard&lt;/Link&gt;
+          &lt;Link to="/new-migration"&gt;New Migration&lt;/Link&gt;
+        &lt;/nav&gt;
+      &lt;/header&gt;
+      
+      &lt;main className="app-main"&gt;
+        &lt;Outlet /&gt;
+      &lt;/main&gt;
+      
+      &lt;footer className="app-footer"&gt;
+        &lt;p&gt;© 2025 RevNova - SFDC Migration Tool&lt;/p&gt;
+      &lt;/footer&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+                
+                <p><strong>File:</strong> <code>src/components/layout/Layout.css</code></p>
+                <pre><code>.app-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-header {
+  background: #1a73e8;
+  color: white;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.app-header nav a {
+  color: white;
+  margin-left: 1.5rem;
+  text-decoration: none;
+}
+
+.app-main {
+  flex: 1;
+  padding: 2rem;
+}
+
+.app-footer {
+  background: #f1f3f4;
+  padding: 1rem;
+  text-align: center;
+}</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> Layout component created with header, main, and footer</p>
+            </div>
+            
+            <div class="content-section">
+                <h2>📄 Step 7: Create Placeholder Pages</h2>
+                <p><strong>File:</strong> <code>src/pages/Home.tsx</code></p>
+                <pre><code>export default function Home() {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Welcome to RevNova&lt;/h1&gt;
+      &lt;p&gt;Your Salesforce CPQ migration tool&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+                
+                <p><strong>File:</strong> <code>src/pages/Dashboard.tsx</code></p>
+                <pre><code>export default function Dashboard() {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Dashboard&lt;/h1&gt;
+      &lt;p&gt;Your migration projects will appear here&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+                
+                <p><strong>File:</strong> <code>src/pages/NewMigration.tsx</code></p>
+                <pre><code>export default function NewMigration() {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;New Migration&lt;/h1&gt;
+      &lt;p&gt;Create a new migration project&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+                
+                <p><strong>✅ Checkpoint:</strong> All three page components created</p>
+            </div>
+            
+            <div class="content-section">
+                <h2>🚀 Step 8: Test the Application</h2>
+                <p>Start the development server:</p>
+                <pre><code>npm run dev</code></pre>
+                
+                <p>Open <a href="http://localhost:5173" target="_blank">http://localhost:5173</a></p>
+                
+                <p><strong>Test navigation:</strong></p>
+                <ul>
+                    <li>Click "Home" - should show welcome message</li>
+                    <li>Click "Dashboard" - should show dashboard page</li>
+                    <li>Click "New Migration" - should show new migration page</li>
+                </ul>
                 
                 <div class="success-box">
-                    <strong>✓ Expected Response:</strong> Job status should return progress information, and summary should show aggregate statistics.
+                    <strong>✓ Success:</strong> If all routes work, your React app is set up correctly!
                 </div>
             </div>
             
             <div class="content-section">
                 <h2>🎯 End of Day Checklist</h2>
                 <ul style="list-style: none; padding-left: 0;">
-                    <li>☐ Redis client installed and connected</li>
-                    <li>☐ Job status endpoint returns job progress</li>
-                    <li>☐ Enhanced metadata includes picklists and lookups</li>
-                    <li>☐ Summary endpoint aggregates analysis results</li>
-                    <li>☐ All endpoints tested and working</li>
-                    <li>☐ Code committed with meaningful message</li>
+                    <li>☐ Node.js v18+ and npm installed</li>
+                    <li>☐ Vite + React project created</li>
+                    <li>☐ Project folder structure set up</li>
+                    <li>☐ React Router, Axios, Zustand installed</li>
+                    <li>☐ React Router configured in App.tsx</li>
+                    <li>☐ Layout component created</li>
+                    <li>☐ Three placeholder pages created</li>
+                    <li>☐ Dev server running on port 5173</li>
+                    <li>☐ Navigation works between all pages</li>
                 </ul>
                 
-                <p><strong>Commit Message:</strong></p>
-                <code>feat(backend): add job polling, detailed metadata, and Redis caching</code>
+                <div class="info-box">
+                    <strong>📝 Note:</strong> Tomorrow you'll build the actual Dashboard with project cards!
+                </div>
             </div>
             
             <div class="nav-buttons">
                 <a href="onboarding-dev2.html" class="btn btn-secondary">Back to Overview</a>
-                <a href="dev2-day02.html" class="btn">Next: Day 2</a>
+                <a href="dev2-day02.html" class="btn">Next: Day 2 - Project Structure & Routing</a>
             </div>
         </main>
     </div>
