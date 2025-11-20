@@ -1,6 +1,7 @@
 // frontend/src/App.tsx
 import React, { useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
+import { Dashboard } from "./pages/Dashboard";
 import { WizardLayout } from "./pages/wizard/WizardLayout";
 import { ConnectionStep } from "./pages/wizard/ConnectionStep";
 import { AnalyzeStep } from "./pages/wizard/AnalyzeStep";
@@ -22,8 +23,10 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/wizard/connect" replace />} />
+      <Route path="/" element={<Dashboard />} />
+      <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/wizard" element={<WizardLayout />}>
+        <Route index element={<Navigate to="connect" replace />} />
         <Route path="connect" element={<ConnectionStep />} />
         <Route path="analyze" element={<AnalyzeStep />} />
         <Route path="mapping" element={<MappingStep />} />
@@ -32,7 +35,7 @@ function App() {
         <Route path="execute" element={<ExecuteStep />} />
         <Route path="report" element={<ReportStep />} />
       </Route>
-      <Route path="*" element={<Navigate to="/wizard/connect" replace />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }
