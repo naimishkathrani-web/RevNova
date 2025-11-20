@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - RevNova</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .app-login-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2rem;
+        }
+
+        .app-login-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 450px;
+            width: 100%;
+            padding: 3rem;
+        }
+
+        .app-login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .app-login-header h1 {
+            font-size: 2rem;
+            color: #1a202c;
+            margin-bottom: 0.5rem;
+        }
+
+        .app-login-header p {
+            color: #718096;
+            font-size: 0.95rem;
+        }
+
+        .app-form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .app-form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #2d3748;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .app-input-with-icon {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .app-input-with-icon i {
+            position: absolute;
+            left: 1rem;
+            color: #a0aec0;
+            font-size: 1rem;
+        }
+
+        .app-input-with-icon input {
+            width: 100%;
+            padding: 0.875rem 1rem 0.875rem 3rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .app-input-with-icon input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .app-btn-login {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+
+        .app-btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .app-btn-login:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .app-alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .app-alert-error {
+            background: #fed7d7;
+            color: #c53030;
+            border: 1px solid #fc8181;
+        }
+
+        .app-alert-success {
+            background: #c6f6d5;
+            color: #2f855a;
+            border: 1px solid #9ae6b4;
+        }
+
+        .app-links {
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+
+        .app-links a {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .app-links a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        .app-divider {
+            margin: 1.5rem 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .app-divider::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            height: 1px;
+            background: #e2e8f0;
+        }
+
+        .app-divider span {
+            background: white;
+            padding: 0 1rem;
+            color: #718096;
+            font-size: 0.85rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .app-back-link {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .app-back-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .app-back-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <section class="app-login-section">
+        <div class="app-login-container">
+            <div class="app-login-header">
+                <h1><i class="fas fa-rocket"></i> RevNova</h1>
+                <p>Sign in to access your migration projects</p>
+            </div>
+
+            <div id="alertMessage" class="app-alert" style="display: none;"></div>
+
+            <form id="appLoginForm">
+                <div class="app-form-group">
+                    <label for="email">Email Address</label>
+                    <div class="app-input-with-icon">
+                        <i class="fas fa-envelope"></i>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            placeholder="you@company.com" 
+                            required
+                            autocomplete="email"
+                        >
+                    </div>
+                </div>
+
+                <div class="app-form-group">
+                    <label for="password">Password</label>
+                    <div class="app-input-with-icon">
+                        <i class="fas fa-lock"></i>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            placeholder="Enter your password" 
+                            required
+                            autocomplete="current-password"
+                        >
+                    </div>
+                </div>
+
+                <button type="submit" id="loginButton" class="app-btn-login">
+                    <i class="fas fa-sign-in-alt"></i> Sign In
+                </button>
+
+                <div class="app-links">
+                    <a href="#" id="forgotPasswordLink">Forgot your password?</a>
+                </div>
+            </form>
+
+            <div class="app-divider">
+                <span>OR</span>
+            </div>
+
+            <div class="app-links">
+                <a href="demo-request.html">
+                    <i class="fas fa-calendar-alt"></i> Schedule a Demo
+                </a>
+                <span style="margin: 0 1rem; color: #cbd5e0;">•</span>
+                <a href="free-trial.html">
+                    <i class="fas fa-gift"></i> Start Free Trial
+                </a>
+            </div>
+
+            <div class="app-back-link">
+                <a href="index.html">
+                    <i class="fas fa-arrow-left"></i> Back to Home
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:3000/api/v1';
+        const loginForm = document.getElementById('appLoginForm');
+        const loginButton = document.getElementById('loginButton');
+        const alertMessage = document.getElementById('alertMessage');
+
+        // Show alert message
+        function showAlert(message, type = 'error') {
+            alertMessage.textContent = message;
+            alertMessage.className = `app-alert app-alert-${type}`;
+            alertMessage.style.display = 'block';
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                alertMessage.style.display = 'none';
+            }, 5000);
+        }
+
+        // Handle form submission
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // Disable button during request
+            loginButton.disabled = true;
+            loginButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in...';
+
+            try {
+                // TODO: Replace with actual authentication endpoint when ready
+                // For now, simulate authentication
+                
+                // Simulated API call (replace with real endpoint)
+                const response = await fetch(`${API_BASE_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password })
+                }).catch(() => {
+                    // If auth endpoint doesn't exist yet, use demo mode
+                    throw new Error('DEMO_MODE');
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    // Store auth token
+                    localStorage.setItem('authToken', data.token);
+                    localStorage.setItem('userEmail', email);
+                    
+                    showAlert('Login successful! Redirecting...', 'success');
+                    
+                    // Redirect to React app dashboard
+                    setTimeout(() => {
+                        window.location.href = 'http://localhost:5173'; // Vite dev server
+                    }, 1000);
+                } else {
+                    const error = await response.json();
+                    showAlert(error.message || 'Invalid email or password');
+                    loginButton.disabled = false;
+                    loginButton.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In';
+                }
+            } catch (error) {
+                if (error.message === 'DEMO_MODE') {
+                    // Demo mode - allow any login and redirect to React app
+                    localStorage.setItem('authToken', 'demo-token-' + Date.now());
+                    localStorage.setItem('userEmail', email);
+                    
+                    showAlert('Demo mode: Redirecting to app...', 'success');
+                    
+                    setTimeout(() => {
+                        // Try to redirect to React app, fallback to mockup dashboard
+                        window.location.href = 'http://localhost:5173';
+                    }, 1000);
+                } else {
+                    showAlert('An error occurred. Please try again.');
+                    loginButton.disabled = false;
+                    loginButton.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In';
+                }
+            }
+        });
+
+        // Forgot password handler
+        document.getElementById('forgotPasswordLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            showAlert('Password reset functionality coming soon!', 'success');
+        });
+
+        // Check if already logged in
+        if (localStorage.getItem('authToken')) {
+            const userEmail = localStorage.getItem('userEmail');
+            showAlert(`Welcome back, ${userEmail}! Redirecting...`, 'success');
+            setTimeout(() => {
+                window.location.href = 'http://localhost:5173';
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
