@@ -358,22 +358,42 @@
       </thead>
       <tbody>
         <!-- Product2 to vlocity_cmt__Product__c -->
-        <tr><td>Product2</td><td>Name</td><td>Name</td><td>vlocity_cmt__Product__c</td><td>Name</td><td>Direct</td><td>Simple</td><td>Truncate to 80 chars if needed</td><td>Required, Max 80 chars</td></tr>
-        <tr><td>Product2</td><td>ProductCode</td><td>ProductCode</td><td>vlocity_cmt__Product__c</td><td>vlocity_cmt__ProductCode__c</td><td>Direct</td><td>Simple</td><td>Ensure uniqueness</td><td>Required, Unique</td></tr>
-        <tr><td>Product2</td><td>Description</td><td>Description</td><td>vlocity_cmt__Product__c</td><td>vlocity_cmt__Description__c</td><td>Direct</td><td>Simple</td><td>Preserve HTML formatting</td><td>Optional, Max 32000 chars</td></tr>
-        <tr><td>Product2</td><td>Family</td><td>Family</td><td>vlocity_cmt__Product__c</td><td>vlocity_cmt__ProductFamily__c</td><td>Direct</td><td>Simple</td><td></td><td>Optional</td></tr>
-        <tr><td>Product2</td><td>IsActive</td><td>IsActive</td><td>vlocity_cmt__Product__c</td><td>vlocity_cmt__IsActive__c</td><td>Direct</td><td>Simple</td><td>Boolean true/false</td><td>Required</td></tr>
-        <tr><td>Product2</td><td>QuantityUnitOfMeasure</td><td>QuantityUnitOfMeasure</td><td>vlocity_cmt__Product__c</td><td>vlocity_cmt__UnitOfMeasure__c</td><td>ValueMap</td><td>Medium</td><td>Map CPQ UOM to RCA UOM picklist</td><td>Optional</td></tr>
+        <tr><td>Product2</td><td>Id</td><td>Id</td><td>vlocity_cmt__Product__c</td><td>Id</td><td>Direct</td><td>Simple</td><td>Set new Id on insert; store CPQ Id in ExternalId</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Product2</td><td>Name</td><td>Name</td><td>vlocity_cmt__Product__c</td><td>Name</td><td>Direct</td><td>Simple</td><td>Primary display name</td><td>Required, Reject if blank</td></tr>
+        <tr><td>Product2</td><td>ProductCode</td><td>ProductCode</td><td>vlocity_cmt__Product__c</td><td>ProductCode</td><td>Direct</td><td>Simple</td><td>Ensure uniqueness across product catalog</td><td>Required, Reject if blank</td></tr>
+        <tr><td>Product2</td><td>Description</td><td>Description</td><td>vlocity_cmt__Product__c</td><td>Description</td><td>Direct</td><td>Simple</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Product2</td><td>Family</td><td>Family</td><td>vlocity_cmt__Product__c</td><td>ProductFamily</td><td>Transform</td><td>Medium</td><td>Map Product Family → EPC Category</td><td>Optional, Flag for review</td></tr>
+        <tr><td>Product2</td><td>IsActive</td><td>IsActive</td><td>vlocity_cmt__Product__c</td><td>Active__c</td><td>Direct</td><td>Simple</td><td>Use RCA Active flag</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Product2</td><td>CurrencyIsoCode</td><td>CurrencyIsoCode</td><td>vlocity_cmt__Product__c</td><td>CurrencyIsoCode</td><td>Direct</td><td>Medium</td><td>Multi-currency support required</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Product2</td><td>SBQQ__BillingFrequency__c</td><td>SBQQ__BillingFrequency__c</td><td>vlocity_cmt__Product__c</td><td>BillingFrequency__c</td><td>Transform</td><td>Medium</td><td>Map cadence values</td><td>Optional, Flag for review</td></tr>
+        <tr><td>Product2</td><td>SBQQ__SubscriptionTerm__c</td><td>SBQQ__SubscriptionTerm__c</td><td>vlocity_cmt__Product__c</td><td>SubscriptionTerm__c</td><td>Transform</td><td>Medium</td><td>Convert terms to EPC subscription terms</td><td>Optional, Flag for review</td></tr>
+        <tr><td>Product2</td><td>External_Id__c</td><td>External_Id__c</td><td>vlocity_cmt__Product__c</td><td>ExternalId__c</td><td>Direct</td><td>Simple</td><td>Store CPQ Product2 Id for cross-reference</td><td>Optional, Flag for review</td></tr>
         
-        <!-- Pricebook2 to Pricebook2 -->
-        <tr><td>Pricebook2</td><td>Name</td><td>Name</td><td>Pricebook2</td><td>Name</td><td>Direct</td><td>Simple</td><td></td><td>Required</td></tr>
-        <tr><td>Pricebook2</td><td>Description</td><td>Description</td><td>Pricebook2</td><td>Description</td><td>Direct</td><td>Simple</td><td></td><td>Optional</td></tr>
-        <tr><td>Pricebook2</td><td>IsActive</td><td>IsActive</td><td>Pricebook2</td><td>IsActive</td><td>Direct</td><td>Simple</td><td></td><td>Required</td></tr>
+        <!-- Pricebook2 to vlocity_cmt__PriceList__c -->
+        <tr><td>Pricebook2</td><td>Id</td><td>Id</td><td>vlocity_cmt__PriceList__c</td><td>Id</td><td>Direct</td><td>Simple</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Pricebook2</td><td>Name</td><td>Name</td><td>vlocity_cmt__PriceList__c</td><td>Name</td><td>Direct</td><td>Simple</td><td>EPC Price List display name</td><td>Required, Reject if blank</td></tr>
+        <tr><td>Pricebook2</td><td>IsActive</td><td>IsActive</td><td>vlocity_cmt__PriceList__c</td><td>IsActive__c</td><td>Direct</td><td>Simple</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Pricebook2</td><td>CurrencyIsoCode</td><td>CurrencyIsoCode</td><td>vlocity_cmt__PriceList__c</td><td>CurrencyIsoCode</td><td>Direct</td><td>Medium</td><td>Verify multi-currency setup</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Pricebook2</td><td>EffectiveStartDate__c</td><td>EffectiveStartDate__c</td><td>vlocity_cmt__PriceList__c</td><td>EffectiveStartDate__c</td><td>Direct</td><td>Medium</td><td>Align with RCA price periods</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Pricebook2</td><td>EffectiveEndDate__c</td><td>EffectiveEndDate__c</td><td>vlocity_cmt__PriceList__c</td><td>EffectiveEndDate__c</td><td>Direct</td><td>Medium</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Pricebook2</td><td>External_Code__c</td><td>External_Code__c</td><td>vlocity_cmt__PriceList__c</td><td>ExternalCode__c</td><td>Direct</td><td>Simple</td><td>Legacy ERP or CPQ identifier</td><td>Optional, Flag for review</td></tr>
         
         <!-- PricebookEntry to vlocity_cmt__Price__c -->
-        <tr><td>PricebookEntry</td><td>UnitPrice</td><td>UnitPrice</td><td>vlocity_cmt__Price__c</td><td>vlocity_cmt__PriceValue__c</td><td>Transform</td><td>Medium</td><td>Validate currency, convert to price dimensions if needed</td><td>Required, Min 0</td></tr>
-        <tr><td>PricebookEntry</td><td>IsActive</td><td>IsActive</td><td>vlocity_cmt__Price__c</td><td>vlocity_cmt__IsActive__c</td><td>Direct</td><td>Simple</td><td></td><td>Required</td></tr>
-        <tr><td>PricebookEntry</td><td>UseStandardPrice</td><td>UseStandardPrice</td><td>vlocity_cmt__Price__c</td><td>vlocity_cmt__UseStandardPrice__c</td><td>Direct</td><td>Simple</td><td></td><td>Optional</td></tr>
+        <tr><td>PricebookEntry</td><td>Id</td><td>Id</td><td>vlocity_cmt__Price__c</td><td>Id</td><td>Direct</td><td>Simple</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>PricebookEntry</td><td>Pricebook2Id</td><td>Pricebook2Id</td><td>vlocity_cmt__Price__c</td><td>PriceListId__c</td><td>Structural</td><td>Medium</td><td>Map Pricebook2 → PriceList via Id_Mapping</td><td>Required, Reject if blank</td></tr>
+        <tr><td>PricebookEntry</td><td>Product2Id</td><td>Product2Id</td><td>vlocity_cmt__Price__c</td><td>ProductId__c</td><td>Structural</td><td>Medium</td><td>Map Product2 → EPC Product via Id_Mapping</td><td>Required, Reject if blank</td></tr>
+        <tr><td>PricebookEntry</td><td>UnitPrice</td><td>UnitPrice</td><td>vlocity_cmt__Price__c</td><td>PriceValue__c</td><td>Transform</td><td>Medium</td><td>Ensure correct currency & dimensions</td><td>Required, Reject if blank</td></tr>
+        <tr><td>PricebookEntry</td><td>IsActive</td><td>IsActive</td><td>vlocity_cmt__Price__c</td><td>IsActive__c</td><td>Direct</td><td>Simple</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>PricebookEntry</td><td>External_Id__c</td><td>External_Id__c</td><td>vlocity_cmt__Price__c</td><td>ExternalPriceId__c</td><td>Direct</td><td>Simple</td><td>Store CPQ PricebookEntry Id for reconciliation</td><td>Optional, Flag for review</td></tr>
+        
+        <!-- SBQQ__ProductOption__c to vlocity_cmt__ProductChildItem__c -->
+        <tr><td>SBQQ__ProductOption__c</td><td>Id</td><td>Id</td><td>vlocity_cmt__ProductChildItem__c</td><td>Id</td><td>Direct</td><td>Simple</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>SBQQ__ProductOption__c</td><td>SBQQ__Product__c</td><td>SBQQ__Product__c</td><td>vlocity_cmt__ProductChildItem__c</td><td>ParentProductId__c</td><td>Structural</td><td>Complex</td><td>Map parent product via Id_Mapping</td><td>Required, Reject if blank</td></tr>
+        <tr><td>SBQQ__ProductOption__c</td><td>SBQQ__OptionalSKU__c</td><td>SBQQ__OptionalSKU__c</td><td>vlocity_cmt__ProductChildItem__c</td><td>ChildProductId__c</td><td>Structural</td><td>Medium</td><td>Map child product via Id_Mapping</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>SBQQ__ProductOption__c</td><td>SBQQ__Quantity__c</td><td>SBQQ__Quantity__c</td><td>vlocity_cmt__ProductChildItem__c</td><td>Quantity__c</td><td>Direct</td><td>Simple</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>SBQQ__ProductOption__c</td><td>SBQQ__DefaultSelected__c</td><td>SBQQ__DefaultSelected__c</td><td>vlocity_cmt__ProductChildItem__c</td><td>DefaultSelected__c</td><td>Direct</td><td>Simple</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>SBQQ__ProductOption__c</td><td>SBQQ__Sequence__c</td><td>SBQQ__Sequence__c</td><td>vlocity_cmt__ProductChildItem__c</td><td>Sequence__c</td><td>Direct</td><td>Simple</td><td>Preserve order</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>SBQQ__ProductOption__c</td><td>External_Id__c</td><td>External_Id__c</td><td>vlocity_cmt__ProductChildItem__c</td><td>ExternalChildItemId__c</td><td>Direct</td><td>Simple</td><td>Store CPQ option Id for reconciliation</td><td>Optional, Flag for review</td></tr>
         
         <!-- Account mappings (for reference data) -->
         <tr><td>Account</td><td>Name</td><td>Name</td><td>Account</td><td>Name</td><td>Direct</td><td>Simple</td><td></td><td>Required</td></tr>
@@ -382,6 +402,123 @@
         <tr><td>Account</td><td>BillingState</td><td>BillingState</td><td>Account</td><td>BillingState</td><td>ValueMap</td><td>Medium</td><td>Validate state/province codes</td><td>Optional</td></tr>
         <tr><td>Account</td><td>BillingPostalCode</td><td>BillingPostalCode</td><td>Account</td><td>BillingPostalCode</td><td>Direct</td><td>Simple</td><td>Normalize format (remove spaces/dashes)</td><td>Optional</td></tr>
         <tr><td>Account</td><td>Phone</td><td>Phone</td><td>Account</td><td>Phone</td><td>Transform</td><td>Medium</td><td>Apply E.164 formatting, remove non-numeric chars</td><td>Optional</td></tr>
+      </tbody>
+    </table>
+
+    <h2 class="sheet-title">WS1A — Product Configuration & Rules (Phase 1 MVP)</h2>
+    <table class="mapping-table">
+      <thead>
+        <tr>
+          <th>Source Object</th><th>Source Field</th><th>Source API</th>
+          <th>Target Object</th><th>Target Field</th><th>Mapping Type</th>
+          <th>Complexity</th><th>Transform Notes</th><th>DQ Check</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- SBQQ__ProductRule__c to vlocity_cmt__ProductConfigurationRule__c -->
+        <tr><td>SBQQ__ProductRule__c</td><td>Id</td><td>Id</td><td>vlocity_cmt__ProductConfigurationRule__c</td><td>Id</td><td>Direct</td><td>Simple</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>SBQQ__ProductRule__c</td><td>Name</td><td>Name</td><td>vlocity_cmt__ProductConfigurationRule__c</td><td>Name</td><td>Direct</td><td>Simple</td><td>Rule identifier in RCA</td><td>Required, Reject if blank</td></tr>
+        <tr><td>SBQQ__ProductRule__c</td><td>Type</td><td>SBQQ__Type__c</td><td>vlocity_cmt__ProductConfigurationRule__c</td><td>RuleType</td><td>Transform</td><td>Medium</td><td>Map CPQ rule types (Validation/Selection/Filter) to RCA types</td><td>Required, Reject if blank</td></tr>
+        <tr><td>SBQQ__ProductRule__c</td><td>Conditions</td><td>SBQQ__Conditions__c</td><td>vlocity_cmt__ProductConfigurationRule__c</td><td>Conditions</td><td>Transform</td><td>Complex</td><td>Translate CPQ condition logic into RCA expression language or qualification objects</td><td>Required, Flag for review</td></tr>
+        <tr><td>SBQQ__ProductRule__c</td><td>Actions</td><td>SBQQ__Actions__c</td><td>vlocity_cmt__ProductConfigurationRule__c</td><td>Actions</td><td>Transform</td><td>Complex</td><td>Map CPQ actions (select/remove/alert) to RCA configuration actions</td><td>Required, Flag for review</td></tr>
+        <tr><td>SBQQ__ProductRule__c</td><td>Active</td><td>IsActive</td><td>vlocity_cmt__ProductConfigurationRule__c</td><td>IsActive__c</td><td>Direct</td><td>Simple</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>SBQQ__ProductRule__c</td><td>Evaluation Order</td><td>EvaluationOrder__c</td><td>vlocity_cmt__ProductConfigurationRule__c</td><td>EvaluationOrder</td><td>Direct</td><td>Medium</td><td>Preserve execution ordering for parity</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>SBQQ__ProductRule__c</td><td>Lookup Query</td><td>SBQQ__LookupQuery__c</td><td>vlocity_cmt__ProductConfigurationRule__c</td><td>LookupQuery</td><td>Transform</td><td>Complex</td><td>Recreate any lookup-based conditions using RCA qualification or data references</td><td>Optional, Flag for review</td></tr>
+        <tr><td>SBQQ__ProductRule__c</td><td>Description</td><td>Description</td><td>vlocity_cmt__ProductConfigurationRule__c</td><td>Description</td><td>Direct</td><td>Simple</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>SBQQ__ProductRule__c</td><td>Custom Flag</td><td>Custom_Flag__c</td><td>vlocity_cmt__ProductConfigurationRule__c</td><td>CustomFlag</td><td>Transform</td><td>Medium</td><td>Generic custom flag</td><td>Optional, Flag for review</td></tr>
+        <tr><td>SBQQ__ProductRule__c</td><td>Custom Text</td><td>Custom_Text__c</td><td>vlocity_cmt__ProductConfigurationRule__c</td><td>CustomText</td><td>Transform</td><td>Medium</td><td>Generic custom text</td><td>Optional, Flag for review</td></tr>
+        <tr><td>SBQQ__ProductRule__c</td><td>Custom Numeric</td><td>Custom_Number__c</td><td>vlocity_cmt__ProductConfigurationRule__c</td><td>CustomNumber</td><td>Transform</td><td>Medium</td><td>Generic custom numeric</td><td>Optional, Flag for review</td></tr>
+        
+        <!-- ProductQualification to vlocity_cmt__ProductQualification__c -->
+        <tr><td>ProductQualification</td><td>Id</td><td>Id</td><td>vlocity_cmt__ProductQualification__c</td><td>Id</td><td>Direct</td><td>Simple</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>ProductQualification</td><td>Name</td><td>Name</td><td>vlocity_cmt__ProductQualification__c</td><td>Name</td><td>Direct</td><td>Simple</td><td>Qualification rule name</td><td>Required, Reject if blank</td></tr>
+        <tr><td>ProductQualification</td><td>Product</td><td>ProductId</td><td>ProductQualification</td><td>ProductId</td><td>Structural</td><td>Medium</td><td>Map to EPC Product via Id_Mapping</td><td>Required, Reject if blank</td></tr>
+        <tr><td>ProductQualification</td><td>ConditionExpression</td><td>ConditionExpression__c</td><td>ProductQualification</td><td>ConditionExpression</td><td>Transform</td><td>Complex</td><td>Translate eligibility condition to RCA expression or rule engine</td><td>Required, Flag for review</td></tr>
+        <tr><td>ProductQualification</td><td>EffectiveFrom</td><td>EffectiveFrom__c</td><td>ProductQualification</td><td>EffectiveFrom</td><td>Direct</td><td>Medium</td><td>Preserve validity windows</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>ProductQualification</td><td>EffectiveTo</td><td>EffectiveTo__c</td><td>ProductQualification</td><td>EffectiveTo</td><td>Direct</td><td>Medium</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>ProductQualification</td><td>IsActive</td><td>IsActive</td><td>ProductQualification</td><td>IsActive</td><td>Direct</td><td>Simple</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>ProductQualification</td><td>Priority</td><td>Priority__c</td><td>ProductQualification</td><td>Priority</td><td>Direct</td><td>Medium</td><td>Used to resolve conflicting qualifications</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>ProductQualification</td><td>Description</td><td>Description</td><td>ProductQualification</td><td>Description</td><td>Direct</td><td>Simple</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>ProductQualification</td><td>Custom Flag</td><td>Custom_Flag__c</td><td>ProductQualification</td><td>CustomFlag</td><td>Transform</td><td>Medium</td><td>Generic custom flag</td><td>Optional, Flag for review</td></tr>
+        <tr><td>ProductQualification</td><td>Custom Text</td><td>Custom_Text__c</td><td>ProductQualification</td><td>CustomText</td><td>Transform</td><td>Medium</td><td>Generic custom text</td><td>Optional, Flag for review</td></tr>
+        <tr><td>ProductQualification</td><td>Custom Numeric</td><td>Custom_Number__c</td><td>ProductQualification</td><td>CustomNumber</td><td>Transform</td><td>Medium</td><td>Generic custom numeric</td><td>Optional, Flag for review</td></tr>
+        
+        <!-- SBQQ__ConfigurationAttribute__c to vlocity_cmt__AttributeValue__c -->
+        <tr><td>SBQQ__ConfigurationAttribute__c</td><td>Id</td><td>Id</td><td>vlocity_cmt__AttributeValue__c</td><td>Id</td><td>Direct</td><td>Simple</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>SBQQ__ConfigurationAttribute__c</td><td>Attribute API Name</td><td>SBQQ__AttributeAPI__c</td><td>vlocity_cmt__AttributeValue__c</td><td>AttributeAPIName</td><td>Direct</td><td>Simple</td><td>Link attribute values to attribute definitions</td><td>Required, Reject if blank</td></tr>
+        <tr><td>SBQQ__ConfigurationAttribute__c</td><td>Value</td><td>SBQQ__Value__c</td><td>vlocity_cmt__AttributeValue__c</td><td>Value</td><td>Direct</td><td>Simple</td><td>Preserve allowed values list</td><td>Required, Reject if blank</td></tr>
+        <tr><td>SBQQ__ConfigurationAttribute__c</td><td>Display Order</td><td>SBQQ__DisplayOrder__c</td><td>vlocity_cmt__AttributeValue__c</td><td>DisplayOrder</td><td>Direct</td><td>Simple</td><td>Preserve ordering</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>SBQQ__ConfigurationAttribute__c</td><td>Is Active</td><td>IsActive</td><td>vlocity_cmt__AttributeValue__c</td><td>IsActive</td><td>Direct</td><td>Simple</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>SBQQ__ConfigurationAttribute__c</td><td>External Id</td><td>External_Id__c</td><td>vlocity_cmt__AttributeValue__c</td><td>ExternalValueId</td><td>Transform</td><td>Medium</td><td>Use for reconciliation</td><td>Optional, Flag for review</td></tr>
+        <tr><td>SBQQ__ConfigurationAttribute__c</td><td>Label</td><td>SBQQ__DisplayLabel__c</td><td>vlocity_cmt__AttributeValue__c</td><td>Label</td><td>Direct</td><td>Simple</td><td>Human-friendly label</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>SBQQ__ConfigurationAttribute__c</td><td>Custom Flag</td><td>Custom_Flag__c</td><td>vlocity_cmt__AttributeValue__c</td><td>CustomFlag</td><td>Transform</td><td>Medium</td><td>Generic custom flag</td><td>Optional, Flag for review</td></tr>
+        <tr><td>SBQQ__ConfigurationAttribute__c</td><td>Custom Text</td><td>Custom_Text__c</td><td>vlocity_cmt__AttributeValue__c</td><td>CustomText</td><td>Transform</td><td>Medium</td><td>Generic custom text</td><td>Optional, Flag for review</td></tr>
+        <tr><td>SBQQ__ConfigurationAttribute__c</td><td>Custom Numeric</td><td>Custom_Number__c</td><td>vlocity_cmt__AttributeValue__c</td><td>CustomNumber</td><td>Transform</td><td>Medium</td><td>Generic custom numeric</td><td>Optional, Flag for review</td></tr>
+        
+        <!-- ContextRule to vlocity_cmt__ContextRule__c -->
+        <tr><td>ContextRule</td><td>Id</td><td>Id</td><td>vlocity_cmt__ContextRule__c</td><td>Id</td><td>Direct</td><td>Simple</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>ContextRule</td><td>Name</td><td>Name</td><td>vlocity_cmt__ContextRule__c</td><td>Name</td><td>Direct</td><td>Simple</td><td>Context rule identifier</td><td>Required, Reject if blank</td></tr>
+        <tr><td>ContextRule</td><td>ContextType</td><td>ContextType__c</td><td>vlocity_cmt__ContextRule__c</td><td>ContextType</td><td>Direct</td><td>Medium</td><td>Map UI context types (Sales/CPQ/Bundle) to RCA contexts</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>ContextRule</td><td>Condition</td><td>Condition__c</td><td>vlocity_cmt__ContextRule__c</td><td>Condition</td><td>Transform</td><td>Complex</td><td>Translate CPQ visibility expressions into RCA qualifier rules</td><td>Required, Flag for review</td></tr>
+        <tr><td>ContextRule</td><td>Action</td><td>Action__c</td><td>vlocity_cmt__ContextRule__c</td><td>Action</td><td>Transform</td><td>Complex</td><td>Map actions (hide/show, read-only) to RCA behavior</td><td>Required, Flag for review</td></tr>
+        <tr><td>ContextRule</td><td>Priority</td><td>Priority__c</td><td>vlocity_cmt__ContextRule__c</td><td>Priority</td><td>Direct</td><td>Medium</td><td>Evaluation ordering</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>ContextRule</td><td>IsActive</td><td>IsActive</td><td>vlocity_cmt__ContextRule__c</td><td>IsActive</td><td>Direct</td><td>Simple</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>ContextRule</td><td>Description</td><td>Description</td><td>vlocity_cmt__ContextRule__c</td><td>Description</td><td>Direct</td><td>Simple</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>ContextRule</td><td>Custom Flag</td><td>Custom_Flag__c</td><td>vlocity_cmt__ContextRule__c</td><td>CustomFlag</td><td>Transform</td><td>Medium</td><td>Generic custom flag</td><td>Optional, Flag for review</td></tr>
+        <tr><td>ContextRule</td><td>Custom Text</td><td>Custom_Text__c</td><td>vlocity_cmt__ContextRule__c</td><td>CustomText</td><td>Transform</td><td>Medium</td><td>Generic custom text</td><td>Optional, Flag for review</td></tr>
+        <tr><td>ContextRule</td><td>Custom Numeric</td><td>Custom_Number__c</td><td>vlocity_cmt__ContextRule__c</td><td>CustomNumber</td><td>Transform</td><td>Medium</td><td>Generic custom numeric</td><td>Optional, Flag for review</td></tr>
+      </tbody>
+    </table>
+
+    <h2 class="sheet-title">WS1B — Offers & Advanced Pricing (Phase 1 MVP)</h2>
+    <table class="mapping-table">
+      <thead>
+        <tr>
+          <th>Source Object</th><th>Source Field</th><th>Source API</th>
+          <th>Target Object</th><th>Target Field</th><th>Mapping Type</th>
+          <th>Complexity</th><th>Transform Notes</th><th>DQ Check</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Product2 to vlocity_cmt__Offer__c -->
+        <tr><td>Product2</td><td>Id</td><td>Id</td><td>vlocity_cmt__Offer__c</td><td>Id</td><td>Direct</td><td>Simple</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Product2</td><td>Name</td><td>Name</td><td>vlocity_cmt__Offer__c</td><td>Name</td><td>Direct</td><td>Simple</td><td>Offer display name (can group multiple products)</td><td>Required, Reject if blank</td></tr>
+        <tr><td>Product2</td><td>ProductCode</td><td>ProductCode</td><td>vlocity_cmt__Offer__c</td><td>OfferCode__c</td><td>Transform</td><td>Medium</td><td>Generate OfferCode or map from ProductCode</td><td>Optional, Flag for review</td></tr>
+        <tr><td>Product2</td><td>Description</td><td>Description</td><td>vlocity_cmt__Offer__c</td><td>Description</td><td>Direct</td><td>Simple</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Product2</td><td>Effective Date</td><td>SBQQ__ActiveEffectiveDate__c</td><td>vlocity_cmt__Offer__c</td><td>EffectiveDate__c</td><td>Direct</td><td>Medium</td><td>Preserve launch/retire dates</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Product2</td><td>Expiration Date</td><td>SBQQ__ActiveExpirationDate__c</td><td>vlocity_cmt__Offer__c</td><td>ExpirationDate__c</td><td>Direct</td><td>Medium</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Product2</td><td>IsActive</td><td>IsActive</td><td>vlocity_cmt__Offer__c</td><td>IsActive__c</td><td>Direct</td><td>Simple</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Product2</td><td>External Id</td><td>External_Id__c</td><td>vlocity_cmt__Offer__c</td><td>ExternalOfferId__c</td><td>Transform</td><td>Medium</td><td>Store CPQ product Id for cross-reference</td><td>Optional, Flag for review</td></tr>
+        <tr><td>Product2</td><td>Category</td><td>Family</td><td>vlocity_cmt__Offer__c</td><td>Category__c</td><td>Transform</td><td>Medium</td><td>Map product family → offer category</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>vlocity_cmt__Offer__c</td><td>Custom Flag</td><td>Custom_Flag__c</td><td>vlocity_cmt__Offer__c</td><td>CustomFlag</td><td>Transform</td><td>Medium</td><td>Generic custom flag</td><td>Optional, Flag for review</td></tr>
+        <tr><td>vlocity_cmt__Offer__c</td><td>Custom Text</td><td>Custom_Text__c</td><td>vlocity_cmt__Offer__c</td><td>CustomText</td><td>Transform</td><td>Medium</td><td>Generic custom text</td><td>Optional, Flag for review</td></tr>
+        <tr><td>vlocity_cmt__Offer__c</td><td>Custom Numeric</td><td>Custom_Number__c</td><td>vlocity_cmt__Offer__c</td><td>CustomNumber</td><td>Transform</td><td>Medium</td><td>Generic custom numeric</td><td>Optional, Flag for review</td></tr>
+        
+        <!-- PricebookEntry to vlocity_cmt__PriceListEntry__c -->
+        <tr><td>PricebookEntry</td><td>Id</td><td>Id</td><td>vlocity_cmt__PriceListEntry__c</td><td>Id</td><td>Direct</td><td>Simple</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>PricebookEntry</td><td>Pricebook2Id</td><td>Pricebook2Id</td><td>vlocity_cmt__PriceListEntry__c</td><td>PriceListId__c</td><td>Structural</td><td>Medium</td><td>Map Pricebook2 → PriceList via Id_Mapping</td><td>Required, Reject if blank</td></tr>
+        <tr><td>PricebookEntry</td><td>Product2Id</td><td>Product2Id</td><td>vlocity_cmt__PriceListEntry__c</td><td>ProductId__c</td><td>Structural</td><td>Medium</td><td>Map Product via Id_Mapping</td><td>Required, Reject if blank</td></tr>
+        <tr><td>PricebookEntry</td><td>UnitPrice</td><td>UnitPrice</td><td>vlocity_cmt__PriceListEntry__c</td><td>PriceValue__c</td><td>Transform</td><td>Medium</td><td>Preserve currency and precision</td><td>Required, Reject if blank</td></tr>
+        <tr><td>PricebookEntry</td><td>EffectiveDate</td><td>EffectiveDate</td><td>vlocity_cmt__PriceListEntry__c</td><td>EffectiveDate__c</td><td>Direct</td><td>Medium</td><td>Map validity dates for pricing</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>PricebookEntry</td><td>ExpirationDate</td><td>ExpirationDate</td><td>vlocity_cmt__PriceListEntry__c</td><td>ExpirationDate__c</td><td>Direct</td><td>Medium</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>PricebookEntry</td><td>PriceType</td><td>PriceType__c</td><td>vlocity_cmt__PriceListEntry__c</td><td>PriceType__c</td><td>Transform</td><td>Medium</td><td>Map list/net/one-time vs recurring types</td><td>Optional, Flag for review</td></tr>
+        <tr><td>PricebookEntry</td><td>External Id</td><td>External_Id__c</td><td>vlocity_cmt__PriceListEntry__c</td><td>ExternalPriceListEntryId__c</td><td>Transform</td><td>Medium</td><td>Reconciliation id</td><td>Optional, Flag for review</td></tr>
+        <tr><td>PricebookEntry</td><td>Custom Flag</td><td>Custom_Flag__c</td><td>vlocity_cmt__PriceListEntry__c</td><td>CustomFlag</td><td>Transform</td><td>Medium</td><td>Generic custom flag</td><td>Optional, Flag for review</td></tr>
+        <tr><td>PricebookEntry</td><td>Custom Text</td><td>Custom_Text__c</td><td>vlocity_cmt__PriceListEntry__c</td><td>CustomText</td><td>Transform</td><td>Medium</td><td>Generic custom text</td><td>Optional, Flag for review</td></tr>
+        <tr><td>PricebookEntry</td><td>Custom Numeric</td><td>Custom_Number__c</td><td>vlocity_cmt__PriceListEntry__c</td><td>CustomNumber</td><td>Transform</td><td>Medium</td><td>Generic custom numeric</td><td>Optional, Flag for review</td></tr>
+        
+        <!-- PriceTier to vlocity_cmt__ChargeTier__c -->
+        <tr><td>PriceTier</td><td>Id</td><td>Id</td><td>vlocity_cmt__ChargeTier__c</td><td>Id</td><td>Direct</td><td>Simple</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>PriceTier</td><td>PriceListEntryId</td><td>PriceListEntryId</td><td>vlocity_cmt__ChargeTier__c</td><td>PriceListEntryId__c</td><td>Structural</td><td>Medium</td><td>Link tier to PriceListEntry via Id_Mapping</td><td>Required, Reject if blank</td></tr>
+        <tr><td>PriceTier</td><td>LowerBound</td><td>LowerBound__c</td><td>vlocity_cmt__ChargeTier__c</td><td>LowerBound__c</td><td>Direct</td><td>Medium</td><td>Ensure numeric bounds normalized</td><td>Required, Reject if blank</td></tr>
+        <tr><td>PriceTier</td><td>UpperBound</td><td>UpperBound__c</td><td>vlocity_cmt__ChargeTier__c</td><td>UpperBound__c</td><td>Direct</td><td>Medium</td><td>Upper bound null → infinity semantics</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>PriceTier</td><td>PricePerUnit</td><td>PricePerUnit__c</td><td>vlocity_cmt__ChargeTier__c</td><td>PricePerUnit__c</td><td>Transform</td><td>Medium</td><td>Preserve currency & precision</td><td>Required, Reject if blank</td></tr>
+        <tr><td>PriceTier</td><td>CurrencyIsoCode</td><td>CurrencyIsoCode</td><td>vlocity_cmt__ChargeTier__c</td><td>CurrencyIsoCode</td><td>Direct</td><td>Medium</td><td>Multi-currency consistency required</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>PriceTier</td><td>EffectiveDate</td><td>EffectiveDate__c</td><td>vlocity_cmt__ChargeTier__c</td><td>EffectiveDate__c</td><td>Direct</td><td>Medium</td><td>Map validity windows</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>PriceTier</td><td>External Id</td><td>External_PriceTier_Id__c</td><td>vlocity_cmt__ChargeTier__c</td><td>ExternalPriceTierId__c</td><td>Transform</td><td>Medium</td><td>Reconciliation id</td><td>Optional, Flag for review</td></tr>
+        <tr><td>PriceTier</td><td>Custom Flag</td><td>Custom_Flag__c</td><td>vlocity_cmt__ChargeTier__c</td><td>CustomFlag</td><td>Transform</td><td>Medium</td><td>Generic custom flag</td><td>Optional, Flag for review</td></tr>
+        <tr><td>PriceTier</td><td>Custom Text</td><td>Custom_Text__c</td><td>vlocity_cmt__ChargeTier__c</td><td>CustomText</td><td>Transform</td><td>Medium</td><td>Generic custom text</td><td>Optional, Flag for review</td></tr>
+        <tr><td>PriceTier</td><td>Custom Numeric</td><td>Custom_Number__c</td><td>vlocity_cmt__ChargeTier__c</td><td>CustomNumber</td><td>Transform</td><td>Medium</td><td>Generic custom numeric</td><td>Optional, Flag for review</td></tr>
       </tbody>
     </table>
 
@@ -413,6 +550,78 @@
         <tr><td>SBQQ__DiscountSchedule__c</td><td>Name</td><td>Name</td><td>vlocity_cmt__DiscountSchedule__c</td><td>Name</td><td>Direct</td><td>Simple</td><td></td><td>Required</td></tr>
         <tr><td>SBQQ__DiscountSchedule__c</td><td>SBQQ__Type__c</td><td>SBQQ__Type__c</td><td>vlocity_cmt__DiscountSchedule__c</td><td>vlocity_cmt__Type__c</td><td>ValueMap</td><td>Medium</td><td>Map Volume, Slab, Tiered types</td><td>Required</td></tr>
         <tr><td>SBQQ__DiscountSchedule__c</td><td>SBQQ__DiscountUnit__c</td><td>SBQQ__DiscountUnit__c</td><td>vlocity_cmt__DiscountSchedule__c</td><td>vlocity_cmt__DiscountUnit__c</td><td>ValueMap</td><td>Medium</td><td>Map Percentage vs. Amount</td><td>Required</td></tr>
+      </tbody>
+    </table>
+
+    <h2 class="sheet-title">WS2A — Pricing Rules & Actions (Phase 2)</h2>
+    <table class="mapping-table">
+      <thead>
+        <tr>
+          <th>Source Object</th><th>Source Field</th><th>Source API</th>
+          <th>Target Object</th><th>Target Field</th><th>Mapping Type</th>
+          <th>Complexity</th><th>Transform Notes</th><th>DQ Check</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- SBQQ__PriceRule__c to PricingRule -->
+        <tr><td>SBQQ__PriceRule__c</td><td>Id</td><td>Id</td><td>PricingRule</td><td>Id</td><td>Direct</td><td>Simple</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>SBQQ__PriceRule__c</td><td>Name</td><td>Name</td><td>PricingRule</td><td>Name</td><td>Direct</td><td>Simple</td><td>Rule identifier; keep unique</td><td>Required, Reject if blank</td></tr>
+        <tr><td>SBQQ__PriceRule__c</td><td>Active</td><td>SBQQ__Active__c</td><td>PricingRule</td><td>IsActive</td><td>Direct</td><td>Simple</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>SBQQ__PriceRule__c</td><td>Evaluation Event</td><td>SBQQ__EvaluationEvent__c</td><td>PricingRule</td><td>EvaluationEvent</td><td>Transform</td><td>Medium</td><td>Map to RCA trigger (on add, on calculate, on save)</td><td>Optional, Flag for review</td></tr>
+        <tr><td>SBQQ__PriceRule__c</td><td>Evaluation Order</td><td>SBQQ__EvaluationOrder__c</td><td>PricingRule</td><td>EvaluationOrder</td><td>Direct</td><td>Medium</td><td>Preserve order to maintain pricing parity</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>SBQQ__PriceRule__c</td><td>Conditions Met</td><td>SBQQ__ConditionsMet__c</td><td>PricingRule</td><td>ConditionsMet</td><td>Transform</td><td>Medium</td><td>AND/OR logic mapping to RCA rule engine</td><td>Optional, Flag for review</td></tr>
+        <tr><td>SBQQ__PriceRule__c</td><td>Must Evaluate</td><td>SBQQ__MustEvaluate__c</td><td>PricingRule</td><td>MustEvaluate</td><td>Direct</td><td>Medium</td><td>Use for mandatory evaluation semantics</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>SBQQ__PriceRule__c</td><td>Target Object</td><td>SBQQ__TargetObject__c</td><td>PricingRule</td><td>TargetObject</td><td>Transform</td><td>Medium</td><td>Map Quote vs QuoteLine vs other targets to RCA pricing scope</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>SBQQ__PriceRule__c</td><td>Quote Line Filter</td><td>SBQQ__QuoteLineFilterField__c</td><td>PricingRule</td><td>LineFilterField</td><td>Transform</td><td>Complex</td><td>Recreate row filtering logic in RCA pricing</td><td>Optional, Flag for review</td></tr>
+        <tr><td>SBQQ__PriceRule__c</td><td>Description</td><td>Description</td><td>PricingRule</td><td>Description</td><td>Direct</td><td>Simple</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>SBQQ__PriceRule__c</td><td>Lookup Object</td><td>SBQQ__LookupObject__c</td><td>PricingRule</td><td>LookupObject</td><td>Transform</td><td>Complex</td><td>Recreate lookup-based pricing using RCA reference data</td><td>Optional, Flag for review</td></tr>
+        <tr><td>SBQQ__PriceRule__c</td><td>Use Lookup Table</td><td>SBQQ__UseLookupTables__c</td><td>PricingRule</td><td>UseLookup</td><td>Transform</td><td>Complex</td><td>Map CPQ lookup tables → RCA price matrices or reference tables</td><td>Optional, Flag for review</td></tr>
+        <tr><td>SBQQ__PriceRule__c</td><td>Custom Flag</td><td>Custom_Flag__c</td><td>PricingRule</td><td>CustomFlag</td><td>Transform</td><td>Medium</td><td>Generic custom flag for reporting/grouping</td><td>Optional, Flag for review</td></tr>
+        <tr><td>SBQQ__PriceRule__c</td><td>Custom Text</td><td>Custom_Text__c</td><td>PricingRule</td><td>CustomText</td><td>Transform</td><td>Medium</td><td>Generic custom text</td><td>Optional, Flag for review</td></tr>
+        <tr><td>SBQQ__PriceRule__c</td><td>Custom Numeric</td><td>Custom_Number__c</td><td>PricingRule</td><td>CustomNumber</td><td>Transform</td><td>Medium</td><td>Generic custom numeric</td><td>Optional, Flag for review</td></tr>
+        
+        <!-- SBQQ__PriceCondition__c to PricingCondition -->
+        <tr><td>SBQQ__PriceCondition__c</td><td>Id</td><td>Id</td><td>PricingCondition</td><td>Id</td><td>Direct</td><td>Simple</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>SBQQ__PriceCondition__c</td><td>Price Rule</td><td>SBQQ__PriceRule__c</td><td>PricingCondition</td><td>PricingRuleId</td><td>Structural</td><td>Medium</td><td>Link to PricingRule via Id_Mapping</td><td>Required, Reject if blank</td></tr>
+        <tr><td>SBQQ__PriceCondition__c</td><td>Index</td><td>SBQQ__Index__c</td><td>PricingCondition</td><td>Index</td><td>Direct</td><td>Simple</td><td>Evaluation ordering among conditions</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>SBQQ__PriceCondition__c</td><td>Field</td><td>SBQQ__Field__c</td><td>PricingCondition</td><td>FieldName</td><td>Transform</td><td>Medium</td><td>Map CPQ field reference to RCA field path</td><td>Required, Reject if blank</td></tr>
+        <tr><td>SBQQ__PriceCondition__c</td><td>Operator</td><td>SBQQ__Operator__c</td><td>PricingCondition</td><td>Operator</td><td>Transform</td><td>Medium</td><td>Map operators (=, >, >=, IN, CONTAINS) to RCA operator syntax</td><td>Required, Reject if blank</td></tr>
+        <tr><td>SBQQ__PriceCondition__c</td><td>Filter Type</td><td>SBQQ__FilterType__c</td><td>PricingCondition</td><td>FilterType</td><td>Transform</td><td>Medium</td><td>Map CPQ filter types to RCA equivalents</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>SBQQ__PriceCondition__c</td><td>Filter Value</td><td>SBQQ__FilterValue__c</td><td>PricingCondition</td><td>FilterValue</td><td>Transform</td><td>Medium</td><td>Ensure data-type safe conversion (string, number, date)</td><td>Optional, Flag for review</td></tr>
+        <tr><td>SBQQ__PriceCondition__c</td><td>Source Field</td><td>SBQQ__SourceField__c</td><td>PricingCondition</td><td>SourceField</td><td>Transform</td><td>Complex</td><td>Source field vs literal value logic</td><td>Optional, Flag for review</td></tr>
+        <tr><td>SBQQ__PriceCondition__c</td><td>Tested Variable</td><td>SBQQ__TestedVariable__c</td><td>PricingCondition</td><td>TestedVariable</td><td>Transform</td><td>Complex</td><td>Used when referencing calculator variables</td><td>Optional, Flag for review</td></tr>
+        <tr><td>SBQQ__PriceCondition__c</td><td>Custom Flag</td><td>Custom_Flag__c</td><td>PricingCondition</td><td>CustomFlag</td><td>Transform</td><td>Medium</td><td>Generic custom flag</td><td>Optional, Flag for review</td></tr>
+        <tr><td>SBQQ__PriceCondition__c</td><td>Custom Text</td><td>Custom_Text__c</td><td>PricingCondition</td><td>CustomText</td><td>Transform</td><td>Medium</td><td>Generic custom text</td><td>Optional, Flag for review</td></tr>
+        <tr><td>SBQQ__PriceCondition__c</td><td>Custom Numeric</td><td>Custom_Number__c</td><td>PricingCondition</td><td>CustomNumber</td><td>Transform</td><td>Medium</td><td>Generic custom numeric</td><td>Optional, Flag for review</td></tr>
+        
+        <!-- SBQQ__PriceAction__c to PricingAction -->
+        <tr><td>SBQQ__PriceAction__c</td><td>Id</td><td>Id</td><td>PricingAction</td><td>Id</td><td>Direct</td><td>Simple</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>SBQQ__PriceAction__c</td><td>Price Rule</td><td>SBQQ__PriceRule__c</td><td>PricingAction</td><td>PricingRuleId</td><td>Structural</td><td>Medium</td><td>Link to PricingRule via Id_Mapping</td><td>Required, Reject if blank</td></tr>
+        <tr><td>SBQQ__PriceAction__c</td><td>Index</td><td>SBQQ__Index__c</td><td>PricingAction</td><td>Index</td><td>Direct</td><td>Simple</td><td>Execution order for actions</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>SBQQ__PriceAction__c</td><td>Target Field</td><td>SBQQ__TargetField__c</td><td>PricingAction</td><td>TargetField</td><td>Transform</td><td>Medium</td><td>Map CPQ target field path to RCA price variable/field</td><td>Required, Reject if blank</td></tr>
+        <tr><td>SBQQ__PriceAction__c</td><td>Value Type</td><td>SBQQ__ValueType__c</td><td>PricingAction</td><td>ValueType</td><td>Transform</td><td>Medium</td><td>Map type (Static, Field, Formula) to RCA semantics</td><td>Optional, Flag for review</td></tr>
+        <tr><td>SBQQ__PriceAction__c</td><td>Value</td><td>SBQQ__Value__c</td><td>PricingAction</td><td>Value</td><td>Transform</td><td>Medium</td><td>If formula, convert to RCA formula language; if literal, ensure data type</td><td>Optional, Flag for review</td></tr>
+        <tr><td>SBQQ__PriceAction__c</td><td>Source Field</td><td>SBQQ__SourceField__c</td><td>PricingAction</td><td>SourceField</td><td>Transform</td><td>Medium</td><td>Used when copying from a source field</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>SBQQ__PriceAction__c</td><td>Operation</td><td>SBQQ__Operation__c</td><td>PricingAction</td><td>Operation</td><td>Transform</td><td>Medium</td><td>Map operations (Add, Subtract, Multiply, Override)</td><td>Optional, Flag for review</td></tr>
+        <tr><td>SBQQ__PriceAction__c</td><td>Is Formula</td><td>SBQQ__IsFormula__c</td><td>PricingAction</td><td>IsFormula</td><td>Direct</td><td>Simple</td><td>Flag for expression conversion</td><td>Optional, Flag for review</td></tr>
+        <tr><td>SBQQ__PriceAction__c</td><td>Custom Flag</td><td>Custom_Flag__c</td><td>PricingAction</td><td>CustomFlag</td><td>Transform</td><td>Medium</td><td>Generic custom flag</td><td>Optional, Flag for review</td></tr>
+        <tr><td>SBQQ__PriceAction__c</td><td>Custom Text</td><td>Custom_Text__c</td><td>PricingAction</td><td>CustomText</td><td>Transform</td><td>Medium</td><td>Generic custom text</td><td>Optional, Flag for review</td></tr>
+        <tr><td>SBQQ__PriceAction__c</td><td>Custom Numeric</td><td>Custom_Number__c</td><td>PricingAction</td><td>CustomNumber</td><td>Transform</td><td>Medium</td><td>Generic custom numeric</td><td>Optional, Flag for review</td></tr>
+        
+        <!-- SBQQ__DiscountSchedule__c to DiscountSchedule (Detailed) -->
+        <tr><td>SBQQ__DiscountSchedule__c</td><td>Id</td><td>Id</td><td>DiscountSchedule</td><td>Id</td><td>Direct</td><td>Simple</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>SBQQ__DiscountSchedule__c</td><td>Name</td><td>Name</td><td>DiscountSchedule</td><td>Name</td><td>Direct</td><td>Simple</td><td>Discount schedule name</td><td>Required, Reject if blank</td></tr>
+        <tr><td>SBQQ__DiscountSchedule__c</td><td>Type</td><td>SBQQ__Type__c</td><td>DiscountSchedule</td><td>Type</td><td>Transform</td><td>Medium</td><td>Map type (Volume, Term, Slab) to RCA discounting semantics</td><td>Optional, Flag for review</td></tr>
+        <tr><td>SBQQ__DiscountSchedule__c</td><td>Lower Bound</td><td>SBQQ__LowerBound__c</td><td>DiscountSchedule</td><td>LowerBound</td><td>Direct</td><td>Medium</td><td>Used for volume/term tiers</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>SBQQ__DiscountSchedule__c</td><td>Upper Bound</td><td>SBQQ__UpperBound__c</td><td>DiscountSchedule</td><td>UpperBound</td><td>Direct</td><td>Medium</td><td>Null upper bound → open ended</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>SBQQ__DiscountSchedule__c</td><td>Discount</td><td>SBQQ__Discount__c</td><td>DiscountSchedule</td><td>DiscountPercent</td><td>Direct</td><td>Medium</td><td>Percentage discount applied within tier</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>SBQQ__DiscountSchedule__c</td><td>Rounding Policy</td><td>SBQQ__RoundingPolicy__c</td><td>DiscountSchedule</td><td>RoundingPolicy</td><td>Transform</td><td>Medium</td><td>Map rounding behavior to RCA pricing or tax rules</td><td>Optional, Flag for review</td></tr>
+        <tr><td>SBQQ__DiscountSchedule__c</td><td>Aggregate Function</td><td>SBQQ__AggregateFunction__c</td><td>DiscountSchedule</td><td>AggregateFunction</td><td>Transform</td><td>Medium</td><td>Sum vs Avg vs Max logic if used</td><td>Optional, Flag for review</td></tr>
+        <tr><td>SBQQ__DiscountSchedule__c</td><td>Description</td><td>Description</td><td>DiscountSchedule</td><td>Description</td><td>Direct</td><td>Simple</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>SBQQ__DiscountSchedule__c</td><td>External Id</td><td>External_DiscountSchedule_Id__c</td><td>DiscountSchedule</td><td>ExternalDiscountScheduleId</td><td>Transform</td><td>Medium</td><td>Reconciliation id with legacy tables</td><td>Optional, Flag for review</td></tr>
+        <tr><td>SBQQ__DiscountSchedule__c</td><td>Custom Flag</td><td>Custom_Flag__c</td><td>DiscountSchedule</td><td>CustomFlag</td><td>Transform</td><td>Medium</td><td>Generic custom flag</td><td>Optional, Flag for review</td></tr>
+        <tr><td>SBQQ__DiscountSchedule__c</td><td>Custom Text</td><td>Custom_Text__c</td><td>DiscountSchedule</td><td>CustomText</td><td>Transform</td><td>Medium</td><td>Generic custom text</td><td>Optional, Flag for review</td></tr>
+        <tr><td>SBQQ__DiscountSchedule__c</td><td>Custom Numeric</td><td>Custom_Number__c</td><td>DiscountSchedule</td><td>CustomNumber</td><td>Transform</td><td>Medium</td><td>Generic custom numeric</td><td>Optional, Flag for review</td></tr>
       </tbody>
     </table>
 
@@ -475,6 +684,20 @@
         <tr><td>Order</td><td>Custom Flag</td><td>Custom_Flag__c</td><td>Order</td><td>CustomFlag</td><td>Transform</td><td>Medium</td><td>Generic custom flag</td><td>Optional, Flag for review</td></tr>
         <tr><td>Order</td><td>Custom Text</td><td>Custom_Text__c</td><td>Order</td><td>CustomText</td><td>Transform</td><td>Medium</td><td>Generic custom text</td><td>Optional, Flag for review</td></tr>
         <tr><td>Order</td><td>Custom Numeric</td><td>Custom_Number__c</td><td>Order</td><td>CustomNumber</td><td>Transform</td><td>Medium</td><td>Generic custom numeric</td><td>Optional, Flag for review</td></tr>
+        
+        <!-- Order to RCA_Order__c (Alternative RCA Order Object) -->
+        <tr><td>Order</td><td>Id</td><td>Id</td><td>RCA_Order__c</td><td>Id</td><td>Direct</td><td>Simple</td><td></td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Order</td><td>Order Number</td><td>OrderNumber</td><td>RCA_Order__c</td><td>OrderNumber</td><td>Direct</td><td>Simple</td><td>Preserve order reference</td><td>Required, Reject if blank</td></tr>
+        <tr><td>Order</td><td>Account</td><td>AccountId</td><td>RCA_Order__c</td><td>AccountId</td><td>Structural</td><td>Medium</td><td>Map account via Id_Mapping</td><td>Required, Reject if blank</td></tr>
+        <tr><td>Order</td><td>Status</td><td>Status</td><td>RCA_Order__c</td><td>Status__c</td><td>Direct</td><td>Medium</td><td>Map status values to RCA lifecycle</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Order</td><td>Effective Date</td><td>EffectiveDate</td><td>RCA_Order__c</td><td>EffectiveDate__c</td><td>Direct</td><td>Medium</td><td>Preserve for fulfillment and billing</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Order</td><td>Total Amount</td><td>TotalAmount</td><td>RCA_Order__c</td><td>TotalAmount__c</td><td>Transform</td><td>Medium</td><td>Recalculate in RCA from order items and taxes</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Order</td><td>Contract Reference</td><td>ContractId</td><td>RCA_Order__c</td><td>ContractId__c</td><td>Structural</td><td>Medium</td><td>Link to migrated contract via Id_Mapping</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Order</td><td>External Id</td><td>External_Order_Id__c</td><td>RCA_Order__c</td><td>ExternalOrderId__c</td><td>Transform</td><td>Medium</td><td>Reconciliation id for ERP</td><td>Optional, Flag for review</td></tr>
+        <tr><td>Order</td><td>Created Date</td><td>CreatedDate</td><td>RCA_Order__c</td><td>CreatedDate</td><td>Direct</td><td>Simple</td><td>Preserve audit data</td><td>Optional, Flag if blank</td></tr>
+        <tr><td>Order</td><td>Custom Flag</td><td>Custom_Flag__c</td><td>RCA_Order__c</td><td>CustomFlag</td><td>Transform</td><td>Medium</td><td>Generic custom flag</td><td>Optional, Flag for review</td></tr>
+        <tr><td>Order</td><td>Custom Text</td><td>Custom_Text__c</td><td>RCA_Order__c</td><td>CustomText</td><td>Transform</td><td>Medium</td><td>Generic custom text</td><td>Optional, Flag for review</td></tr>
+        <tr><td>Order</td><td>Custom Numeric</td><td>Custom_Number__c</td><td>RCA_Order__c</td><td>CustomNumber</td><td>Transform</td><td>Medium</td><td>Generic custom numeric</td><td>Optional, Flag for review</td></tr>
         
         <!-- Asset to Asset -->
         <tr><td>Asset</td><td>Id</td><td>Id</td><td>Asset</td><td>Id</td><td>Direct</td><td>Simple</td><td></td><td>Optional, Flag if blank</td></tr>

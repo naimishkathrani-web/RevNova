@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>RevNova — Testing & Parity Matrix</title>
+  <link rel="stylesheet" href="../styles.css">
+              <style>
+        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
+        
+        .requirements-layout {
+            display: flex;
+            min-height: calc(100vh - 80px);
+            margin-top: 80px;
+        }
+        
+        /* Salesforce-style sidebar */
+        .sidebar {
+            width: 280px;
+            background: #f4f6f9;
+            border-right: 1px solid #c9c9c9;
+            position: fixed;
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+            top: 80px;
+            left: 0;
+            z-index: 100;
+        }
+        
+        .sidebar::-webkit-scrollbar { width: 8px; }
+        .sidebar::-webkit-scrollbar-track { background: #f4f6f9; }
+        .sidebar::-webkit-scrollbar-thumb { background: #c9c9c9; border-radius: 4px; }
+        .sidebar::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
+        
+        .sidebar-nav { padding: 1rem 0; }
+        
+        .nav-section { margin-bottom: 0.25rem; }
+        
+        .nav-section-header {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            font-size: 13px;
+            font-weight: 600;
+            color: #181818;
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        
+        .nav-section-header:hover { background: #e5e5e5; }
+        .nav-section-header.expanded { background: #e5e5e5; }
+        
+        .nav-section-icon {
+            width: 16px;
+            height: 16px;
+            margin-right: 0.5rem;
+            transition: transform 0.2s;
+            flex-shrink: 0;
+        }
+        
+        .nav-section-header.expanded .nav-section-icon { transform: rotate(90deg); }
+        
+        .nav-section-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .nav-section-content.expanded { max-height: 2000px; }
+        
+        .nav-link {
+            display: block;
+            padding: 0.5rem 1rem 0.5rem 2.5rem;
+            color: #006dcc;
+            text-decoration: none;
+            font-size: 13px;
+            transition: background 0.15s;
+        }
+        
+        .nav-link:hover {
+            background: #e5e5e5;
+            text-decoration: underline;
+        }
+        
+        .nav-link.active {
+            background: #1589ee;
+            color: #fff;
+            font-weight: 600;
+        }
+        
+        .nav-link.active:hover {
+            background: #0b5cab;
+            text-decoration: none;
+        }
+        
+        .nav-subsection { margin: 0.25rem 0; }
+        
+        .nav-subsection-header {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem 0.5rem 2.5rem;
+            font-size: 13px;
+            font-weight: 500;
+            color: #181818;
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        
+        .nav-subsection-header:hover { background: #e5e5e5; }
+        .nav-subsection-header.expanded { background: #e5e5e5; }
+        
+        .nav-subsection-icon {
+            width: 12px;
+            height: 12px;
+            margin-right: 0.5rem;
+            transition: transform 0.2s;
+            flex-shrink: 0;
+        }
+        
+        .nav-subsection-header.expanded .nav-subsection-icon { transform: rotate(90deg); }
+        
+        .nav-subsection-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .nav-subsection-content.expanded { max-height: 1000px; }
+        
+        .nav-subsection-link {
+            display: block;
+            padding: 0.4rem 1rem 0.4rem 3.5rem;
+            color: #006dcc;
+            text-decoration: none;
+            font-size: 13px;
+            transition: background 0.15s;
+        }
+        
+        .nav-subsection-link:hover {
+            background: #e5e5e5;
+            text-decoration: underline;
+        }
+        
+        .nav-subsection-link.active {
+            background: #1589ee;
+            color: #fff;
+            font-weight: 600;
+        }
+        
+        .nav-subsection-link.active:hover {
+            background: #0b5cab;
+            text-decoration: none;
+        }
+        
+        /* Main content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem 3rem;
+            background: #fff;
+            min-width: 0;
+        }
+
+        
+        
+    .parity-table{width:100%;border-collapse:collapse;margin-bottom:2rem;font-size:12px}
+    .parity-table th,.parity-table td{border:1px solid #ddd;padding:8px;vertical-align:top}
+    .parity-table th{background:#f0f6fb;font-weight:600;position:sticky;top:0}
+    .workstream-title{margin-top:2rem;color:#11998e;border-bottom:2px solid #38ef7d;padding-bottom:0.5rem}
+    .status-not-started{background:#fff3cd;color:#856404}
+    .status-in-progress{background:#d1ecf1;color:#0c5460}
+    .status-complete{background:#d4edda;color:#155724}
+    .priority-critical{font-weight:700;color:#dc3545}
+    .priority-high{font-weight:600;color:#fd7e14}
+    .priority-medium{color:#6c757d}
+    @media (max-width:768px){.sidebar{position:relative;width:100%;height:auto;top:0}.main-content{margin-left:0}.requirements-layout{flex-direction:column}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container header-container">
+      <div class="nav-left">
+        <a href="../index.html" class="logo"><div class="logo-box">RevNova</div></a>
+        <nav class="main-nav">
+          <ul>
+            <li><a href="../about-revnova.html">About RevNova</a></li>
+            <li><a href="../features.html">Features</a></li>
+            <li><a href="../pricing.html">Pricing</a></li>
+            <li><a href="requirements-home.html" class="active">RevNova Requirements</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="header-right">
+        <div class="country-selector"><span class="fi fi-us"></span></div>
+        <a href="../login.html" class="btn btn-login">Login</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="requirements-layout">
+                                    <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <!-- Platform Vision Section -->
+                <div class="nav-section">
+                    <button class="nav-section-header">
+                        <svg class="nav-section-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M6 6L14 10L6 14V6Z"/>
+                        </svg>
+                        Platform Vision
+                    </button>
+                    <div class="nav-section-content">
+                        <a href="requirements-home.html" class="nav-link">RevNova Vision & Strategy</a>
+                        <a href="business-requirements.html" class="nav-link">High Level Business Requirements</a>
+                        <a href="high-level-functional.html" class="nav-link">High Level Functional Design</a>
+                    </div>
+                </div>
+                
+                <!-- Phase 1 Section -->
+                <div class="nav-section">
+                    <button class="nav-section-header expanded">
+                        <svg class="nav-section-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M6 6L14 10L6 14V6Z"/>
+                        </svg>
+                        Phase 1 - SFDC CPQ → RCA Migration (MVP)
+                    </button>
+                    <div class="nav-section-content expanded">
+                        <!-- Functional Requirements Subsection -->
+                        <div class="nav-subsection">
+                            <button class="nav-subsection-header">
+                                <svg class="nav-subsection-icon" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M6 6L14 10L6 14V6Z"/>
+                                </svg>
+                                Functional Requirements
+                            </button>
+                            <div class="nav-subsection-content">
+                                <a href="requirements-phase1-connect.html" class="nav-subsection-link">1. Connection Wizard</a>
+                                <a href="requirements-phase1-analyze.html" class="nav-subsection-link">2. Schema Analysis</a>
+                                <a href="requirements-phase1-mapping.html" class="nav-subsection-link">3. Field Mapping</a>
+                                <a href="requirements-phase1-transform.html" class="nav-subsection-link">4. Data Transformation</a>
+                                <a href="requirements-phase1-validate.html" class="nav-subsection-link">5. Validation</a>
+                                <a href="requirements-phase1-execute.html" class="nav-subsection-link">6. Migration Execution</a>
+                                <a href="requirements-phase1-test.html" class="nav-subsection-link">7. Post-Migration Testing</a>
+                                <a href="requirements-phase1-quotes.html" class="nav-subsection-link">8. Quotes</a>
+                                <a href="requirements-phase1-contracts.html" class="nav-subsection-link">9. Contracts</a>
+                                <a href="requirements-phase1-subscriptions.html" class="nav-subsection-link">10. Subscriptions</a>
+                                <a href="requirements-phase1-inflight.html" class="nav-subsection-link">11. In-Flight Orders</a>
+                            </div>
+                        </div>
+                        
+                        <!-- Technical Requirements Subsection -->
+                        <div class="nav-subsection">
+                            <button class="nav-subsection-header">
+                                <svg class="nav-subsection-icon" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M6 6L14 10L6 14V6Z"/>
+                                </svg>
+                                Technical Requirements
+                            </button>
+                            <div class="nav-subsection-content">
+                                <a href="requirements-phase1-technical.html" class="nav-subsection-link">Migration Architecture</a>
+                                <a href="requirements-phase1-technical.html#api" class="nav-subsection-link">API Specifications</a>
+                                <a href="requirements-phase1-technical.html#database" class="nav-subsection-link">Database Schema</a>
+                                <a href="requirements-phase1-technical.html#orchestration" class="nav-subsection-link">Orchestration Engine</a>
+                            </div>
+                        </div>
+                        
+                        <a href="requirements-mapping.html" class="nav-link">Complete Field Mapping</a>
+                        <a href="requirements-testing-parity.html" class="nav-link active">Testing & Parity Matrix</a>
+                    </div>
+                </div>
+                
+                <!-- Phase 2 Section -->
+                <div class="nav-section">
+                    <button class="nav-section-header">
+                        <svg class="nav-section-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M6 6L14 10L6 14V6Z"/>
+                        </svg>
+                        Phase 2 - AI-Powered Configuration
+                    </button>
+                    <div class="nav-section-content">
+                        <a href="requirements-phase2-functional.html" class="nav-link">Functional Requirements</a>
+                        <a href="requirements-phase2-technical.html" class="nav-link">Technical Requirements</a>
+                        <a href="ai-product-configuration.html" class="nav-link">AI Product Configuration Engine</a>
+                    </div>
+                </div>
+                
+                <!-- Phase 3 Section -->
+                <div class="nav-section">
+                    <button class="nav-section-header">
+                        <svg class="nav-section-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M6 6L14 10L6 14V6Z"/>
+                        </svg>
+                        Phase 3 - Multi-CPQ Support
+                    </button>
+                    <div class="nav-section-content">
+                        <a href="requirements-phase3-functional.html" class="nav-link">Functional Requirements</a>
+                        <a href="requirements-phase3-technical.html" class="nav-link">Technical Requirements</a>
+                    </div>
+                </div>
+                
+                <!-- Phase 4 Section -->
+                <div class="nav-section">
+                    <button class="nav-section-header">
+                        <svg class="nav-section-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M6 6L14 10L6 14V6Z"/>
+                        </svg>
+                        Phase 4 - CRM Integration
+                    </button>
+                    <div class="nav-section-content">
+                        <a href="requirements-phase4-functional.html" class="nav-link">Functional Requirements</a>
+                        <a href="requirements-phase4-technical.html" class="nav-link">Technical Requirements</a>
+                    </div>
+                </div>
+                
+                <!-- Phase 5 Section -->
+                <div class="nav-section">
+                    <button class="nav-section-header">
+                        <svg class="nav-section-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M6 6L14 10L6 14V6Z"/>
+                        </svg>
+                        Phase 5 - ERP Connector
+                    </button>
+                    <div class="nav-section-content">
+                        <a href="requirements-phase5-functional.html" class="nav-link">Functional Requirements</a>
+                        <a href="requirements-phase5-technical.html" class="nav-link">Technical Requirements</a>
+                    </div>
+                </div>
+                
+                <!-- Additional Resources -->
+                <div class="nav-section">
+                    <button class="nav-section-header">
+                        <svg class="nav-section-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M6 6L14 10L6 14V6Z"/>
+                        </svg>
+                        Additional Resources
+                    </button>
+                    <div class="nav-section-content">
+                        <a href="security-compliance.html" class="nav-link">Security & Compliance</a>
+                        <a href="performance-scalability.html" class="nav-link">Performance & Scalability</a>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+    <main class="main-content">
+      <h1>Testing & Parity Matrix — CPQ → Revenue Cloud</h1>
+      <p>This page defines comprehensive test scenarios to validate migration accuracy, pricing parity, and functional equivalence between CPQ and Revenue Cloud Advanced (RCA). Each test compares source and target systems across structure, pricing, lifecycle, and data quality dimensions.</p>
+
+    <h2 class="workstream-title">WS1 — Product Catalog Testing</h2>
+    <table class="parity-table">
+      <thead>
+        <tr>
+          <th>Scenario ID</th>
+          <th>Scenario Name</th>
+          <th>Source → Target</th>
+          <th>Data Set Type</th>
+          <th>Primary Objects</th>
+          <th>Test Dimension</th>
+          <th>What to Compare</th>
+          <th>CPQ Measurement</th>
+          <th>RCA Measurement</th>
+          <th>Tolerance</th>
+          <th>Test Method</th>
+          <th>APIs / Tools</th>
+          <th>Priority</th>
+          <th>Status</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>PC-01</td>
+          <td>Simple standalone product parity</td>
+          <td>CPQ → RCA</td>
+          <td>Master Data</td>
+          <td>Product2 → vlocity_cmt__Product__c</td>
+          <td>Structure</td>
+          <td># of active products by family in scope</td>
+          <td>COUNT(Product2 WHERE IsActive=TRUE)</td>
+          <td>COUNT(EPC Products WHERE Active__c=TRUE AND mapped_from_CPQ=TRUE)</td>
+          <td>0 variance</td>
+          <td>SOQL compare or exported CSV</td>
+          <td>/services/data/vXX.X/query on Product2 and vlocity_cmt__Product__c</td>
+          <td class="priority-high">High</td>
+          <td class="status-not-started">Not Started</td>
+          <td>Run once after initial product migration</td>
+        </tr>
+        <tr>
+          <td>PC-02</td>
+          <td>Bundle structure parity</td>
+          <td>CPQ → RCA</td>
+          <td>Master Data</td>
+          <td>SBQQ__ProductOption__c → vlocity_cmt__ProductChildItem__c</td>
+          <td>Structure</td>
+          <td># of child options per parent bundle</td>
+          <td>AVG/COUNT(SBQQ__ProductOption__c GROUP BY SBQQ__Product__c)</td>
+          <td>AVG/COUNT(ProductChildItem__c GROUP BY ParentProductId__c)</td>
+          <td>0 variance in # of options per bundle</td>
+          <td>SOQL or API export of options</td>
+          <td>CPQ ProductModel API, EPC product/child-item query</td>
+          <td class="priority-high">High</td>
+          <td class="status-not-started">Not Started</td>
+          <td>Spot-check some complex bundles manually in UI</td>
+        </tr>
+        <tr>
+          <td>PC-03</td>
+          <td>Config attribute parity</td>
+          <td>CPQ → RCA</td>
+          <td>Master Data</td>
+          <td>SBQQ__ConfigurationAttribute__c → ConfigAttribute / AttributeValue</td>
+          <td>Structure</td>
+          <td># of attributes and allowed values per product</td>
+          <td>COUNT(ConfigAttributes) and COUNT(AllowedValues)</td>
+          <td>COUNT(RCA attributes and values mapped)</td>
+          <td>0 variance</td>
+          <td>Data export to CSV and comparison</td>
+          <td>CPQ object exports + RCA ConfigAttribute objects</td>
+          <td class="priority-medium">Medium</td>
+          <td class="status-not-started">Not Started</td>
+          <td>Ensure all required attributes exist with correct picklist values</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 class="workstream-title">WS2 — Quotes & Pricing Testing</h2>
+    <table class="parity-table">
+      <thead>
+        <tr>
+          <th>Scenario ID</th>
+          <th>Scenario Name</th>
+          <th>Source → Target</th>
+          <th>Data Set Type</th>
+          <th>Primary Objects</th>
+          <th>Test Dimension</th>
+          <th>What to Compare</th>
+          <th>CPQ Measurement</th>
+          <th>RCA Measurement</th>
+          <th>Tolerance</th>
+          <th>Test Method</th>
+          <th>APIs / Tools</th>
+          <th>Priority</th>
+          <th>Status</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>QT-01</td>
+          <td>Simple quote pricing parity</td>
+          <td>CPQ → RCA</td>
+          <td>In-Flight / Synthetic</td>
+          <td>SBQQ__Quote__c + Lines → Quote + QuoteLines</td>
+          <td>Pricing</td>
+          <td>Total quote amount</td>
+          <td>SBQQ__TotalPrice__c</td>
+          <td>Quote.TotalAmount</td>
+          <td>&lt;= 0.5% or 0.01 absolute</td>
+          <td>API-based compare</td>
+          <td>CPQ Calculate Quote API + RCA price quote API</td>
+          <td class="priority-critical">Critical</td>
+          <td class="status-not-started">Not Started</td>
+          <td>Use same products, quantities, discounts</td>
+        </tr>
+        <tr>
+          <td>QT-02</td>
+          <td>Complex bundle quote parity</td>
+          <td>CPQ → RCA</td>
+          <td>In-Flight / Synthetic</td>
+          <td>Bundle products + options</td>
+          <td>Pricing</td>
+          <td>Component line prices and total</td>
+          <td>Sum(Net Price by line) and SBQQ__TotalPrice__c</td>
+          <td>Sum(UnitPrice by line) and Quote.TotalAmount</td>
+          <td>&lt;= 0.5% or 0.01 absolute</td>
+          <td>API-based compare + Excel</td>
+          <td>CPQ Calculate Quote + RCA quote/price APIs</td>
+          <td class="priority-critical">Critical</td>
+          <td class="status-not-started">Not Started</td>
+          <td>Include options, nested bundles, term & volume discounts</td>
+        </tr>
+        <tr>
+          <td>QT-03</td>
+          <td>Discount behavior parity</td>
+          <td>CPQ → RCA</td>
+          <td>In-Flight / Synthetic</td>
+          <td>SBQQ__DiscountSchedule__c + PriceRules</td>
+          <td>Pricing</td>
+          <td>Effective discount % per line</td>
+          <td>Derived from CPQ: List vs Net</td>
+          <td>Derived from RCA: List vs Net</td>
+          <td>&lt;= 0.5% absolute difference</td>
+          <td>API-based compare</td>
+          <td>Price rule APIs or debug logs</td>
+          <td class="priority-high">High</td>
+          <td class="status-not-started">Not Started</td>
+          <td>Covers discount schedule and rule-based discounts</td>
+        </tr>
+        <tr>
+          <td>QT-04</td>
+          <td>Quote status & lifecycle parity</td>
+          <td>CPQ → RCA</td>
+          <td>In-Flight</td>
+          <td>SBQQ__Quote__c → Quote</td>
+          <td>Lifecycle</td>
+          <td>Status mappings across systems</td>
+          <td>Status distribution by quote (Draft/Approved/etc.)</td>
+          <td>Status distribution in RCA mapped statuses</td>
+          <td>0 variance in mapped counts per status</td>
+          <td>SOQL compare / report</td>
+          <td>Status value maps, CPQ vs RCA</td>
+          <td class="priority-high">High</td>
+          <td class="status-not-started">Not Started</td>
+          <td>Use Value_Maps sheet for mapping</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 class="workstream-title">WS3 — Contracts & Subscriptions Testing</h2>
+    <table class="parity-table">
+      <thead>
+        <tr>
+          <th>Scenario ID</th>
+          <th>Scenario Name</th>
+          <th>Source → Target</th>
+          <th>Data Set Type</th>
+          <th>Primary Objects</th>
+          <th>Test Dimension</th>
+          <th>What to Compare</th>
+          <th>CPQ Measurement</th>
+          <th>RCA Measurement</th>
+          <th>Tolerance</th>
+          <th>Test Method</th>
+          <th>APIs / Tools</th>
+          <th>Priority</th>
+          <th>Status</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>CS-01</td>
+          <td>Active subscription count parity</td>
+          <td>CPQ → RCA</td>
+          <td>In-Flight</td>
+          <td>SBQQ__Subscription__c → Subscription</td>
+          <td>Lifecycle</td>
+          <td># of active subscriptions</td>
+          <td>COUNT(SBQQ__Subscription__c WHERE Status='Active')</td>
+          <td>COUNT(Subscription WHERE Status='ACTIVE')</td>
+          <td>0 or explained variance</td>
+          <td>SOQL compare</td>
+          <td>Direct object queries both orgs</td>
+          <td class="priority-critical">Critical</td>
+          <td class="status-not-started">Not Started</td>
+          <td>Differences must be documented (e.g. retired products excluded)</td>
+        </tr>
+        <tr>
+          <td>CS-02</td>
+          <td>Term & billing cadence parity</td>
+          <td>CPQ → RCA</td>
+          <td>In-Flight</td>
+          <td>Subscription + Related QuoteLine</td>
+          <td>Pricing/Lifecycle</td>
+          <td>Term (months) and billing frequency</td>
+          <td>CPQ: SubscriptionTerm + BillingFrequency</td>
+          <td>RCA: term fields + cadence fields</td>
+          <td>Exact match on each mapped subscription</td>
+          <td>Sample-based comparison in Excel</td>
+          <td>CPQ + RCA exports</td>
+          <td class="priority-high">High</td>
+          <td class="status-not-started">Not Started</td>
+          <td>Spot-check 20–50 subscriptions representing key combinations</td>
+        </tr>
+        <tr>
+          <td>CS-03</td>
+          <td>Contract linkage parity</td>
+          <td>CPQ → RCA</td>
+          <td>In-Flight</td>
+          <td>Contract + Subscriptions + Assets</td>
+          <td>Lifecycle</td>
+          <td># of subscriptions per contract</td>
+          <td>COUNT(Subs grouped by ContractId)</td>
+          <td>COUNT(Subs grouped by ContractId in RCA)</td>
+          <td>0 variance</td>
+          <td>Report/SQL compare</td>
+          <td>Contract → Subscription relationships</td>
+          <td class="priority-high">High</td>
+          <td class="status-not-started">Not Started</td>
+          <td>Ensure all contract-subscription relationships preserved</td>
+        </tr>
+        <tr>
+          <td>CS-04</td>
+          <td>Order mapping parity</td>
+          <td>CPQ → RCA</td>
+          <td>In-Flight</td>
+          <td>Order + OrderItems → RCA_Order__c</td>
+          <td>Lifecycle</td>
+          <td># orders and lines migrated</td>
+          <td>COUNT(Order WHERE in scope), COUNT(OrderItem)</td>
+          <td>COUNT(RCA_Order__c), COUNT(OrderItem)</td>
+          <td>0 variance or documented exclusions</td>
+          <td>Counts & spot checks</td>
+          <td>SOQL comparison both sides</td>
+          <td class="priority-high">High</td>
+          <td class="status-not-started">Not Started</td>
+          <td>Include in-flight and historical if in scope</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 class="workstream-title">WS4 — Billing & Invoicing Testing</h2>
+    <table class="parity-table">
+      <thead>
+        <tr>
+          <th>Scenario ID</th>
+          <th>Scenario Name</th>
+          <th>Source → Target</th>
+          <th>Data Set Type</th>
+          <th>Primary Objects</th>
+          <th>Test Dimension</th>
+          <th>What to Compare</th>
+          <th>CPQ Measurement</th>
+          <th>RCA Measurement</th>
+          <th>Tolerance</th>
+          <th>Test Method</th>
+          <th>APIs / Tools</th>
+          <th>Priority</th>
+          <th>Status</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>BL-01</td>
+          <td>Invoice count parity</td>
+          <td>Legacy Billing / CPQ → RCA</td>
+          <td>In-Flight</td>
+          <td>Invoice + InvoiceLineItem</td>
+          <td>Lifecycle</td>
+          <td># invoices and invoice lines</td>
+          <td>COUNT(Invoice WHERE in scope), COUNT(InvoiceLineItem)</td>
+          <td>COUNT(Invoice in RCA), COUNT(InvoiceLineItem)</td>
+          <td>0 variance for migrated period</td>
+          <td>Counts & reconciliation</td>
+          <td>SOQL/SQL or exported CSV</td>
+          <td class="priority-high">High</td>
+          <td class="status-not-started">Not Started</td>
+          <td>If only partial history migrated, restrict to that window</td>
+        </tr>
+        <tr>
+          <td>BL-02</td>
+          <td>Invoice amount parity</td>
+          <td>Legacy Billing / CPQ → RCA</td>
+          <td>In-Flight</td>
+          <td>Invoice totals</td>
+          <td>Pricing</td>
+          <td>Invoice TotalAmount per invoice</td>
+          <td>Legacy TotalAmount</td>
+          <td>RCA Invoice.TotalAmount</td>
+          <td>Exact for closed periods or agreed tolerance</td>
+          <td>Excel reconciliation</td>
+          <td>CSV export + pivot</td>
+          <td class="priority-high">High</td>
+          <td class="status-not-started">Not Started</td>
+          <td>Use invoice external Id mapping for 1:1 compare</td>
+        </tr>
+        <tr>
+          <td>BL-03</td>
+          <td>Tax calculation parity</td>
+          <td>Legacy Tax / CPQ → RCA</td>
+          <td>In-Flight</td>
+          <td>InvoiceLineItem + Tax</td>
+          <td>Tax</td>
+          <td>Tax amount per line</td>
+          <td>Legacy TaxAmount</td>
+          <td>New TaxAmount</td>
+          <td>Within tax tolerance (e.g. 0.5%)</td>
+          <td>API compare or CSV</td>
+          <td>TaxDetail or line-level fields</td>
+          <td class="priority-medium">Medium</td>
+          <td class="status-not-started">Not Started</td>
+          <td>Align on rounding rules and included/excluded taxes</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 class="workstream-title">WS5 — Rules & Configuration Testing</h2>
+    <table class="parity-table">
+      <thead>
+        <tr>
+          <th>Scenario ID</th>
+          <th>Scenario Name</th>
+          <th>Source → Target</th>
+          <th>Data Set Type</th>
+          <th>Primary Objects</th>
+          <th>Test Dimension</th>
+          <th>What to Compare</th>
+          <th>CPQ Measurement</th>
+          <th>RCA Measurement</th>
+          <th>Tolerance</th>
+          <th>Test Method</th>
+          <th>APIs / Tools</th>
+          <th>Priority</th>
+          <th>Status</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>RL-01</td>
+          <td>Price rule parity by scenario</td>
+          <td>CPQ → RCA</td>
+          <td>Synthetic</td>
+          <td>SBQQ__PriceRule__c → PricingRule</td>
+          <td>Pricing</td>
+          <td># of rules triggered and resulting price</td>
+          <td>CPQ: log which rules fire and resulting price</td>
+          <td>RCA: log rules fired and resulting price</td>
+          <td>Same rule set or functionally equivalent</td>
+          <td>Automated scenario tests</td>
+          <td>CPQ Calculate + RCA price API with logging</td>
+          <td class="priority-critical">Critical</td>
+          <td class="status-not-started">Not Started</td>
+          <td>Build regression pack covering all rule families</td>
+        </tr>
+        <tr>
+          <td>RL-02</td>
+          <td>Product rule (validation) parity</td>
+          <td>CPQ → RCA</td>
+          <td>Synthetic</td>
+          <td>SBQQ__ProductRule__c (Validation) → ProductConfigurationRule</td>
+          <td>Configuration</td>
+          <td>Allowed/disallowed combinations</td>
+          <td>CPQ: configs blocked or allowed</td>
+          <td>RCA: configs blocked or allowed</td>
+          <td>No functional gaps allowed</td>
+          <td>Configurator UI + API tests</td>
+          <td>Bundle config UI + config APIs</td>
+          <td class="priority-high">High</td>
+          <td class="status-not-started">Not Started</td>
+          <td>Use edge-case configs that used to fail/allow in CPQ</td>
+        </tr>
+        <tr>
+          <td>RL-03</td>
+          <td>Eligibility / qualification parity</td>
+          <td>CPQ → RCA</td>
+          <td>Synthetic</td>
+          <td>Product filters & visibility vs ProductQualification</td>
+          <td>Configuration</td>
+          <td>Which products are offered in given context</td>
+          <td>CPQ: visible products given Account/segment</td>
+          <td>RCA: visible products with same context</td>
+          <td>No critical gaps; minor differences documented</td>
+          <td>UI/API tests</td>
+          <td>Context-based product search</td>
+          <td class="priority-high">High</td>
+          <td class="status-not-started">Not Started</td>
+          <td>Focus on key customer segments and channels</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 class="workstream-title">WS0 — Data Quality & Reconciliation Testing</h2>
+    <table class="parity-table">
+      <thead>
+        <tr>
+          <th>Scenario ID</th>
+          <th>Scenario Name</th>
+          <th>Source → Target</th>
+          <th>Data Set Type</th>
+          <th>Primary Objects</th>
+          <th>Test Dimension</th>
+          <th>What to Compare</th>
+          <th>CPQ Measurement</th>
+          <th>RCA Measurement</th>
+          <th>Tolerance</th>
+          <th>Test Method</th>
+          <th>APIs / Tools</th>
+          <th>Priority</th>
+          <th>Status</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>DQ-01</td>
+          <td>Record-count reconciliation by object</td>
+          <td>CPQ/Retail Org → RCA</td>
+          <td>Master + Transaction</td>
+          <td>All mapped objects</td>
+          <td>Data Quality</td>
+          <td>Record counts for each mapped object per scope</td>
+          <td>COUNT(*) per object in scope (Product, Price, Quote, etc.)</td>
+          <td>COUNT(*) per RCA object in scope</td>
+          <td>0 variance or explained difference</td>
+          <td>SQL/Report counts</td>
+          <td>Admin console + SOQL</td>
+          <td class="priority-high">High</td>
+          <td class="status-not-started">Not Started</td>
+          <td>Use this as first go/no-go gate</td>
+        </tr>
+        <tr>
+          <td>DQ-02</td>
+          <td>Key-field completeness check</td>
+          <td>CPQ/Retail Org → RCA</td>
+          <td>Master + Transaction</td>
+          <td>All mapped objects</td>
+          <td>Data Quality</td>
+          <td>% of records with nulls in mandatory mapped fields</td>
+          <td>% NULL in CPQ key fields</td>
+          <td>% NULL in RCA mapped key fields</td>
+          <td>RCA should not be worse than source</td>
+          <td>Data profiling</td>
+          <td>Profiling in Excel or BI tool</td>
+          <td class="priority-high">High</td>
+          <td class="status-not-started">Not Started</td>
+          <td>Focus on IDs, names, statuses, dates, monetary fields</td>
+        </tr>
+        <tr>
+          <td>DQ-03</td>
+          <td>Id mapping coverage</td>
+          <td>CPQ/Retail Org → RCA</td>
+          <td>Master + Transaction</td>
+          <td>All mapped objects</td>
+          <td>Data Quality</td>
+          <td>% of migrated records with mapped Target Id</td>
+          <td>Count(Source rows with Target Id in Id_Mapping)</td>
+          <td>N/A (target)</td>
+          <td>&gt; 99.5% with valid mapping</td>
+          <td>Excel/SQL check</td>
+          <td>Id_Mapping sheet</td>
+          <td class="priority-high">High</td>
+          <td class="status-not-started">Not Started</td>
+          <td>Investigate missing mappings and fix before go-live</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p style="margin-top:2rem;font-size:13px;color:#666"><strong>Note:</strong> This testing matrix provides comprehensive parity validation across all migration workstreams. Each test scenario includes source/target measurements, acceptable tolerances, and test methods to ensure functional equivalence between CPQ and Revenue Cloud Advanced. Priority levels guide execution order, with Critical tests forming go/no-go criteria for production cutover.</p>
+    </main>
+  </div>
+
+  <footer style="background:#2c3e50;color:#ecf0f1;padding:2rem 0;text-align:center;margin-top:3rem">
+    <div class="container"><p>&copy; 2025 RevNova. System Transformation as a Service.</p></div>
+  </footer>
+    <script>
+        // Collapsible navigation functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle section headers - single click toggle
+            const sectionHeaders = document.querySelectorAll('.nav-section-header');
+            sectionHeaders.forEach(header => {
+                const newHeader = header.cloneNode(true);
+                header.parentNode.replaceChild(newHeader, header);
+            });
+            
+            document.querySelectorAll('.nav-section-header').forEach(header => {
+                header.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const content = this.nextElementSibling;
+                    const isExpanded = this.classList.contains('expanded');
+                    
+                    if (isExpanded) {
+                        this.classList.remove('expanded');
+                        content.classList.remove('expanded');
+                    } else {
+                        this.classList.add('expanded');
+                        content.classList.add('expanded');
+                    }
+                });
+            });
+            
+            // Handle subsection headers - single click toggle
+            const subsectionHeaders = document.querySelectorAll('.nav-subsection-header');
+            subsectionHeaders.forEach(header => {
+                const newHeader = header.cloneNode(true);
+                header.parentNode.replaceChild(newHeader, header);
+            });
+            
+            document.querySelectorAll('.nav-subsection-header').forEach(header => {
+                header.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const content = this.nextElementSibling;
+                    const isExpanded = this.classList.contains('expanded');
+                    
+                    if (isExpanded) {
+                        this.classList.remove('expanded');
+                        content.classList.remove('expanded');
+                    } else {
+                        this.classList.add('expanded');
+                        content.classList.add('expanded');
+                    }
+                });
+            });
+            
+            // Auto-expand section containing active link
+            const activeLinks = document.querySelectorAll('.nav-link.active, .nav-subsection-link.active');
+            activeLinks.forEach(link => {
+                // Expand parent section
+                let section = link.closest('.nav-section-content');
+                if (section) {
+                    section.classList.add('expanded');
+                    section.previousElementSibling.classList.add('expanded');
+                }
+                
+                // Expand parent subsection if exists
+                let subsection = link.closest('.nav-subsection-content');
+                if (subsection) {
+                    subsection.classList.add('expanded');
+                    subsection.previousElementSibling.classList.add('expanded');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
