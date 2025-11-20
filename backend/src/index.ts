@@ -8,6 +8,7 @@ import cors from 'cors';
 
 import analyzeRoutes from './routes/analyze.routes.js';
 import projectsRouter from './routes/projects.routes.js';
+import connectionsRouter from './routes/connections.routes.js';
 
 import db from './database/db.js';
 
@@ -54,6 +55,9 @@ app.get('/api/v1/health', (req: Request, res: Response) => {
 // -----------------------------------------------
 console.log(">>> Mounting Projects Router...");
 app.use('/api/v1', projectsRouter);
+
+console.log(">>> Mounting Connections Router...");
+app.use('/api/v1', connectionsRouter);
 
 console.log(">>> Mounting Analyze Router...");
 app.use('/api/v1', analyzeRoutes);
