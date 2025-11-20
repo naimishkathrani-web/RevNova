@@ -3,29 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - RevNova</title>
+    <title>Login - RevNova Mockup</title>
     <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
     <main class="auth-page container">
         <div class="auth-box">
             <h1>Sign In</h1>
-            <form class="login-form">
+            <p style="text-align: center; color: #666; margin-bottom: 1rem; font-size: 0.875rem;">
+                <strong>Mockup Demo Mode</strong> - Enter any credentials
+            </p>
+            <form class="login-form" onsubmit="handleMockupLogin(event)">
                 <div class="form-row">
                     <label for="email">Email</label>
-                    <input id="email" name="email" type="email" placeholder="you@company.com" required>
+                    <input id="email" name="email" type="email" placeholder="demo@revnova.com" required>
                 </div>
                 <div class="form-row">
                     <label for="password">Password</label>
                     <input id="password" name="password" type="password" placeholder="••••••••" required>
                 </div>
                 <div class="form-row">
-                    <button class="btn btn-primary">Sign In</button>
+                    <button type="submit" class="btn btn-primary">Sign In to Mockup</button>
                 </div>
                 <p class="help-text">Don't have an account? <a href="free-trial.html">Start a free trial</a></p>
             </form>
         </div>
     </main>
     <script src="../script.js"></script>
+    <script>
+        function handleMockupLogin(e) {
+            e.preventDefault();
+            // Store mockup mode indicator
+            localStorage.setItem('mockupMode', 'true');
+            localStorage.setItem('mockupUser', document.getElementById('email').value);
+            // Redirect to mockup dashboard
+            window.location.href = 'dashboard.html';
+            return false;
+        }
+    </script>
 </body>
 </html>
