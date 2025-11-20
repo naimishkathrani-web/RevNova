@@ -259,10 +259,26 @@
     </section>
 
     <script>
-        const API_BASE_URL = 'http://localhost:3000/api/v1';
+        // Smart environment detection
+        const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        const isGitHubPages = window.location.hostname.includes('github.io');
+        
+        // API and App URLs based on environment
+        const API_BASE_URL = isLocalhost 
+            ? 'http://localhost:3000/api/v1'
+            : (window.ENV_API_URL || 'https://api.revnova.in/api/v1'); // Will be your production API
+        
+        const APP_URL = isLocalhost
+            ? 'http://localhost:5173'
+            : (isGitHubPages 
+                ? window.location.origin + '/RevNova/app/' // GitHub Pages path
+                : 'https://app.revnova.in'); // Production app URL
+        
         const loginForm = document.getElementById('appLoginForm');
         const loginButton = document.getElementById('loginButton');
         const alertMessage = document.getElementById('alertMessage');
+
+        console.log('Environment:', { isLocalhost, isGitHubPages, API_BASE_URL, APP_URL });
 
         // Show alert message
         function showAlert(message, type = 'error') {
@@ -288,10 +304,7 @@
             loginButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in...';
 
             try {
-                // TODO: Replace with actual authentication endpoint when ready
-                // For now, simulate authentication
-                
-                // Simulated API call (replace with real endpoint)
+                // Try actual authentication
                 const response = await fetch(`${API_BASE_URL}/auth/login`, {
                     method: 'POST',
                     headers: {
@@ -312,9 +325,9 @@
                     
                     showAlert('Login successful! Redirecting...', 'success');
                     
-                    // Redirect to React app dashboard
+                    // Redirect to React app
                     setTimeout(() => {
-                        window.location.href = 'http://localhost:5173'; // Vite dev server
+                        window.location.href = APP_URL;
                     }, 1000);
                 } else {
                     const error = await response.json();
@@ -331,8 +344,7 @@
                     showAlert('Demo mode: Redirecting to app...', 'success');
                     
                     setTimeout(() => {
-                        // Try to redirect to React app, fallback to mockup dashboard
-                        window.location.href = 'http://localhost:5173';
+                        window.location.href = APP_URL;
                     }, 1000);
                 } else {
                     showAlert('An error occurred. Please try again.');
@@ -353,7 +365,7 @@
             const userEmail = localStorage.getItem('userEmail');
             showAlert(`Welcome back, ${userEmail}! Redirecting...`, 'success');
             setTimeout(() => {
-                window.location.href = 'http://localhost:5173';
+                window.location.href = APP_URL;
             }, 1500);
         }
     </script>
