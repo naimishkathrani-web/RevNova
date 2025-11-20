@@ -1,0 +1,135 @@
+Overview of Salesforce Objects and Fields
+https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/sforce_api_objects_concepts.htm
+
+CPQ API Quickstart Guide – Main Link with full table of contents
+https://developer.salesforce.com/docs/atlas.en-us.cpq_dev_api.meta/cpq_dev_api/cpq_api_quickstart.htm
+
+Manage Your Quotes with CPQ – Main Link with full table of contents
+https://help.salesforce.com/s/articleView?id=sales.cpq_master.htm&type=5
+
+Salesforce CPQ Developer Guide – Main Link with full table of contents
+https://developer.salesforce.com/docs/atlas.en-us.cpq_dev_api.meta/cpq_dev_api/cpq_developer_guide_intro.htm
+
+Mapping of Custom Salesforce CPQ Fields Between Objects
+https://help.salesforce.com/s/articleView?id=sales.cpq_twin_fields.htm&type=5
+
+CPQ API ProductModel
+https://developer.salesforce.com/docs/atlas.en-us.cpq_dev_api.meta/cpq_dev_api/cpq_api_product_model_8.htm
+
+CPQ Product Fields
+https://help.salesforce.com/s/articleView?id=sales.cpq_product_fields.htm&type=5
+
+CPQ Account Fields
+https://help.salesforce.com/s/articleView?id=sales.cpq_account_fields.htm&type=5
+
+CPQ Object Relationships
+https://help.salesforce.com/s/articleView?id=sales.cpq_object_relationships.htm&type=5
+
+Product Options
+https://help.salesforce.com/s/articleView?id=sales.cpq_product_option_parent.htm&type=5
+
+Product Option Fields
+https://help.salesforce.com/s/articleView?id=sales.cpq_product_option_fields.htm&type=5
+
+Product Pricing Overview
+https://help.salesforce.com/s/articleView?id=sales.cpq_product_pricing_overview.htm&type=5
+
+Feature Guidelines
+https://help.salesforce.com/s/articleView?id=sales.cpq_feature_guidelines.htm&type=5
+
+Constraint Guidelines
+https://help.salesforce.com/s/articleView?id=sales.cpq_constraint_guidelines.htm&type=5
+
+Configuration Attribute Guidelines
+https://help.salesforce.com/s/articleView?id=sales.cpq_config_attribute_guidelines.htm&type=5
+
+Revenue Cloud – Main Link with full table of contents
+https://help.salesforce.com/s/articleView?id=ind.revenue_lifecycle_management.htm&type=5
+
+Build Your Product Catalog in Revenue Cloud
+https://help.salesforce.com/s/articleView?id=ind.product_catalog_introduction.htm&type=5
+
+Explore the Revenue Cloud Data Model
+https://help.salesforce.com/s/articleView?id=ind.data_model_overview.htm&type=5
+
+Exhaustive Link List for Review
+Core CPQ / RCA Data Model & Objects
+•	Overview of Salesforce Objects and Fields — https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/sforce_api_objects_concepts.htm
+•	CPQ API Quickstart Guide — https://developer.salesforce.com/docs/atlas.en-us.cpq_dev_api.meta/cpq_dev_api/cpq_api_quickstart.htm
+•	Manage Your Quotes with CPQ — https://help.salesforce.com/s/articleView?id=sales.cpq_master.htm&type=5
+•	Salesforce CPQ Developer Guide — https://developer.salesforce.com/docs/atlas.en-us.cpq_dev_api.meta/cpq_dev_api/cpq_developer_guide_intro.htm
+•	Mapping of Custom Salesforce CPQ Fields Between Objects — https://help.salesforce.com/s/articleView?id=sales.cpq_twin_fields.htm&type=5
+•	CPQ API ProductModel — https://developer.salesforce.com/docs/atlas.en-us.cpq_dev_api.meta/cpq_dev_api/cpq_api_product_model_8.htm
+•	CPQ Product Fields — https://help.salesforce.com/s/articleView?id=sales.cpq_product_fields.htm&type=5
+•	CPQ Account Fields — https://help.salesforce.com/s/articleView?id=sales.cpq_account_fields.htm&type=5
+•	CPQ Object Relationships — https://help.salesforce.com/s/articleView?id=sales.cpq_object_relationships.htm&type=5
+•	Revenue Cloud – Main Link (Revenue Lifecycle Management) — https://help.salesforce.com/s/articleView?id=ind.revenue_lifecycle_management.htm&type=5
+•	Build Your Product Catalog in Revenue Cloud — https://help.salesforce.com/s/articleView?id=ind.product_catalog_introduction.htm&type=5
+•	Explore the Revenue Cloud Data Model — https://help.salesforce.com/s/articleView?id=ind.data_model_overview.htm&type=5
+Pricing Rules / Product Rules / Configuration
+•	Price Rules in Salesforce CPQ (Trailhead) — https://trailhead.salesforce.com/content/learn/modules/price-rules-in-salesforce-cpq
+•	Product Rules (CPQ) — https://help.salesforce.com/s/articleView?id=sales.cpq_product_rules.htm&language=en_US&type=5
+•	Product Configuration Rules in Revenue Cloud — https://help.salesforce.com/s/articleView?id=ind.product_configurator_introduction.htm&language=en_US&type=5
+•	ProductConfigurationRule Object (Revenue Cloud) — https://developer.salesforce.com/docs/atlas.en-us.revenue_lifecycle_management_dev_guide.meta/revenue_lifecycle_management_dev_guide/sforce_api_objects_productconfigurationrule.htm
+•	ProductQualification Object (Revenue Cloud) — https://developer.salesforce.com/docs/atlas.en-us.revenue_lifecycle_management_dev_guide.meta/revenue_lifecycle_management_dev_guide/sforce_api_objects_productqualification.htm
+Additional Migration-Specific References
+•	Key Challenges in Migrating from Salesforce CPQ to Revenue Cloud Advanced (LinkedIn Pulse) — https://www.linkedin.com/pulse/key-challenges-migrating-from-salesforce-cpq-revenue-cloud-pathan-hwnxf
+•	Salesforce CPQ to Revenue Cloud Migration: Step 1 Analysis (LinkedIn Post) — https://www.linkedin.com/posts/prodly_salesforce-cpq-to-revenue-cloud-migration-activity-7273037689690415104-vOcn/?utm_source=share&utm_medium=member_android
+________________________________________
+⚠️ Key Migration Challenges & Considerations
+From industry articles and LinkedIn posts, here are major obstacles your architecture team must plan for — I’ve summarized and elaborated them for clarity.
+1. Architectural Paradigm Shift
+The migration from the managed-package architecture of CPQ to the native architecture of Salesforce Revenue Cloud (RCA) involves major changes: data model, API semantics, subscription lifecycle, pricing engine.
+“Architectural Paradigm Shift” listed as #1 in migrating from CPQ to RCA. LinkedIn
+Impacts:
+•	Existing CPQ customizations (plugins, triggers, libraries) may not translate easily.
+•	The way bundles, options, pricing rules, and subscriptions are handled changes.
+•	Data model differences may force re-design rather than lift-and-shift.
+Mitigation: Perform a full architecture fit-gap early, map each object/field, highlight where business logic will need re-engineering.
+2. Product & Pricing Model Complexity
+Days where product/price models were simple are gone. Modern questions: multi-dimensional pricing, usage charges, bundles, renewals, term migrations.
+The article mentions “Product & Pricing Model” among top migration challenges. LinkedIn
+Impacts:
+•	Bundles, options, features in CPQ may map differently in RCA (Offer objects, product versions).
+•	Price rules, discount schedules, usage pricing may require rebuild.
+•	In-flight quotes/subscriptions with legacy price rules may not have exact equivalents.
+Mitigation: Document all pricing rules, build a value-map of pricing semantics, validate parity for key flows (quote → contract → renewal).
+3. Data & Relationship Migration
+The relationships between CPQ objects (Product ↔ Option ↔ Feature ↔ QuoteLine ↔ Subscription) and RCA objects may differ, which complicates migration of in-flight quotes, subscriptions and contracts.
+Impacts:
+•	Parent/child hierarchies (product options) may map differently; you risk loss of option relationships or incorrect mapping.
+•	Subscriptions and contracts already live in CPQ must transition with minimal disruption.
+•	Field mappings, external IDs, historical data cleansing become large tasks.
+Mitigation: Build detailed mapping tables (which you are doing), preserve external IDs where possible, convert relationships with mapping tables, audit migrated data.
+4. Custom Logic & Rules Re-Implementation
+Many CPQ implementations include custom price rules, product rules, constraint logic, plugins (Apex), which will not necessarily transfer directly to RCA.
+Impacts:
+•	The business logic for pricing, bundling, discounting may need to be re-built in RCA’s rule engine (or via custom metadata).
+•	Testing complexity increases as you must validate business scenarios across old and new systems.
+Mitigation: Catalog all custom logic in CPQ, evaluate if equivalent exists in RCA, plan for redevelopment of logic, run regression testing on each rule subset.
+5. Integration and Ecosystem Dependencies
+CPQ integrations (ERP, billing, revenue recognition, external systems) may need to be revisited as RCA may require different endpoints or invocation patterns.
+Impacts:
+•	Downstream systems (billing schedule, invoice generation, revenue recognition) might expect CPQ-legacy tables.
+•	Real-time/configuration APIs may change.
+Mitigation: Review all integrations; align them to RCA data model; build interface adapters; test end-to-end flows (quote → order → invoice).
+6. Legacy Data & In-Flight Transactions
+Migrating active quotes, contracts, subscriptions (“in-flight”) is tricky — cannot simply bulk migrate everything without validating pricing, term, billing schedule, etc.
+Impacts:
+•	You’ll need to support hybrid state (some deals in CPQ, some in RCA) for a period.
+•	Data cut-over risk: duplicates, mismatches, double billing.
+Mitigation: Define cut-over strategy (which in-flight deals migrate, which stay), reconcile major fields (MRR, commission, renewal date), perform dual-system parallel runs.
+7. Change Management & Feature Adoption
+Because RCA may introduce new workflows or UI elements (catalog, offers, subscriptions), users/admins need time to adapt.
+Impacts:
+•	Resistance to change; risk of drop in quote velocity or errors post-go-live.
+•	Training cost and ramp-up.
+Mitigation: Early stakeholder communication; sandbox testing; training sessions; pilot business units; measure adoption KPIs.
+________________________________________
+🧮 Summary for Architect Review
+•	Use the link list above as your master reading list for all objects, rules, and data model dimensions (pricing rules, product rules, configuration rules).
+•	Build a migration readiness checklist incorporating each challenge area with owner/mitigation.
+•	Align your mapping document (object-by-object) to ensure each challenge, rule set and data relation is captured.
+•	Prioritize in-flight deals, pricing rules, and custom logic as high risk.
+•	Plan for a dual-system phase, strong testing, and data reconciliation to ensure smooth transition.
+
