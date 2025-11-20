@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ExecuteStep: React.FC = () => {
+export const ExecuteStep: React.FC = () => {
   return (
     <div>
       <h2>Step 6: Execute</h2>
@@ -8,5 +8,3 @@ const ExecuteStep: React.FC = () => {
     </div>
   );
 };
-
-export default ExecuteStep;

@@ -34,4 +34,3 @@ export const WizardLayout: React.FC = () => {
     </div>
   );
 };
-export default WizardLayout;

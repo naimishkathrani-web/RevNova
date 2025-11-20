@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ConnectionStep: React.FC = () => {
+export const ConnectionStep: React.FC = () => {
   return (
     <div>
       <h2>Step 1: Connect</h2>
@@ -8,5 +8,3 @@ const ConnectionStep: React.FC = () => {
     </div>
   );
 };
-
-export default ConnectionStep;

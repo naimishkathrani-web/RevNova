@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ValidateStep: React.FC = () => {
+export const ValidateStep: React.FC = () => {
   return (
     <div>
       <h2>Step 5: Validate</h2>
@@ -8,5 +8,3 @@ const ValidateStep: React.FC = () => {
     </div>
   );
 };
-
-export default ValidateStep;

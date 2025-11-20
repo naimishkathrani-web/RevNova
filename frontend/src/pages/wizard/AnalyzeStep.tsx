@@ -1,6 +1,6 @@
 import React from 'react';
 
-const AnalyzeStep: React.FC = () => {
+export const AnalyzeStep: React.FC = () => {
   return (
     <div>
       <h2>Step 2: Analyze</h2>
@@ -8,5 +8,3 @@ const AnalyzeStep: React.FC = () => {
     </div>
   );
 };
-
-export default AnalyzeStep;

@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ReportStep: React.FC = () => {
+export const ReportStep: React.FC = () => {
   return (
     <div>
       <h2>Step 7: Report</h2>
@@ -8,5 +8,3 @@ const ReportStep: React.FC = () => {
     </div>
   );
 };
-
-export default ReportStep;

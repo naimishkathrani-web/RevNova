@@ -5,7 +5,7 @@ import { fieldMappingsService } from '../../services';
 import { connectionsService } from '../../services';
 import type { FieldMapping, AutoMapSuggestion, Connection, MappingStatus, MappingType } from '../../types/api';
 
-const MappingStep: React.FC = () => {
+export const MappingStep: React.FC = () => {
   const [searchParams] = useSearchParams();
   const projectId = searchParams.get('project');
 
@@ -486,5 +486,3 @@ const MappingStep: React.FC = () => {
     </div>
   );
 };
-
-export default MappingStep;
