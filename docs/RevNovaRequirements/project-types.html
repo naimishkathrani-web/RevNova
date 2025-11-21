@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Types & Workflows - RevNova Requirements</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        .project-type-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .project-type-card h3 {
+            color: #667eea;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .project-type-card .icon {
+            font-size: 2rem;
+        }
+        .phases-list {
+            list-style: none;
+            padding: 0;
+            margin: 1rem 0;
+        }
+        .phases-list li {
+            padding: 0.75rem 1rem;
+            margin: 0.5rem 0;
+            background: #f7fafc;
+            border-left: 4px solid #48bb78;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .phase-number {
+            background: #667eea;
+            color: white;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        .workflow-diagram {
+            background: #f7fafc;
+            border: 2px solid #cbd5e0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .feature-box {
+            background: #edf2f7;
+            border-left: 4px solid #667eea;
+            padding: 1rem 1.5rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        .feature-box h4 {
+            margin-top: 0;
+            color: #2d3748;
+        }
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+        .comparison-table th {
+            background: #667eea;
+            color: white;
+            padding: 1rem;
+            text-align: left;
+        }
+        .comparison-table td {
+            border: 1px solid #e2e8f0;
+            padding: 0.75rem 1rem;
+        }
+        .comparison-table tr:nth-child(even) {
+            background: #f7fafc;
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .badge-master { background: #c6f6d5; color: #22543d; }
+        .badge-inflight { background: #feebc8; color: #7c2d12; }
+        .badge-ai { background: #e9d5ff; color: #5b21b6; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="nav-left">
+                <a href="../index.html" class="logo">
+                    <div class="logo-box">RevNova</div>
+                </a>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="requirements-home.html">Requirements Home</a></li>
+                        <li><a href="migration-architecture.html">Architecture</a></li>
+                        <li><a href="../index.html">Back to Main</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="container" style="margin-top: 6rem; margin-bottom: 4rem;">
+        <h1>🎯 RevNova Project Types & Workflows</h1>
+        <p class="lead">Flexible migration strategies for different business scenarios</p>
+
+        <section class="content-section">
+            <h2>Overview</h2>
+            <p>RevNova supports four distinct project types, each optimized for specific migration scenarios. This flexibility allows organizations to choose the right approach based on their readiness, timeline, and data requirements.</p>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Project Type</th>
+                        <th>Use Case</th>
+                        <th>Phases</th>
+                        <th>Duration</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="badge badge-master">Master Data Only</span></td>
+                        <td>Products, pricing, rules migration without in-flight data</td>
+                        <td>8 phases</td>
+                        <td>2-4 weeks</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-master">Master + In-Flight</span></td>
+                        <td>Complete migration with option to skip in-flight import</td>
+                        <td>9 phases</td>
+                        <td>3-6 weeks</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-inflight">In-Flight Data Only</span></td>
+                        <td>Import quotes/orders/contracts after master is complete</td>
+                        <td>5 phases</td>
+                        <td>1-2 weeks</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-ai">AI Product Design</span></td>
+                        <td>Phase 2: AI-powered product catalog design</td>
+                        <td>TBD</td>
+                        <td>TBD</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="content-section">
+            <h2>Project Type 1: Migrate Master Data Only</h2>
+            
+            <div class="project-type-card">
+                <h3><span class="icon">📦</span> Master Data Migration</h3>
+                <p><strong>Purpose:</strong> Migrate products, pricebooks, pricing rules, and product configuration without in-flight transactions.</p>
+                
+                <h4>When to Use:</h4>
+                <ul>
+                    <li>Organization wants to configure RCA before handling live transactions</li>
+                    <li>Testing and validation of product catalog in isolation</li>
+                    <li>Staged migration approach (master first, transactions later)</li>
+                    <li>No active quotes/orders in CPQ during migration window</li>
+                </ul>
+
+                <h4>Migration Phases:</h4>
+                <ul class="phases-list">
+                    <li><span class="phase-number">1</span><strong>Connect:</strong> Authenticate to CPQ and RCA orgs</li>
+                    <li><span class="phase-number">2</span><strong>Analyze:</strong> Discover schema, extract master data to Staging 1</li>
+                    <li><span class="phase-number">3</span><strong>Mapping:</strong> Map CPQ fields to RCA, identify custom objects/fields to create</li>
+                    <li><span class="phase-number">4</span><strong>Transform:</strong> Apply transformation rules, generate Staging 2</li>
+                    <li><span class="phase-number">5</span><strong>Validate:</strong> Data quality checks on Staging 2</li>
+                    <li><span class="phase-number">6</span><strong>Execute:</strong> Create custom objects/fields in RCA, import master data</li>
+                    <li><span class="phase-number">7</span><strong>Test:</strong> Automated quote creation and validation in RCA</li>
+                    <li><span class="phase-number">8</span><strong>Report:</strong> Migration summary and results</li>
+                </ul>
+
+                <div class="feature-box">
+                    <h4>✅ What Gets Migrated:</h4>
+                    <ul>
+                        <li>Product2 (all products)</li>
+                        <li>Pricebook2, PricebookEntry (pricing)</li>
+                        <li>SBQQ__ProductRule__c (product rules)</li>
+                        <li>SBQQ__PriceRule__c (price rules)</li>
+                        <li>SBQQ__ConfigurationAttribute__c (configuration)</li>
+                        <li>Custom objects related to products</li>
+                        <li>Completed test quotes (for automated testing)</li>
+                    </ul>
+                </div>
+
+                <div class="feature-box">
+                    <h4>❌ What Gets Skipped:</h4>
+                    <ul>
+                        <li>In-flight quotes (SBQQ__Quote__c with Status != Completed)</li>
+                        <li>Orders</li>
+                        <li>Contracts</li>
+                        <li>Subscriptions</li>
+                        <li>Assets</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>Project Type 2: Migrate Master + In-Flight Data</h2>
+            
+            <div class="project-type-card">
+                <h3><span class="icon">🔄</span> Complete Migration</h3>
+                <p><strong>Purpose:</strong> Comprehensive migration including master data and all transactional data, with flexibility to skip in-flight import.</p>
+                
+                <h4>When to Use:</h4>
+                <ul>
+                    <li>Full CPQ to RCA migration in single project</li>
+                    <li>Organization has active quotes/orders to migrate</li>
+                    <li>One-time cutover from CPQ to RCA</li>
+                    <li>Default recommended approach for most migrations</li>
+                </ul>
+
+                <h4>Migration Phases:</h4>
+                <ul class="phases-list">
+                    <li><span class="phase-number">1</span><strong>Connect:</strong> Authenticate to CPQ and RCA orgs</li>
+                    <li><span class="phase-number">2</span><strong>Analyze:</strong> Discover schema, extract ALL data to Staging 1</li>
+                    <li><span class="phase-number">3</span><strong>Mapping:</strong> Map CPQ fields to RCA (products + transactions)</li>
+                    <li><span class="phase-number">4</span><strong>Transform:</strong> Transform all data to Staging 2</li>
+                    <li><span class="phase-number">5</span><strong>Validate:</strong> Comprehensive data quality checks</li>
+                    <li><span class="phase-number">6</span><strong>Execute:</strong> Create custom objects, import master data</li>
+                    <li><span class="phase-number">7</span><strong>Test:</strong> Automated testing with product quotes</li>
+                    <li><span class="phase-number">8</span><strong>Import Transactions:</strong> Import quotes, orders, contracts, subscriptions</li>
+                    <li><span class="phase-number">9</span><strong>Report:</strong> Complete migration summary</li>
+                </ul>
+
+                <div class="feature-box">
+                    <h4>🎛️ Flexible In-Flight Import:</h4>
+                    <p>At Phase 8, user can choose:</p>
+                    <ul>
+                        <li><strong>Import Now:</strong> Complete full migration with in-flight data</li>
+                        <li><strong>Skip for Now:</strong> Complete master data migration, import in-flight later using "Migrate In-Flight Data Only" project</li>
+                    </ul>
+                    <p><em>This allows organizations to go live with RCA after testing, then migrate in-flight data at a convenient time.</em></p>
+                </div>
+
+                <div class="feature-box">
+                    <h4>✅ What Gets Migrated:</h4>
+                    <ul>
+                        <li><strong>Master Data:</strong> All products, pricing, rules, configuration</li>
+                        <li><strong>In-Flight Quotes:</strong> SBQQ__Quote__c (all statuses)</li>
+                        <li><strong>Orders:</strong> Order, OrderItem</li>
+                        <li><strong>Contracts:</strong> Contract, ContractLineItem</li>
+                        <li><strong>Subscriptions → Assets:</strong> SBQQ__Subscription__c migrated to Asset</li>
+                        <li><strong>Other Transactions:</strong> Any custom transactional objects</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>Project Type 3: Migrate In-Flight Data Only</h2>
+            
+            <div class="project-type-card">
+                <h3><span class="icon">📋</span> In-Flight Data Migration</h3>
+                <p><strong>Purpose:</strong> Import only transactional data (quotes, orders, contracts) after master data is already migrated.</p>
+                
+                <h4>When to Use:</h4>
+                <ul>
+                    <li>Master data migration already complete</li>
+                    <li>Organization skipped in-flight import initially</li>
+                    <li>New quotes/orders created in CPQ during master migration</li>
+                    <li>Incremental sync before CPQ retirement</li>
+                    <li>Post-go-live data migration</li>
+                </ul>
+
+                <h4>Migration Phases:</h4>
+                <ul class="phases-list">
+                    <li><span class="phase-number">1</span><strong>Connect:</strong> Authenticate to CPQ and RCA orgs</li>
+                    <li><span class="phase-number">2</span><strong>Analyze:</strong> Extract NEW in-flight data from CPQ to Staging 1</li>
+                    <li><span class="phase-number">3</span><strong>Mapping:</strong> Map transaction fields, identify NEW conflicts</li>
+                    <li><span class="phase-number">4</span><strong>Transform:</strong> Transform transaction data to Staging 2</li>
+                    <li><span class="phase-number">5</span><strong>Execute:</strong> Import in-flight data to RCA</li>
+                    <li><span class="phase-number">6</span><strong>Report:</strong> Transaction import summary</li>
+                </ul>
+
+                <div class="feature-box">
+                    <h4>🔍 Incremental Analysis:</h4>
+                    <p>During Analyze phase, RevNova:</p>
+                    <ul>
+                        <li>Queries CPQ for quotes/orders created/modified since last sync</li>
+                        <li>Uses LastModifiedDate filter for efficiency</li>
+                        <li>Discovers any NEW custom fields added since master migration</li>
+                        <li>Loads only delta data into Staging 1</li>
+                    </ul>
+                </div>
+
+                <div class="feature-box">
+                    <h4>⚠️ Mapping Conflicts:</h4>
+                    <p>During Mapping phase, conflicts may arise if:</p>
+                    <ul>
+                        <li>CPQ org added new custom fields since master migration</li>
+                        <li>New custom objects were created</li>
+                        <li>Field data types changed</li>
+                    </ul>
+                    <p><strong>Resolution:</strong> RevNova will:</p>
+                    <ol>
+                        <li>Identify new custom fields/objects</li>
+                        <li>Create mapping conflicts for user review</li>
+                        <li>User selects: "Map to Existing RCA Field" or "Create New Custom Field"</li>
+                        <li>New custom fields flagged in Staging 2</li>
+                        <li>During Execute, create new fields in RCA before data import</li>
+                    </ol>
+                </div>
+
+                <div class="feature-box">
+                    <h4>✅ What Gets Migrated:</h4>
+                    <ul>
+                        <li>In-flight quotes (Draft, Negotiating, Presented)</li>
+                        <li>New orders since last sync</li>
+                        <li>New contracts and renewals</li>
+                        <li>Updated subscriptions (converted to assets)</li>
+                        <li>Related quote line items, order items, contract items</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>Project Type 4: Design Product with AI (Phase 2)</h2>
+            
+            <div class="project-type-card">
+                <h3><span class="icon">🤖</span> AI Product Design</h3>
+                <p><strong>Purpose:</strong> Use AI to design and configure new products directly in Revenue Cloud.</p>
+                
+                <p><em>This is a Phase 2 feature planned for future release. Specifications to be defined.</em></p>
+
+                <h4>Potential Capabilities:</h4>
+                <ul>
+                    <li>AI-powered product catalog generation</li>
+                    <li>Intelligent pricing rule recommendations</li>
+                    <li>Automated bundle configuration</li>
+                    <li>Product hierarchy optimization</li>
+                    <li>Configuration attribute suggestions</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>Key Features Across All Project Types</h2>
+
+            <div class="workflow-diagram">
+                <h3>Custom Object/Field Creation Workflow</h3>
+                <p>When mapping identifies custom CPQ objects/fields without RCA vanilla equivalents:</p>
+                <ol>
+                    <li><strong>Detection:</strong> During Mapping, AI suggests "No vanilla match found"</li>
+                    <li><strong>User Decision:</strong>
+                        <ul>
+                            <li>Option 1: Map to existing RCA vanilla field (override AI)</li>
+                            <li>Option 2: Create new custom field in RCA</li>
+                            <li>Option 3: Skip field (data won't migrate)</li>
+                        </ul>
+                    </li>
+                    <li><strong>Documentation:</strong> New custom fields saved to `rca_custom_configurations` table</li>
+                    <li><strong>Staging 2 Metadata:</strong> Columns added:
+                        <ul>
+                            <li>`_needs_custom_field` = true</li>
+                            <li>`_custom_field_name` = "Warranty_Period__c"</li>
+                            <li>`_custom_field_type` = "Number"</li>
+                        </ul>
+                    </li>
+                    <li><strong>Transform Phase:</strong> Identifies all custom objects/fields to create</li>
+                    <li><strong>Execute Phase:</strong>
+                        <ul>
+                            <li>Sub-phase 1: Create custom objects in RCA (Metadata API)</li>
+                            <li>Sub-phase 2: Create custom fields in RCA (Metadata API)</li>
+                            <li>Sub-phase 3: Import data from Staging 2 (Bulk API)</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+
+            <div class="workflow-diagram">
+                <h3>Rollback Mechanism</h3>
+                <p>If automated testing fails with major errors:</p>
+                <ol>
+                    <li><strong>Test Failure Detected:</strong> > 5% quote calculation errors</li>
+                    <li><strong>Automatic Rollback:</strong> Project moved back to Mapping phase</li>
+                    <li><strong>Conflict Highlighting:</strong> System identifies which mappings caused failures</li>
+                    <li><strong>User Fixes:</strong> User corrects field mappings or transformation rules</li>
+                    <li><strong>Re-Transform:</strong> Run Transform phase again</li>
+                    <li><strong>Re-Execute:</strong> Import corrected data to RCA</li>
+                    <li><strong>Re-Test:</strong> Run automated tests again</li>
+                    <li><strong>Iterate:</strong> Repeat until tests pass</li>
+                </ol>
+            </div>
+
+            <div class="feature-box">
+                <h4>🗄️ Database Schema</h4>
+                <p><strong>New Tables:</strong></p>
+                <ul>
+                    <li><code>projects.project_type</code> - enum: migrate_master_data, migrate_master_with_inflight, migrate_inflight_data, design_product_ai</li>
+                    <li><code>projects.current_phase</code> - tracks current migration phase</li>
+                    <li><code>projects.completed_phases</code> - array of completed phases</li>
+                    <li><code>projects.include_inflight_data</code> - boolean flag</li>
+                    <li><code>projects.skip_inflight_import</code> - user can skip Phase 8</li>
+                    <li><code>rca_custom_configurations</code> - tracks custom objects/fields to create in RCA</li>
+                    <li><code>mapping_conflicts</code> - tracks mapping issues requiring user resolution</li>
+                </ul>
+            </div>
+
+            <div class="feature-box">
+                <h4>🔌 New API Endpoints</h4>
+                <p><strong>Phase Management:</strong></p>
+                <ul>
+                    <li>GET /api/v1/projects/:id/phases</li>
+                    <li>POST /api/v1/projects/:id/phases/complete</li>
+                    <li>POST /api/v1/projects/:id/phases/skip-inflight</li>
+                    <li>POST /api/v1/projects/:id/phases/rollback</li>
+                </ul>
+                <p><strong>RCA Configuration:</strong></p>
+                <ul>
+                    <li>GET /api/v1/projects/:id/rca-configurations</li>
+                    <li>POST /api/v1/projects/:id/rca-configurations</li>
+                    <li>POST /api/v1/projects/:id/rca-configurations/execute</li>
+                </ul>
+                <p><strong>Mapping Conflicts:</strong></p>
+                <ul>
+                    <li>GET /api/v1/projects/:id/mapping-conflicts</li>
+                    <li>POST /api/v1/projects/:id/mapping-conflicts</li>
+                    <li>PATCH /api/v1/mapping-conflicts/:id/resolve</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>Usage Examples</h2>
+
+            <h3>Scenario 1: Staged Migration</h3>
+            <div class="workflow-diagram">
+                <p><strong>Company ABC wants to test RCA configuration before importing live transactions.</strong></p>
+                <ol>
+                    <li><strong>Week 1-2:</strong> Create "Migrate Master Data Only" project → Complete all 8 phases</li>
+                    <li><strong>Week 3:</strong> Test RCA with sales team, gather feedback</li>
+                    <li><strong>Week 4:</strong> Make adjustments to products/pricing in RCA</li>
+                    <li><strong>Week 5:</strong> Create "Migrate In-Flight Data Only" project → Import all quotes/orders</li>
+                    <li><strong>Week 6:</strong> Go live with RCA, retire CPQ</li>
+                </ol>
+            </div>
+
+            <h3>Scenario 2: Complete Migration with Skip Option</h3>
+            <div class="workflow-diagram">
+                <p><strong>Company XYZ wants full migration but may skip in-flight import temporarily.</strong></p>
+                <ol>
+                    <li>Create "Migrate Master + In-Flight" project</li>
+                    <li>Complete phases 1-7 (master data migration and testing)</li>
+                    <li>At Phase 8, user chooses "Skip In-Flight Import"</li>
+                    <li>Project jumps to Phase 9 (Report), marked as complete</li>
+                    <li>Two weeks later, create "Migrate In-Flight Data Only" project to import transactions</li>
+                </ol>
+            </div>
+
+            <h3>Scenario 3: Incremental In-Flight Sync</h3>
+            <div class="workflow-diagram">
+                <p><strong>Company DEF's master migration took 4 weeks. New quotes created during that time.</strong></p>
+                <ol>
+                    <li><strong>Week 1:</strong> Start "Migrate Master + In-Flight" project</li>
+                    <li><strong>Week 4:</strong> Master migration and testing complete</li>
+                    <li><strong>Week 5:</strong> Before going live, create "Migrate In-Flight Data Only" project</li>
+                    <li>RevNova queries CPQ for quotes created/modified in last 4 weeks</li>
+                    <li>Fresh in-flight data extracted to Staging 1</li>
+                    <li>Mapping identifies 2 new custom fields added during master migration</li>
+                    <li>Conflicts resolved → Transform → Execute → Go live with all current data</li>
+                </ol>
+            </div>
+        </section>
+    </main>
+
+    <footer style="background: #1a202c; color: white; padding: 2rem; text-align: center; margin-top: 4rem;">
+        <p>&copy; 2025 RevNova. Project Types & Workflows Specification v1.0</p>
+    </footer>
+</body>
+</html>
