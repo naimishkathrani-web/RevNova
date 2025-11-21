@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Migration Architecture - RevNova Requirements</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        .architecture-diagram {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        .stage-box {
+            background: white;
+            border: 2px solid #4299e1;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+        .stage-box h3 {
+            color: #2b6cb0;
+            margin-top: 0;
+        }
+        .flow-arrow {
+            text-align: center;
+            font-size: 2rem;
+            color: #4299e1;
+            margin: 0.5rem 0;
+        }
+        .requirement-box {
+            background: #edf2f7;
+            border-left: 4px solid #667eea;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .phase-list {
+            list-style: none;
+            padding: 0;
+        }
+        .phase-list li {
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            background: white;
+            border-left: 3px solid #48bb78;
+            padding-left: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="nav-left">
+                <a href="../index.html" class="logo">
+                    <div class="logo-box">RevNova</div>
+                </a>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="requirements-home.html">Requirements Home</a></li>
+                        <li><a href="../index.html">Back to Main</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="container" style="margin-top: 6rem; margin-bottom: 4rem;">
+        <h1>RevNova Migration Architecture</h1>
+        <p class="lead">Complete architectural specification for CPQ to Revenue Cloud automated migration</p>
+
+        <section class="content-section">
+            <h2>1. Staging Architecture Overview</h2>
+            
+            <div class="architecture-diagram">
+                <h3 style="text-align: center;">Two-Stage Migration Architecture</h3>
+                
+                <div class="stage-box">
+                    <h3>📥 Staging 1: Source Data Layer</h3>
+                    <p><strong>Purpose:</strong> Exact replica of SFDC CPQ data structure</p>
+                    <ul>
+                        <li><strong>Vanilla Objects:</strong> All standard CPQ objects (Product2, PricebookEntry, SBQQ__Quote__c, etc.)</li>
+                        <li><strong>Custom Objects:</strong> All custom objects prefixed with org namespace</li>
+                        <li><strong>Vanilla Fields:</strong> All standard fields on standard objects</li>
+                        <li><strong>Custom Fields:</strong> All custom fields (org-specific + cpq-specific)</li>
+                        <li><strong>Transaction Data:</strong> All in-flight quotes, orders, contracts, subscriptions</li>
+                        <li><strong>Completed Test Quotes:</strong> Minimum 1 completed/converted quote per product (standalone & bundle)</li>
+                    </ul>
+                    <p><strong>Schema Detection:</strong> Automatic discovery during Analysis phase</p>
+                    <p><strong>Data Import:</strong> One-time initial load + incremental updates before go-live</p>
+                </div>
+
+                <div class="flow-arrow">⬇️ Transformation Layer ⬇️</div>
+
+                <div class="stage-box">
+                    <h3>📤 Staging 2: Target-Ready Data Layer</h3>
+                    <p><strong>Purpose:</strong> RCA-compatible data structure ready for import</p>
+                    <ul>
+                        <li><strong>Mapped Vanilla Fields:</strong> CPQ vanilla → RCA vanilla mappings applied</li>
+                        <li><strong>Transformed Custom Data:</strong> Custom CPQ fields/objects mapped to:
+                            <ul>
+                                <li>Existing RCA vanilla fields (auto-suggested)</li>
+                                <li>New RCA custom fields (flagged for creation)</li>
+                                <li>New RCA custom objects (flagged for creation)</li>
+                            </ul>
+                        </li>
+                        <li><strong>Import-Ready Structure:</strong> All data ready for Salesforce Data Loader / Bulk API</li>
+                        <li><strong>Creation Flags:</strong> Metadata for objects/fields to create before data import</li>
+                    </ul>
+                    <p><strong>Transformation Rules:</strong> Applied during Transform phase (value maps, formulas, lookups, etc.)</p>
+                </div>
+
+                <div class="flow-arrow">⬇️ Import & Test ⬇️</div>
+
+                <div class="stage-box">
+                    <h3>🎯 Revenue Cloud (RCA)</h3>
+                    <p><strong>Purpose:</strong> Production target environment</p>
+                    <ul>
+                        <li><strong>Pre-Import:</strong> Create new custom objects/fields as flagged in Staging 2</li>
+                        <li><strong>Data Import:</strong> Bulk import from Staging 2 → RCA</li>
+                        <li><strong>Test Execution:</strong> Automated quote creation for each product using RCA APIs</li>
+                        <li><strong>Validation:</strong> Rules execution, quote calculations, pricing verification</li>
+                        <li><strong>Rollback Capability:</strong> Major test failures → Back to Mapping phase</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>2. Complete Migration Flow Phases</h2>
+
+            <ul class="phase-list">
+                <li>
+                    <strong>Phase 1: Connect</strong>
+                    <ul>
+                        <li>Authenticate to Source CPQ org (OAuth)</li>
+                        <li>Authenticate to Target RCA org (OAuth)</li>
+                        <li>Validate permissions and API access</li>
+                    </ul>
+                </li>
+
+                <li>
+                    <strong>Phase 2: Analyze</strong>
+                    <ul>
+                        <li>Scan source CPQ org for all objects and fields</li>
+                        <li>Identify vanilla vs custom objects/fields</li>
+                        <li>Determine record counts and data volumes</li>
+                        <li><strong>Auto-create Staging 1 schema based on CPQ structure</strong></li>
+                        <li>Extract test quotes (1+ completed quote per product)</li>
+                        <li>Extract all transaction data (in-flight quotes, orders, contracts, subscriptions, assets)</li>
+                        <li>Load all data into Staging 1</li>
+                    </ul>
+                </li>
+
+                <li>
+                    <strong>Phase 3: Mapping</strong>
+                    <ul>
+                        <li><strong>Auto-suggest vanilla-to-vanilla mappings (CPQ → RCA)</strong></li>
+                        <li>For custom CPQ fields/objects:
+                            <ul>
+                                <li>AI suggests best-fit RCA vanilla field if exists</li>
+                                <li>If no vanilla match, default to "Create New Custom Field/Object"</li>
+                                <li>User can override to map to different vanilla field</li>
+                            </ul>
+                        </li>
+                        <li>Mark new objects/fields for creation in Staging 2 metadata</li>
+                        <li>User reviews and approves all mappings</li>
+                        <li>Confidence scoring for each mapping</li>
+                    </ul>
+                </li>
+
+                <li>
+                    <strong>Phase 4: Transform</strong>
+                    <ul>
+                        <li>Apply transformation rules to Staging 1 data</li>
+                        <li>Execute value maps (picklist translations)</li>
+                        <li>Execute formulas and calculated fields</li>
+                        <li>Execute lookup relationships</li>
+                        <li>Output transformed data to Staging 2</li>
+                        <li>Flag new custom objects/fields for RCA creation</li>
+                    </ul>
+                </li>
+
+                <li>
+                    <strong>Phase 5: Validate</strong>
+                    <ul>
+                        <li>Data quality checks on Staging 2</li>
+                        <li>Required field validation</li>
+                        <li>Relationship integrity checks</li>
+                        <li>Duplicate detection</li>
+                        <li>Format and type validation</li>
+                    </ul>
+                </li>
+
+                <li>
+                    <strong>Phase 6: Execute</strong>
+                    <ul>
+                        <li>Create new custom objects/fields in RCA (from Staging 2 flags)</li>
+                        <li>Bulk import products from Staging 2 → RCA</li>
+                        <li>Bulk import pricebooks and pricing from Staging 2 → RCA</li>
+                        <li>Import rules, discounts, and configuration from Staging 2 → RCA</li>
+                        <li>Real-time progress tracking</li>
+                    </ul>
+                </li>
+
+                <li>
+                    <strong>Phase 7: Test (Automated)</strong>
+                    <ul>
+                        <li>For each completed test quote in Staging 1:
+                            <ul>
+                                <li>Create equivalent quote in RCA using RCA APIs</li>
+                                <li>Add same products and quantities</li>
+                                <li>Trigger pricing rules in RCA</li>
+                                <li>Trigger validation rules in RCA</li>
+                                <li>Compare results: prices, discounts, totals</li>
+                            </ul>
+                        </li>
+                        <li>Record pass/fail for each test case</li>
+                        <li><strong>If major errors:</strong> Rollback → Return to Mapping phase</li>
+                        <li><strong>If minor warnings:</strong> Allow user to proceed or fix</li>
+                        <li><strong>If all pass:</strong> Proceed to transaction data import</li>
+                    </ul>
+                </li>
+
+                <li>
+                    <strong>Phase 8: Import Transactions</strong>
+                    <ul>
+                        <li>Import in-flight quotes from Staging 2 → RCA</li>
+                        <li>Import orders and contracts from Staging 2 → RCA</li>
+                        <li>Move subscriptions to RCA assets</li>
+                        <li>Import other transactional data</li>
+                        <li>Validate transaction integrity</li>
+                    </ul>
+                </li>
+
+                <li>
+                    <strong>Phase 9: Report</strong>
+                    <ul>
+                        <li>Summary of all migrations (products, pricing, rules, transactions)</li>
+                        <li>Test results with pass/fail breakdown</li>
+                        <li>Error analysis and recommendations</li>
+                        <li>Export detailed report (PDF/Excel)</li>
+                    </ul>
+                </li>
+            </ul>
+        </section>
+
+        <section class="content-section">
+            <h2>3. Incremental Data Sync (Pre Go-Live)</h2>
+            
+            <div class="requirement-box">
+                <h3>Separate Function: Import Latest In-Flight Data</h3>
+                <p><strong>Use Case:</strong> Migration of products/pricing/rules took long (days/weeks). During that time, org created more in-flight quotes and transactions.</p>
+                
+                <h4>Solution:</h4>
+                <ul>
+                    <li><strong>Separate menu item in RevNova:</strong> "Sync Latest Transaction Data"</li>
+                    <li><strong>When to use:</strong> After products/pricing/rules are fully configured and tested in RCA, but before org goes live</li>
+                    <li><strong>What it does:</strong>
+                        <ul>
+                            <li>Query CPQ for new/updated in-flight quotes since last sync</li>
+                            <li>Query CPQ for new orders, contracts, subscriptions</li>
+                            <li>Load delta data into Staging 1</li>
+                            <li>Transform and load into Staging 2</li>
+                            <li>Import into RCA</li>
+                            <li>Validate transaction integrity</li>
+                        </ul>
+                    </li>
+                    <li><strong>Benefit:</strong> Ensures RCA has latest transactional data before CPQ retirement</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>4. Rollback & Re-Migration Flow</h2>
+            
+            <div class="requirement-box">
+                <h3>Test Failure → Rollback → Fix → Re-Test</h3>
+                
+                <h4>Triggers:</h4>
+                <ul>
+                    <li>Major test failures (quote calculation errors > 5%)</li>
+                    <li>Pricing rule execution failures</li>
+                    <li>Missing required data in RCA</li>
+                    <li>Relationship integrity failures</li>
+                </ul>
+
+                <h4>Rollback Process:</h4>
+                <ol>
+                    <li><strong>Detect Failure:</strong> Automated test phase identifies critical errors</li>
+                    <li><strong>Rollback Data:</strong> Delete imported RCA data (optional, or mark as test)</li>
+                    <li><strong>Return to Mapping:</strong> Redirect user back to Mapping phase</li>
+                    <li><strong>Highlight Issues:</strong> Show which mappings caused test failures</li>
+                    <li><strong>User Fixes Mappings:</strong> User corrects field mappings, transformation rules</li>
+                    <li><strong>Re-Transform:</strong> Run Transform phase again with updated mappings</li>
+                    <li><strong>Re-Validate:</strong> Run Validate phase again</li>
+                    <li><strong>Re-Execute:</strong> Import to RCA again</li>
+                    <li><strong>Re-Test:</strong> Run automated tests again</li>
+                    <li><strong>Repeat if needed</strong></li>
+                </ol>
+
+                <h4>Success Criteria:</h4>
+                <ul>
+                    <li>All test quotes pass (100% success rate preferred)</li>
+                    <li>Price calculations match CPQ within tolerance (e.g., 0.1%)</li>
+                    <li>All required fields populated</li>
+                    <li>All relationships valid</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>5. UI/UX Design Principles</h2>
+            
+            <div class="requirement-box">
+                <h3>React App Must Match Mockup Design</h3>
+                
+                <h4>Requirements:</h4>
+                <ul>
+                    <li><strong>Visual Consistency:</strong> React app should look identical to HTML mockups</li>
+                    <li><strong>Color Scheme:</strong> Same blues, gradients, and accent colors as mockups</li>
+                    <li><strong>Layout:</strong> Same card layouts, spacing, typography as mockups</li>
+                    <li><strong>Icons:</strong> Same Font Awesome icons as mockups</li>
+                    <li><strong>Difference:</strong> Mockups have dummy data, React app has real data from backend API</li>
+                </ul>
+
+                <h4>Implementation:</h4>
+                <ul>
+                    <li>Extract CSS from mockup `styles.css`</li>
+                    <li>Convert to Tailwind classes or import as global CSS</li>
+                    <li>Ensure all React components match mockup HTML structure</li>
+                    <li>Test side-by-side comparison: Mockup vs Real App</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>6. Backend Database Schema</h2>
+            
+            <div class="requirement-box">
+                <h3>Database Tables</h3>
+                
+                <h4>Core Tables (Already Created):</h4>
+                <ul>
+                    <li><strong>projects:</strong> Migration projects</li>
+                    <li><strong>connections:</strong> Salesforce OAuth connections</li>
+                    <li><strong>field_mappings:</strong> CPQ → RCA field mappings</li>
+                    <li><strong>schema_analysis:</strong> Discovered CPQ schema</li>
+                    <li><strong>transformation_rules:</strong> Value maps, formulas, lookups</li>
+                </ul>
+
+                <h4>Staging 1 Tables (Dynamic Creation):</h4>
+                <ul>
+                    <li><strong>stg1_{object_name}:</strong> One table per CPQ object (e.g., stg1_product2, stg1_sbqq_quote_c)</li>
+                    <li><strong>Columns:</strong> Match CPQ object fields exactly (vanilla + custom)</li>
+                    <li><strong>Created during:</strong> Analyze phase after schema discovery</li>
+                    <li><strong>Example:</strong>
+                        <ul>
+                            <li>stg1_product2 (Id, Name, ProductCode, Family, Description, custom fields...)</li>
+                            <li>stg1_sbqq_quote_c (Id, Name, SBQQ__Opportunity__c, SBQQ__Status__c, custom fields...)</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <h4>Staging 2 Tables (Dynamic Creation):</h4>
+                <ul>
+                    <li><strong>stg2_{object_name}:</strong> RCA-compatible structure (e.g., stg2_product2, stg2_quote)</li>
+                    <li><strong>Columns:</strong> RCA standard fields + custom fields to be created</li>
+                    <li><strong>Metadata:</strong> Additional columns for:
+                        <ul>
+                            <li>_needs_custom_field (boolean)</li>
+                            <li>_custom_field_name (text)</li>
+                            <li>_custom_field_type (text)</li>
+                            <li>_needs_custom_object (boolean)</li>
+                        </ul>
+                    </li>
+                    <li><strong>Created during:</strong> Transform phase</li>
+                </ul>
+
+                <h4>Test Results Tables:</h4>
+                <ul>
+                    <li><strong>test_quotes:</strong> Test cases (completed CPQ quotes)</li>
+                    <li><strong>test_executions:</strong> Test run results</li>
+                    <li><strong>test_comparisons:</strong> CPQ vs RCA comparison data</li>
+                </ul>
+
+                <h4>Transaction Tracking Tables:</h4>
+                <ul>
+                    <li><strong>import_batches:</strong> Track bulk import jobs</li>
+                    <li><strong>import_records:</strong> Track individual record imports</li>
+                    <li><strong>import_errors:</strong> Log import failures</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>7. API Endpoints (Backend)</h2>
+            
+            <h4>Projects:</h4>
+            <ul>
+                <li>GET /api/v1/projects</li>
+                <li>POST /api/v1/projects</li>
+                <li>GET /api/v1/projects/:id</li>
+                <li>PUT /api/v1/projects/:id</li>
+                <li>DELETE /api/v1/projects/:id</li>
+            </ul>
+
+            <h4>Connections:</h4>
+            <ul>
+                <li>POST /api/v1/connections/test</li>
+                <li>POST /api/v1/auth/salesforce/authorize</li>
+                <li>GET /api/v1/auth/salesforce/callback</li>
+            </ul>
+
+            <h4>Schema Analysis (New):</h4>
+            <ul>
+                <li>POST /api/v1/schema/analyze/:projectId - Analyze CPQ org</li>
+                <li>GET /api/v1/schema/:projectId - Get discovered schema</li>
+                <li>POST /api/v1/schema/create-staging1/:projectId - Create Staging 1 tables</li>
+                <li>POST /api/v1/schema/extract-data/:projectId - Extract CPQ data to Staging 1</li>
+            </ul>
+
+            <h4>Field Mappings:</h4>
+            <ul>
+                <li>GET /api/v1/field-mappings/:projectId</li>
+                <li>POST /api/v1/field-mappings/:projectId/auto-suggest - AI auto-mapping</li>
+                <li>POST /api/v1/field-mappings/:projectId - Create mapping</li>
+                <li>PUT /api/v1/field-mappings/:id - Update mapping</li>
+                <li>DELETE /api/v1/field-mappings/:id</li>
+                <li>POST /api/v1/field-mappings/:projectId/bulk-validate</li>
+                <li>POST /api/v1/field-mappings/:projectId/bulk-approve</li>
+            </ul>
+
+            <h4>Transformation (New):</h4>
+            <ul>
+                <li>POST /api/v1/transform/:projectId/execute - Transform Staging 1 → Staging 2</li>
+                <li>GET /api/v1/transform/:projectId/status - Get transform progress</li>
+                <li>POST /api/v1/transform/:projectId/rules - Create transformation rule</li>
+                <li>PUT /api/v1/transform/rules/:id - Update rule</li>
+            </ul>
+
+            <h4>Validation (New):</h4>
+            <ul>
+                <li>POST /api/v1/validate/:projectId/execute - Run all validations</li>
+                <li>GET /api/v1/validate/:projectId/results - Get validation results</li>
+            </ul>
+
+            <h4>Migration Execution (New):</h4>
+            <ul>
+                <li>POST /api/v1/migrate/:projectId/create-custom-objects - Create RCA custom objects/fields</li>
+                <li>POST /api/v1/migrate/:projectId/import-products - Bulk import products</li>
+                <li>POST /api/v1/migrate/:projectId/import-pricing - Bulk import pricing</li>
+                <li>POST /api/v1/migrate/:projectId/import-rules - Import rules/config</li>
+                <li>GET /api/v1/migrate/:projectId/status - Get migration progress</li>
+            </ul>
+
+            <h4>Testing (New):</h4>
+            <ul>
+                <li>POST /api/v1/test/:projectId/execute - Run automated tests</li>
+                <li>GET /api/v1/test/:projectId/results - Get test results</li>
+                <li>POST /api/v1/test/:projectId/rollback - Rollback to mapping phase</li>
+            </ul>
+
+            <h4>Transactions (New):</h4>
+            <ul>
+                <li>POST /api/v1/transactions/:projectId/import-quotes - Import in-flight quotes</li>
+                <li>POST /api/v1/transactions/:projectId/import-orders - Import orders</li>
+                <li>POST /api/v1/transactions/:projectId/import-contracts - Import contracts</li>
+                <li>POST /api/v1/transactions/:projectId/import-subscriptions - Import subscriptions</li>
+                <li>POST /api/v1/transactions/:projectId/sync-latest - Incremental sync</li>
+            </ul>
+
+            <h4>Reports:</h4>
+            <ul>
+                <li>GET /api/v1/reports/:projectId/summary - Get migration summary</li>
+                <li>GET /api/v1/reports/:projectId/export - Export detailed report (PDF)</li>
+            </ul>
+        </section>
+
+        <section class="content-section">
+            <h2>8. Development Priorities</h2>
+            
+            <ol>
+                <li><strong>Phase 1 (Current):</strong> Basic project management, connections, UI framework</li>
+                <li><strong>Phase 2 (Next):</strong> Schema analysis, Staging 1 creation, data extraction</li>
+                <li><strong>Phase 3:</strong> AI-powered field mapping, transformation rules</li>
+                <li><strong>Phase 4:</strong> Transform engine, Staging 2 creation</li>
+                <li><strong>Phase 5:</strong> Validation engine, data quality checks</li>
+                <li><strong>Phase 6:</strong> Migration execution, RCA object/field creation, bulk import</li>
+                <li><strong>Phase 7:</strong> Automated testing engine, quote creation in RCA</li>
+                <li><strong>Phase 8:</strong> Transaction import, incremental sync</li>
+                <li><strong>Phase 9:</strong> Reporting, PDF export, rollback functionality</li>
+                <li><strong>Phase 10:</strong> Production deployment, DNS, SSL, monitoring</li>
+            </ol>
+        </section>
+    </main>
+
+    <footer style="background: #1a202c; color: white; padding: 2rem; text-align: center; margin-top: 4rem;">
+        <p>&copy; 2025 RevNova. Migration Architecture Specification v1.0</p>
+    </footer>
+</body>
+</html>
