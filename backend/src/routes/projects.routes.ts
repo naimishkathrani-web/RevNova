@@ -1,5 +1,6 @@
 import express from 'express';
 import type { Request, Response } from 'express';
+import { ProjectType, getProjectPhases, PHASE_NAMES } from '../types/index.js';
 
 const router = express.Router();
 
@@ -91,27 +92,75 @@ router.get('/projects/:id', async (req: Request, res: Response) => {
 // -----------------------------------------------
 router.post('/projects', async (req: Request, res: Response) => {
   try {
-    const { name, description, source_system, target_system, client_name } = req.body;
+    const { 
+      name, 
+      description, 
+      project_type = 'migrate_master_with_inflight',
+      include_inflight_data = true,
+      skip_inflight_import = false
+    } = req.body;
     
     // Validation
-    if (!name || !source_system || !target_system) {
+    if (!name) {
       return res.status(400).json({
         status: 'error',
-        message: 'Missing required fields: name, source_system, target_system'
+        message: 'Missing required field: name'
+      });
+    }
+
+    // Validate project type
+    const validProjectTypes: ProjectType[] = [
+      'migrate_master_data',
+      'migrate_master_with_inflight',
+      'migrate_inflight_data',
+      'design_product_ai'
+    ];
+    
+    if (!validProjectTypes.includes(project_type)) {
+      return res.status(400).json({
+        status: 'error',
+        message: `Invalid project_type. Must be one of: ${validProjectTypes.join(', ')}`
       });
     }
 
     const db = req.app.locals.db;
+    
+    // Get available phases for this project type
+    const availablePhases = getProjectPhases(project_type);
+    
     const result = await db.query(`
-      INSERT INTO projects (name, description, source_system, target_system, client_name, status)
-      VALUES ($1, $2, $3, $4, $5, 'draft')
+      INSERT INTO projects (
+        name, 
+        description, 
+        project_type,
+        include_inflight_data,
+        skip_inflight_import,
+        current_phase,
+        completed_phases,
+        status
+      )
+      VALUES ($1, $2, $3, $4, $5, $6, $7, 'draft')
       RETURNING *
-    `, [name, description, source_system, target_system, client_name]);
+    `, [
+      name, 
+      description, 
+      project_type,
+      include_inflight_data,
+      skip_inflight_import,
+      availablePhases[0], // Start with first phase
+      []  // Empty completed phases
+    ]);
 
     return res.status(201).json({
       status: 'success',
       message: 'Project created successfully',
-      data: result.rows[0]
+      data: {
+        ...result.rows[0],
+        available_phases: availablePhases.map(phase => ({
+          phase,
+          name: PHASE_NAMES[phase]
+        }))
+      }
     });
 
   } catch (err: any) {

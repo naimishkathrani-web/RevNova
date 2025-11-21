@@ -10,6 +10,8 @@ import analyzeRoutes from './routes/analyze.routes.js';
 import projectsRouter from './routes/projects.routes.js';
 import connectionsRouter from './routes/connections.routes.js';
 import fieldMappingsRouter from './routes/field-mappings.routes.js';
+import projectPhasesRouter from './routes/project-phases.routes.js';
+import rcaConfigRouter from './routes/rca-config.routes.js';
 
 import db from './database/db.js';
 
@@ -65,6 +67,12 @@ app.use('/api/v1', fieldMappingsRouter);
 
 console.log(">>> Mounting Analyze Router...");
 app.use('/api/v1', analyzeRoutes);
+
+console.log(">>> Mounting Project Phases Router...");
+app.use('/api/v1', projectPhasesRouter);
+
+console.log(">>> Mounting RCA Config Router...");
+app.use('/api/v1', rcaConfigRouter);
 
 // -----------------------------------------------
 // TEST ROUTE MATCH (simulated request)
